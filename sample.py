@@ -24,20 +24,12 @@ def get_xpath(xpath, root):
             else:
                 print(f"element {path_part}")
 
-##tree = ET.parse("resources/CCDA_CCD_b1_InPatient_v2.xml")
 tree = ET.parse("resources/sample.xml")
 root = tree.getroot()
-#for child in root:
-#    print(child.tag, child.attrib)
 
 xpaths_text = Path("resources/sample_paths.txt").read_text()
 for xpath_line in xpaths_text.splitlines():
     if len(xpath_line) > 0 and xpath_line[0] != '#':
-
-        #clip_first = xpath_line.split("country")[1]
-        #trimmed_and_fixed_xpath = "." + clip_first.split("/@")[0]
-        #trimmed_and_fixed_xpath = "." + xpath_line.split("/@")[0]
-        #print(f"fixed: {trimmed_and_fixed_xpath}")
 
         print("--------------------------")
         print(f"path: {xpath_line}")
