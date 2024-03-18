@@ -4,4 +4,4 @@ Following initial explorations suggesting Python is useful for converting JSON t
 ## Simple examples for learning, playing with Xpath etc.
 - resources/sample.xml Country data copied from the XML etree docs. State and city data added for deeper exploration of the tools.
 - resources/sample_paths.txt
-- /ele_tree_sample.py  This is code wired to the above files.
+- /sample.py  This is code wired to the above files.
