@@ -1,0 +1,26 @@
+
+
+# root paths are broken. Start with . which is a relative path to the top level element b/c your current  place is the top...
+# Ex. .data/country  doesn't work because you're already in data.
+.
+./
+
+# these are filters on the types, without regard to the values, It will show all countries, all ranks, or all neighbors
+./country
+./country/rank
+./country/neighbor
+
+# a single path must include the tag values
+./country[@name="Singapore"]
+./country[@name="USA"]
+./country[@name="USA"]/state
+./country[@name="USA"]/state[@name="Colorado"]
+./country[@name="USA"]/state[@name="Colorado"]/city
+./country[@name="USA"]/state[@name="Colorado"]/city[@name="Denver"]
+
+# a slash at the end shows you from there down, ntohing if you are already at the bottom
+./country[@name="USA"]/
+./country[@name="USA"]/state/
+./country[@name="USA"]/state[@name="Colorado"]/
+./country[@name="USA"]/state[@name="Colorado"]/city/
+./country[@name="USA"]/state[@name="Colorado"]/city[@name="Denver"]/
