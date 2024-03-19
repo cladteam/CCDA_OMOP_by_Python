@@ -21,7 +21,7 @@ https://www.w3.org/TR/xpath-31/
     - also build a separate or integrated  analsyis report with quantities described under Analysis below
 - Code Nits/Bugs
   - exceptions for null concept lookups
-  - check/trhow cardinality of subsections like addresses and observations
+  - check/throw cardinality of subsections like addresses and observations
   - namespaces in xpath 
   - value types in observation for value_as_string etc., 'PQ' (physical quantity), 'ST' (character string), etc.
     - https://terminology.hl7.org/CodeSystem-v3-DataType.html 
