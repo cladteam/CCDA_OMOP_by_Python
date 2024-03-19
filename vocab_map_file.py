@@ -17,6 +17,9 @@ vocab_map = {
 }
 
 
+
+# possible "domain" sections under this (prefix omitted) path:
+# component/structuredBody/component/section/ 
 reason_for_referral="1.3.6.1.4.1.19376.1.5.3.1.3.1"
 medications        ="2.16.840.1.113883.10.20.22.2.1.1"
 immunizations      ="2.16.840.1.113883.10.20.22.2.2.1"
@@ -28,4 +31,14 @@ procedures         ="2.16.840.1.113883.10.20.22.2.7.1"
 care_plan          ="2.16.840.1.113883.10.20.22.2.10"
 functional_and_cognitive_status="2.16.840.1.113883.10.20.22.2.14"
 social_history     ="2.16.840.1.113883.10.20.22.2.17"
-ncounters          ="2.16.840.1.113883.10.20.22.2.22.1"
+encounters          ="2.16.840.1.113883.10.20.22.2.22.1"
+
+
+# document template IDs
+US_general_root="2.16.840.1.113883.10.20.22.1.1"
+ccd_document_root = "2.16.840.1.113883.10.20.22.1.2" # I think.
+
+
+## typeId?
+##   <typeId     root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
+         

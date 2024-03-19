@@ -95,8 +95,6 @@ def convert(tree):
     
     
     
-#    obs_vocabulary_id = data['code']['coding'][0]['system']
-#    obs_concept_code  = data['code']['coding'][0]['code']
 #
 
 

@@ -5,6 +5,8 @@
 # collects OMOP patient attributes from CCDA patientRole
 # depends: location.py must be run on this document beforehand so the ID has been entered.
 # CCDA document: CCD
+#
+# ToDo: is a template_id associated with this section? Does it change from document to document?
 
 import json
 import id_map
