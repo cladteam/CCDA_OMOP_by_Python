@@ -1,4 +1,3 @@
-booger
 ====================================
 {'location_id': 1, 'address': '1357 Amber Drive', 'city': 'Beaverton', 'state': 'OR', 'zip': '97006'}
 {'person_id': '123-101-5230', 'race_concept_id': 8527, 'ethnicity_concept_id': 9998, 'gender_concept_id': 8532, 'birthdate': '1947-05-01', 'location_id': 1}
