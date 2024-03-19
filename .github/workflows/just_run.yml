@@ -16,3 +16,8 @@ jobs:
             run: |
               ls ${{ github.workspace }}
           - run: echo "🍏 This job's status is ${{ job.status }}."
+          - name: Display Python Version
+            run: python -c "import sys; print(sys.version)"
+          - name: run main.py
+            run: |
+                python3 main.py
