@@ -40,8 +40,6 @@ def convert(tree):
                                      "{urn:hl7-org:v3}section/" + 
                                      "{urn:hl7-org:v3}templateId[@root='" + vocab_map_file.results + "']/..")
 
-    print("sections:", len(results_section), results_section[0].tag)
-
     results_observations = results_section[0].findall("{urn:hl7-org:v3}entry/" +
                                                       "{urn:hl7-org:v3}organizer/" +
                                                       "{urn:hl7-org:v3}component/" +
