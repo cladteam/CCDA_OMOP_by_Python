@@ -11,7 +11,7 @@ https://www.w3.org/TR/xpath-31/
   - CCDA Document classes with section methods
   - Factory method for the document class based on document type
   - a driver for consuming volumes of documents so we can get an inkling of performance time and cost
-- Code Nits
+- Code Nits/Bugs
   - exceptions for null concept lookups
   - check/trhow cardinality of subsections like addresses and observations
   - namespaces in xpath 
@@ -19,6 +19,7 @@ https://www.w3.org/TR/xpath-31/
   - map from HL7 codeSystem OIDs to OMOP vocabulary_id
   - name HL7 codeSystems correctly, not vocabulary_id 
   - use a real concept table
+  - observation IDs are not unique to the individual concepts and values!
 - Analysis
   - assess amount of <structuredBody> <entry> (structured)  vs <text> (non structured) plain text content
   - codeSystem vocabularies and OMOP mappings

@@ -9,7 +9,7 @@
 import json
 import id_map
 from vocab_map_file import vocab_map
-import time
+import util
 
 def create():
     dest = {'person_id': None, 'race_concept_id': None, 'ethnicity_concept_id': None, 'gender_concept_id': None, 'birthdate': None, 'location_id': None}
@@ -56,8 +56,11 @@ def convert(tree):
     if gender_concept_id is None:
         print(f"No concept {gender_concept_id} from {(gender_vocabulary_id, gender_concept_code)}")
 
-    birth_date_string = time.strptime(patient.find("{urn:hl7-org:v3}birthTime").get("value"), '%Y%m%d')
-    birthDate = time.strftime('%Y-%m-%d', birth_date_string)
+    #birth_date_string = time.strptime(patient.find("{urn:hl7-org:v3}birthTime").get("value"), '%Y%m%d')
+    #birthDate = time.strftime('%Y-%m-%d', birth_date_string)
+
+    birth_date_string = patient.find("{urn:hl7-org:v3}birthTime").get("value")
+    birthDate = util.convert_date(birth_date_string)
 
     # GET PATIENT ID
     person_id = child.findall("./{urn:hl7-org:v3}recordTarget/{urn:hl7-org:v3}patientRole/{urn:hl7-org:v3}id")[0].get("extension")

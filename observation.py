@@ -14,6 +14,7 @@
 import json
 import vocab_map_file
 import id_map
+import util
 
 
 def create():
@@ -46,12 +47,17 @@ def convert(tree):
     dest = list(range(len(results_observations)))
     i=0
     for obs in results_observations:
-        observation_id = obs.find("{urn:hl7-org:v3}id")
+        observation_id = obs.find("{urn:hl7-org:v3}id").attrib['root']
+        #observation_id = obs.find("{urn:hl7-org:v3}id").attrib['extension']
+
         observation_code = obs.find("{urn:hl7-org:v3}code")
         observation_code_code = observation_code.attrib['code'] 
         observation_code_codeSystem = observation_code.attrib['codeSystem'] 
-        observation_concept_id = (concept_name, obs_concept_id, vocab, code) = vocab_map_file.vocab_map[(observation_code_codeSystem, observation_code_code)]
-        observation_date= obs.find("{urn:hl7-org:v3}effectiveTime")
+        (concept_name, observation_concept_id, vocab, code) = vocab_map_file.vocab_map[(observation_code_codeSystem, observation_code_code)]
+
+        observation_date_string = obs.find("{urn:hl7-org:v3}effectiveTime").attrib['value']
+        observation_date = util.convert_date(observation_date_string)
+
         observation_value = obs.find("{urn:hl7-org:v3}value")
         observation_value_value = observation_value.attrib['value']
         ##observation_value_type = observation_value.attrib['xsi:type']
