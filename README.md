@@ -7,12 +7,16 @@ https://www.w3.org/TR/xpath-31/
 
 ## ToDo
 - Code
+  - output a dictionary to a (OMOP) table
   - OMOP classes
   - CCDA Document classes with section methods
   - Factory method for the document class based on document type
   - a driver for consuming volumes of documents so we can get an inkling of performance time and cost
   - manage template ids across parsing like sections of different  documents
+    - document templates are checked at top (main for now)
+    - observation type template ids are searched for, and checked that way.
   - consider structure of classes in event of parsing the same OMOP entity out of multiple CCDA sections.
+#    obs_concept_code  = data['code']['coding'][0]['code']
   - build a parsing report mechanism that describes outright exceptions, or unexpected deviations like different template IDs or multiple values for things? ...does it need it's own ontology?
     - also build a separate or integrated  analsyis report with quantities described under Analysis below
 - Code Nits/Bugs

@@ -75,7 +75,7 @@ def convert(tree):
         # observation value TYPE???  #############
         if observation_value_type == 'PQ':
             dest[i]['value_as_number']        =  observation_value_value
-        else:
+        elif observation_value_type == 'ST':
             dest[i]['value_as_number']        =  None
             dest[i]['value_as_string']        =  observation_value
         dest[i]['value_as_concept_id']    =  None
