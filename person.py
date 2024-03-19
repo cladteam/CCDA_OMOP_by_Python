@@ -15,6 +15,17 @@ def create():
     dest = {'person_id': None, 'race_concept_id': None, 'ethnicity_concept_id': None, 'gender_concept_id': None, 'birthdate': None, 'location_id': None}
     return dest
 
+def get_person_id(tree):
+    SSN_root = "2.16.840.1.113883.4.1"
+    HL7_root = "2.16.840.1.113883.4.6" 
+
+    child_list = tree.findall(".")
+    child = child_list[0]
+    person_id_list =  child.findall("./{urn:hl7-org:v3}recordTarget/{urn:hl7-org:v3}patientRole/{urn:hl7-org:v3}id[@root='" + SSN_root + "']")
+    person_id = person_id_list[0].attrib['extension']
+
+    return person_id
+
 def convert(tree):
     child_list = tree.findall(".")
     child = child_list[0]
@@ -63,10 +74,7 @@ def convert(tree):
     birthDate = util.convert_date(birth_date_string)
 
     # GET PATIENT ID
-    person_id = child.findall("./{urn:hl7-org:v3}recordTarget/{urn:hl7-org:v3}patientRole/{urn:hl7-org:v3}id")[0].get("extension")
-    person_id_id_thing = child.findall("./{urn:hl7-org:v3}recordTarget/{urn:hl7-org:v3}patientRole/{urn:hl7-org:v3}id")[0].get("root")
-    # FYI    root="2.16.840.1.113883.4.6" is HL7 OID
-    # FYI    root="2.16.840.1.113883.4.1" is SSN
+    person_id = get_person_id(tree)
     
  
     dest = create()

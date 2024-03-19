@@ -11,6 +11,7 @@ https://www.w3.org/TR/xpath-31/
   - CCDA Document classes with section methods
   - Factory method for the document class based on document type
   - a driver for consuming volumes of documents so we can get an inkling of performance time and cost
+  - manage template ids across parsing like sections of different  documents
 - Code Nits/Bugs
   - exceptions for null concept lookups
   - check/trhow cardinality of subsections like addresses and observations

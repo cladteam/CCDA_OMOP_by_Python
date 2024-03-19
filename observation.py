@@ -15,6 +15,7 @@ import json
 import vocab_map_file
 import id_map
 import util
+import person
 
 
 def create():
@@ -26,6 +27,8 @@ def create():
 def convert(tree):
     child_list = tree.findall(".")
     child = child_list[0]
+
+    person_id = person.get_person_id(tree)
 
 
     ##documentationOf = child.findall("./{urn:hl7-org:v3}documentationOf") # clinician, Dx
@@ -66,7 +69,7 @@ def convert(tree):
    
         dest[i] = create()
         dest[i]['observation_id']         =  observation_id
-        dest[i]['person_id']              = None  ##########################
+        dest[i]['person_id']              =  person_id
         dest[i]['observation_concept_id'] =  observation_concept_id
         dest[i]['observation_date']       =  observation_date
         # observation value TYPE???  #############
