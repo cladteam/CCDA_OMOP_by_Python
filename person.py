@@ -12,7 +12,7 @@ from vocab_map_file import vocab_map
 import time
 
 def create():
-    dest = {'person_id': None, 'race': None, 'ethnicity': None, 'gender': None, 'birthdate': None, 'location_id': None}
+    dest = {'person_id': None, 'race_concept_id': None, 'ethnicity_concept_id': None, 'gender_concept_id': None, 'birthdate': None, 'location_id': None}
     return dest
 
 def convert(tree):
@@ -39,16 +39,22 @@ def convert(tree):
     race_vocabulary_id = race_code.get("codeSystem")
     race_concept_code  =race_code.get("code")
     (concept_name, race_concept_id, vocab, omop_concept_code) = vocab_map[(race_vocabulary_id, race_concept_code)]
+    if race_concept_id is None:
+        print(f"No concept from {(race_vocabulary_id, race_concept_code)}")
 
     ethnicity_code = patient.find("{urn:hl7-org:v3}ethnicGroupCode")
     ethnicity_vocabulary_id = ethnicity_code.get("codeSystem")
     ethnicity_concept_code  = ethnicity_code.get("code")
     (concept_name, ethnicity_concept_id, vocab, omop_concept_code) = vocab_map[(ethnicity_vocabulary_id, ethnicity_concept_code)]
+    if ethnicity_concept_id is None:
+        print(f"No concept from {(ethnicity_vocabulary_id, ethnicity_concept_code)}")
 
     gender_code = patient.find("{urn:hl7-org:v3}administrativeGenderCode")
     gender_vocabulary_id = gender_code.get("codeSystem")
     gender_concept_code  = gender_code.get("code")
     (concept_name, gender_concept_id, vocab, omop_concept_code) = vocab_map[(gender_vocabulary_id, gender_concept_code)]
+    if gender_concept_id is None:
+        print(f"No concept {gender_concept_id} from {(gender_vocabulary_id, gender_concept_code)}")
 
     birth_date_string = time.strptime(patient.find("{urn:hl7-org:v3}birthTime").get("value"), '%Y%m%d')
     birthDate = time.strftime('%Y-%m-%d', birth_date_string)
