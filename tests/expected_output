@@ -1,0 +1,6 @@
+====================================
+{'location_id': 1, 'address': '1357 Amber Drive', 'city': 'Beaverton', 'state': 'OR', 'zip': '97006'}
+{'person_id': '123-101-5230', 'race_concept_id': 8527, 'ethnicity_concept_id': 9998, 'gender_concept_id': 8532, 'birthdate': '1947-05-01', 'location_id': 1}
+{'observation_id': '107c2dc0-67a5-11db-bd13-0800200c9a66', 'person_id': '123-101-5230', 'observation_concept_id': 3002173, 'observation_date': '2012-08-10', 'value_as_number': '10.2', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
+{'observation_id': '107c2dc0-67a5-11db-bd13-0800200c9a66', 'person_id': '123-101-5230', 'observation_concept_id': 3028866, 'observation_date': '2012-08-10', 'value_as_number': '12.3', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
+{'observation_id': '107c2dc0-67a5-11db-bd13-0800200c9a66', 'person_id': '123-101-5230', 'observation_concept_id': 3007461, 'observation_date': '2012-08-10', 'value_as_number': '123', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}

@@ -20,4 +20,7 @@ jobs:
             run: python -c "import sys; print(sys.version)"
           - name: run main.py
             run: |
-                python3 main.py
+                python3 main.py > todays_output
+          - name: diff output
+            run: |
+                diff todays_output tests/expected_output
