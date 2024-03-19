@@ -12,10 +12,8 @@ import json
 import id_map
 from vocab_map_file import vocab_map
 import util
+import omop_person
 
-def create():
-    dest = {'person_id': None, 'race_concept_id': None, 'ethnicity_concept_id': None, 'gender_concept_id': None, 'birthdate': None, 'location_id': None}
-    return dest
 
 def get_person_id(tree):
     SSN_root = "2.16.840.1.113883.4.1"
@@ -69,24 +67,14 @@ def convert(tree):
     if gender_concept_id is None:
         print(f"No concept {gender_concept_id} from {(gender_vocabulary_id, gender_concept_code)}")
 
-    #birth_date_string = time.strptime(patient.find("{urn:hl7-org:v3}birthTime").get("value"), '%Y%m%d')
-    #birthDate = time.strftime('%Y-%m-%d', birth_date_string)
-
-    birth_date_string = patient.find("{urn:hl7-org:v3}birthTime").get("value")
-    birthDate = util.convert_date(birth_date_string)
+    birth_date_fhir_string = patient.find("{urn:hl7-org:v3}birthTime").get("value")
+    birth_date_omop = util.convert_date(birth_date_fhir_string)
 
     # GET PATIENT ID
     person_id = get_person_id(tree)
     
  
-    dest = create()
-
-    dest['person_id'] = person_id
-    dest['race_concept_id'] = race_concept_id
-    dest['ethnicity_concept_id'] = ethnicity_concept_id
-    dest['gender_concept_id'] = gender_concept_id
-    dest['birthdate'] = birthDate
-    dest['location_id'] = location_id
+    person_obj = omop_person.OmopPerson(person_id, gender_concept_id, birth_date_omop, race_concept_id, ethnicity_concept_id, location_id)
   
-    return dest
+    return  person_obj.create_dictionary()
   
