@@ -13,6 +13,7 @@
 import xml.etree.ElementTree as ET
 import pathlib
 import difflib
+import argparse
 
 # ToDo: local package
 import id_map
@@ -22,7 +23,15 @@ import observation
 import util
 
 
-do_capture_output = False
+parser = argparse.ArgumentParser(
+    prog='CCDA_OMOP_Converter Test Driver',
+    description="Converts CCDA documents to OMOP tables",
+    epilog='epilog?')
+parser.add_argument('-s', '--save', action="store_true")
+args = parser.parse_args()
+
+
+do_capture_output = args.save
 output_fn = print
 outfile = None
 
