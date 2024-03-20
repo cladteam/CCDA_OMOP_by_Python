@@ -24,7 +24,7 @@ jobs:
           - name: diff output
             run: |
                 diff todays_output tests/expected_output
-    Lint:
+    Lint-Flake8:
         runs-on: ubuntu-latest
         steps:
           - name: Install linters
@@ -37,7 +37,15 @@ jobs:
             run: |
                 flake8 *.py --count --select=E9,F36,F92 --show-source --statistics
                 flake8 *.py  --count --max-complexity=10 --max-line-length=79 --statistics
+    Lint-Pylint:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Install linters
+            run: |
+                pip install pylint
+                pip install flake8
+          - name: Check out repository code
+            uses: actions/checkout@v4
           - name: Lint with Pylint
             run: |
                 pylint  *.py
-            
