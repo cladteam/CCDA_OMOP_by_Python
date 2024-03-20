@@ -35,8 +35,8 @@ jobs:
             uses: actions/checkout@v4
           - name: Lint with flake8
             run: |
-                flake8 src --count --select=E9,F36,F92 --show-source --statistics
-                flake8 src --count --max-complexity=10 --max-line-length=79 --statistics
+                flake8 *.py --count --select=E9,F36,F92 --show-source --statistics
+                flake8 *.py  --count --max-complexity=10 --max-line-length=79 --statistics
           - name: Lint with Pylint
             run: |
                 pylint  *.py
