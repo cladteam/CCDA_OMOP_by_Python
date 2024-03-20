@@ -55,9 +55,8 @@ def report_diffs(diff_generator):
     if count_errors > 0:
         print(f"ERROR:Differences found for {input_filename}:")
         return True
-    else:
-        print(f"INFO:No differences found for {input_filename}:")
-        return False
+    print(f"INFO:No differences found for {input_filename}:")
+    return False
 
 
 FILE_NUM = 0
