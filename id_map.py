@@ -1,8 +1,9 @@
 
 # id_map.py
-#
-# evolving stub for keeping track of ids as they are created.
-# It's a map from a possibly compound natural key to a crude artificial key.
+"""
+   evolving stub for keeping track of ids as they are created.
+   It's a map from a possibly compound natural key to a crude artificial key.
+"""
 
 self = {
     "id_map": {},
@@ -11,14 +12,17 @@ self = {
 
 
 def create(k):
+    """ create an id for given key, k """
     self["max_id"] += 1
     self["id_map"][k] = self["max_id"]
     return self["max_id"]
 
 
 def get(k):
+    """ retrieve an id for given key, k """
     return self["id_map"][k]
 
 
 def dump():
+    """ dump the map """
     print(self["id_map"])

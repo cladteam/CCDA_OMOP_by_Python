@@ -16,7 +16,6 @@ import pathlib
 import difflib
 import argparse
 
-# ToDo: local package
 import location
 import person
 import observation
@@ -57,13 +56,13 @@ for input_filename in todo_list:
 
     if args.save:
         output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
-        outfile = open('output/' + output_filename, 'w', encoding='utf-8')
+        OUTFILE = open('output/' + output_filename, 'w', encoding='utf-8')
 
         def capture_output(out_thing):
             """ closure for capturing output to a file as well as to a string """
             actual_text = ""
             actual_text += str(out_thing)
-            outfile.write(str(out_thing) + '\n')
+            OUTFILE.write(str(out_thing) + '\n')
             return actual_text
 
         output_fn = capture_output
@@ -111,4 +110,4 @@ for input_filename in todo_list:
 
 
 if args.save:
-    outfile.close()
+    OUTFILE.close()

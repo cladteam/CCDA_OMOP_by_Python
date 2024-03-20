@@ -18,6 +18,31 @@ def create():
     return dest
 
 
+def get_location_id(tree):
+    """ parses a document for location attributes and fetches and id from the id_map for it """
+    child_list = tree.findall(".")
+    child = child_list[0]
+
+    addresses = child.findall("./{urn:hl7-org:v3}recordTarget/" +
+                              "{urn:hl7-org:v3}patientRole/" +
+                              "{urn:hl7-org:v3}addr")
+    if len(addresses) > 1:
+        print("I don't think there should be more than one address here...")
+        sys.exit(1)
+
+    addr = addresses[0]
+    line = addr.find("{urn:hl7-org:v3}streetAddressLine").text
+    city = addr.find("{urn:hl7-org:v3}city").text
+    state = addr.find("{urn:hl7-org:v3}state").text
+    country = addr.find("{urn:hl7-org:v3}country").text
+    postal_code = addr.find("{urn:hl7-org:v3}postalCode").text
+
+    location_key = (line, city, state, country, postal_code)
+    location_id = id_map.get(location_key)
+
+    return location_id
+
+
 def convert(tree):
     """ Extracts a row for an OMOP location table from  a top-level XML document tree """
     child_list = tree.findall(".")
