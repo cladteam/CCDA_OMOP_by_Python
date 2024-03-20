@@ -15,6 +15,9 @@ jobs:
           - name: List files in the repository
             run: |
               ls ${{ github.workspace }}
+          - name: List files in the repository tests directory
+            run: |
+              ls ${{ github.workspace }}/tests
           - run: echo "🍏 This job's status is ${{ job.status }}."
           - name: Display Python Version
             run: python -c "import sys; print(sys.version)"
