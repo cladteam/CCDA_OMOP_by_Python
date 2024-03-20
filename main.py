@@ -27,11 +27,13 @@ parser = argparse.ArgumentParser(
     prog='CCDA_OMOP_Converter Test Driver',
     description="Converts CCDA documents to OMOP tables",
     epilog='epilog?')
-parser.add_argument('-s', '--save', action="store_true")
+parser.add_argument('-s', '--save', action="store_true", 
+    help="store the output in the outputs directory")
+parser.add_argument('-n', '--num_tests', 
+    help="do the first n tests")
 args = parser.parse_args()
 
 
-do_capture_output = args.save
 output_fn = print
 outfile = None
 
@@ -49,10 +51,13 @@ expected_text_file_list = [
 
 
 file_num=0;
-for input_filename in input_filename_list:
+todo_list =  input_filename_list
+if (len(input_filename_list) >= int(args.num_tests) and int(args.num_tests) > 0):
+    todo_list =  input_filename_list[:(int(args.num_tests) )]
+for input_filename in todo_list:
     tree = ET.parse('resources/' + input_filename)
 
-    if do_capture_output:
+    if args.save:
         output_filename =  input_filename[0:(len(input_filename) -4)] + '.txt'
         outfile = open('output/' + output_filename, 'w', encoding='utf-8')
         def capture_output(out_thing):
@@ -101,5 +106,5 @@ for input_filename in input_filename_list:
     file_num += 1
 
 
-if do_capture_output:
+if args.save:
     close(outfile)

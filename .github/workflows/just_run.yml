@@ -21,7 +21,7 @@ jobs:
           - run: echo "🍏 This job's status is ${{ job.status }}."
           - name: Display Python Version
             run: python -c "import sys; print(sys.version)"
-          - name: run main.py
+          - name: run main.py -n=2
             run: |
                 python3 main.py > todays_output
           - name: diff output
