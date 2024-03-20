@@ -46,53 +46,61 @@ args = parser.parse_args()
 
 FILE_NUM = 0
 NUM_ERROR_FILES = 0
+
 todo_list = input_filename_list
 if (len(input_filename_list) >= int(args.num_tests) and int(args.num_tests) > 0):
     todo_list = input_filename_list[:(int(args.num_tests))]
 
 for input_filename in todo_list:
     print(f"==== {input_filename} ====")
-    tree = ET.parse('resources/' + input_filename)
-    actual_text_list = []
 
-
-    if not util.check_ccd_document_type(tree):
-        print(f"ERROR:wrong doc type in {input_filename}")
-    else:
-        # Convert
-        actual_text_list.append(str(location.convert(tree)))
-        actual_text_list.append(str(person.convert(tree)))
-        for obs in observation.convert(tree):
-            actual_text_list.append(str(obs))
-
-        # Compare
-        expected_text = pathlib.Path('tests/' +
-                                     expected_text_file_list[FILE_NUM]).\
-            read_text(encoding='utf-8')
-        expected_string_list = expected_text.split("\n")
-        diff_gen = difflib.context_diff(actual_text_list,
-                                        expected_string_list[:-1],
-                                        fromfile="expected",
-                                        tofile="actual")
-
-        # Report
-        COUNT_ERRORS = 0  # lints as a constant?!
-        for difference in diff_gen:
-            print("DIFF: ", difference)
-            COUNT_ERRORS += 1
-        if COUNT_ERRORS > 0:
-            print(f"ERROR:Differences found for {input_filename}:")
-            NUM_ERROR_FILES += 1
+    try:
+        tree = ET.parse('resources/' + input_filename)
+        actual_text_list = []
+    
+    
+        if not util.check_ccd_document_type(tree):
+            print(f"ERROR:wrong doc type in {input_filename}")
         else:
-            print(f"INFO:No differences found for {input_filename}:")
+            # Convert
+            actual_text_list.append(str(location.convert(tree)))
+            actual_text_list.append(str(person.convert(tree)))
+            for obs in observation.convert(tree):
+                actual_text_list.append(str(obs))
+    
+            # Compare
+            expected_text = pathlib.Path('tests/' +
+                                         expected_text_file_list[FILE_NUM]).\
+                read_text(encoding='utf-8')
+            expected_string_list = expected_text.split("\n")
+            diff_gen = difflib.context_diff(actual_text_list,
+                                            expected_string_list[:-1],
+                                            fromfile="expected",
+                                            tofile="actual")
+    
+            # Report
+            COUNT_ERRORS = 0  # lints as a constant?!
+            for difference in diff_gen:
+                print("DIFF: ", difference)
+                COUNT_ERRORS += 1
+            if COUNT_ERRORS > 0:
+                print(f"ERROR:Differences found for {input_filename}:")
+                NUM_ERROR_FILES += 1
+            else:
+                print(f"INFO:No differences found for {input_filename}:")
+    
+        # Save
+        if (args.save):
+            output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
+            with (args.save and open('output/' + output_filename, 'w', encoding='utf-8')) as outfile:
+                for line in actual_text_list:
+                    outfile.write(line)
+    
+        FILE_NUM += 1
+    except ET.ParseError:
+        NUM_ERROR_FILES += 1
+        print(f"ERROR: Could not parse {input_filename}:")
 
-    # Save
-    if (args.save):
-        output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
-        with (args.save and open('output/' + output_filename, 'w', encoding='utf-8')) as outfile:
-            for line in actual_text_list:
-                outfile.write(line)
 
-    FILE_NUM += 1
-    if NUM_ERROR_FILES > 0:
-        sys.exit(1)
+if NUM_ERROR_FILES > 0:
+    sys.exit(1)
