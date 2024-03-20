@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 import pathlib
 import difflib
 import argparse
+import sys
 
 import location
 import person
@@ -113,4 +114,3 @@ for input_filename in todo_list:
 
 if args.save:
     OUTFILE.close()
-
