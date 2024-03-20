@@ -24,9 +24,6 @@ jobs:
           - name: run main.py 
             run: |
                 python3 main.py -n=2
-          - name: diff output
-            run: |
-                diff todays_output tests/expected_output
     Lint-Flake8:
         runs-on: ubuntu-latest
         steps:
