@@ -101,6 +101,9 @@ for input_filename in todo_list:
             for difference in diff_gen:
                 print(difference)
             print(f"ERROR:Differences found for {input_filename}:")
+            if args.save:
+                OUTFILE.close()
+            sys.exit(1)
         except StopIteration:
             print(f"INFO:No Differences for {input_filename}:")
     else:
@@ -108,6 +111,6 @@ for input_filename in todo_list:
 
     FILE_NUM += 1
 
-
 if args.save:
     OUTFILE.close()
+

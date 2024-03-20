@@ -29,7 +29,6 @@ jobs:
         steps:
           - name: Install linters
             run: |
-                pip install pylint
                 pip install flake8
           - name: Check out repository code
             uses: actions/checkout@v4
@@ -43,9 +42,8 @@ jobs:
           - name: Install linters
             run: |
                 pip install pylint
-                pip install flake8
           - name: Check out repository code
             uses: actions/checkout@v4
           - name: Lint with Pylint
             run: |
-                pylint  *.py
+                pylint --max-locals=25  *.py

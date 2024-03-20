@@ -24,8 +24,7 @@ def get_person_id(tree):
     ssn_root = "2.16.840.1.113883.4.1"
     # HL7_root = "2.16.840.1.113883.4.6"
 
-    child_list = tree.findall(".")
-    child = child_list[0]
+    child = tree.findall(".")[0]
     person_id_list = child.findall("./{urn:hl7-org:v3}recordTarget/" +
                                    "{urn:hl7-org:v3}patientRole/" +
                                    "{urn:hl7-org:v3}id[@root='" + ssn_root + "']")
@@ -36,8 +35,7 @@ def get_person_id(tree):
 
 def convert(tree):
     """ Extracts a row for an OMOP person table from  a top-level XML document tree """
-    child_list = tree.findall(".")
-    child = child_list[0]
+    child = tree.findall(".")[0]
 
     # GET LOCATION KEY
     location_id = location.get_location_id(tree)

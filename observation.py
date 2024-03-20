@@ -27,8 +27,7 @@ def create():
 
 def convert(tree):
     """ Extracts a row for an OMOP observation table from  a top-level XML document tree """
-    child_list = tree.findall(".")
-    child = child_list[0]
+    child = tree.findall(".")[0]
 
     person_id = person.get_person_id(tree)
 
