@@ -57,8 +57,7 @@ for input_filename in todo_list:
     try:
         tree = ET.parse('resources/' + input_filename)
         actual_text_list = []
-    
-    
+
         if not util.check_ccd_document_type(tree):
             print(f"ERROR:wrong doc type in {input_filename}")
         else:
@@ -67,7 +66,7 @@ for input_filename in todo_list:
             actual_text_list.append(str(person.convert(tree)))
             for obs in observation.convert(tree):
                 actual_text_list.append(str(obs))
-    
+
             # Compare
             expected_text = pathlib.Path('tests/' +
                                          expected_text_file_list[FILE_NUM]).\
@@ -77,7 +76,7 @@ for input_filename in todo_list:
                                             expected_string_list[:-1],
                                             fromfile="expected",
                                             tofile="actual")
-    
+
             # Report
             COUNT_ERRORS = 0  # lints as a constant?!
             for difference in diff_gen:
@@ -88,14 +87,14 @@ for input_filename in todo_list:
                 NUM_ERROR_FILES += 1
             else:
                 print(f"INFO:No differences found for {input_filename}:")
-    
+
         # Save
-        if (args.save):
+        if args.save:
             output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
-            with (args.save and open('output/' + output_filename, 'w', encoding='utf-8')) as outfile:
+            with open('output/' + output_filename, 'w', encoding='utf-8') as outfile:
                 for line in actual_text_list:
                     outfile.write(line)
-    
+
         FILE_NUM += 1
     except ET.ParseError:
         NUM_ERROR_FILES += 1
