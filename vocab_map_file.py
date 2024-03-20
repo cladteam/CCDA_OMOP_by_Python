@@ -2,24 +2,60 @@
 """
     A stub for a proper vocabulary lookup facility.
     Also some convenient template id constants from the CCDA standards
-"""
 
-vocab_map = {
-   # vocabuarly, id --> name, concept_id, vocabulary_id, concept_code
-   (1, 2): ("foo", "bar"),
-   ("http://loinc.org", "8302-2"): ("Body Height", 3036277, "LOINC", '8302-2'),
-   ("urn:oid:2.16.840.1.113883.6.238", "2106-3"): ("White", 8527, "Race", '5'),
-   ("2.16.840.1.113883.6.238", "2106-3"): ("White", 8527, "Race", '5'),
-   ("urn:oid:2.16.840.1.113883.6.238", "2186-5"): ("Not Hispanic or Latino", 9998, "X", '2186-5'),
-   ("2.16.840.1.113883.6.238", "2186-5"): ("Not Hispanic or Latino", 9998, "X", '2186-5'),
-   ("http://snomed.info/sct", "367336001"): ("Chemotherapy", 4273629, "SNOMED", '367336001'),
-   ("http://snomed.info/sct", "387713003"): ("Surgical procedure", 4301351, "SNOMED", '387713003'),
-   ('2.16.840.1.113883.5.1', 'F'): ("FEMALE", 8532, "Gender", 'F'),
-   ('2.16.840.1.113883.5.1', 'M'): ("FEMALE", 8532, "Gender", 'F'),
-   ('2.16.840.1.113883.6.1', '30313-1'): ("Hemoglobin", 3002173, "LOINC", "30313-1"),
-   ('2.16.840.1.113883.6.1', '33765-9'): ("Leukocytes", 3028866, "LOINC", "33765-9"),
-   ('2.16.840.1.113883.6.1', '26515-7'): ("Platelets",  3007461, "LOINC", "26515-7")
+    Maps HL7 codeSystem OIDs to more/less equivalent OMOP vocabulary_id
+    Only more/less because OMOP doesn't track versions and so I think this
+    could be a many-to-one mapping where multiple versions in HL7 map to
+    whatever is in OMOP.
+    Concepts in vocabularies here only need to be mapped from concept_code to concept_id.
+"""
+equivalent_vocab_map = {
+   '2.16.840.1.113883.6.1': "LOINC",
+   "http://snomed.info/sct": "SNOMED"
 }
+
+
+# vocabulary_id, concept_code--> name, concept_id
+# Can be replaced with OMOP concept table:
+omop_concept_ids = {
+   ("SNOMED", "367336001"): ("Chemotherapy", 4273629),
+   ("SNOMED", "387713003"): ("Surgical procedure", 4301351),
+   ('LOINC', '30313-1'): ("Hemoglobin", 3002173),
+   ('LOINC', '33765-9'): ("Leukocytes", 3028866),
+   ('LOINC', '26515-7'): ("Platelets",  3007461)
+}
+
+
+# HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
+complex_mappings = {
+   ('2.16.840.1.113883.5.1', 'F'): ("Gender", "FEMALE", 8532, "Gender", 'F'),
+   ('2.16.840.1.113883.5.1', 'M'): ("Gender", "FEMALE", 8532, "Gender", 'F'),
+
+   #  ("urn:oid:2.16.840.1.113883.6.238", "2106-3"): ("Race", "5", "White", 8527),
+   ("2.16.840.1.113883.6.238", "2106-3"): ("Race", "5", "White", 8527),
+   ("2.16.840.1.113883.6.238", None): ("Race", "1", "American Indian or Alaskan Native", 8657),
+   #  ("2.16.840.1.113883.6.238", None): ("Race", "2", "Asian", 8515),
+   #  ("2.16.840.1.113883.6.238", None): ("Race", "3", "Black or Afrian American", 8516),
+
+   #  ("urn:oid:2.16.840.1.113883.6.238", "2186-5"):
+   #       ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
+   ("2.16.840.1.113883.6.238", "2186-5"):
+   ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
+   #  ("2.16.840.1.113883.6.238", None):
+   #       ("Ethnicity", "Hispanic", "Hispanic or Latino", 9998, 38003563)
+}
+
+
+def map_hl7_to_omop(code_system, code):
+    """ returns OMOP concept_id from HL7 codeSystem and code """
+    # print(f"Looking for HL7 {code_system}:{code}")
+    if code_system in equivalent_vocab_map:
+        vocabulary_id = equivalent_vocab_map[code_system]
+        # print(f"   got vocab:{vocabulary_id}")
+        concept_id = omop_concept_ids[(vocabulary_id, code)][1]
+        # print(f"   got concept_id:{concept_id}")
+        return concept_id
+    return complex_mappings[(code_system, code)][3]
 
 
 # possible "domain" sections under this (prefix omitted) path:

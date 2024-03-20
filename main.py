@@ -93,12 +93,15 @@ for input_filename in todo_list:
             output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
             with open('output/' + output_filename, 'w', encoding='utf-8') as outfile:
                 for line in actual_text_list:
-                    outfile.write(line)
+                    outfile.write(line + "\n")
 
         FILE_NUM += 1
-    except ET.ParseError:
+    except ET.ParseError as x:
         NUM_ERROR_FILES += 1
-        print(f"ERROR: Could not parse {input_filename}:")
+        print(f"ERROR: Could not parse {input_filename}:\n   {x}")
+    except IndexError as x:
+        print(f"ERROR: something wrong with {input_filename}:\n   {x}")
+        raise
 
 
 if NUM_ERROR_FILES > 0:

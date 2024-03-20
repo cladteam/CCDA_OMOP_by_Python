@@ -7,7 +7,7 @@
     ToDo: is a template_id associated with this section? Does it change from document to document?
 """
 
-from vocab_map_file import vocab_map
+import vocab_map_file
 import util
 import location
 
@@ -46,26 +46,22 @@ def convert(tree):
                             "{urn:hl7-org:v3}patient")[0]
 
     race_code = patient.find("{urn:hl7-org:v3}raceCode")
-    race_vocabulary_id = race_code.get("codeSystem")
-    race_concept_code = race_code.get("code")
-    (_, race_concept_id, _, _) = vocab_map[(race_vocabulary_id, race_concept_code)]
+    race_concept_id = vocab_map_file.map_hl7_to_omop(
+        race_code.get("codeSystem"), race_code.get("code"))
     if race_concept_id is None:
-        print(f"No concept from {(race_vocabulary_id, race_concept_code)}")
+        print(f"No concept from {race_code.get('codeSystem')}, {race_code.get('code')}")
 
     ethnicity_code = patient.find("{urn:hl7-org:v3}ethnicGroupCode")
-    ethnicity_vocabulary_id = ethnicity_code.get("codeSystem")
-    ethnicity_concept_code = ethnicity_code.get("code")
-    (_, ethnicity_concept_id, _, _) = vocab_map[(ethnicity_vocabulary_id, ethnicity_concept_code)]
+    ethnicity_concept_id = vocab_map_file.map_hl7_to_omop(
+        ethnicity_code.get("codeSystem"), ethnicity_code.get("code"))
     if ethnicity_concept_id is None:
-        print(f"No concept from {(ethnicity_vocabulary_id, ethnicity_concept_code)}")
+        print(f"No concept from {ethnicity_code.get('codeSystem')}, {ethnicity_code.get('code')}")
 
     gender_code = patient.find("{urn:hl7-org:v3}administrativeGenderCode")
-    gender_vocabulary_id = gender_code.get("codeSystem")
-    gender_concept_code = gender_code.get("code")
-    (_, gender_concept_id, _, _) = vocab_map[(gender_vocabulary_id, gender_concept_code)]
+    gender_concept_id = vocab_map_file.map_hl7_to_omop(
+        gender_code.get("codeSystem"), gender_code.get("code"))
     if gender_concept_id is None:
-        print(f"No concept {gender_concept_id} " +
-              "from {(gender_vocabulary_id, gender_concept_code)}")
+        print(f"No concept from {gender_code.get('codeSystem')}, {gender_code.get('code')}")
 
     birth_date_string = patient.find("{urn:hl7-org:v3}birthTime").get("value")
     birth_date = util.convert_date(birth_date_string)

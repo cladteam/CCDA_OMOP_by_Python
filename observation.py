@@ -53,10 +53,8 @@ def convert(tree):
         # observation_id = obs.find("{urn:hl7-org:v3}id").attrib['extension']
 
         observation_code = obs.find("{urn:hl7-org:v3}code")
-        observation_code_code = observation_code.attrib['code']
-        observation_code_code_system = observation_code.attrib['codeSystem']
-        (_, observation_concept_id, _, _) = vocab_map_file.\
-            vocab_map[(observation_code_code_system, observation_code_code)]
+        observation_concept_id= vocab_map_file.map_hl7_to_omop(
+            observation_code.attrib['codeSystem'], observation_code.attrib['code'])
 
         observation_date_string = obs.find("{urn:hl7-org:v3}effectiveTime").attrib['value']
         observation_date = util.convert_date(observation_date_string)
