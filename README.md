@@ -16,7 +16,6 @@ https://www.w3.org/TR/xpath-31/
     - document templates are checked at top (main for now)
     - observation type template ids are searched for, and checked that way.
   - consider structure of classes in event of parsing the same OMOP entity out of multiple CCDA sections.
-#    obs_concept_code  = data['code']['coding'][0]['code']
   - build a parsing report mechanism that describes outright exceptions, or unexpected deviations like different template IDs or multiple values for things? ...does it need it's own ontology?
     - also build a separate or integrated  analsyis report with quantities described under Analysis below
 - Code Nits/Bugs
