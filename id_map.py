@@ -11,7 +11,7 @@ self = {
 }
 
 
-def create(k):
+def _create(k):
     """ create an id for given key, k """
     self["max_id"] += 1
     self["id_map"][k] = self["max_id"]
@@ -20,6 +20,9 @@ def create(k):
 
 def get(k):
     """ retrieve an id for given key, k """
+
+    if k not in self["id_map"]:
+        return _create(k)
     return self["id_map"][k]
 
 

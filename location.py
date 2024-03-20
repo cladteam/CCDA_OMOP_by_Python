@@ -18,8 +18,8 @@ def create():
     return dest
 
 
-def get_location_id(tree):
-    """ parses a document for location attributes and fetches and id from the id_map for it """
+def _get_location_parts(tree):
+    """ parses a document for location attributes  """
     child_list = tree.findall(".")
     child = child_list[0]
 
@@ -37,9 +37,14 @@ def get_location_id(tree):
     country = addr.find("{urn:hl7-org:v3}country").text
     postal_code = addr.find("{urn:hl7-org:v3}postalCode").text
 
-    location_key = (line, city, state, country, postal_code)
-    location_id = id_map.get(location_key)
+    return (line, city, state, country, postal_code)
 
+
+def get_location_id(tree):
+    """ parses a document for location attributes and fetches and id from the id_map for it """
+
+    location_key = _get_location_parts(tree)
+    location_id = id_map.get(location_key)
     return location_id
 
 
@@ -55,15 +60,9 @@ def convert(tree):
         print("I don't think there should be more than one address here...")
         sys.exit(1)
 
-    addr = addresses[0]
-    line = addr.find("{urn:hl7-org:v3}streetAddressLine").text
-    city = addr.find("{urn:hl7-org:v3}city").text
-    state = addr.find("{urn:hl7-org:v3}state").text
-    country = addr.find("{urn:hl7-org:v3}country").text
-    postal_code = addr.find("{urn:hl7-org:v3}postalCode").text
-
+    (line, city, state, country, postal_code) = _get_location_parts(tree)
     location_key = (line, city, state, country, postal_code)
-    new_id = id_map.create(location_key)
+    new_id = id_map.get(location_key)
 
     dest = create()
 

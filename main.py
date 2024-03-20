@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# main.py <capture_output>
+# main.py
 """
  - Runs CCDA to OMOP conversion on a number of listed files for dev/text,
    retrieved from the resources directory.
@@ -37,80 +37,65 @@ parser = argparse.ArgumentParser(
     prog='CCDA_OMOP_Converter Test Driver',
     description="Converts CCDA documents to OMOP tables",
     epilog='epilog?')
-parser.add_argument('-s', '--save', action="store_true",
-                    help="store the output in the outputs directory")
 parser.add_argument('-n', '--num_tests', default=len(input_filename_list),
                     help="do the first n tests")
 args = parser.parse_args()
 
 
-output_fn = print
-OUTFILE = None
-
-
 FILE_NUM = 0
+NUM_ERROR_FILES = 0
 todo_list = input_filename_list
 if (len(input_filename_list) >= int(args.num_tests) and int(args.num_tests) > 0):
     todo_list = input_filename_list[:(int(args.num_tests))]
+
+
+actual_text_list = []
+
+
+def output_fn(out_thing, my_outfile):
+    """ function for capturing output to a file as well as to a string """
+    actual_text_list.append(str(out_thing))
+    my_outfile.write(str(out_thing) + '\n')
+
+
 for input_filename in todo_list:
+    print(f"==== {input_filename} ====")
     tree = ET.parse('resources/' + input_filename)
+    actual_text_list = []
 
-    if args.save:
-        output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
-        OUTFILE = open('output/' + output_filename, 'w', encoding='utf-8')
+    output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
+    with open('output/' + output_filename, 'w', encoding='utf-8') as outfile:
 
-        def capture_output(out_thing):
-            """ closure for capturing output to a file as well as to a string """
-            actual_text = ""
-            actual_text += str(out_thing)
-            OUTFILE.write(str(out_thing) + '\n')
-            return actual_text
+        if not util.check_ccd_document_type(tree):
+            print(f"ERROR:wrong doc type in {input_filename}")
+        else:
+            # Convert
+            output_fn(location.convert(tree), outfile)
+            output_fn(person.convert(tree), outfile)
+            for obs in observation.convert(tree):
+                output_fn(obs, outfile)
 
-        output_fn = capture_output
-    else:
-        def capture_output(out_thing):
-            """ closure for capturing output to just a string """
-            actual_text = ""
-            actual_text += str(out_thing)
-            return actual_text
-        output_fn = capture_output
+            # Compare
+            expected_text = pathlib.Path('tests/' +
+                                         expected_text_file_list[FILE_NUM]).\
+                read_text(encoding='utf-8')
+            expected_string_list = expected_text.split("\n")
+            diff_gen = difflib.context_diff(actual_text_list,
+                                            expected_string_list[:-1],
+                                            fromfile="expected",
+                                            tofile="actual")
 
-    loc = location.convert(tree)
-
-    if util.check_ccd_document_type(tree):
-        # Convert
-        target = {
-             'location': loc,
-             'person': person.convert(tree),
-             'observation': observation.convert(tree)}
-        output_fn(target['location'])
-        output_fn(target['person'])
-        for obs in target['observation']:
-            output_fn(obs)
-
-        # Compare
-        ACTUAL_STRING_LIST = output_fn('')
-        expected_text = pathlib.Path('tests/' +
-                                     expected_text_file_list[FILE_NUM]).\
-            read_text()
-        expected_string_list = [expected_text]
-        diff_gen = difflib.context_diff(ACTUAL_STRING_LIST,
-                                        expected_string_list,
-                                        fromfile="expected",
-                                        tofile="actual")
-        try:
+            # Report
+            COUNT_ERRORS = 0  # lints as a constant?!
             for difference in diff_gen:
-                print(difference)
-            print(f"ERROR:Differences found for {input_filename}:")
-            if args.save:
-                OUTFILE.close()
-            sys.exit(1)
-        except StopIteration:
-            print(f"INFO:No Differences for {input_filename}:")
-    else:
-        print(f"ERROR:wrong doc type boss {input_filename}")
+                print("DIFF: ", difference)
+                COUNT_ERRORS += 1
+            if COUNT_ERRORS > 0:
+                print(f"ERROR:Differences found for {input_filename}:")
+                NUM_ERROR_FILES += 1
+            else:
+                print(f"INFO:No differences found for {input_filename}:")
 
     FILE_NUM += 1
-
-if args.save:
-    OUTFILE.close()
+    if NUM_ERROR_FILES > 0:
+        sys.exit(1)
