@@ -5,7 +5,7 @@
 # It's a map from a possibly compound natural key to a crude artificial key.
 
 self = {
-    "id_map": {}, 
+    "id_map": {},
     "max_id": 0
 }
 
