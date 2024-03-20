@@ -43,9 +43,24 @@ parser.add_argument('-s', '--save', action='store_true',
                     help="save output, requires a directory called 'output'")
 args = parser.parse_args()
 
+NUM_ERROR_FILES = 0
+
+
+def report_diffs(diff_generator):
+    """ prints differences from a diff generator, counts them and summarizes """
+    count_errors = 0  # lints as a constant?!
+    for difference in diff_generator:
+        print("DIFF: ", difference)
+        count_errors += 1
+    if count_errors > 0:
+        print(f"ERROR:Differences found for {input_filename}:")
+        return True
+    else:
+        print(f"INFO:No differences found for {input_filename}:")
+        return False
+
 
 FILE_NUM = 0
-NUM_ERROR_FILES = 0
 
 todo_list = input_filename_list
 if (len(input_filename_list) >= int(args.num_tests) and int(args.num_tests) > 0):
@@ -76,17 +91,8 @@ for input_filename in todo_list:
                                             expected_string_list[:-1],
                                             fromfile="expected",
                                             tofile="actual")
-
-            # Report
-            COUNT_ERRORS = 0  # lints as a constant?!
-            for difference in diff_gen:
-                print("DIFF: ", difference)
-                COUNT_ERRORS += 1
-            if COUNT_ERRORS > 0:
-                print(f"ERROR:Differences found for {input_filename}:")
+            if report_diffs(diff_gen):
                 NUM_ERROR_FILES += 1
-            else:
-                print(f"INFO:No differences found for {input_filename}:")
 
         # Save
         if args.save:
