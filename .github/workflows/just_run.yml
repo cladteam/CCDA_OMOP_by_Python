@@ -47,3 +47,16 @@ jobs:
           - name: Lint with Pylint
             run: |
                 pylint --max-locals=25  *.py
+    Coverage:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Install coverage
+            run: |
+                pip install coverage
+          - name: Check out repository code
+            uses: actions/checkout@v4
+          - name: run coverage
+            run: |
+                coverage run main.py 
+                coverage report --fail-under=80
+

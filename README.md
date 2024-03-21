@@ -4,8 +4,6 @@
 
 https://www.w3.org/TR/xpath-31/ 
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/{owner}/{repo}/CI?label=build)
-
 
 
 # ToDo
