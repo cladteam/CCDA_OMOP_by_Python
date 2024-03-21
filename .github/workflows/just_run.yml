@@ -57,6 +57,6 @@ jobs:
             uses: actions/checkout@v4
           - name: run coverage
             run: |
-                coverage run main.py 
-                coverage report --fail-under=80
+                coverage run main.py  -n=2
+                coverage report --fail-under=82
 
