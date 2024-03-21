@@ -29,7 +29,8 @@ input_filename_list = [
     '170.314b2_AmbulatoryToC.xml'
 ]
 
-input_section_filename_list = [  # TODO this one fails because of checks for things like doctype and an address or patient
+# TODO fails b/c checks for things like doctype and an address or patient
+input_section_filename_list = [
     'Inpatient_Encounter_Discharged_to_Rehab_Location(C-CDA2.1).xml'
 ]
 
@@ -37,7 +38,7 @@ expected_text_file_list = [
     'CCDA_CCD_b1_InPatient_v2.txt',
     'CCDA_CCD_b1_Ambulatory_v2.txt',
     'ToC_CCDA_CCD_CompGuideSample_FullXML.txt'
-] 
+]
 
 parser = argparse.ArgumentParser(
     prog='CCDA_OMOP_Converter Test Driver',

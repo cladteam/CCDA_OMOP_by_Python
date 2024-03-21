@@ -13,10 +13,13 @@ from xml_ns import ns
 
 
 def create():
-    """ Creates a dictionary with expected fields for populating an OMOP location table """
+    """ Creates a dictionary with expected fields for populating
+        an OMOP location table
+    """
     dest = {'location_id': None, 'address': None, 'city': None,
             'state': None, 'zip': None}
     return dest
+
 
 def _get_location_parts(tree):
     """ EXTRACT: parses a document for location attributes  """
@@ -41,7 +44,9 @@ def _get_location_parts(tree):
 
 
 def get_location_id(tree):
-    """ TRANSFORM: parses a document for location attributes and fetches and id from the id_map for it """
+    """ TRANSFORM: parses a document for location attributes
+        and fetches and id from the id_map for it
+    """
 
     location_key = _get_location_parts(tree)
     location_id = id_map.get(location_key)
@@ -49,12 +54,12 @@ def get_location_id(tree):
 
 
 def convert(tree):
-    """ ETL: Extracts a row for an OMOP location table from  a top-level XML document tree """
-    child = tree.findall(".")[0]
+    """ ETL: Extracts a row for an OMOP location table from  a top-level
+        XML document tree
+    """
 
     (line, city, state, country, postal_code) = _get_location_parts(tree)
-    new_id = id_map.get( (line, city, state, country, postal_code) )
-
+    new_id = id_map.get((line, city, state, country, postal_code))
 
     # LOAD
     dest = create()

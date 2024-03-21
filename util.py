@@ -25,15 +25,15 @@ def check_ccd_document_type(tree):
     child_list = tree.findall(".", ns)
     child = child_list[0]
 
-    try: 
+    try:
         gen_id = child.findall("./templateId[@root='" +
-                           vocab_map_file.US_GENERAL_ROOT + "']", ns)[0].\
+                               vocab_map_file.US_GENERAL_ROOT + "']", ns)[0].\
             attrib['root']
         ccd_id = child.findall("./templateId[@root='" +
-                           vocab_map_file.CCD_DOCUMENT_ROOT + "']", ns)[0].\
-        attrib['root']
+                               vocab_map_file.CCD_DOCUMENT_ROOT + "']", ns)[0].\
+            attrib['root']
         return not (gen_id is None or ccd_id is None)
-    except  IndexError:
+    except IndexError:
         return False
-   
+
     return False
