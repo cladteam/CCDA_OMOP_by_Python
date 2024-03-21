@@ -9,5 +9,6 @@
 ns = {
     '': 'urn:hl7-org:v3',  # default namespace
     'hl7': 'urn:hl7-org:v3',
-    'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+    'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+    'sdtc': 'urn:hl7-org:sdtc'
     }
