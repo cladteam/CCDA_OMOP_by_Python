@@ -8,6 +8,7 @@
 """
 
 import vocab_map_file
+from xml_ns import ns
 import util
 import location
 
@@ -24,10 +25,8 @@ def get_person_id(tree):
     ssn_root = "2.16.840.1.113883.4.1"
     # HL7_root = "2.16.840.1.113883.4.6"
 
-    child = tree.findall(".")[0]
-    person_id_list = child.findall("./{urn:hl7-org:v3}recordTarget/" +
-                                   "{urn:hl7-org:v3}patientRole/" +
-                                   "{urn:hl7-org:v3}id[@root='" + ssn_root + "']")
+    child = tree.findall(".", ns)[0]
+    person_id_list = child.findall("./recordTarget/patientRole/id[@root='" + ssn_root + "']", ns)
     person_id = person_id_list[0].attrib['extension']
 
     return person_id
@@ -35,35 +34,33 @@ def get_person_id(tree):
 
 def convert(tree):
     """ Extracts a row for an OMOP person table from  a top-level XML document tree """
-    child = tree.findall(".")[0]
+    child = tree.findall(".", ns)[0]
 
     # GET LOCATION KEY
     location_id = location.get_location_id(tree)
 
     # GET PATIENT ATTRIBUTES
-    patient = child.findall("./{urn:hl7-org:v3}recordTarget/" +
-                            "{urn:hl7-org:v3}patientRole/" +
-                            "{urn:hl7-org:v3}patient")[0]
+    patient = child.findall("./recordTarget/patientRole/patient", ns)[0]
 
-    race_code = patient.find("{urn:hl7-org:v3}raceCode")
+    race_code = patient.find("raceCode", ns)
     race_concept_id = vocab_map_file.map_hl7_to_omop(
         race_code.get("codeSystem"), race_code.get("code"))
     if race_concept_id is None:
         print(f"No concept from {race_code.get('codeSystem')}, {race_code.get('code')}")
 
-    ethnicity_code = patient.find("{urn:hl7-org:v3}ethnicGroupCode")
+    ethnicity_code = patient.find("ethnicGroupCode", ns)
     ethnicity_concept_id = vocab_map_file.map_hl7_to_omop(
         ethnicity_code.get("codeSystem"), ethnicity_code.get("code"))
     if ethnicity_concept_id is None:
         print(f"No concept from {ethnicity_code.get('codeSystem')}, {ethnicity_code.get('code')}")
 
-    gender_code = patient.find("{urn:hl7-org:v3}administrativeGenderCode")
+    gender_code = patient.find("administrativeGenderCode", ns)
     gender_concept_id = vocab_map_file.map_hl7_to_omop(
         gender_code.get("codeSystem"), gender_code.get("code"))
     if gender_concept_id is None:
         print(f"No concept from {gender_code.get('codeSystem')}, {gender_code.get('code')}")
 
-    birth_date_string = patient.find("{urn:hl7-org:v3}birthTime").get("value")
+    birth_date_string = patient.find("birthTime", ns).get("value")
     birth_date = util.convert_date(birth_date_string)
 
     # GET PATIENT ID

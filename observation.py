@@ -12,6 +12,7 @@
 """
 
 import vocab_map_file
+from xml_ns import ns
 import util
 import person
 
@@ -27,39 +28,32 @@ def create():
 
 def convert(tree):
     """ Extracts a row for an OMOP observation table from  a top-level XML document tree """
-    child = tree.findall(".")[0]
+    child = tree.findall(".", ns)[0]
 
     person_id = person.get_person_id(tree)
 
-    # documentationOf = child.findall("./{urn:hl7-org:v3}documentationOf") # clinician, Dx
-    # componentOf = child.findall("./{urn:hl7-org:v3}componentOf") # encompassing encounter, visit
+    # documentationOf = child.findall("./documentationOf", ns) # clinician, Dx
+    # componentOf = child.findall("./componentOf", ns) # encompassing encounter, visit
 
-    results_section = child.findall("./{urn:hl7-org:v3}component/" +
-                                    "{urn:hl7-org:v3}structuredBody/" +
-                                    "{urn:hl7-org:v3}component/" +
-                                    "{urn:hl7-org:v3}section/" +
-                                    "{urn:hl7-org:v3}templateId[@root='" +
-                                    vocab_map_file.RESULTS + "']/..")
+    results_section = child.findall("./component/structuredBody/component/section/" +
+                                    "templateId[@root='" + vocab_map_file.RESULTS + "']/..", ns)
 
-    results_observations = results_section[0].findall("{urn:hl7-org:v3}entry/" +
-                                                      "{urn:hl7-org:v3}organizer/" +
-                                                      "{urn:hl7-org:v3}component/" +
-                                                      "{urn:hl7-org:v3}observation")
+    results_observations = results_section[0].findall("entry/organizer/component/observation", ns)
 
     dest = list(range(len(results_observations)))
     i = 0
     for obs in results_observations:
-        observation_id = obs.find("{urn:hl7-org:v3}id").attrib['root']
-        # observation_id = obs.find("{urn:hl7-org:v3}id").attrib['extension']
+        observation_id = obs.find("id", ns).attrib['root']
+        # observation_id = obs.find("id", ns).attrib['extension']
 
-        observation_code = obs.find("{urn:hl7-org:v3}code")
+        observation_code = obs.find("code", ns)
         observation_concept_id = vocab_map_file.map_hl7_to_omop(
             observation_code.attrib['codeSystem'], observation_code.attrib['code'])
 
-        observation_date_string = obs.find("{urn:hl7-org:v3}effectiveTime").attrib['value']
+        observation_date_string = obs.find("effectiveTime", ns).attrib['value']
         observation_date = util.convert_date(observation_date_string)
 
-        observation_value = obs.find("{urn:hl7-org:v3}value")
+        observation_value = obs.find("value", ns)
         observation_value_value = observation_value.attrib['value']
         # observation_value_type = observation_value.attrib['xsi:type']
         observation_value_type = observation_value.\
@@ -83,11 +77,11 @@ def convert(tree):
 
     return dest
 
-    # child {urn:hl7-org:v3}templateId
-    # child {urn:hl7-org:v3}referenceRange (low, high)
-    # child {urn:hl7-org:v3}text
-    # child {urn:hl7-org:v3}statusCode
-    # child {urn:hl7-org:v3}interpretationCode
-    # child {urn:hl7-org:v3}methodCode
-    # child {urn:hl7-org:v3}targetSiteCode
-    # child {urn:hl7-org:v3}author
+    # child templateId
+    # child referenceRange (low, high)
+    # child text
+    # child statusCode
+    # child interpretationCode
+    # child methodCode
+    # child targetSiteCode
+    # child author

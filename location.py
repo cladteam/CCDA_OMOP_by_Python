@@ -9,6 +9,7 @@
 import sys
 
 import id_map
+from xml_ns import ns
 
 
 def create():
@@ -23,19 +24,20 @@ def _get_location_parts(tree):
     child_list = tree.findall(".")
     child = child_list[0]
 
-    addresses = child.findall("./{urn:hl7-org:v3}recordTarget/" +
-                              "{urn:hl7-org:v3}patientRole/" +
-                              "{urn:hl7-org:v3}addr")
+    addresses = child.findall("./recordTarget/patientRole/addr", ns)
     if len(addresses) > 1:
         print("I don't think there should be more than one address here...")
         sys.exit(1)
+    if len(addresses) < 1:
+        print("No address here...")
+        sys.exit(1)
 
     addr = addresses[0]
-    line = addr.find("{urn:hl7-org:v3}streetAddressLine").text
-    city = addr.find("{urn:hl7-org:v3}city").text
-    state = addr.find("{urn:hl7-org:v3}state").text
-    country = addr.find("{urn:hl7-org:v3}country").text
-    postal_code = addr.find("{urn:hl7-org:v3}postalCode").text
+    line = addr.find("streetAddressLine", ns).text
+    city = addr.find("city", ns).text
+    state = addr.find("state", ns).text
+    country = addr.find("country", ns).text
+    postal_code = addr.find("postalCode", ns).text
 
     return (line, city, state, country, postal_code)
 
@@ -53,12 +55,7 @@ def convert(tree):
     child_list = tree.findall(".")
     child = child_list[0]
 
-    addresses = child.findall("./{urn:hl7-org:v3}recordTarget/" +
-                              "{urn:hl7-org:v3}patientRole/" +
-                              "{urn:hl7-org:v3}addr")
-    if len(addresses) > 1:
-        print("I don't think there should be more than one address here...")
-        sys.exit(1)
+    addresses = child.findall("./recordTarget/patientRole/addr", ns)
 
     (line, city, state, country, postal_code) = _get_location_parts(tree)
     location_key = (line, city, state, country, postal_code)

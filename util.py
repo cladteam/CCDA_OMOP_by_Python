@@ -4,6 +4,7 @@
 
 import time
 import vocab_map_file
+from xml_ns import ns
 
 
 def convert_date(hl7_date):
@@ -21,13 +22,13 @@ def check_ccd_document_type(tree):
     """ gets two document-level template IDs and compres them to
         expectations for a CCD document.
     """
-    child_list = tree.findall(".")
+    child_list = tree.findall(".", ns)
     child = child_list[0]
 
-    gen_id = child.findall("./{urn:hl7-org:v3}templateId[@root='" +
-                           vocab_map_file.US_GENERAL_ROOT + "']")[0].\
+    gen_id = child.findall("./templateId[@root='" +
+                           vocab_map_file.US_GENERAL_ROOT + "']", ns)[0].\
         attrib['root']
-    ccd_id = child.findall("./{urn:hl7-org:v3}templateId[@root='" +
-                           vocab_map_file.CCD_DOCUMENT_ROOT + "']")[0].\
+    ccd_id = child.findall("./templateId[@root='" +
+                           vocab_map_file.CCD_DOCUMENT_ROOT + "']", ns)[0].\
         attrib['root']
     return not (gen_id is None or ccd_id is None)

@@ -90,6 +90,7 @@ for input_filename in todo_list:
                                             expected_string_list[:-1],
                                             fromfile="expected",
                                             tofile="actual")
+            # Report
             if report_diffs(diff_gen):
                 NUM_ERROR_FILES += 1
 
