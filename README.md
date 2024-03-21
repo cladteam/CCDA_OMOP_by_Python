@@ -1,14 +1,26 @@
 # CCDA_OMOP_by_Python
 
-Uses xpath in Python on CCDA example files.
+#Uses xpath in Python on CCDA example files.
 
 https://www.w3.org/TR/xpath-31/ 
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/{owner}/{repo}/CI?label=build)
 
-## ToDo
+
+
+# ToDo
+- High Level Mapping    
+  - Consider the templates and which are used in the different kinds of documents, re-used? don't want copy-pasta code
+  - How will we know patients from different sources are the same one? maybe the IDs match, maybe it's a Databant-style linking thing
+  -  visits
+  - show OMOP schema in more detail, esp nullable fields that we don't populate (see OMOP classes below)
+  - similarly, show the remaining fields in CCDA that we don't mine
 - Code
   - output a dictionary to a (OMOP) table
   - OMOP classes
+    - show the schema including NULLable, and type
+    - check PK FK relationships
+    - observation IDs are not unique to the individual concepts and values!
   - CCDA Document classes with section methods
   - Factory method for the document class based on document type
   - a driver for consuming volumes of documents so we can get an inkling of performance time and cost
@@ -19,6 +31,7 @@ https://www.w3.org/TR/xpath-31/
   - build a parsing report mechanism that describes outright exceptions, or unexpected deviations like different template IDs or multiple values for things? ...does it need it's own ontology?
     - also build a separate or integrated  analsyis report with quantities described under Analysis below
 - Code Nits/Bugs
+  - what do root and extension mean in HL7 CCDA?
   - exceptions for null concept lookups
   - check/throw cardinality of subsections like addresses and observations
   - namespaces in xpath 
@@ -27,7 +40,6 @@ https://www.w3.org/TR/xpath-31/
   - map from HL7 codeSystem OIDs to OMOP vocabulary_id
   - name HL7 codeSystems correctly, not vocabulary_id 
   - use a real concept table
-  - observation IDs are not unique to the individual concepts and values!
 - Analysis
   - assess amount of <structuredBody> <entry> (structured)  vs <text> (non structured) plain text content
   - codeSystem vocabularies and OMOP mappings
