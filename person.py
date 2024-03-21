@@ -21,7 +21,7 @@ def create():
 
 
 def get_person_id(tree):
-    """ finds the patientRole id from a CCDA document, for use in OMOP person references """
+    """ EXTRACT/TRANSFORM:finds the patientRole id from a CCDA document, for use in OMOP person references """
     ssn_root = "2.16.840.1.113883.4.1"
     # HL7_root = "2.16.840.1.113883.4.6"
 
@@ -66,6 +66,7 @@ def convert(tree):
     # GET PATIENT ID
     person_id = get_person_id(tree)
 
+    # LOAD
     dest = create()
 
     dest['person_id'] = person_id

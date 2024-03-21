@@ -18,11 +18,9 @@ def create():
             'state': None, 'zip': None}
     return dest
 
-
 def _get_location_parts(tree):
-    """ parses a document for location attributes  """
-    child_list = tree.findall(".")
-    child = child_list[0]
+    """ EXTRACT: parses a document for location attributes  """
+    child = tree.findall(".")[0]
 
     addresses = child.findall("./recordTarget/patientRole/addr", ns)
     if len(addresses) > 1:
@@ -31,8 +29,8 @@ def _get_location_parts(tree):
     if len(addresses) < 1:
         print("No address here...")
         sys.exit(1)
-
     addr = addresses[0]
+
     line = addr.find("streetAddressLine", ns).text
     city = addr.find("city", ns).text
     state = addr.find("state", ns).text
@@ -43,7 +41,7 @@ def _get_location_parts(tree):
 
 
 def get_location_id(tree):
-    """ parses a document for location attributes and fetches and id from the id_map for it """
+    """ TRANSFORM: parses a document for location attributes and fetches and id from the id_map for it """
 
     location_key = _get_location_parts(tree)
     location_id = id_map.get(location_key)
@@ -51,16 +49,14 @@ def get_location_id(tree):
 
 
 def convert(tree):
-    """ Extracts a row for an OMOP location table from  a top-level XML document tree """
-    child_list = tree.findall(".")
-    child = child_list[0]
-
-    addresses = child.findall("./recordTarget/patientRole/addr", ns)
+    """ ETL: Extracts a row for an OMOP location table from  a top-level XML document tree """
+    child = tree.findall(".")[0]
 
     (line, city, state, country, postal_code) = _get_location_parts(tree)
-    location_key = (line, city, state, country, postal_code)
-    new_id = id_map.get(location_key)
+    new_id = id_map.get( (line, city, state, country, postal_code) )
 
+
+    # LOAD
     dest = create()
 
     dest['location_id'] = new_id

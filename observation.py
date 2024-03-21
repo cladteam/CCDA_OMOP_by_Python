@@ -55,10 +55,8 @@ def convert(tree):
 
         observation_value = obs.find("value", ns)
         observation_value_value = observation_value.attrib['value']
-        # observation_value_type = observation_value.attrib['xsi:type']
-        observation_value_type = observation_value.\
-            attrib['{http://www.w3.org/2001/XMLSchema-instance}type']
-        # observation_value_unit = observation_value.attrib['unit']
+        observation_value_type = observation_value.attrib['{' + ns['xsi'] + '}type']
+        observation_value_unit = observation_value.attrib['unit']
 
         dest[i] = create()
         dest[i]['observation_id'] = observation_id
