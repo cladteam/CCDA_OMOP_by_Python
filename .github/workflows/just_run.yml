@@ -10,6 +10,8 @@ jobs:
           - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
           - name: Check out repository code
             uses: actions/checkout@v4
+            with:
+              ref: main
           - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
           - run: echo "🖥️ The workflow is now ready to test your code on the runner."
           - name: List files in the repository
@@ -32,6 +34,8 @@ jobs:
                 pip install flake8
           - name: Check out repository code
             uses: actions/checkout@v4
+            with:
+              ref: main
           - name: Lint with flake8
             run: |
                 flake8 *.py --count --select=E9,F36,F92 --show-source --max-line-length=100 --statistics
@@ -44,6 +48,8 @@ jobs:
                 pip install pylint
           - name: Check out repository code
             uses: actions/checkout@v4
+            with:
+              ref: main
           - name: Lint with Pylint
             run: |
                 pylint --max-locals=25  *.py
@@ -55,6 +61,8 @@ jobs:
                 pip install coverage
           - name: Check out repository code
             uses: actions/checkout@v4
+            with:
+              ref: main
           - name: run coverage
             run: |
                 coverage run main.py  -n=2
