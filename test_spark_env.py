@@ -1,14 +1,49 @@
 #!/usr/bin/env python3
 
+import pyspark.sql.functions as sf
+from pyspark.context import SparkContext 
+#import pyspark.errors.exceptions.PySparkException
+#import pyspark.errors.exceptions.base.SparkRuntimeException
+
 import spark_env
+#sc = SparkContext('local', 'test')
+#sc.setLogLevel("INFO")
 
-my_spark_env = spark_env.SparkEnv()
-my_spark_env.restart()
+spark_env_object = spark_env.SparkEnv()
+spark = spark_env_object.get_spark()
 
+if True:
+    try:
+        spark_env_object.start()
+    #except SparkRuntimeException as sre:
+    except Exception as sre:
+        print("--ERROR:Spark might already be setup, trying to just run", sre)
+        spark_env_object.restart()
+else:
+    spark_env_object.restart()
 
-sql = "SELECT * from concept where lower(name) like '%systolic%'"
+print(f"--CURRENT SCHEMA: ")
+spark.range(1).select(sf.current_schema()).show()
 
-sparkenv = my_spark_env.get_spark()
-result_df = sparkenv.sql(sql)
-print(result_df.count())
+print("==========")
+sql = f"SELECT * from concept where concept_id = 3004249"
+print(sql)
+result_df = spark.sql(sql)
+print(f"num df rows:", result_df.count())
 result_df.show()
+
+print("==========")
+sql = f"SELECT count(*) from concept"
+print(sql)
+result_df = spark.sql(sql)
+print(f"num df rows:", result_df.count())
+result_df.show()
+
+print("==========")
+sql = f"SELECT * from concept limit 10"
+print(sql)
+result_df = spark.sql(sql)
+print(f"num df rows:", result_df.count())
+result_df.show()
+
+
