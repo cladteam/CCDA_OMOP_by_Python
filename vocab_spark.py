@@ -65,7 +65,7 @@ class VocabSpark(object):
     }
 
 
-    def load(self):
+    def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
         sql =  f"CREATE TABLE concept ({self.concept_schema}) " +\
             "USING PARQUET " +\
@@ -75,7 +75,7 @@ class VocabSpark(object):
         # print(result_thing)  # TODO some better way of checking success here?
 
 
-    def reload(self):
+    def load_from_csv(self):
         vocab_df = self.spark.read.option('delimiter', '\t').csv(self.VOCAB_FILE, schema=self.concept_schema)
         vocab_df.write \
             .mode("overwrite") \

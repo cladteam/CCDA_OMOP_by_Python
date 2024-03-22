@@ -16,24 +16,22 @@ class SparkUtil(object):
     - There is a running seesion, just get a new object to forward. 
     """
 
+    SCHEMA = 'ccda_omop_spark_db'
+    DW_PATH = "/Users/roederc/work/data"
     def __init__(self):
         """ sets up constants and starts Spark if necessary """
-        self.SCHEMA = 'ccda_omop_spark_db'
-        self.DW_PATH = "/Users/roederc/work/data"
         
         self.spark = SparkSession.builder \
             .appName('CCDA_OMOP_ETL') \
-            .config("spark.sql.warehouse.dir", self.DW_PATH) \
+            .config("spark.hadoop.hive.metastore.warehouse.dir", SparkUtil.DW_PATH) \
+            .config("spark.sql.warehouse.dir", SparkUtil.DW_PATH) \
+            .config("spark.sql.legacy.createHiveTableByDefault",False) \
             .master("local") \
             .getOrCreate()
             #.enableHiveSupport() \
 
         # Odd that you try to start and if that fails you restart. Backwards? TODO
-        try:
-            self.start()
-        except Exception as sre: # SparkRuntimeException 
-            print("--ERROR:Spark might already be setup, trying to just run", sre)
-            self.restart()
+        self.start()
 
 
     def __del__(self):  
@@ -52,18 +50,25 @@ class SparkUtil(object):
         self.spark.sql("USE ccda_omop_spark_db")
         
         # once for each table
-        vocab_obj = vocab_spark.VocabSpark(self.spark, self.DW_PATH)
+        print("CONCEPT")
+        vocab_obj = vocab_spark.VocabSpark(self.spark, SparkUtil.DW_PATH)
         try:
             vocab_obj.load_from_csv()
         except Exception:
             vocab_obj.load_from_existing()
 
-        person_obj = person_omop_spark.PersonOmopSpark(self.spark, self.DW_PATH)
+        print("PERSON")
+        person_obj = person_omop_spark.PersonOmopSpark(self.spark, SparkUtil.DW_PATH)
         try:
             person_obj.create()
-        except Exception:
-            person_obj.load_from_existing()
+        except Exception as e:
+            print("ERROR: creating person failed", e)
+            try:
+                person_obj.load_from_existing()
+            except Exception as e:
+                print("ERROR: loading person failed", e)
 
+        print("DONE")
 
     def _prep_person(self):
         schema = """

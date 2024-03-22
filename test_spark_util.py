@@ -16,25 +16,38 @@ spark = spark_util_object.get_spark()
 print(f"--CURRENT SCHEMA: ")
 spark.range(1).select(sf.current_schema()).show()
 
-print("==========")
+print("========== select concept")
 sql = f"SELECT * from concept where concept_id = 3004249"
-print(sql)
 result_df = spark.sql(sql)
 print(f"num df rows:", result_df.count())
 result_df.show()
 
-print("==========")
-sql = f"SELECT count(*) from concept"
+print("========== select person")
+sql = f"SELECT * from person limit 2"
 print(sql)
 result_df = spark.sql(sql)
-print(f"num df rows:", result_df.count())
+print(f"num df rows:", result_df.columns, result_df.count())
 result_df.show()
-
-print("==========")
-sql = f"SELECT * from concept limit 10"
+print("========== insert person")
+sql = """ INSERT into person
+          VALUES 
+          '1', '2', '2000', '3', '31',
+          '2000-03-31', '1', '2', '3',
+          null, null, 
+          null,   null, null,   null, null,   null, null
+"""
 print(sql)
 result_df = spark.sql(sql)
-print(f"num df rows:", result_df.count())
+print("INSERT PERSON ", result_df, result_df.columns, result_df.count())
+
+print(f"--CURRENT SCHEMA: ")
+spark.range(1).select(sf.current_schema()).show()
+
+print("========== select person (again)")
+sql = f"SELECT * from person limit 2"
+print(sql)
+result_df = spark.sql(sql)
+print(f"num df rows:", result_df.columns, result_df.count())
 result_df.show()
 
 

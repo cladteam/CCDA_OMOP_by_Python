@@ -87,7 +87,7 @@ for input_filename in todo_list:
 
         # Convert
         actual_text_list.append(str(location.convert(tree)))
-        actual_text_list.append(str(person.convert(tree)))
+        actual_text_list.append(str(person.convert(tree, spark)))
         for obs in observation.convert(tree):
             actual_text_list.append(str(obs))
 

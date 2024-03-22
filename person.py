@@ -9,10 +9,11 @@
 
 #import vocab_map_file
 import vocab_spark
+from spark_util import SparkUtil
 from xml_ns import ns
 import util
 import location
-import omop_person
+import person_omop_spark
 
 
 def create():
@@ -34,7 +35,7 @@ def get_person_id(tree):
     return person_id
 
 
-def convert(tree):
+def convert(tree, spark):
     """ Extracts a row for an OMOP person table from  a top-level XML document tree """
     child = tree.findall(".", ns)[0]
 
@@ -44,6 +45,9 @@ def convert(tree):
     # GET PATIENT ATTRIBUTES
     patient = child.findall("./recordTarget/patientRole/patient", ns)[0]
 
+    race_code_list = patient.findall("raceCode", ns)
+    if (len(race_code_list) > 1):
+        print("DOOOOOD multiple races?") # TODO
     race_code = patient.find("raceCode", ns)
     # race_concept_id = vocab_map_file.map_hl7_to_omop(
     race_concept_id = vocab_spark.map_hl7_to_omop(
@@ -71,17 +75,20 @@ def convert(tree):
     # GET PATIENT ID
     person_id = get_person_id(tree)
 
-    # LOAD
-    dest = create()
-
-    dest['person_id'] = person_id
-    dest['race_concept_id'] = race_concept_id
-    dest['ethnicity_concept_id'] = ethnicity_concept_id
-    dest['gender_concept_id'] = gender_concept_id
-    dest['birthdate'] = birth_date
-    dest['location_id'] = location_id
-
-    return dest
- 
-    # person_obj = omop_person.OmopPerson(person_id, gender_concept_id, birth_date_omop, race_concept_id, ethnicity_concept_id, location_id)
-    # return  person_obj.create_dictionary()
+    if False:
+        # LOAD  DICTIONARY
+        dest = create()
+    
+        dest['person_id'] = person_id
+        dest['race_concept_id'] = race_concept_id
+        dest['ethnicity_concept_id'] = ethnicity_concept_id
+        dest['gender_concept_id'] = gender_concept_id
+        dest['birthdate'] = birth_date
+        dest['location_id'] = location_id
+    
+        return dest
+    else:
+        # LOAD Spark Object
+        person_obj = person_omop_spark.PersonOmopSpark(spark, SparkUtil.DW_PATH)
+        person_obj.populate(person_id, gender_concept_id, birth_date, race_concept_id, ethnicity_concept_id, location_id)
+        person_obj.insert()
