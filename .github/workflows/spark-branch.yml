@@ -1,4 +1,4 @@
-name: CCDA parsing run workflow
+name: CCDA parsing with Spark
 run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
 on: [push]
 jobs:
@@ -17,7 +17,7 @@ jobs:
         steps:
           - name: Install Spark
             run: |
-                pip install spark
+                pip install pyspark
           - name: Check out repository code
             uses: actions/checkout@v4
             with:
@@ -57,7 +57,7 @@ jobs:
         steps:
           - name: Install Spark
             run: |
-                pip install spark
+                pip install pyspark
           - name: Install coverage
             run: |
                 pip install coverage
