@@ -7,7 +7,8 @@
     ToDo: is a template_id associated with this section? Does it change from document to document?
 """
 
-import vocab_map_file
+#import vocab_map_file
+import vocab_spark
 from xml_ns import ns
 import util
 import location
@@ -43,19 +44,22 @@ def convert(tree):
     patient = child.findall("./recordTarget/patientRole/patient", ns)[0]
 
     race_code = patient.find("raceCode", ns)
-    race_concept_id = vocab_map_file.map_hl7_to_omop(
+    # race_concept_id = vocab_map_file.map_hl7_to_omop(
+    race_concept_id = vocab_spark.map_hl7_to_omop(
         race_code.get("codeSystem"), race_code.get("code"))
     if race_concept_id is None:
-        print(f"No concept from {race_code.get('codeSystem')}, {race_code.get('code')}")
+        print(f"None concept from {race_code.get('codeSystem')}, {race_code.get('code')}")
 
     ethnicity_code = patient.find("ethnicGroupCode", ns)
-    ethnicity_concept_id = vocab_map_file.map_hl7_to_omop(
+    # ethnicity_concept_id = vocab_map_file.map_hl7_to_omop(
+    ethnicity_concept_id = vocab_spark.map_hl7_to_omop(
         ethnicity_code.get("codeSystem"), ethnicity_code.get("code"))
     if ethnicity_concept_id is None:
-        print(f"No concept from {ethnicity_code.get('codeSystem')}, {ethnicity_code.get('code')}")
+        print(f"None concept from {ethnicity_code.get('codeSystem')}, {ethnicity_code.get('code')}")
 
     gender_code = patient.find("administrativeGenderCode", ns)
-    gender_concept_id = vocab_map_file.map_hl7_to_omop(
+    # gender_concept_id = vocab_map_file.map_hl7_to_omop(
+    gender_concept_id = vocab_spark.map_hl7_to_omop(
         gender_code.get("codeSystem"), gender_code.get("code"))
     if gender_concept_id is None:
         print(f"No concept from {gender_code.get('codeSystem')}, {gender_code.get('code')}")

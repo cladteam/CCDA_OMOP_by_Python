@@ -12,6 +12,7 @@
 """
 
 import vocab_map_file
+import vocab_spark
 from xml_ns import ns
 import util
 import person
@@ -51,7 +52,9 @@ def convert(tree):
             # observation_id = obs.find("id", ns).attrib['extension']
     
             observation_code = obs.find("code", ns)
-            observation_concept_id = vocab_map_file.map_hl7_to_omop(
+            # observation_concept_id = vocab_map_file.map_hl7_to_omop(
+            #    observation_code.attrib['codeSystem'], observation_code.attrib['code'])
+            observation_concept_id = vocab_spark.map_hl7_to_omop(
                 observation_code.attrib['codeSystem'], observation_code.attrib['code'])
     
             observation_date_string = obs.find("effectiveTime", ns).attrib['value']

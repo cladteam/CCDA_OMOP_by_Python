@@ -21,6 +21,10 @@ import location
 import person
 import observation
 import util
+import spark_util
+
+spark_util_object = spark_util.SparkUtil()
+spark = spark_util_object.get_spark()
 
 input_filename_list = [
     'CCDA_CCD_b1_InPatient_v2.xml',
