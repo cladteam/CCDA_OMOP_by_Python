@@ -52,8 +52,8 @@ omop_concept_ids = {
 
 # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
 complex_mappings = {
-   ('2.16.840.1.113883.5.1', 'F'): ("Gender", "FEMALE", 8532, "Gender", 'F'),
-   ('2.16.840.1.113883.5.1', 'M'): ("Gender", "FEMALE", 8532, "Gender", 'F'),
+   ('2.16.840.1.113883.5.1', 'F'): ("Gender", 'F', "FEMALE", 8532),
+   ('2.16.840.1.113883.5.1', 'M'): ("Gender", 'M', "MALE", 8532),
 
    #  ("urn:oid:2.16.840.1.113883.6.238", "2106-3"): ("Race", "5", "White", 8527),
    ("2.16.840.1.113883.6.238", "2106-3"): ("Race", "5", "White", 8527),
