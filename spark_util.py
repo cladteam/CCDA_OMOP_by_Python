@@ -5,6 +5,7 @@
 from pyspark.sql import SparkSession
 from os.path import abspath
 import vocab_spark
+import person_omop_spark
 
 class SparkUtil(object):
     """
@@ -34,6 +35,7 @@ class SparkUtil(object):
             print("--ERROR:Spark might already be setup, trying to just run", sre)
             self.restart()
 
+
     def __del__(self):  
         self.spark.stop()
 
@@ -42,6 +44,8 @@ class SparkUtil(object):
         # This class should only have to deal with the re-load, and not try to re-write session pooling, poorly.
         return self.spark    
 
+    # https://stackoverflow.com/questions/48416385/how-to-read-spark-table-back-again-in-a-new-spark-session
+    # https://stackoverflow.com/questions/70700195/load-spark-bucketed-table-from-disk-previously-written-via-saveastable?rq=3
 
     def start(self):
         self.spark.sql("CREATE DATABASE ccda_omop_spark_db")
@@ -49,21 +53,16 @@ class SparkUtil(object):
         
         # once for each table
         vocab_obj = vocab_spark.VocabSpark(self.spark, self.DW_PATH)
-        vocab_obj.load()
+        try:
+            vocab_obj.load_from_csv()
+        except Exception:
+            vocab_obj.load_from_existing()
 
-
-    def restart(self):  
-        # https://stackoverflow.com/questions/48416385/how-to-read-spark-table-back-again-in-a-new-spark-session
-        # https://stackoverflow.com/questions/70700195/load-spark-bucketed-table-from-disk-previously-written-via-saveastable?rq=3
-        print("RE-STARTING")
-
-        # once for each table
-        vocab_obj = vocab_spark.VocabSpark(self.spark, self.DW_PATH)
-        vocab_obj.reload()
-
-        print("RE-START-ED")
-
-
+        person_obj = person_omop_spark.PersonOmopSpark(self.spark, self.DW_PATH)
+        try:
+            person_obj.create()
+        except Exception:
+            person_obj.load_from_existing()
 
 
     def _prep_person(self):
