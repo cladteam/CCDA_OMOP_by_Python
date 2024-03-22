@@ -12,6 +12,7 @@ import vocab_spark
 from xml_ns import ns
 import util
 import location
+import omop_person
 
 
 def create():
@@ -81,3 +82,6 @@ def convert(tree):
     dest['location_id'] = location_id
 
     return dest
+ 
+    # person_obj = omop_person.OmopPerson(person_id, gender_concept_id, birth_date_omop, race_concept_id, ethnicity_concept_id, location_id)
+    # return  person_obj.create_dictionary()
