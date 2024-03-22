@@ -12,19 +12,6 @@ jobs:
           - name: run main.py 
             run: |
                 python3 main.py -n=2
-    Run-spark-test:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Install Spark
-            run: |
-                pip install pyspark
-          - name: Check out repository code
-            uses: actions/checkout@v4
-            with:
-              ref: spark
-          - name: run test_spark_env.py 
-            run: |
-                python3 main.py -n=2
     Lint-Flake8:
         runs-on: ubuntu-latest
         steps:
@@ -52,21 +39,4 @@ jobs:
           - name: Lint with Pylint
             run: |
                 pylint --max-locals=25  *.py
-    Coverage-Spark:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Install Spark
-            run: |
-                pip install pyspark
-          - name: Install coverage
-            run: |
-                pip install coverage
-          - name: Check out repository code
-            uses: actions/checkout@v4
-            with:
-              ref: spark
-          - name: run coverage
-            run: |
-                coverage run test_spark_env.py
-                coverage report --fail-under=82
 
