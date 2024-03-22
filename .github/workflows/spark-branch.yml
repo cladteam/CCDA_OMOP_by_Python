@@ -15,6 +15,9 @@ jobs:
     Run-spark-test:
         runs-on: ubuntu-latest
         steps:
+          - name: Install Spark
+            run: |
+                pip install spark
           - name: Check out repository code
             uses: actions/checkout@v4
             with:
@@ -52,6 +55,9 @@ jobs:
     Coverage-Spark:
         runs-on: ubuntu-latest
         steps:
+          - name: Install Spark
+            run: |
+                pip install spark
           - name: Install coverage
             run: |
                 pip install coverage
