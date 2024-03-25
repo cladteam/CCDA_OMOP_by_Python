@@ -46,7 +46,7 @@ def convert(tree):
         try:
             template_id = obs.find("templateId", ns).attrib['root']
             if template_id != '2.16.840.1.113883.10.20.22.4.2':
-                print(f"INFO: observation template:{template_id} id:{observation_id}")
+                print(f"INFO: observation template:{template_id} ")
 
             observation_id = obs.find("id", ns).attrib['root']
             # observation_id = obs.find("id", ns).attrib['extension']

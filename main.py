@@ -108,7 +108,6 @@ for input_filename in todo_list:
         if report_diffs(diff_gen):
             NUM_ERROR_FILES += 1
 
-
         FILE_NUM += 1
     except ET.ParseError as x:
         NUM_ERROR_FILES += 1
