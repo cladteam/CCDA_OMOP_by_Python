@@ -34,8 +34,8 @@ class SparkUtil(object):
         self.start()
 
 
-    def __del__(self):  
-        self.spark.stop()
+    #def __del__(self):  
+    #    self.spark.stop()
 
     def get_spark(self): # should this be some kind of getterless attribute TODO
         # futhermore Spark has session management built in, so you can just ask Spark for a spark.
@@ -60,11 +60,13 @@ class SparkUtil(object):
         print("PERSON")
         person_obj = person_omop_spark.PersonOmopSpark(self.spark, SparkUtil.DW_PATH)
         try:
-            person_obj.create()
+            #person_obj.create()
+            person_obj.load_from_csv()
         except Exception as e:
-            print("ERROR: creating person failed", e)
+            print("WARNING: creating person failed, loading existing instead of creating new", e)
             try:
                 person_obj.load_from_existing()
+                print("INFO: loading person seems to have workd", e)
             except Exception as e:
                 print("ERROR: loading person failed", e)
 

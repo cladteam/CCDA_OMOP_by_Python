@@ -17,16 +17,16 @@ class PersonOmopSpark:
         """
         self.spark = spark
         self.dw_path = dw_path
-        self.VOCAB_FILE = '/Users/roederc/work/data/omop_vocabulary/CONCEPT.csv'
+        self.BLANK_PERSON_FILE = 'resources/person_blank.csv'
 
     def populate(self, person_id, gender_concept_id, birth_date_time, race_concept_id, ethnicity_concept_id, location_id):
 
-        isinstance(person_id, int)
-        isinstance(gender_concept_id, int)
-        isinstance(birth_date_time, str)
-        isinstance(race_concept_id, int)
-        isinstance(ethnicity_concept_id, int)
-        isinstance(location_id, int)
+        assert isinstance(person_id, int)
+        assert isinstance(gender_concept_id, int)
+        assert isinstance(birth_date_time, str)
+        assert isinstance(race_concept_id, int)
+        assert isinstance(ethnicity_concept_id, int)
+        assert isinstance(location_id, int)
 
         # TODO, (conditionally) check these against the vocabulary and appropriate PK-FK
 
@@ -35,36 +35,40 @@ class PersonOmopSpark:
         self.person_id = person_id                   # integer not null
         self.gender_concept_id = gender_concept_id   # integer not null
         self.year_of_birth = year                    # integer NOT NULL
+
         self.month_of_birth = month                  # integer NULL
         self.day_of_birth = day                      # integer NULL
         self.birth_date_time = birth_date_time       # integer Null
+
         self.race_concept_id = race_concept_id       # integer  not null
         self.ethnicity_concept_id = ethnicity_concept_id  # integer  not null
         self.location_id = location_id # integer     # integer NULL
+
         self.provider_id = None # integer NULL,
         self.care_site_id = None # integer NULL,
         self.person_source_value = None # varchar(50) NULL,
+
         self.gender_source_value = None # varchar(50) NULL,
         self.gender_source_concept_id = None # integer NULL,
+
         self.race_source_value = None # varchar(50) NULL,
         self.race_source_concept_id = None # integer NULL,
+
         self.ethnicity_source_value = None  # varchar(50) NULL,
         self.ethnicity_source_concept_id = None #integer NULL 
 
 
     def insert(self):
-        # spark doesn't let  you specify the columns
-        #           (person_id, gender_concept_id, year_of_birth, month_of_birth, day_of_birth,
-        #           birth_date_time, race_concept_id, ethnicity_concept_id, location_id)
-        sql = """ INSERT into person
-                   VALUES (
-                   '{person_id}', '{gender_concept_id}', 
-                   '{year_of_birth}', '{month_of_birth}', '{day_of_birth}',
-                   '{birth_date_time}',
-                   '{race_concept_id}', '{ethnicity_concept_id}', '{location_id)}',
-                    null, null, 
-                    null,   null, null,   null, null,   null, null )
-        """
+
+        sql = f""" INSERT into person VALUES (
+                    {self.person_id}, {self.gender_concept_id}, {self.year_of_birth}, 
+                    {self.month_of_birth}, {self.day_of_birth}, DATE('{self.birth_date_time}'),
+                    {self.race_concept_id}, {self.ethnicity_concept_id}, {self.location_id}, 
+                    null, null, null,   
+                    null, null,   null, null,   null, null ) 
+                """
+
+        print(f"DEBUG person insert:  {sql}")
         self.spark.sql(sql)
 
     person_schema = """
@@ -81,7 +85,7 @@ class PersonOmopSpark:
         care_site_id INT,
         person_source_value STRING,
         gender_source_value STRING,
-        gender_source_concpet_id INT,
+        gender_source_concept_id INT,
         race_source_value STRING,
         race_source_concept_id INT,
         ethnicity_source_value STRING, 
@@ -106,6 +110,13 @@ class PersonOmopSpark:
             "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/person'"
         person_df = self.spark.sql(sql)
         print("PERSON LOAD> ", person_df.columns, person_df.count())  # TODO some better way of checking success here?
+
+    def load_from_csv(self):
+        df = self.spark.read.option('delimiter', ',').csv(self.BLANK_PERSON_FILE, schema=self.person_schema)
+        df.write \
+            .mode("overwrite") \
+            .saveAsTable("person")
+            # .option("path", self.DW_PATH) \
 
 
     def create(self):
@@ -143,7 +154,7 @@ class PersonOmopSpark:
     def create_header():
         print("person_id, gender_concept_id, year_of_birth, month_of_birth, day_of_birth, birth_datetime, " + 
               "race_concept_id, ethnicity_concept_id, location_id, provider_id, care_site_id, person_source_value, " +
-              "gender_source_value, gender_source_concpet_id,  race_source_value, race_source_concept_id, " + 
+              "gender_source_value, gender_source_concept_id,  race_source_value, race_source_concept_id, " + 
               "ethnicity_source_value, ethnicity_source_concept_id")
 
     def create_csv_line(self):

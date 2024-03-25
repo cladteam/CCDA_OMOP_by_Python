@@ -12,6 +12,7 @@ import vocab_spark
 from spark_util import SparkUtil
 from xml_ns import ns
 import util
+import id_map
 import location
 import person_omop_spark
 
@@ -32,7 +33,11 @@ def get_person_id(tree):
     person_id_list = child.findall("./recordTarget/patientRole/id[@root='" + ssn_root + "']", ns)
     person_id = person_id_list[0].attrib['extension']
 
-    return person_id
+
+    ## SSN is a string
+    ssn_artificial_id = id_map.get(person_id)
+
+    return ssn_artificial_id
 
 
 def convert(tree, spark):
@@ -92,3 +97,4 @@ def convert(tree, spark):
         person_obj = person_omop_spark.PersonOmopSpark(spark, SparkUtil.DW_PATH)
         person_obj.populate(person_id, gender_concept_id, birth_date, race_concept_id, ethnicity_concept_id, location_id)
         person_obj.insert()
+        return person_obj.create_dictionary()

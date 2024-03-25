@@ -23,8 +23,15 @@ import observation
 import util
 import spark_util
 
+
+
+
+# INIT
 spark_util_object = spark_util.SparkUtil()
 spark = spark_util_object.get_spark()
+
+
+
 
 input_filename_list = [
     'CCDA_CCD_b1_InPatient_v2.xml',
@@ -86,9 +93,20 @@ for input_filename in todo_list:
             print(f"WARN:wrong doc type in {input_filename}")
 
         # Convert
-        actual_text_list.append(str(location.convert(tree)))
-        actual_text_list.append(str(person.convert(tree, spark)))
+        l = location.convert(tree)
+        if (l is None):
+            raise Exception # TODO more specific type
+        actual_text_list.append(str(l))
+
+        p = person.convert(tree, spark)
+        if (p is None):
+            raise Exception # TODO more specific type
+        print(f" converted person: {p}")
+        actual_text_list.append(str(p))
+
         for obs in observation.convert(tree):
+            if (obs is None):
+                raise Exception # TODO more specific type
             actual_text_list.append(str(obs))
 
         # Save
