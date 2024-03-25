@@ -3,24 +3,23 @@
 # /Users/roederc/work/git_learn/learn_spark
 
 from pyspark.sql import SparkSession
-from os.path import abspath
 
 
 def map_hl7_to_omop(code_system, code):
     spark = SparkSession.builder \
             .appName('CCDA_OMOP_ETL') \
             .master("local") \
-            .getOrCreate()
-            #.config("spark.sql.warehouse.dir", self.DW_PATH) \
+            .getOrCreate()  # .config("spark.sql.warehouse.dir", self.DW_PATH) \
 
     return VocabSpark.map_hl7_to_omop(spark, code_system, code)
 
+
 class VocabSpark(object):
-    """ 
+    """
     A place to keep the concept table initialization and re-load.
     maybe better as just a package. It feels a little Java-y
     (note the static methods maybe?) TODO
-    """   
+    """
     def __init__(self, spark, dw_path):
         """ sets members up, but doesn't fully initialize the table.
             That's in separate functions because it depends on the context
@@ -32,18 +31,17 @@ class VocabSpark(object):
         self.VOCAB_FILE = '/Users/roederc/work/data/omop_vocabulary/CONCEPT.csv'
 
         self.concept_schema = """
-            concept_id INT, 
-            concept_name STRING, 
-            domain_id STRING, 
-            vocabulary_id STRING, 
+            concept_id INT,
+            concept_name STRING,
+            domain_id STRING,
+            vocabulary_id STRING,
             concept_class_id STRING,
             standard_concept STRING,
-            concept_code STRING, 
-            valid_start_date DATE, 
-            valid_end_date DATE, 
+            concept_code STRING,
+            valid_start_date DATE,
+            valid_end_date DATE,
             invalid_reason STRING
         """
-
 
     # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
     # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
@@ -64,24 +62,20 @@ class VocabSpark(object):
         "http://snomed.info/sct": "SNOMED"
     }
 
-
     def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
-        sql =  f"CREATE TABLE concept ({self.concept_schema}) " +\
+        sql = f"CREATE TABLE concept ({self.concept_schema}) " +\
             "USING PARQUET " +\
             "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/concept'"
-        
-        result_thing = self.spark.sql(sql)
-        # print(result_thing)  # TODO some better way of checking success here?
 
+        result_thing = self.spark.sql(sql)
+        print(result_thing)  # TODO some better way of checking success here?
 
     def load_from_csv(self):
         vocab_df = self.spark.read.option('delimiter', '\t').csv(self.VOCAB_FILE, schema=self.concept_schema)
         vocab_df.write \
             .mode("overwrite") \
-            .saveAsTable("concept")
-            # .option("path", self.DW_PATH) \
-
+            .saveAsTable("concept")   # .option("path", self.DW_PATH) \
 
     @staticmethod
     def lookup_omop(spark, vocabulary_id, concept_code):
@@ -91,10 +85,8 @@ class VocabSpark(object):
         print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
         return df.head()[0]
 
-
-    def map_hl7_to_omop(self, code_system, code):
-        return map_hly_to_omop(self.spark, code_system, code)
-
+    # def map_hl7_to_omop(self, code_system, code):
+    #     return map_hl7_to_omop(self.spark, code_system, code)
 
     @staticmethod
     def map_hl7_to_omop(spark, code_system, code):
@@ -109,11 +101,4 @@ class VocabSpark(object):
         concept_id = VocabSpark.complex_mappings[(code_system, code)][3]
         print(f"INFO: complex mapping {code_system}:{code} and returning {concept_id}")
         return VocabSpark.complex_mappings[(code_system, code)][3]
-
-
-
-
-
-
-
 

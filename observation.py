@@ -50,21 +50,21 @@ def convert(tree):
             if template_id != '2.16.840.1.113883.10.20.22.4.2':
                 print(f"INFO: observation template:{template_id} id:{observation_id}")
             # observation_id = obs.find("id", ns).attrib['extension']
-    
+
             observation_code = obs.find("code", ns)
             # observation_concept_id = vocab_map_file.map_hl7_to_omop(
             #    observation_code.attrib['codeSystem'], observation_code.attrib['code'])
             observation_concept_id = vocab_spark.map_hl7_to_omop(
                 observation_code.attrib['codeSystem'], observation_code.attrib['code'])
-    
+
             observation_date_string = obs.find("effectiveTime", ns).attrib['value']
             observation_date = util.convert_date(observation_date_string)
-    
+
             observation_value = obs.find("value", ns)
             observation_value_value = observation_value.attrib['value']
             observation_value_type = observation_value.attrib['{' + ns['xsi'] + '}type']
-            observation_value_unit = observation_value.attrib['unit']
-    
+            # observation_value_unit = observation_value.attrib['unit']
+
             dest[i] = create()
             dest[i]['observation_id'] = observation_id
             dest[i]['person_id'] = person_id
@@ -80,7 +80,8 @@ def convert(tree):
             dest[i]['provider_id'] = None  # ###############
             i += 1
         except KeyError as kex:
-            print(f"WARN: KeyError on observation with id {observation_id} and tempalteId {template_id}, skipped missing key:", kex)
+            print(f"""WARN: KeyError on observation with id {observation_id}
+                and tempalteId {template_id}, skipped missing key:""", kex)
 
     return dest
 

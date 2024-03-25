@@ -24,13 +24,9 @@ import util
 import spark_util
 
 
-
-
 # INIT
 spark_util_object = spark_util.SparkUtil()
 spark = spark_util_object.get_spark()
-
-
 
 
 input_filename_list = [
@@ -40,7 +36,8 @@ input_filename_list = [
     '170.314b2_AmbulatoryToC.xml'
 ]
 
-input_section_filename_list = [  # TODO this one fails because of checks for things like doctype and an address or patient
+input_section_filename_list = [  # TODO this one fails because of
+    # checks for things like doctype and an address or patient
     'Inpatient_Encounter_Discharged_to_Rehab_Location(C-CDA2.1).xml'
 ]
 
@@ -48,7 +45,7 @@ expected_text_file_list = [
     'CCDA_CCD_b1_InPatient_v2.txt',
     'CCDA_CCD_b1_Ambulatory_v2.txt',
     'ToC_CCDA_CCD_CompGuideSample_FullXML.txt'
-] 
+]
 
 parser = argparse.ArgumentParser(
     prog='CCDA_OMOP_Converter Test Driver',
@@ -93,20 +90,10 @@ for input_filename in todo_list:
             print(f"WARN:wrong doc type in {input_filename}")
 
         # Convert
-        l = location.convert(tree)
-        if (l is None):
-            raise Exception # TODO more specific type
-        actual_text_list.append(str(l))
-
-        p = person.convert(tree, spark)
-        if (p is None):
-            raise Exception # TODO more specific type
-        print(f" converted person: {p}")
-        actual_text_list.append(str(p))
+        actual_text_list.append(str(location.convert(tree)))
+        actual_text_list.append(str(person.convert(tree, spark)))
 
         for obs in observation.convert(tree):
-            if (obs is None):
-                raise Exception # TODO more specific type
             actual_text_list.append(str(obs))
 
         # Save
@@ -128,7 +115,6 @@ for input_filename in todo_list:
         # Report
         if report_diffs(diff_gen):
             NUM_ERROR_FILES += 1
-
 
         FILE_NUM += 1
     except ET.ParseError as x:
