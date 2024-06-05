@@ -13,7 +13,6 @@ jobs:
             uses: actions/checkout@main
             with:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
-                path: '.'
           - name: show after files 
             shell: bash
             run: |
