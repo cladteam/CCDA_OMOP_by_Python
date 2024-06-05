@@ -20,6 +20,7 @@ import sys
 import location
 import person
 import observation
+
 from util import util
 from util import spark_util
 
@@ -89,21 +90,22 @@ for input_filename in todo_list:
         if not util.check_ccd_document_type(tree):
             print(f"WARN:wrong doc type in {input_filename}")
 
-        # Convert
+        # CONVERT
+		# I'm dubious about these being the correct ones.
         actual_text_list.append(str(location.convert(tree)))
         actual_text_list.append(str(person.convert(tree, spark)))
 
         for obs in observation.convert(tree):
             actual_text_list.append(str(obs))
 
-        # Save
+        # SAVE
         if args.save:
             output_filename = input_filename[0:(len(input_filename) - 4)] + '.txt'
             with open('output/' + output_filename, 'w', encoding='utf-8') as outfile:
                 for line in actual_text_list:
                     outfile.write(line + "\n")
 
-        # Compare
+        # COMPARE
         expected_text = pathlib.Path('tests/' +
                                      expected_text_file_list[FILE_NUM]).\
             read_text(encoding='utf-8')
