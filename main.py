@@ -91,7 +91,7 @@ for input_filename in todo_list:
             print(f"WARN:wrong doc type in {input_filename}")
 
         # CONVERT
-		# I'm dubious about these being the correct ones.
+        # I'm dubious about these being the correct ones.
         actual_text_list.append(str(location.convert(tree)))
         actual_text_list.append(str(person.convert(tree, spark)))
 
