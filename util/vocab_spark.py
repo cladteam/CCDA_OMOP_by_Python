@@ -65,7 +65,7 @@ class VocabSpark(object):
 
     def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
-        print(f"ORIG {self.dw_path}")
+        print(f"INFO VocabSpark.load_from_existing() {self.dw_path}")
         sql = f"CREATE TABLE concept ({self.concept_schema}) " +\
             "USING PARQUET " +\
             "LOCATION '" + self.dw_path + "/concept'"
@@ -76,6 +76,7 @@ class VocabSpark(object):
         print(result_thing)  # TODO some better way of checking success here?
 
     def load_from_csv(self):
+        print(f"INFO VocabSpark.load_from_csv() ")
         vocab_df = self.spark.read.option('delimiter', '\t').csv(self.VOCAB_FILE, schema=self.concept_schema)
         vocab_df.write \
             .mode("overwrite") \
@@ -91,7 +92,7 @@ class VocabSpark(object):
             print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
             return df.head()[0]
         except:
-            print("WARN couldn't print df.head()[0]")
+            print("ERROR couldn't print df.head()[0], vocabulary likley not loaded")
             return None
 
     # def map_hl7_to_omop(self, code_system, code):

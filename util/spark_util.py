@@ -10,7 +10,6 @@ from pyspark.sql import SparkSession
 from util import vocab_spark
 from table_objects import person_omop_spark
 
-
 class SparkUtil():
     """
     A place to keep a SparkSession and from which to get them...
@@ -21,7 +20,6 @@ class SparkUtil():
     """
 
     SCHEMA = 'ccda_omop_spark_db'
-    #DW_PATH = "/Users/roederc/work/data"
     DW_PATH = "."
 
     def __init__(self):
@@ -54,7 +52,7 @@ class SparkUtil():
         self.spark.sql("USE ccda_omop_spark_db")
 
         # once for each table
-        print("CONCEPT")
+        print(f"Loading CONCEPT from {SparkUtil.DW_PATH}")
         vocab_obj = vocab_spark.VocabSpark(self.spark, SparkUtil.DW_PATH)
         try:
             vocab_obj.load_from_csv()
