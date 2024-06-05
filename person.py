@@ -11,7 +11,7 @@
 # import vocab_map_file
 from util import vocab_spark
 from util.spark_util import SparkUtil
-from xml_ns import ns
+from util.xml_ns import ns
 from util import util
 from util import id_map
 import location

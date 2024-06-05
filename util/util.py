@@ -4,7 +4,7 @@
 
 import time
 from util import vocab_map_file
-from xml_ns import ns
+from util.xml_ns import ns
 
 
 def convert_date(hl7_date):
