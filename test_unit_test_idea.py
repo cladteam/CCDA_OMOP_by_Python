@@ -60,7 +60,7 @@ result_df.write.format("parquet").mode("overwrite").\
 
 # use SQL to query that parquet file
 # (page 98, 99 of Learning Spark)
-SQL="""
+SQL = """
     CREATE OR REPLACE  TEMPORARY VIEW  my_test_data
     USING parquet
     OPTIONS ( path "./test_data.parquet")
