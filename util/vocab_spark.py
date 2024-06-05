@@ -82,10 +82,10 @@ class VocabSpark(object):
         vocab_df = self.spark.read.option('delimiter', '\t').csv(self.VOCAB_FILE, schema=self.concept_schema)
         if (vocab_df.count() < 1):
             print("ERROR vocab did not load from CSV") 
-        else :
-        vocab_df.write \
-            .mode("overwrite") \
-            .saveAsTable("concept")   # .option("path", self.DW_PATH) \
+        else:
+            vocab_df.write \
+                .mode("overwrite") \
+                .saveAsTable("concept")   # .option("path", self.DW_PATH) \
 
     @staticmethod
     def lookup_omop(spark, vocabulary_id, concept_code):
