@@ -21,7 +21,8 @@ class SparkUtil():
     """
 
     SCHEMA = 'ccda_omop_spark_db'
-    DW_PATH = "/Users/roederc/work/data"
+    #DW_PATH = "/Users/roederc/work/data"
+    DW_PATH = "."
 
     def __init__(self):
         """ sets up constants and starts Spark if necessary """

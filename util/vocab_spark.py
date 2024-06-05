@@ -28,7 +28,8 @@ class VocabSpark(object):
         """
         self.spark = spark
         self.dw_path = dw_path
-        self.VOCAB_FILE = '/Users/roederc/work/data/omop_vocabulary/CONCEPT.csv'
+        #self.VOCAB_FILE = '/Users/roederc/work/data/omop_vocabulary/CONCEPT.csv'
+        self.VOCAB_FILE = './CONCEPT.csv'
 
         self.concept_schema = """
             concept_id INT,
@@ -64,9 +65,12 @@ class VocabSpark(object):
 
     def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
+        print(f"ORIG {self.dw_path}")
         sql = f"CREATE TABLE concept ({self.concept_schema}) " +\
             "USING PARQUET " +\
-            "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/concept'"
+            "LOCATION '" + self.dw_path + "/concept'"
+
+        #   "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/concept'"
 
         result_thing = self.spark.sql(sql)
         print(result_thing)  # TODO some better way of checking success here?
