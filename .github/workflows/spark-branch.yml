@@ -13,7 +13,7 @@ jobs:
             with:
               ref: spark
           - name: verify data
-          - shell: bash
+            shell: bash
             run: |
                 ls
           - name: Install pyspark
