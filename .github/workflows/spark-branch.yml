@@ -12,6 +12,8 @@ jobs:
             uses: actions/checkout@v4
             with:
               ref: spark
+          - name: test echo
+            echo: "foo"
           - name: verify data
             shell: bash
             run: |
