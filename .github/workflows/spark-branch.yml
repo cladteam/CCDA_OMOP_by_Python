@@ -13,7 +13,12 @@ jobs:
             with:
               ref: spark
           - name: test echo
-            echo: "foo"
+            run: |
+                echo "foo"
+          - name: show directory
+            shell: bash
+            run: |
+                pwd
           - name: verify data
             shell: bash
             run: |
