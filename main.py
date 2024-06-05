@@ -110,6 +110,7 @@ for input_filename in todo_list:
         expected_text = pathlib.Path('tests/' +
                                      expected_text_file_list[FILE_NUM]).\
             read_text(encoding='utf-8')
+        print(f"DEBUG: expected: -->  {expected_text} <-- expected")
         expected_string_list = expected_text.split("\n")
         diff_gen = difflib.context_diff(actual_text_list,
                                         expected_string_list[:-1],
