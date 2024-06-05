@@ -33,8 +33,8 @@ spark = spark_util_object.get_spark()
 input_filename_list = [
     'CCDA_CCD_b1_InPatient_v2.xml',
     'CCDA_CCD_b1_Ambulatory_v2.xml',
-    'ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
-    '170.314b2_AmbulatoryToC.xml'
+    # 'ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
+    # '170.314b2_AmbulatoryToC.xml'
 ]
 
 input_section_filename_list = [  
