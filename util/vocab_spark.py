@@ -72,12 +72,17 @@ class VocabSpark(object):
 
         #   "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/concept'"
 
-        result_thing = self.spark.sql(sql)
-        print(result_thing)  # TODO some better way of checking success here?
+        df = self.spark.sql(sql)
+        if (df.count() < 1):
+            print(f"ERROR vocab did not load from existing files {self.dw_path}")  
+            print(f"INFO load sql is {sql}")
 
     def load_from_csv(self):
         print(f"INFO VocabSpark.load_from_csv() ")
         vocab_df = self.spark.read.option('delimiter', '\t').csv(self.VOCAB_FILE, schema=self.concept_schema)
+        if (vocab_df.count() < 1):
+            print("ERROR vocab did not load from CSV") 
+        else :
         vocab_df.write \
             .mode("overwrite") \
             .saveAsTable("concept")   # .option("path", self.DW_PATH) \
