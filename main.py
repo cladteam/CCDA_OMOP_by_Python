@@ -29,7 +29,7 @@ input_filename_list = [
     '170.314b2_AmbulatoryToC.xml'
 ]
 
-# TODO fails b/c checks for things like doctype and an address or patient
+# fails b/c checks for things like doctype and an address or patient
 input_section_filename_list = [
     'Inpatient_Encounter_Discharged_to_Rehab_Location(C-CDA2.1).xml'
 ]
