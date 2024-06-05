@@ -5,21 +5,15 @@ jobs:
     Run-main:
         runs-on: ubuntu-latest
         steps:
-          - uses: actions/checkout@main
-            with:
-                name: chrisroederucdenver/CCDA_OMOP_Private
-          - name: Check out repository code
-            uses: actions/checkout@v4
-            with:
-              ref: spark
-          - name: test echo
-            run: |
-                echo "foo"
-          - name: show directory
+          - name: show starting files 
             shell: bash
             run: |
-                pwd
-          - name: verify data
+                ls
+          - name: get data
+            uses: actions/checkout@main
+            with:
+                name: chrisroederucdenver/CCDA_OMOP_Private
+          - name: show after files 
             shell: bash
             run: |
                 ls
