@@ -3,7 +3,7 @@
 """ misc. utilities """
 
 import time
-import vocab_map_file
+from util import vocab_map_file
 from xml_ns import ns
 
 

@@ -20,8 +20,8 @@ import sys
 import location
 import person
 import observation
-import util
-import spark_util
+from util import util
+from util import spark_util
 
 
 # INIT

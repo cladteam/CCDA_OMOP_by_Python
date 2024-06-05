@@ -7,7 +7,7 @@ import pyspark.sql.functions as sf
 # import pyspark.errors.exceptions.PySparkException
 # import pyspark.errors.exceptions.base.SparkRuntimeException
 
-import spark_util
+from util import spark_util
 # sc = SparkContext('local', 'test')
 # sc.setLogLevel("INFO")
 

@@ -7,7 +7,7 @@
 """
 
 from pyspark.sql import SparkSession
-import vocab_spark
+from util import vocab_spark
 from table_objects import person_omop_spark
 
 

@@ -11,10 +11,10 @@
     - value type
 """
 
-import vocab_map_file
-import vocab_spark
+from util import vocab_map_file
+from util import vocab_spark
 from xml_ns import ns
-import util
+from util import util
 import person
 
 

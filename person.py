@@ -9,11 +9,11 @@
 
 
 # import vocab_map_file
-import vocab_spark
-from spark_util import SparkUtil
+from util import vocab_spark
+from util.spark_util import SparkUtil
 from xml_ns import ns
-import util
-import id_map
+from util import util
+from util import id_map
 import location
 from table_objects import person_omop_spark
 
