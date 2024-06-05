@@ -15,7 +15,7 @@ from xml_ns import ns
 import util
 import id_map
 import location
-import person_omop_spark
+from table_objects import person_omop_spark
 
 
 def create():

@@ -8,7 +8,7 @@
 
 from pyspark.sql import SparkSession
 import vocab_spark
-import person_omop_spark
+from table_objects import person_omop_spark
 
 
 class SparkUtil():
