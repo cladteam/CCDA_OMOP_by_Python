@@ -10,9 +10,10 @@ jobs:
             run: |
                 ls
           - name: get data
-            uses: actions/checkout@main
+            uses: actions/checkout@v2
             with:
-                name: chrisroederucdenver/CCDA_OMOP_Private
+                repository: chrisroederucdenver/CCDA_OMOP_Private
+                path: '.'
           - name: show after files 
             shell: bash
             run: |
