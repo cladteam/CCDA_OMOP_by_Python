@@ -86,12 +86,13 @@ class VocabSpark(object):
         """ returns an omop concpet_id from OMOP vocabulary and code values """
         sql = f"SELECT concept_id from concept where vocabulary_id = '{vocabulary_id}' and concept_code = '{concept_code}'"
         df = spark.sql(sql)
-        print(f"INFO: looking up {vocabulary_id}:{concept_code}")
+        print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
         try:
             print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
+            return df.head()[0]
         except:
             print("WARN couldn't print df.head()[0]")
-        return df.head()[0]
+            return None
 
     # def map_hl7_to_omop(self, code_system, code):
     #     return map_hl7_to_omop(self.spark, code_system, code)
