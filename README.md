@@ -4,7 +4,10 @@
 
 https://www.w3.org/TR/xpath-31/ 
 
-
+- Design Doc.s / Sheets
+  - [CCDA-to-OMOP Coarse](https://docs.google.com/spreadsheets/d/1HDF-ZPOCnyAZtKYCtkhMTOhlxTfGGrBbu0Z6TTwgaRg/edit#gid=0). Maps out CCDA sectiont to OMOP domains
+  - [CCDA-to-OMOP Fine](https://docs.google.com/spreadsheets/d/1Rxgkcmlhmn_78z14H_I2mlq6IBKaN4TNOOicVrdE81I/edit?pli=1#gid=1097536195). One tab per section, mapping at the field or attribute level.
+Both have copius links into the HL7 documentation.
 
 # ToDo
 - High Level Mapping    
