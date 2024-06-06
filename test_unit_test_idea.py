@@ -2,7 +2,6 @@
 
 """ the beginning of some tests. Needs to evolve. """
 
-import pyspark.sql.functions as sf
 # from pyspark.context import SparkContext
 # import pyspark.errors.exceptions.PySparkException
 # import pyspark.errors.exceptions.base.SparkRuntimeException
@@ -13,8 +12,6 @@ from util import spark_util
 
 spark_util_object = spark_util.SparkUtil()
 spark = spark_util_object.get_spark()
-
-
 
 # use a CTE in-line to create something to select from
 SQL = """
