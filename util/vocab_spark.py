@@ -3,7 +3,7 @@
 # /Users/roederc/work/git_learn/learn_spark
 
 from pyspark.sql import SparkSession
-
+import os
 
 def map_hl7_to_omop(code_system, code):
     spark = SparkSession.builder \
@@ -43,7 +43,7 @@ class VocabSpark(object):
             valid_end_date DATE,
             invalid_reason STRING
         """
-        print(f"INFO VocabSpark __init__ {dw_path}")
+        print(f"INFO VocabSpark.__init__() path: {dw_path}")
 
     # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
     # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
@@ -66,24 +66,27 @@ class VocabSpark(object):
 
     def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
-        print(f"INFO VocabSpark.load_from_existing() {self.dw_path}")
+        print(f"INFO VocabSpark.load_from_existing() path: {self.dw_path} cwd: {os.getcwd()}")
         sql = f"CREATE TABLE concept ({self.concept_schema}) " +\
             "USING PARQUET " +\
-            "LOCATION '" + self.dw_path + "/concept'"
-
+            "LOCATION 'concept'"
+        #    "LOCATION '" + self.dw_path + "/concept'"
         #   "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/concept'"
 
         df = self.spark.sql(sql)
         if (df.count() < 1):
             print(f"ERROR vocab did not load from existing files {self.dw_path}")  
             print(f"INFO load sql is {sql}")
+        else:
+            print(f"INFO vocab seems to have loaded from  existing files {self.dw_path}")  
 
     def load_from_csv(self):
-        print(f"INFO VocabSpark.load_from_csv() ")
+        print(f"INFO VocabSpark.load_from_csv() path: {self.dw_path} cwd: {os.getcwd()}")
         vocab_df = self.spark.read.option('delimiter', '\t').csv(self.VOCAB_FILE, schema=self.concept_schema)
         if (vocab_df.count() < 1):
             print("ERROR vocab did not load from CSV") 
         else:
+            print(f"INFO vocab seems to have loaded from  CSV  {self.dw_path}")  
             vocab_df.write \
                 .mode("overwrite") \
                 .saveAsTable("concept")   # .option("path", self.DW_PATH) \
