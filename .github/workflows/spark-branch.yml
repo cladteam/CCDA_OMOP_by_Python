@@ -26,6 +26,10 @@ jobs:
             shell: bash
             run: |
                 ls ref_data
+          - name: show current working directory 
+            shell: bash
+            run: |
+                pwd
           - name: Install pyspark
             run: |
                 pip install pyspark
