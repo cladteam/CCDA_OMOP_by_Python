@@ -37,8 +37,8 @@ input_filename_list = [
     # '170.314b2_AmbulatoryToC.xml'
 ]
 
-input_section_filename_list = [  
-    # Fails because of checks for things like doctype 
+input_section_filename_list = [
+    # Fails because of checks for things like doctype
     # and an address or patient
     'Inpatient_Encounter_Discharged_to_Rehab_Location(C-CDA2.1).xml'
 ]

@@ -53,7 +53,7 @@ def convert(tree, spark):
 
     race_code_list = patient.findall("raceCode", ns)
     if len(race_code_list) > 1:
-        print("WARNING multiple races?") 
+        print("WARNING multiple races?")
     race_code = patient.find("raceCode", ns)
     race_concept_id = vocab_spark.map_hl7_to_omop(
         race_code.get("codeSystem"), race_code.get("code"))

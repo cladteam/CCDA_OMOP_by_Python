@@ -15,14 +15,6 @@ spark_util_object = spark_util.SparkUtil()
 spark = spark_util_object.get_spark()
 
 
-print("--CURRENT SCHEMA: ")
-spark.range(1).select(sf.current_schema()).show()
-
-print("========== describe concept")
-SQL = "describe concept"
-result_df = spark.sql(SQL)
-result_df.show()
-
 
 # use a CTE in-line to create something to select from
 SQL = """
