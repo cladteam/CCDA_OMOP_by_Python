@@ -43,6 +43,7 @@ class VocabSpark(object):
             valid_end_date DATE,
             invalid_reason STRING
         """
+        print(f"INFO VocabSpark __init__ {dw_path}")
 
     # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
     # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id

@@ -20,7 +20,7 @@ class SparkUtil():
     """
 
     SCHEMA = 'ccda_omop_spark_db'
-    DW_PATH = "."
+    DW_PATH = "./ref_data"
 
     def __init__(self):
         """ sets up constants and starts Spark if necessary """
@@ -67,7 +67,7 @@ class SparkUtil():
             print("WARNING: creating person failed, loading existing instead of creating new", e)
             try:
                 person_obj.load_from_existing()
-                print("INFO: loading person seems to have workd", e)
+                print("INFO: loading person seems to have worked", e)
             except Exception as e2:
                 print("ERROR: loading person failed", e2)
 
