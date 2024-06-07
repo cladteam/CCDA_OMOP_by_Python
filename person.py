@@ -77,18 +77,6 @@ def convert(tree, spark):
     # GET PATIENT ID
     person_id = get_person_id(tree)
 
-    # LOAD dictionary
-    """
-    dest = create()
-    dest['person_id'] = person_id
-    dest['race_concept_id'] = race_concept_id
-    dest['ethnicity_concept_id'] = ethnicity_concept_id
-    dest['gender_concept_id'] = gender_concept_id
-    dest['birthdate'] = birth_date
-    dest['location_id'] = location_id
-    return dest
-    """
-
     # LOAD Spark Object
     person_obj = person_omop_spark.PersonOmopSpark(spark, SparkUtil.DW_PATH)
     person_obj.populate(person_id, gender_concept_id, birth_date,
