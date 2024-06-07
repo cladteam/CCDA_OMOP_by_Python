@@ -34,4 +34,5 @@ for observation in observations:
         concept_code)
 
     # OUTPUT
-    print(f"vocaublary_id {vocabulary_id} concept_code {concept_code} maps to {observation_concept_id}")
+    print((f"vocaublary_id {vocabulary_id} concept_code {concept_code} "
+           f"maps to {observation_concept_id}"))
