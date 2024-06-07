@@ -11,9 +11,10 @@
     - value type
 """
 
-import vocab_map_file
-from xml_ns import ns
-import util
+from util import vocab_map_file
+from util import vocab_spark
+from util.xml_ns import ns
+from util import util
 import person
 
 
@@ -45,14 +46,15 @@ def convert(tree):
     for obs in results_observations:
         try:
             template_id = obs.find("templateId", ns).attrib['root']
-            if template_id != '2.16.840.1.113883.10.20.22.4.2':
-                print(f"INFO: observation template:{template_id} ")
-
             observation_id = obs.find("id", ns).attrib['root']
+            if template_id != '2.16.840.1.113883.10.20.22.4.2':
+                print(f"INFO: observation template:{template_id} id:{observation_id}")
             # observation_id = obs.find("id", ns).attrib['extension']
 
             observation_code = obs.find("code", ns)
-            observation_concept_id = vocab_map_file.map_hl7_to_omop(
+            # observation_concept_id = vocab_map_file.map_hl7_to_omop(
+            #    observation_code.attrib['codeSystem'], observation_code.attrib['code'])
+            observation_concept_id = vocab_spark.map_hl7_to_omop(
                 observation_code.attrib['codeSystem'], observation_code.attrib['code'])
 
             observation_date_string = obs.find("effectiveTime", ns).attrib['value']
@@ -77,11 +79,10 @@ def convert(tree):
                 dest[i]['value_as_string'] = observation_value
             dest[i]['value_as_concept_id'] = None
             dest[i]['provider_id'] = None  # ###############
-
             i += 1
         except KeyError as kex:
-            print(f"""WARN: KeyError on observation with id {observation_id} and
-                      tempalteId {template_id}, skipped missing key:""", kex)
+            print(f"""WARN: KeyError on observation with id {observation_id}
+                and tempalteId {template_id}, skipped missing key:""", kex)
 
     return dest
 

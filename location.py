@@ -4,12 +4,17 @@
 """ Collects OMOP patient address attributes from CCDA patientRole
     depends:
     CCDA document: CCD
+
+
+TBD!!!! BUG FIX THIS TODO: this gets the patient's home, not the care-site!!!!!
+
+
 """
 
 import sys
 
-import id_map
-from xml_ns import ns
+from util import id_map
+from util.xml_ns import ns
 
 
 def create():

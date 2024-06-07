@@ -1,5 +1,8 @@
 <!-- ************************ ENCOUNTERS *********************** -->
-<component>
+<component
+ xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+ xmlns:sdtc="urn:hl7-org:sdtc">
+
     <section>
         <!-- *** Encounters section (entries required) (V3) *** -->
         <templateId root="2.16.840.1.113883.10.20.22.2.22.1" extension="2015-08-01"/>
