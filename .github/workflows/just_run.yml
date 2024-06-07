@@ -8,7 +8,7 @@ jobs:
           - name: Check out repository code
             uses: actions/checkout@v4
             with:
-              ref: spark
+              ref: main
           - name: show starting files 
             shell: bash
             run: |
@@ -48,7 +48,7 @@ jobs:
           - name: Check out repository code
             uses: actions/checkout@v4
             with:
-              ref: spark
+              ref: main
           - name: Lint with flake8
             run: |
                 flake8 *.py --count --select=E9,F36,F92 --show-source --max-line-length=100 --statistics
@@ -65,7 +65,7 @@ jobs:
           - name: Check out repository code
             uses: actions/checkout@v4
             with:
-              ref: spark
+              ref: main
           - name: Lint with Pylint
             run: |
                 pylint --max-locals=25  *.py
