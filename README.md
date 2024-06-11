@@ -28,6 +28,8 @@ This is a python project to use an XPath XML parser in Python to extract data fr
 - Try and run main.py that is much more elaborate
 - Have a look at the Github actions that drive tests.
    
+## High level Design
+
 ## Tests and Workflows
 Workflows are a way of automating tests in github so that when you commit new work, github automatically runs tests. The workflow files are in .github/workflows. For now there is one file, just_run.yml that has three jobs in it: run-main for just running the code, and Lint-Flake8 and Lint-Pylint for linters. If you haven't seen them, linters are programs that look at your code and complain whenever you haven't conformed perfectly to a particular style of coding. I think they go overboard, but I prefer overboard to underboard...
 
