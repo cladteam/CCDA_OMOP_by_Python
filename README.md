@@ -1,6 +1,77 @@
 # CCDA_OMOP_by_Python
 
-#Uses xpath in Python on CCDA example files.
+## Introduction
+This is a python project to use an XPath XML parser in Python to extract data from HL7 CCDA documents.
+[Project Documentation on Google](https://docs.google.com/document/d/1pUxCQSuucQGJcXhrEg3miWuVTkcGLBdN2v88vYdVgrM/edit)
+
+## Getting Started running the Code
+- Install Python3
+- Consider an IDE. For simple things, clearly I use a shell a lot, but also PyCharm.
+  - https://www.jetbrains.com/pycharm/download/?section=mac
+- Create an environment for the is project
+- Clone the project repo. git@github.com:chrisroederucdenver/CCDA_OMOP_by_Python.git
+- Add packages to it using Pip
+  - I won't stop you from more elaborate packaging schemes.
+- Try and run basic_example.py
+
+## Directory Layout
+- htmlcov is output from an html tool. This may not be part of the repo, but gets created.
+- output is where created output files live. For now they are serialized dictionaries, but may evolve to CSV.
+- resources is where the sample XML files live
+- ref_data, short for reference data, is a place to keep the concept table and the spark data
+  - a bit messy because I was trying to keep the concept table's vocabularies private in another workspace. TODO.
+- tests is a driectory for vetted output we compare to when testing. If new code doesn't produce the same output it either added something good, and the comparision files need to be updated, or something is broken or both.
+- table_objects is where I've started to experiment with table objects in Python for the OMOP tables. 
+  - just using dictionaries is an option.
+- util is for a package containing commonly used code developed for this project. Will likely evolve. Suggestsion welcome.
+- venv is the name of the local python environment
+- Try and run main.py that is much more elaborate
+- Have a look at the Github actions that drive tests.
+   
+## Tests and Workflows
+Workflows are a way of automating tests in github so that when you commit new work, github automatically runs tests. The workflow files are in .github/workflows. For now there is one file, just_run.yml that has three jobs in it: run-main for just running the code, and Lint-Flake8 and Lint-Pylint for linters. If you haven't seen them, linters are programs that look at your code and complain whenever you haven't conformed perfectly to a particular style of coding. I think they go overboard, but I prefer overboard to underboard...
+
+## Tests  
+We may write a number of different kinds of tests. 
+### Unit tests
+Unit tests are small, focussed tests to checkout tricky or clever bits of code we write. Besides being small, they may use small, focus bits of data too. I wrote unit tests to figure out the windowing functions in SQL last year. It doesn't have to be code that goes into the system that gets a unit test. If you're not sure how something works, you should horse around with it in a smaller more controlled environemnt to get a feel for it. Sharing your code may help others.
+
+Infrastructure and organization isn't complete. TBD. Eventually the workflows will run this code too.
+
+### System Tests
+May have other names, but this is where we run our project aaginst the test data we have and compare it to established expected output. This is what the workflows run. Today, the code for these tests is part of main.py. Look for COMPARE on line 109 or so. We should build input and expected output pairs whenever we get started on a new type of CCDA section. Note the variables input_filename_list and expected_text_file_list higher up in the main.py file.
+
+### Production Tests
+May also have other names. I'm thinking here of analyzing the results of runs on data we haven't seeen to weather things are running correctly.
+
+### Data Quality Dashboard
+This will be a part of testing as well.
+
+## Development Workflow
+
+### Source Control (needs more detail)
+- Fork (not clone) the main repository to your own user on github
+- Clone your branch onto your computer
+- Create a branch
+- make a change
+- test the change
+- commit the change  to your repository
+- create a PR
+- get online with me as we go over the changes and merge them into main.
+
+### Test
+
+### Doc
+What did you learn that someone new to this part of the project will have to know?
+
+### Other tasks that are part of working a sub-task
+- add to the Google sheet
+- make notes about what was tricky, to share with folks who may have to work with it later
+- add and update tests: unit and System.
+
+
+
+## Uses xpath in Python on CCDA example files.
 
 https://www.w3.org/TR/xpath-31/ 
 
