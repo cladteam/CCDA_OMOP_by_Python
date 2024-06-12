@@ -9,6 +9,7 @@ jobs:
             shell: bash
             run: |
               echo "one"
+              echo "two"
     Run-main:
         runs-on: ubuntu-latest
         steps:
