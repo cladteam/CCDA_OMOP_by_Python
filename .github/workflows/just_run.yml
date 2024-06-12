@@ -2,7 +2,7 @@ name: CCDA parsing with Spark
 run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
 on: [push]
 jobs:
-    TEST:
+    learn-scripting:
         runs-on: ubuntu-latest
         steps:
           - name: chain-commands
@@ -10,8 +10,15 @@ jobs:
             run: |
               echo "one"
               echo "two"
-              VAR_1 = 'foo'
-              echo $VAR_1
+          - name: access secret
+            shell: bash
+            run: |
+              echo "${{ secrets.WIDE_OPEN_SECRET }}"
+          - name: setenv
+            run: |
+              echo "${{ secrets.WIDE_OPEN_SECRET }}" >> $WOS
+              echo $WOS
+              echo "${{ secrets.WIDE_OPEN_SECRET }}" 
     Run-main:
         runs-on: ubuntu-latest
         steps:
