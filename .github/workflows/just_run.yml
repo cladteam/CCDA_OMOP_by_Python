@@ -29,6 +29,23 @@ jobs:
             shell: bash
             run: |
               echo "bugos"
+    learn-scripting-2:
+        runs-on: ubuntu-latest
+        steps:
+          - name: setup key
+            uses: webfactory/ssh-agent@v0.70
+              with:
+                ssh-private-key: ${{ secrets.GH_WF }}
+          - name: get data
+            uses: actions/checkout@main
+            with:
+                repository: chrisroederucdenver/CCDA_OMOP_Private
+                path: './ref_data'
+                ref: main
+          - name: bogus
+            shell: bash
+            run: |
+              echo "bugos"
     Run-main:
         runs-on: ubuntu-latest
         steps:
