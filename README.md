@@ -5,13 +5,15 @@ This is a python project to use an XPath XML parser in Python to extract data fr
 [Project Documentation on Google](https://docs.google.com/document/d/1pUxCQSuucQGJcXhrEg3miWuVTkcGLBdN2v88vYdVgrM/edit)
 
 ## Getting Started running the Code
+This needs more detail, but works on macos. I've not been successful yet on Windows.
 - Install Python3
+- Install Java
 - Consider an IDE. For simple things, clearly I use a shell a lot, but also PyCharm.
   - https://www.jetbrains.com/pycharm/download/?section=mac
 - Create an environment for the is project
 - Clone the project repo. git@github.com:chrisroederucdenver/CCDA_OMOP_by_Python.git
 - Add packages to it using Pip
-  - I won't stop you from more elaborate packaging schemes.
+  - long list in requirements.txt, but it's basically pyspark. This is what depends on Java.
 - Try and run basic_example.py
 
 ## Additional Tools
