@@ -16,9 +16,8 @@ jobs:
               echo "${{ secrets.WIDE_OPEN_SECRET }}"
           - name: setenv
             run: |
-              echo "${{ secrets.WIDE_OPEN_SECRET }}" >> $WOS
-              echo $WOS
-              echo "${{ secrets.WIDE_OPEN_SECRET }}" 
+              echo "VAR_1=55" >> $GITHUB_ENV
+              echo $VAR_1
     Run-main:
         runs-on: ubuntu-latest
         steps:
