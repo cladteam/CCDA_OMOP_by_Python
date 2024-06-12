@@ -9,8 +9,8 @@ jobs:
             shell: bash
             run: |
               eval $(ssh-agent -s)
-              echo "SSH_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
-              echo $SSH_KEY | ssh-add -
+              echo "SSH_PUBLIC_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
+              echo "$SSH_PUBLIC_KEY" | ssh-add -
           - name: get data
             uses: actions/checkout@main
             with:
