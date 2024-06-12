@@ -5,15 +5,9 @@ jobs:
     learn-scripting:
         runs-on: ubuntu-latest
         steps:
-          - name: access secret
-            shell: bash
-            run: |
-              echo "${{ secrets.WIDE_OPEN_SECRET }}"
-          - name: start ssh-agent
-            run: |
-                ssh-agent -s
           - name: setenv
             run: |
+              ssh-agent -s
               echo "SSH_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
               echo $SSH_KEY | ssh-add -
           - name: get data
