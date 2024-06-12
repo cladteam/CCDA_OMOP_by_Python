@@ -15,9 +15,7 @@ jobs:
                 ls
           - name: set the ssh key
             run: |
-                eval $(ssh-agent -s)
-            run: |
-                SSH_KEY = "${{ secrets.GH_WF }}"; echo "YO: ${{ secrets.GH_WF }} "; echo "$SSH_KEY" | ssh-add -
+                eval $(ssh-agent -s); SSH_KEY = "${{ secrets.GH_WF }}"; echo "YO: ${{ secrets.GH_WF }} "; echo "$SSH_KEY" | ssh-add -
           - name: get data
             uses: actions/checkout@main
             with:
