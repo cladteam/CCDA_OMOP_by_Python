@@ -2,6 +2,11 @@ name: CCDA parsing with Spark
 run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
 on: [push]
 jobs:
+    TEST:
+        - name chain-commands
+          run: |
+            echo "one"
+            echo "two" 
     Run-main:
         runs-on: ubuntu-latest
         steps:
