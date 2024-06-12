@@ -15,8 +15,9 @@ jobs:
                 ls
           - name: set the ssh key
             env: GH_WF:${{ secrets.GH_WF }}
-            eval $(ssh-agent s)
-            echo $($GH_WF) | ssh-add -
+            run: |
+                eval $(ssh-agent s)
+                echo $($GH_WF) | ssh-add -
           - name: get data
             uses: actions/checkout@main
             with:
