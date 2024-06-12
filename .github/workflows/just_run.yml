@@ -5,10 +5,13 @@ jobs:
     learn-scripting:
         runs-on: ubuntu-latest
         steps:
-          - name: setenv
+          - name: start agent
             shell: bash
             run: |
               eval $(ssh-agent -s)
+          - name: setenv
+            shell: bash
+            run: |
               echo "SSH_PUBLIC_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
           - name: set key
             shell: bash
