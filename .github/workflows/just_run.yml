@@ -34,8 +34,8 @@ jobs:
         steps:
           - name: setup key
             uses: webfactory/ssh-agent@v0.7.0
-              with:
-                ssh-private-key: ${{ secrets.GH_WF }}
+            with:
+              ssh-private-key: ${{ secrets.GH_WF }}
           - name: get data
             uses: actions/checkout@main
             with:
