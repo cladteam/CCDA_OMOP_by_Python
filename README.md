@@ -18,10 +18,15 @@ This is a python project to use an XPath XML parser in Python to extract data fr
 - code_snooper.py looks for XML elements tagged with "code" and tells the paths and  values of their code and codeSystem attributes when it can.
 - id_snooper.ph looks for XML elements tagged with "id" and tells the paths and values of their root and extension attributes.
 To run them from the project's main directory enter the following at a command prompt: 
+
 > python -m tools.code_snooper
+
 or 
+
 > python -m tools.id_snooper
+
 The default to a particular file in the resources directory, and can be run with a filename argument as well.
+
 > python -m tools.id_snooper -f resources/CCDA_CCD_b1_Ambulatory_v2.xml
 
 ## Directory Layout
