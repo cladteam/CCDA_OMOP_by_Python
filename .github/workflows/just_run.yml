@@ -20,6 +20,10 @@ jobs:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
                 path: './ref_data'
                 ref: main
+          - name: bogus
+            shell: bash
+            run: |
+              echo "bugos"
     Run-main:
         runs-on: ubuntu-latest
         steps:
