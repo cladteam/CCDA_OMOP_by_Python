@@ -10,6 +10,8 @@ jobs:
             run: |
               echo "one"
               echo "two"
+              VAR_1 = 'foo'
+              echo $VAR_1
     Run-main:
         runs-on: ubuntu-latest
         steps:
