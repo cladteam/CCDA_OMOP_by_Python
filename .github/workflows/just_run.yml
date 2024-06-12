@@ -5,19 +5,23 @@ jobs:
     learn-scripting:
         runs-on: ubuntu-latest
         steps:
-          - name: chain-commands
-            shell: bash
-            run: |
-              echo "one"
-              echo "two"
           - name: access secret
             shell: bash
             run: |
               echo "${{ secrets.WIDE_OPEN_SECRET }}"
+          - name: start ssh-agent
+            run: |
+                ssh-agent -s
           - name: setenv
             run: |
-              echo "VAR_1=55" >> $GITHUB_ENV
-              echo $VAR_1
+              echo "SSH_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
+              echo $SSH_KEY | ssh-add -
+          - name: get data
+            uses: actions/checkout@main
+            with:
+                repository: chrisroederucdenver/CCDA_OMOP_Private
+                path: './ref_data'
+                ref: main
     Run-main:
         runs-on: ubuntu-latest
         steps:
@@ -29,9 +33,6 @@ jobs:
             shell: bash
             run: |
                 ls
-          - name: set the ssh key
-            run: |
-                eval $(ssh-agent -s); SSH_KEY = "${{ secrets.GH_WF }}"; echo "YO: ${{ secrets.GH_WF }} "; echo "$SSH_KEY" | ssh-add -
           - name: get data
             uses: actions/checkout@main
             with:
