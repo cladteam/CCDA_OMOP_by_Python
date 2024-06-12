@@ -14,7 +14,7 @@ jobs:
             run: |
                 ls
           - name: set the ssh key
-            env:
+            env: |
                 SSH_KEY = "${{ secrets.GH_WF }}"
             run: |
                 eval $(ssh-agent -s)
