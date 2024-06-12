@@ -33,7 +33,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: setup key
-            uses: webfactory/ssh-agent@v0.70
+            uses: webfactory/ssh-agent@v0.7.0
               with:
                 ssh-private-key: ${{ secrets.GH_WF }}
           - name: get data
