@@ -17,10 +17,6 @@ jobs:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
                 path: './ref_data'
                 ref: main
-          - name: trigger another run
-            shell: bash
-            run: |          
-                echo "xxx"
     Run-main:
         runs-on: ubuntu-latest
         steps:
