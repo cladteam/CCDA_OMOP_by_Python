@@ -8,7 +8,7 @@ jobs:
           - name: setenv
             shell: bash
             run: |
-              ssh-agent -s
+              eval $(ssh-agent -s)
               echo "SSH_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
               echo $SSH_KEY | ssh-add -
           - name: get data
