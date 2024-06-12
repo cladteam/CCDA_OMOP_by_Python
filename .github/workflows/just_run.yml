@@ -17,7 +17,6 @@ jobs:
             run: |
                 eval $(ssh-agent -s)
                 echo ${{ secrets.GH_WF }}
-                echo ${{ secrets.GH_WF }} | ssh-add -
           - name: get data
             uses: actions/checkout@main
             with:
