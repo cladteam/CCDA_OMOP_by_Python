@@ -10,6 +10,9 @@ jobs:
             run: |
               eval $(ssh-agent -s)
               echo "SSH_PUBLIC_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
+          - name: set key
+            shell: bash
+            run: |
               echo "$SSH_PUBLIC_KEY" | ssh-add -
           - name: get data
             uses: actions/checkout@main
