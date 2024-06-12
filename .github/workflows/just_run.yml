@@ -9,6 +9,7 @@ jobs:
             shell: bash
             run: |
               eval $(ssh-agent -s)
+              echo "$GITHUB_ENV"
               echo "SSH_PUBLIC_KEY=$( echo "${{ secrets.GH_WF }}" | cut -c 1-6) " >> "$GITHUB_ENV"
               echo "ssh_auth_sock $SSH_AUTH_SOCK"
           - name: part 2
