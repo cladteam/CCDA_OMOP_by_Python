@@ -3,6 +3,8 @@ run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
 on: [push]
 jobs:
     TEST:
+        runs-on: ubuntu-latest
+        steps:
         - name chain-commands
             shell: bash
             run: |
