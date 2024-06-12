@@ -14,9 +14,12 @@ jobs:
             run: |
                 ls
           - name: set the ssh key
+            env:
+                SSH_KEY = "${{ secrets.GH_WF }}"
             run: |
                 eval $(ssh-agent -s)
-                echo ${{ secrets.GH_WF }}
+                echo "$SSH_KEY" | ssh-add -
+                echo "YO: $SSH_KEY"
           - name: get data
             uses: actions/checkout@main
             with:
