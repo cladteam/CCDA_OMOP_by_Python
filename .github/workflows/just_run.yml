@@ -5,7 +5,7 @@ jobs:
     TEST:
         runs-on: ubuntu-latest
         steps:
-          - name chain-commands
+          - name: chain-commands
             shell: bash
             run: |
               echo "one"
