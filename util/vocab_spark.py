@@ -4,6 +4,7 @@
 
 from pyspark.sql import SparkSession
 import os
+from util.vocab_map_file import  oid_map
 
 def map_hl7_to_omop(code_system, code):
     spark = SparkSession.builder \
@@ -59,11 +60,6 @@ class VocabSpark(object):
             ("Ethnicity", "Hispanic", "Hispanic or Latino", 9998, 38003563)
     }
 
-    equivalent_vocab_map = {
-        '2.16.840.1.113883.6.1': "LOINC",
-        "http://snomed.info/sct": "SNOMED"
-    }
-
     def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
         print(f"INFO VocabSpark.load_from_existing() path: {self.dw_path} cwd: {os.getcwd()}")
@@ -96,23 +92,32 @@ class VocabSpark(object):
         """ returns an omop concpet_id from OMOP vocabulary and code values """
         sql = f"SELECT concept_id from concept where vocabulary_id = '{vocabulary_id}' and concept_code = '{concept_code}'"
         df = spark.sql(sql)
-        print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
+        #print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
         try:
-            print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
+            #print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
             return df.head()[0]
         except:
             print("ERROR couldn't print df.head()[0], vocabulary likley not loaded")
             return None
 
-    # def map_hl7_to_omop(self, code_system, code):
-    #     return map_hl7_to_omop(self.spark, code_system, code)
+    @staticmethod
+    def lookup_omop_details(spark, vocabulary_id, concept_code):
+        """ returns omop info from OMOP vocabulary and code values """
+        sql = f"SELECT vocabulary_id, concept_id, concept_name, domain_id, concept_class_id from concept where vocabulary_id = '{vocabulary_id}' and concept_code = '{concept_code}'"
+        df = spark.sql(sql)
+        #print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
+        try:
+            #print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
+            return df.head()
+        except:
+            print("ERROR couldn't print df.head()[0], vocabulary likley not loaded")
+            return None
 
     @staticmethod
     def map_hl7_to_omop(spark, code_system, code):
         """ returns OMOP concept_id from HL7 codeSystem and code """
-        if code_system in VocabSpark.equivalent_vocab_map:
-            vocabulary_id = VocabSpark.equivalent_vocab_map[code_system]
-            # concept_id = omop_concept_ids[(vocabulary_id, code)][1]
+        if code_system in oid_map:
+            vocabulary_id = oid_map[code_system][0]
             concept_id = VocabSpark.lookup_omop(spark, vocabulary_id, code)
             print(f"INFO: omop  mapping {code_system}:{code} and returning {concept_id}")
             return concept_id
