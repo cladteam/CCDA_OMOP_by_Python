@@ -4,9 +4,9 @@ on: [push]
 jobs:
     TEST:
         - name chain-commands
-          run: |
-            echo "one"
-            echo "two" 
+            shell: bash
+            run: |
+              echo "one"
     Run-main:
         runs-on: ubuntu-latest
         steps:
