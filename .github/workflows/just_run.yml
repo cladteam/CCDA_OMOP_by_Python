@@ -12,7 +12,7 @@ jobs:
           - name: setenv
             shell: bash
             run: |
-              echo "SSH_PUBLIC_KEY=${{ secrets.GH_WF }} " >> $GITHUB_ENV
+              echo "SSH_PUBLIC_KEY=$( ${{ secrets.GH_WF }} | cut -c 1-6) " >> $GITHUB_ENV
           - name: set key
             shell: bash
             run: |
