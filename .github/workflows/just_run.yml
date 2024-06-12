@@ -18,6 +18,7 @@ jobs:
             with:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
                 path: './ref_data'
+                ref: main
           - name: show after files 
             shell: bash
             run: |
