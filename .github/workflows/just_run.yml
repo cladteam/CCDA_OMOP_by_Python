@@ -9,10 +9,18 @@ jobs:
             shell: bash
             run: |
               eval $(ssh-agent -s)
+          - name: simple setenv
+            shell: bash
+            run: |
+              echo "XXX=$( echo xyz | cut -c 1-6) " >> $GITHUB_ENV
+          - name: test simple
+            shell: bash
+            run: |
+              echo $XXX
           - name: setenv
             shell: bash
             run: |
-              echo "SSH_PUBLIC_KEY=$( ${{ secrets.GH_WF }} | cut -c 1-6) " >> $GITHUB_ENV
+              echo "SSH_PUBLIC_KEY=$( echo ${{ secrets.GH_WF }} | cut -c 1-6) " >> $GITHUB_ENV
           - name: set key
             shell: bash
             run: |
