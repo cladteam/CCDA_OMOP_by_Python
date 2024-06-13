@@ -8,6 +8,7 @@ jobs:
           - name: start agent, add key direclty, test. WORKS
             shell: bash
             run: |
+              set +e
               eval $(ssh-agent -s)
               echo "${{ secrets.GH_WF }}" | ssh-add -
               ssh -T git@github.com   || true
