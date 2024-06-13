@@ -5,15 +5,16 @@ jobs:
     learn-scripting:
         runs-on: ubuntu-latest
         steps:
-          - name: test ssh to github
-            shell: bash
-            run: |
-              ssh -T git@github.com  
           - name: start agent and add key direclty
             shell: bash
             run: |
               eval $(ssh-agent -s)
               echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com  
+          - name: test ssh to github
+            shell: bash
+            run: |
+              ssh -T git@github.com  
           - name: setenv and start agent
             shell: bash
             run: |
