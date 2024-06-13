@@ -26,6 +26,8 @@ jobs:
                 path: './ref_data'
                 ref: main
     notes-on-what-does-not-work:
+        runs-on: ubuntu-latest
+        steps:
           - name: setenv and start agent BOGUS
             shell: bash
             run: |
