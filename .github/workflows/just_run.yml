@@ -2,45 +2,6 @@ name: CCDA parsing with Spark
 run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
 on: [push, workflow_dispatch]
 jobs:
-    learn-scripting:
-        if: false
-        runs-on: ubuntu-latest
-        steps:
-          - name: start agent, add key direclty, test. WORKS
-            shell: bash
-            run: |
-              eval $(ssh-agent -s)
-              echo "${{ secrets.GH_WF }}" | ssh-add -
-              ssh -T git@github.com   || true
-          - name:  GET data
-            shell: bash
-            run: |
-              eval $(ssh-agent -s)
-              echo "${{ secrets.GH_WF }}" | ssh-add -
-              ssh -T git@github.com   || true
-              git clone git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
-              mv CCDA_OMOP_Private ref_data
-    notes-on-what-does-not-work:
-        if: false
-        runs-on: ubuntu-latest
-        steps:
-          - name: setenv and start agent BOGUS
-            shell: bash
-            run: |
-              eval $(ssh-agent -s)
-              echo "SSH_PUBLIC_KEY=$( echo "${{ secrets.GH_WF }}" | cut -c 1-70) " >> "$GITHUB_ENV"
-          - name: get data with key setup part 1
-            shell: bash
-            run: |
-              eval $(ssh-agent -s)
-              echo "${{ secrets.GH_WF }}" | ssh-add -
-              ssh -T git@github.com  
-          - name: get data with key setup part 2, can't make part 1 and part 2 part of the same
-            uses: actions/checkout@main
-            with:
-                repository: chrisroederucdenver/CCDA_OMOP_Private
-                path: './ref_data'
-                ref: main
     Run-main:
         runs-on: ubuntu-latest
         steps:
@@ -48,11 +9,7 @@ jobs:
             uses: actions/checkout@v4
             with:
               ref: main
-          - name: show starting files 
-            shell: bash
-            run: |
-                ls
-          - name:  GET data
+          - name:  Get vocabulary data from private repo
             shell: bash
             run: |
               eval $(ssh-agent -s)
@@ -60,18 +17,10 @@ jobs:
               ssh -T git@github.com   || true
               git clone git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
               mv CCDA_OMOP_Private ref_data
-          - name: show after files 
-            shell: bash
-            run: |
-                ls
           - name: show ref_data files 
             shell: bash
             run: |
                 ls ref_data
-          - name: show current working directory 
-            shell: bash
-            run: |
-                pwd
           - name: Install pyspark
             run: |
                 pip install pyspark
@@ -111,4 +60,24 @@ jobs:
           - name: Lint with Pylint
             run: |
                 pylint --max-locals=25  *.py
-
+    notes-on-what-does-not-work:
+        if: false
+        runs-on: ubuntu-latest
+        steps:
+          - name: setenv and start agent BOGUS
+            shell: bash
+            run: |
+              eval $(ssh-agent -s)
+              echo "SSH_PUBLIC_KEY=$( echo "${{ secrets.GH_WF }}" | cut -c 1-70) " >> "$GITHUB_ENV"
+          - name: get data with key setup part 1
+            shell: bash
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com  
+          - name: get data with key setup part 2, can't make part 1 and part 2 part of the same
+            uses: actions/checkout@main
+            with:
+                repository: chrisroederucdenver/CCDA_OMOP_Private
+                path: './ref_data'
+                ref: main
