@@ -5,6 +5,10 @@ jobs:
     learn-scripting:
         runs-on: ubuntu-latest
         steps:
+          - name: test ssh to github
+            shell: bash
+            run: |
+              ssh -T git@github.com  
           - name: start agent and add key direclty
             shell: bash
             run: |
