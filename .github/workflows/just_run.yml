@@ -10,8 +10,7 @@ jobs:
             run: |
               eval $(ssh-agent -s)
               echo "${{ secrets.GH_WF }}" | ssh-add -
-              ssh -T git@github.com  
-              exit 0
+              ssh -T git@github.com   || true
           - name:  GET data
             shell: bash
             run: |
