@@ -3,6 +3,7 @@ run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
 on: workflow_dispatch
 jobs:
     learn-scripting:
+        if: false
         runs-on: ubuntu-latest
         steps:
           - name: start agent, add key direclty, test. WORKS
@@ -19,13 +20,8 @@ jobs:
               ssh -T git@github.com   || true
               git clone git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
               mv CCDA_OMOP_Private ref_data
-          - name: get data
-            uses: actions/checkout@main
-            with:
-                repository: chrisroederucdenver/CCDA_OMOP_Private
-                path: './ref_data'
-                ref: main
     notes-on-what-does-not-work:
+        if: false
         runs-on: ubuntu-latest
         steps:
           - name: setenv and start agent BOGUS
@@ -45,23 +41,6 @@ jobs:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
                 path: './ref_data'
                 ref: main
-    learn-scripting-2:
-        runs-on: ubuntu-latest
-        steps:
-          - name: setup key
-            uses: webfactory/ssh-agent@v0.7.0
-            with:
-              ssh-private-key: ${{ secrets.GH_WF }}
-          - name: test ssh
-            shell: bash
-            run: |
-              ssh -T git@github.com  
-          - name: get data
-            uses: actions/checkout@main
-            with:
-                repository: chrisroederucdenver/CCDA_OMOP_Private
-                path: './ref_data'
-                ref: main
     Run-main:
         runs-on: ubuntu-latest
         steps:
@@ -73,12 +52,14 @@ jobs:
             shell: bash
             run: |
                 ls
-          - name: get data
-            uses: actions/checkout@main
-            with:
-                repository: chrisroederucdenver/CCDA_OMOP_Private
-                path: './ref_data'
-                ref: main
+          - name:  GET data
+            shell: bash
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com   || true
+              git clone git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
+              mv CCDA_OMOP_Private ref_data
           - name: show after files 
             shell: bash
             run: |
