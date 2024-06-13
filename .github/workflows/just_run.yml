@@ -8,7 +8,6 @@ jobs:
           - name: start agent, add key direclty, test. WORKS
             shell: bash
             run: |
-              set +e
               eval $(ssh-agent -s)
               echo "${{ secrets.GH_WF }}" | ssh-add -
               ssh -T git@github.com   || true
@@ -17,7 +16,7 @@ jobs:
             run: |
               eval $(ssh-agent -s)
               echo "${{ secrets.GH_WF }}" | ssh-add -
-              ssh -T git@github.com  
+              ssh -T git@github.com   || true
               git clone git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
               mv CCDA_OMOP_Private ref_data
           - name: get data
