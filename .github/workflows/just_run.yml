@@ -25,23 +25,24 @@ jobs:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
                 path: './ref_data'
                 ref: main
-          - name: get data with key setup
-            shell: bash
-            run: |
-              eval $(ssh-agent -s)
-              echo "${{ secrets.GH_WF }}" | ssh-add -
-              ssh -T git@github.com  
-            uses: actions/checkout@main
-            with:
-                repository: chrisroederucdenver/CCDA_OMOP_Private
-                path: './ref_data'
-                ref: main
     notes-on-what-does-not-work:
           - name: setenv and start agent BOGUS
             shell: bash
             run: |
               eval $(ssh-agent -s)
               echo "SSH_PUBLIC_KEY=$( echo "${{ secrets.GH_WF }}" | cut -c 1-70) " >> "$GITHUB_ENV"
+          - name: get data with key setup part 1
+            shell: bash
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com  
+          - name: get data with key setup part 2, can't make part 1 and part 2 part of the same
+            uses: actions/checkout@main
+            with:
+                repository: chrisroederucdenver/CCDA_OMOP_Private
+                path: './ref_data'
+                ref: main
     learn-scripting-2:
         runs-on: ubuntu-latest
         steps:
