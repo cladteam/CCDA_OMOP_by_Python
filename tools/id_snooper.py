@@ -9,6 +9,7 @@
 
 import argparse
 import xml.etree.ElementTree as ET # https://docs.python.org/3/library/xml.etree.elementtree.html
+import tools.util as TU
 import re # https://docs.python.org/3.9/library/re.html
 from util.xml_ns import ns
 from util.vocab_map_file import  oid_map
@@ -29,26 +30,7 @@ args = parser.parse_args()
 
 tree = ET.parse(INPUT_FILENAME)
 
-# credit: https://stackoverflow.com/questions/68215347/capture-all-xml-element-paths-using-xml-etree-elementtree
-def pathGen(fn):
-    path = []
-    it = ET.iterparse(fn, events=('start', 'end'))
-    for evt, el in it:
-        if evt == 'start':
-            # trim off namespace stuff in curly braces
-            trimmed_tag = re.sub(r"{.*}",'', el.tag)
-
-            # don't include the "/ClinicalDocument" part at the very start
-            if trimmed_tag == 'ClinicalDocument':
-                path.append(".")
-            else:
-                path.append(trimmed_tag)
-
-            yield '/'.join(path)
-        else:
-            path.pop()
-
-for path in pathGen(INPUT_FILENAME):
+for path in TU.pathGen(INPUT_FILENAME):
     # just get the paths that end with a code element (tag)
     if re.fullmatch(r".*/id", path):
         for id_element in tree.findall(path, ns):
