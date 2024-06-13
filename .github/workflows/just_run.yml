@@ -27,6 +27,12 @@ jobs:
           - name: run main.py 
             run: |
                 python3 main.py -n=2
+          - name: Run Code Snooper
+            run: |
+                python3 -m tools.id_snooper
+          - name: Run ID Snooper
+            run: |
+                python3 -m tools.code_snooper
     Lint-Flake8:
         runs-on: ubuntu-latest
         steps:
