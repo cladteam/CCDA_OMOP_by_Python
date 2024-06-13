@@ -1,6 +1,6 @@
 name: CCDA parsing with Spark
 run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
-on: workflow_dispatch
+on: [push, workflow_dispatch]
 jobs:
     learn-scripting:
         if: false
