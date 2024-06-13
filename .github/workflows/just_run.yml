@@ -11,11 +11,6 @@ jobs:
               eval $(ssh-agent -s)
               echo "${{ secrets.GH_WF }}" | ssh-add -
               ssh -T git@github.com  
-          - name: setenv and start agent BOGUS
-            shell: bash
-            run: |
-              eval $(ssh-agent -s)
-              echo "SSH_PUBLIC_KEY=$( echo "${{ secrets.GH_WF }}" | cut -c 1-70) " >> "$GITHUB_ENV"
           - name:  GET data
             shell: bash
             run: |
@@ -30,6 +25,23 @@ jobs:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
                 path: './ref_data'
                 ref: main
+          - name: get data with key setup
+            shell: bash
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com  
+            uses: actions/checkout@main
+            with:
+                repository: chrisroederucdenver/CCDA_OMOP_Private
+                path: './ref_data'
+                ref: main
+    notes-on-what-does-not-work:
+          - name: setenv and start agent BOGUS
+            shell: bash
+            run: |
+              eval $(ssh-agent -s)
+              echo "SSH_PUBLIC_KEY=$( echo "${{ secrets.GH_WF }}" | cut -c 1-70) " >> "$GITHUB_ENV"
     learn-scripting-2:
         runs-on: ubuntu-latest
         steps:
@@ -37,16 +49,16 @@ jobs:
             uses: webfactory/ssh-agent@v0.7.0
             with:
               ssh-private-key: ${{ secrets.GH_WF }}
+          - name: test ssh
+            shell: bash
+            run: |
+              ssh -T git@github.com  
           - name: get data
             uses: actions/checkout@main
             with:
                 repository: chrisroederucdenver/CCDA_OMOP_Private
                 path: './ref_data'
                 ref: main
-          - name: bogus
-            shell: bash
-            run: |
-              echo "bugos"
     Run-main:
         runs-on: ubuntu-latest
         steps:
