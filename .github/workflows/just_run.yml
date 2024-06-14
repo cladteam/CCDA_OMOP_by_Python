@@ -54,8 +54,8 @@ jobs:
               ref: main
           - name: Lint with flake8
             run: |
-                flake8 *.py --count --select=E9,F36,F92 --show-source --max-line-length=100 --statistics
-                flake8 *.py  --count --max-complexity=10 --max-line-length=100 --statistics
+                flake8 *.py */*.py --count --select=E9,F36,F92 --show-source --max-line-length=100 --statistics
+                flake8 *.py */*.py --count --max-complexity=10 --max-line-length=100 --statistics
     Lint-Pylint:
         runs-on: ubuntu-latest
         steps:
@@ -71,7 +71,7 @@ jobs:
               ref: main
           - name: Lint with Pylint
             run: |
-                pylint --max-locals=25  *.py
+                pylint --max-locals=25  *.py */*.py
     notes-on-what-does-not-work:
         if: false
         runs-on: ubuntu-latest
