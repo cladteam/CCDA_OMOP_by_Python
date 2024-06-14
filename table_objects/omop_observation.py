@@ -15,6 +15,6 @@
 #             visit_detail_id integer NULL,
 #             observation_source_value varchar(50) NULL,
 #             observation_source_concept_id integer NULL,
-#             unit_source_value varchar(50) NULL, 
+#             unit_source_value varchar(50) NULL,
 #             qualifier_source_value varchar(50) NULL );
-# 
+#

@@ -1,17 +1,17 @@
 
 """
     CodeSnooper - looks for code elements, fetches their code and codeSystem
-                  attributes, mapping OIDs to vocabularies and 
+                  attributes, mapping OIDs to vocabularies and
                   concept codes to names, lists the paths to the elements
                   with their attributes.
 """
 
 import argparse
-import xml.etree.ElementTree as ET # https://docs.python.org/3/library/xml.etree.elementtree.html
+import xml.etree.ElementTree as ET  # https://docs.python.org/3/library/xml.etree.elementtree.html
 import tools.util as TU
-import re # https://docs.python.org/3.9/library/re.html
+import re   # https://docs.python.org/3.9/library/re.html
 from util.xml_ns import ns
-from util.vocab_map_file import  oid_map
+from util.vocab_map_file import oid_map
 from util import spark_util
 from util.vocab_spark import VocabSpark
 
@@ -42,9 +42,11 @@ for path in TU.pathGen(INPUT_FILENAME):
                     concept_name = details[2]
                     domain_id = details[3]
                     class_id = details[4]
-                    print(f"{path}  vocab:{vocabulary_id} code:{concept_code} \"{concept_name}\" domain:{domain_id} class:{class_id}")
+                    print((f"{path}  vocab:{vocabulary_id} code:{concept_code}"
+                           " \"{concept_name}\" domain:{domain_id} class:{class_id}"))
                 else:
-                    print(f"{path}  vocab:{vocabulary_id} code:{concept_code} (code not available in OMOP vocabulary here)")
-            except:
+                    print((f"{path}  vocab:{vocabulary_id} code:{concept_code} "
+                            "(code not available in OMOP vocabulary here)"))
+            except Exception:
                 print(f"{path}  -- no attributes, or not both -- oid:{vocabulary_oid}  code:{concept_code}")
 

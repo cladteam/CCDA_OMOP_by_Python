@@ -8,4 +8,3 @@
 #             county varchar(20) NULL,
 #             location_source_value varchar(50) NULL );
 # --HINT DISTRIBUTE ON RANDOM
-

@@ -1,28 +1,27 @@
 
 """
-    Snooper - looks for elements with the given name, fetches what 
-              attributes it can, mapping OIDs to vocabularies and 
-              concept codes to names when it can, 
+    Snooper - looks for elements with the given name, fetches what
+              attributes it can, mapping OIDs to vocabularies and
+              concept codes to names when it can,
               lists the paths to the elements with their attributes.
               This means there are special cases for elements tagged 'code',
               and (soon) 'section'.
-Notes:
-patientRole
-    recordTarget/patientRole
-    recordTarget/patientRole/patient
-assignedEntity
-    performer/assignedEntity
-    responsibleParty/assignedEntity
-    encounterParticipant/assignedEntity
-    assignedEntity/assignedPerson ...but not always
+    Notes:
+        patientRole
+            recordTarget/patientRole
+            recordTarget/patientRole/patient
+        assignedEntity
+            performer/assignedEntity
+            responsibleParty/assignedEntity
+            encounterParticipant/assignedEntity
+            assignedEntity/assignedPerson ...but not always
 """
 
 import argparse
-import xml.etree.ElementTree as ET # https://docs.python.org/3/library/xml.etree.elementtree.html
-import re # https://docs.python.org/3.9/library/re.html
-import tools.util as TU
+import xml.etree.ElementTree as ET  # https://docs.python.org/3/library/xml.etree.elementtree.html
+import re  # https://docs.python.org/3.9/library/re.html
 from util.xml_ns import ns
-from util.vocab_map_file import  oid_map
+from util.vocab_map_file import oid_map
 from util import spark_util
 from util.vocab_spark import VocabSpark
 
@@ -48,7 +47,7 @@ def pathGen(fn):
     for evt, el in it:
         if evt == 'start':
             # trim off namespace stuff in curly braces
-            trimmed_tag = re.sub(r"{.*}",'', el.tag)
+            trimmed_tag = re.sub(r"{.*}", '', el.tag)
 
             # don't include the "/ClinicalDocument" part at the very start
             if trimmed_tag == 'ClinicalDocument':
@@ -65,10 +64,6 @@ def parse_code_element_to_omop(element):
         its codeSystem OID to a vocabulary id, then uses it and the code
         to get detail from the OMOP concept table.
     '''
-    # other CCDA attributes:
-    #code  {http://www.w3.org/2001/XMLSchema-instance}type CE
-    #code  displayName WBC
-    #code  codeSystemName LOINC
 
     code_system_name = 'n/a'
     display_name = 'n/a'
@@ -81,7 +76,8 @@ def parse_code_element_to_omop(element):
         if 'codeSystemName' in element.attrib:
             code_system_name = element.attrib['codeSystemName']
             if code_system_name != vocabulary_id:
-                print(f"INFO **** != {vocabulary_id} != {code_system_name} *** different vocabulary_id & code_system names")
+                print((f"INFO **** != {vocabulary_id} != {code_system_name}"
+                      " *** different vocabulary_id & code_system names"))
 
         # displayName doesn't seem to always echo concept_name
         if 'displayName' in element.attrib:
@@ -104,34 +100,37 @@ def parse_code_element_to_omop(element):
 
         return (vocabulary_oid, vocabulary_id, concept_code, domain_id, class_id, concept_name, concept_id, code_system_name, display_name)
     elif 'code' in element.attrib:
-        return ('n/a', 'n/a', element.attrib['code'], 'n/a', 'n/a', 'n/a', 'n/a', code_system_name, display_name)
+        return ('n/a', 'n/a', element.attrib['code'], 'n/a', 
+                'n/a', 'n/a', 'n/a', code_system_name, display_name)
     else:
-        return ('n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a', 'n/a', code_system_name, display_name)
+        return ('n/a', 'n/a', 'n/a', 'n/a', 
+                'n/a', 'n/a', 'n/a', code_system_name, display_name)
 
 
 def snoop_tag(tag):
     ''' Looks for entities at the bottom (leaves) of the tree named with the given tag.
         Prints out all sorts of detail including attributes.
-        If the entity is a code entity, this function digs deeper and translates 
+        If the entity is a code entity, this function digs deeper and translates
         relevant attributes to OMOP.
     '''
     for path in pathGen(INPUT_FILENAME):
         if re.fullmatch(f".*/{tag}", path):
-            i=0
+            i = 0
             for element in tree.findall(path, ns):
-                trimmed_tag = re.sub(r"{.*}",'', element.tag)
+                trimmed_tag = re.sub(r"{.*}", '', element.tag)
                 print(f"{i} {path}")
                 if trimmed_tag == 'code':
                     parts = parse_code_element_to_omop(element)
-                    print(f"    {trimmed_tag}  {parts[1]} {parts[2]} {parts[3]} \"{parts[5]}\" {parts[6]} ")
+                    print((f"    {trimmed_tag}  {parts[1]} {parts[2]}"
+                          " {parts[3]} \"{parts[5]}\" {parts[6]} "))
                 else:
                     try:
                         print(f"{i} {path}")
-                        for attribute_name in element.attrib:  
+                        for attribute_name in element.attrib:
                             attribute_value = 'n/a'
                             try:
                                 attribute_value = element.get(attribute_name)
-                            except:
+                            except Exception:
                                 attribute_value = 'N/A'
                             print(f"    {trimmed_tag}  {attribute_name} {attribute_value}")
                     except RuntimeError as error:
@@ -140,19 +139,18 @@ def snoop_tag(tag):
             i += 1
 
 
-## -- Main --
+# -- Main --
 tree = ET.parse(args.filename)
 snoop_tag(args.tag)
 
-##snoop_tag("code") # code, CodeSystem, codeSystemName, displayName
+# snoop_tag("code") # code, CodeSystem, codeSystemName, displayName
 
 # TODO: what are the root OIDs equivalent to?
-#snoop_tag("id") # root and translation 
+# snoop_tag("id") # root and translation
 
-#snoop_tag("assignedEntity") # no attributes?
-#snoop_tag("assignedPerson") # no attributes?
+# snoop_tag("assignedEntity") # no attributes?
+# snoop_tag("assignedPerson") # no attributes?
 
 # Noteable
-#snoop_tag("patientRole") # 1 row, no attributesd
-#snoop_tag("patient") #1 row, no attributes, but interesting sub elements
-
+# snoop_tag("patientRole") # 1 row, no attributesd
+# snoop_tag("patient") #1 row, no attributes, but interesting sub elements

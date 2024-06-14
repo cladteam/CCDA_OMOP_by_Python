@@ -28,9 +28,9 @@ complex_mappings = {
    #  ("urn:oid:2.16.840.1.113883.6.238", "2186-5"):
    #       ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
    ("2.16.840.1.113883.6.238", "2186-5"):
-        ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
+       ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
    ("2.16.840.1.113883.6.238", None):
-        ("Ethnicity", "Hispanic", "Hispanic or Latino", 9998, 38003563)
+       ("Ethnicity", "Hispanic", "Hispanic or Latino", 9998, 38003563)
 }
 
 # possible "domain" sections under this (prefix omitted) path:
@@ -48,23 +48,19 @@ RESULTS = "2.16.840.1.113883.10.20.22.2.3.1"
 # social_history     ="2.16.840.1.113883.10.20.22.2.17"
 # encounters          ="2.16.840.1.113883.10.20.22.2.22.1"
 
-
-
-
-# typeId?
 # <typeId     root="2.16.840.1.113883.1.3" extension="POCD_HD000040"/>
 
 # OID --> (name, omop concept_id)
 oid_map = {
-'2.16.840.1.113883.1.11.19563': ('Personal Relationship Role Type Value Set', 0),
-'2.16.840.1.113883.5.111': ('RoleCode',0),
-'2.16.840.1.113883.5.4': ('ActCode', 0),
-'2.16.840.1.113883.5.6': ('ActClass', 0),
-'2.16.840.1.113883.6.1': ('LOINC', 44819139),
-'2.16.840.1.113883.6.101': ('NUCC', 44819137),
-'2.16.840.1.113883.6.12': ('CPT4', 0),
-'2.16.840.1.113883.6.259': ('HealthcareServiceLocation', 0),
-'2.16.840.1.113883.6.59': ('CVX', 0),
-'2.16.840.1.113883.6.88': ('RxNorm', 44819104),
-'2.16.840.1.113883.6.96': ('SNOMED', 32549),
+    '2.16.840.1.113883.1.11.19563': ('Personal Relationship Role Type Value Set', 0),
+    '2.16.840.1.113883.5.111': ('RoleCode',0),
+    '2.16.840.1.113883.5.4': ('ActCode', 0),
+    '2.16.840.1.113883.5.6': ('ActClass', 0),
+    '2.16.840.1.113883.6.1': ('LOINC', 44819139),
+    '2.16.840.1.113883.6.101': ('NUCC', 44819137),
+    '2.16.840.1.113883.6.12': ('CPT4', 0),
+    '2.16.840.1.113883.6.259': ('HealthcareServiceLocation', 0),
+    '2.16.840.1.113883.6.59': ('CVX', 0),
+    '2.16.840.1.113883.6.88': ('RxNorm', 44819104),
+    '2.16.840.1.113883.6.96': ('SNOMED', 32549),
 }

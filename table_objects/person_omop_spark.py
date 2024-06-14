@@ -49,7 +49,6 @@ class PersonOmopSpark:
             self.race_concept_id  is not None and \
             self.ethnicity_concept_id is not None
 
-
     def populate(self, person_id, gender_concept_id, birth_date_time,
                  race_concept_id, ethnicity_concept_id, location_id):
         """ accept attribute values and populate this instance """
@@ -72,7 +71,7 @@ class PersonOmopSpark:
         self.birth_date_time = birth_date_time       # integer Null
         self.race_concept_id = race_concept_id       # integer  not null
         self.ethnicity_concept_id = ethnicity_concept_id  # integer  not null
-        self.location_id = location_id # integer     # integer NULL
+        self.location_id = location_id  # integer     # integer NULL
         self.provider_id = None   # integer NULL,
         self.care_site_id = None  # integer NULL,
         self.person_source_value = None  # varchar(50) NULL,
@@ -82,7 +81,6 @@ class PersonOmopSpark:
         self.race_source_concept_id = None  # integer NULL,
         self.ethnicity_source_value = None  # varchar(50) NULL,
         self.ethnicity_source_concept_id = None  # integer NULL
-
 
     def insert(self):
         """ insert attriute values to database  """
@@ -120,12 +118,12 @@ class PersonOmopSpark:
         ethnicity_source_concept_id INT
     """
 
-
     # SCHEMA-level stuff
     @staticmethod
     def parse_time(datetime):
         """ parses a postgres formatted datetime into the separate
             integer fields year, month day """
+
         time_struct = time.strptime(datetime, '%Y-%m-%d')
         year = time.strftime('%Y', time_struct)
         month = time.strftime('%m', time_struct)
@@ -136,7 +134,7 @@ class PersonOmopSpark:
         """ loads an existing table from Spark """
         # https://www.programmerall.com/article/3196638561/
         print(">PERSON LOAD")
-        sql =  f"CREATE TABLE person ({PersonOmopSpark.person_schema}) " +\
+        sql = f"CREATE TABLE person ({PersonOmopSpark.person_schema}) " +\
             "USING PARQUET " +\
             "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/person'"
         person_df = self.spark.sql(sql)
@@ -165,7 +163,7 @@ class PersonOmopSpark:
         person_df.write \
             .mode("overwrite") \
             .parquet(self.dw_path + "/ccda_omop_spark_db.db/person")
-            # .saveAsTable("person")
+        #    .saveAsTable("person")
         print("PERSON CREATE> ", person_df.columns, person_df.count())
 
     # DICTIONARY to CSV and header (old-school?)
@@ -196,12 +194,12 @@ class PersonOmopSpark:
 
     def create_csv_line(self):
         """ creates a csv line (used?) """
-        print(f"{self.person_id}, {self.gender_concept_id}, " +
-               "{self.year_of_birth}, {self.month_of_birth}, {self.day_of_birth}, " +
-               "{self.birth_date_time}, " +
-               "{self.race_concept_id}, {self.ethnicity_concept_id}, {self.location_id}, "
-               "{self.provider_id}, {self.care_site_id}, {self.person_source_value}, " +
-               "{self.gender_source_value}, {self.gender_source_concept_id}, " +
-               "{self.race_source_value}, {self.race_source_concept_id}, " +
-               "{self.ethnicity_source_value}, {self.ethnicity_source_concept_id}")
 
+        print(f"{self.person_id}, {self.gender_concept_id}, " +
+              "{self.year_of_birth}, {self.month_of_birth}, {self.day_of_birth}, " +
+              "{self.birth_date_time}, " +
+              "{self.race_concept_id}, {self.ethnicity_concept_id}, {self.location_id}, "
+              "{self.provider_id}, {self.care_site_id}, {self.person_source_value}, " +
+              "{self.gender_source_value}, {self.gender_source_concept_id}, " +
+              "{self.race_source_value}, {self.race_source_concept_id}, " +
+              "{self.ethnicity_source_value}, {self.ethnicity_source_concept_id}")

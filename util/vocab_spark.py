@@ -5,8 +5,8 @@
 
 from pyspark.sql import SparkSession
 import os
-from util.vocab_map_file import  oid_map
-from util.vocab_map_file import  complex_mappings
+from util.vocab_map_file import oid_map
+from util.vocab_map_file import complex_mappings
 
 
 # FIX TODO, this is gross:
@@ -33,7 +33,6 @@ class VocabSpark(object):
         """
         self.spark = spark
         self.dw_path = dw_path
-        #self.VOCAB_FILE = '/Users/roederc/work/data/omop_vocabulary/CONCEPT.csv'
         self.VOCAB_FILE = './CONCEPT.csv'
 
         self.concept_schema = """
@@ -50,7 +49,6 @@ class VocabSpark(object):
         """
         print(f"INFO VocabSpark.__init__() path: {dw_path}")
 
-
     def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
         print(f"INFO VocabSpark.load_from_existing() path: {self.dw_path} cwd: {os.getcwd()}")
@@ -65,13 +63,14 @@ class VocabSpark(object):
             print(f"ERROR vocab did not load from existing files {self.dw_path}")  
             print(f"INFO load sql is {sql}")
         else:
-            print(f"INFO vocab seems to have loaded from  existing files {self.dw_path}")  
+            print(f"INFO vocab seems to have loaded from  existing files {self.dw_path}")
 
     def load_from_csv(self):
         print(f"INFO VocabSpark.load_from_csv() path: {self.dw_path} cwd: {os.getcwd()}")
-        vocab_df = self.spark.read.option('delimiter', '\t').csv(self.VOCAB_FILE, schema=self.concept_schema)
+        vocab_df = self.spark.read.option('delimiter', '\t').\
+            csv(self.VOCAB_FILE, schema=self.concept_schema)
         if (vocab_df.count() < 1):
-            print("ERROR vocab did not load from CSV") 
+            print("ERROR vocab did not load from CSV")
         else:
             print(f"INFO vocab seems to have loaded from  CSV  {self.dw_path}")  
             vocab_df.write \
@@ -81,26 +80,33 @@ class VocabSpark(object):
     @staticmethod
     def lookup_omop(spark, vocabulary_id, concept_code):
         """ returns an omop concpet_id from OMOP vocabulary and code values """
-        sql = f"SELECT concept_id from concept where vocabulary_id = '{vocabulary_id}' and concept_code = '{concept_code}'"
+        sql = (f"SELECT concept_id "
+               f"FROM concept "
+               f"WHERE vocabulary_id = '{vocabulary_id}' "
+               f"AND concept_code = '{concept_code}'")
         df = spark.sql(sql)
-        #print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
+        # print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
         try:
-            #print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
+            # print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
             return df.head()[0]
-        except:
+        except Exception:
             print("ERROR couldn't print df.head()[0], vocabulary likley not loaded")
             return None
 
     @staticmethod
     def lookup_omop_details(spark, vocabulary_id, concept_code):
         """ returns omop info from OMOP vocabulary and code values """
-        sql = f"SELECT vocabulary_id, concept_id, concept_name, domain_id, concept_class_id from concept where vocabulary_id = '{vocabulary_id}' and concept_code = '{concept_code}'"
+        sql = (f"SELECT vocabulary_id, concept_id, concept_name, domain_id, concept_class_id "
+               f"FROM concept "
+               f"WHERE vocabulary_id = '{vocabulary_id}'"
+               f"AND concept_code = '{concept_code}'")
         df = spark.sql(sql)
-        #print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
+        # print((f"INFO: looking up {vocabulary_id}:{concept_code} "
+        #        f"df is {df.count()} x {len(df.columns)}"))
         try:
-            #print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
+            # print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
             return df.head()
-        except:
+        except Exception:
             print("ERROR couldn't print df.head()[0], vocabulary likley not loaded")
             return None
 
@@ -116,4 +122,3 @@ class VocabSpark(object):
         concept_id = complex_mappings[(code_system, code)][3]
         print(f"INFO: complex mapping {code_system}:{code} and returning {concept_id}")
         return complex_mappings[(code_system, code)][3]
-
