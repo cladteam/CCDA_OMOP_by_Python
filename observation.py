@@ -52,8 +52,6 @@ def convert(tree):
             # observation_id = obs.find("id", ns).attrib['extension']
 
             observation_code = obs.find("code", ns)
-            # observation_concept_id = vocab_map_file.map_hl7_to_omop(
-            #    observation_code.attrib['codeSystem'], observation_code.attrib['code'])
             observation_concept_id = vocab_spark.map_hl7_to_omop(
                 observation_code.attrib['codeSystem'], observation_code.attrib['code'])
 

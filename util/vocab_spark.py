@@ -1,11 +1,15 @@
 
-# ~/work/data/omop_vocabulary
-# /Users/roederc/work/git_learn/learn_spark
+'''
+    This is a class representing the OMOP CONCEPT table.
+'''
 
 from pyspark.sql import SparkSession
 import os
 from util.vocab_map_file import  oid_map
+from util.vocab_map_file import  complex_mappings
 
+
+# FIX TODO, this is gross:
 def map_hl7_to_omop(code_system, code):
     spark = SparkSession.builder \
             .appName('CCDA_OMOP_ETL') \
@@ -46,19 +50,6 @@ class VocabSpark(object):
         """
         print(f"INFO VocabSpark.__init__() path: {dw_path}")
 
-    # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
-    # HL7: codeSyste, code --> OMOP: vocabulary_id, concept_code, name, concept_id
-    complex_mappings = {
-        ('2.16.840.1.113883.5.1', 'F'): ("Gender", 'F', "FEMALE", 8532),
-        ('2.16.840.1.113883.5.1', 'M'): ("Gender", 'M', "MALE", 8532),
-
-        ("2.16.840.1.113883.6.238", "2106-3"): ("Race", "5", "White", 8527),
-
-        ("2.16.840.1.113883.6.238", "2186-5"):
-            ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
-        ("2.16.840.1.113883.6.238", None):
-            ("Ethnicity", "Hispanic", "Hispanic or Latino", 9998, 38003563)
-    }
 
     def load_from_existing(self):
         # https://www.programmerall.com/article/3196638561/
@@ -122,7 +113,7 @@ class VocabSpark(object):
             print(f"INFO: omop  mapping {code_system}:{code} and returning {concept_id}")
             return concept_id
 
-        concept_id = VocabSpark.complex_mappings[(code_system, code)][3]
+        concept_id = complex_mappings[(code_system, code)][3]
         print(f"INFO: complex mapping {code_system}:{code} and returning {concept_id}")
-        return VocabSpark.complex_mappings[(code_system, code)][3]
+        return complex_mappings[(code_system, code)][3]
 

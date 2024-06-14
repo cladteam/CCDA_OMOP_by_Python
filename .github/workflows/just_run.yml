@@ -33,6 +33,12 @@ jobs:
           - name: Run ID Snooper
             run: |
                 python3 -m tools.code_snooper
+          - name: Run (generic) Snooper
+            run: |
+                python3 -m tools.snooper
+          - name: Run test_util_spark
+            run: |
+                python3 -m test_util_spark
     Lint-Flake8:
         runs-on: ubuntu-latest
         steps:

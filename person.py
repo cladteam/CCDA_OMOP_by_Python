@@ -8,7 +8,6 @@
 """
 
 
-# import vocab_map_file
 from util import vocab_spark
 from util.spark_util import SparkUtil
 from util.xml_ns import ns
