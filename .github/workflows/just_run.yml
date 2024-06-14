@@ -38,7 +38,7 @@ jobs:
                 python3 -m tools.snooper
           - name: Run test_util_spark
             run: |
-                python3 -m test_util_spark
+                python3 -m test_spark_util
     Lint-Flake8:
         runs-on: ubuntu-latest
         steps:
