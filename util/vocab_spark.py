@@ -86,7 +86,7 @@ class VocabSpark(object):
                f"AND concept_code = '{concept_code}'")
         df = spark.sql(sql)
         # print((f"INFO: looking up {vocabulary_id}:{concept_code}"
-                f" df is {df.count()} x {len(df.columns)}"))
+        #        f" df is {df.count()} x {len(df.columns)}"))
         try:
             # print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
             return df.head()[0]
