@@ -8,7 +8,6 @@ import xml.etree.ElementTree as ET  # https://docs.python.org/3/library/xml.etre
 import re  # https://docs.python.org/3.9/library/re.html
 
 
-
 def pathGen(fn):
     """ a visitor function to pass to ET.iterparse that builds the paths as
         the parser descends the tree.
