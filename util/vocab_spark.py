@@ -3,14 +3,18 @@
     This is a class representing the OMOP CONCEPT table.
 '''
 
-from pyspark.sql import SparkSession
 import os
+from pyspark.sql import SparkSession
 from util.vocab_map_file import oid_map
 from util.vocab_map_file import complex_mappings
 
 
-# FIX TODO, this is gross:
 def map_hl7_to_omop(code_system, code):
+    """
+       handy all-in-one fucntion for mapping from a hl7 oid and code
+       to an OMOP concept_id. 
+       FIX TODO, this is gross:
+    """
     spark = SparkSession.builder \
             .appName('CCDA_OMOP_ETL') \
             .master("local") \
@@ -19,7 +23,7 @@ def map_hl7_to_omop(code_system, code):
     return VocabSpark.map_hl7_to_omop(spark, code_system, code)
 
 
-class VocabSpark(object):
+class VocabSpark():
     """
     A place to keep the concept table initialization and re-load.
     maybe better as just a package. It feels a little Java-y
@@ -33,7 +37,7 @@ class VocabSpark(object):
         """
         self.spark = spark
         self.dw_path = dw_path
-        self.VOCAB_FILE = './CONCEPT.csv'
+        self.vocab_file = './CONCEPT.csv'
 
         self.concept_schema = """
             concept_id INT,
@@ -50,6 +54,9 @@ class VocabSpark(object):
         print(f"INFO VocabSpark.__init__() path: {dw_path}")
 
     def load_from_existing(self):
+        """ tries to load the OMOP concept table from an existing database
+        """
+
         # https://www.programmerall.com/article/3196638561/
         print(f"INFO VocabSpark.load_from_existing() path: {self.dw_path} cwd: {os.getcwd()}")
         sql = f"CREATE TABLE concept ({self.concept_schema}) " +\
@@ -59,17 +66,20 @@ class VocabSpark(object):
         #   "LOCATION '" + self.dw_path + "/ccda_omop_spark_db.db/concept'"
 
         df = self.spark.sql(sql)
-        if (df.count() < 1):
+        if df.count() < 1:
             print(f"ERROR vocab did not load from existing files {self.dw_path}")
             print(f"INFO load sql is {sql}")
         else:
             print(f"INFO vocab seems to have loaded from  existing files {self.dw_path}")
 
     def load_from_csv(self):
+        """ tries to load the OMOP concept table from a CSV file
+        """
+
         print(f"INFO VocabSpark.load_from_csv() path: {self.dw_path} cwd: {os.getcwd()}")
         vocab_df = self.spark.read.option('delimiter', '\t').\
-            csv(self.VOCAB_FILE, schema=self.concept_schema)
-        if (vocab_df.count() < 1):
+            csv(self.vocab_file, schema=self.concept_schema)
+        if vocab_df.count() < 1:
             print("ERROR vocab did not load from CSV")
         else:
             print(f"INFO vocab seems to have loaded from  CSV  {self.dw_path}")
@@ -79,7 +89,9 @@ class VocabSpark(object):
 
     @staticmethod
     def lookup_omop(spark, vocabulary_id, concept_code):
-        """ returns an omop concpet_id from OMOP vocabulary and code values """
+        """ returns an omop concpet_id from OMOP vocabulary and code values 
+        """
+
         sql = (f"SELECT concept_id "
                f"FROM concept "
                f"WHERE vocabulary_id = '{vocabulary_id}' "
@@ -96,7 +108,9 @@ class VocabSpark(object):
 
     @staticmethod
     def lookup_omop_details(spark, vocabulary_id, concept_code):
-        """ returns omop info from OMOP vocabulary and code values """
+        """ returns omop info from OMOP vocabulary and code values 
+        """
+
         sql = (f"SELECT vocabulary_id, concept_id, concept_name, domain_id, concept_class_id "
                f"FROM concept "
                f"WHERE vocabulary_id = '{vocabulary_id}'"
@@ -113,7 +127,9 @@ class VocabSpark(object):
 
     @staticmethod
     def map_hl7_to_omop(spark, code_system, code):
-        """ returns OMOP concept_id from HL7 codeSystem and code """
+        """ returns OMOP concept_id from HL7 codeSystem and code 
+        """
+
         if code_system in oid_map:
             vocabulary_id = oid_map[code_system][0]
             concept_id = VocabSpark.lookup_omop(spark, vocabulary_id, code)

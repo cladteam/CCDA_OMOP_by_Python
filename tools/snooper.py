@@ -40,11 +40,16 @@ parser.add_argument('-t', '--tag', default='code',
 args = parser.parse_args()
 
 
-# credit: https://stackoverflow.com/questions/68215347/
-#         capture-all-xml-element-paths-using-xml-etree-elementtree
-def pathGen(fn):
+def path_gen(filename):
+    '''
+        Generates tag paths to leaves in the XML tree from the file
+        whose name is passed in. 
+
+        credit: https://stackoverflow.com/questions/68215347/
+         capture-all-xml-element-paths-using-xml-etree-elementtree
+    '''
     path = []
-    it = ET.iterparse(fn, events=('start', 'end'))
+    it = ET.iterparse(filename, events=('start', 'end'))
     for evt, el in it:
         if evt == 'start':
             # trim off namespace stuff in curly braces
@@ -115,7 +120,7 @@ def snoop_tag(tag):
         If the entity is a code entity, this function digs deeper and translates
         relevant attributes to OMOP.
     '''
-    for path in pathGen(INPUT_FILENAME):
+    for path in path_gen(INPUT_FILENAME):
         if re.fullmatch(f".*/{tag}", path):
             i = 0
             for element in tree.findall(path, ns):

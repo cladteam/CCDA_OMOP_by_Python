@@ -33,15 +33,13 @@ for path in TU.pathGen(INPUT_FILENAME):
     if re.fullmatch(r".*/id", path):
         for id_element in tree.findall(path, ns):
 
-            root = "(none)"
             try:
                 root = id_element.attrib['root']
             except Exception:
-                pass   # print(f"{path}  -- no attributes, or not both --")
+                root = "(none)"
 
-            extension = "(none)"
             try:
                 extension = id_element.attrib['extension']
             except Exception:
-                pass   # print(f"{path}  -- no attributes, or not both --")
+                extension = "(none)"
             print(f"{path}  root:{root} extension:{extension}")

@@ -7,9 +7,9 @@
 """
 
 import argparse
+import re   # https://docs.python.org/3.9/library/re.html
 import xml.etree.ElementTree as ET  # https://docs.python.org/3/library/xml.etree.elementtree.html
 import tools.util as TU
-import re   # https://docs.python.org/3.9/library/re.html
 from util.xml_ns import ns
 from util.vocab_map_file import oid_map
 from util import spark_util
