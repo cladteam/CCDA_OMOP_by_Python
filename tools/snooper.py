@@ -43,7 +43,7 @@ args = parser.parse_args()
 def path_gen(filename):
     '''
         Generates tag paths to leaves in the XML tree from the file
-        whose name is passed in. 
+        whose name is passed in.
 
         credit: https://stackoverflow.com/questions/68215347/
          capture-all-xml-element-paths-using-xml-etree-elementtree
@@ -106,6 +106,7 @@ def parse_code_element_to_omop(element):
     # if this element is a person or patient, give some detail about elements below it.
         return (vocabulary_oid, vocabulary_id, concept_code, domain_id, class_id,
                 concept_name, concept_id, code_system_name, display_name)
+
     elif 'code' in element.attrib:
         return ('n/a', 'n/a', element.attrib['code'], 'n/a',
                 'n/a', 'n/a', 'n/a', code_system_name, display_name)

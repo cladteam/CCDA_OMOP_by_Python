@@ -12,13 +12,13 @@ from util.vocab_map_file import complex_mappings
 def map_hl7_to_omop(code_system, code):
     """
        handy all-in-one fucntion for mapping from a hl7 oid and code
-       to an OMOP concept_id. 
+       to an OMOP concept_id.
        FIX TODO, this is gross:
     """
     spark = SparkSession.builder \
-            .appName('CCDA_OMOP_ETL') \
-            .master("local") \
-            .getOrCreate()  # .config("spark.sql.warehouse.dir", self.DW_PATH) \
+        .appName('CCDA_OMOP_ETL') \
+        .master("local") \
+        .getOrCreate()  # .config("spark.sql.warehouse.dir", self.DW_PATH) \
 
     return VocabSpark.map_hl7_to_omop(spark, code_system, code)
 
@@ -89,7 +89,7 @@ class VocabSpark():
 
     @staticmethod
     def lookup_omop(spark, vocabulary_id, concept_code):
-        """ returns an omop concpet_id from OMOP vocabulary and code values 
+        """ returns an omop concpet_id from OMOP vocabulary and code values
         """
 
         sql = (f"SELECT concept_id "
@@ -108,7 +108,7 @@ class VocabSpark():
 
     @staticmethod
     def lookup_omop_details(spark, vocabulary_id, concept_code):
-        """ returns omop info from OMOP vocabulary and code values 
+        """ returns omop info from OMOP vocabulary and code values
         """
 
         sql = (f"SELECT vocabulary_id, concept_id, concept_name, domain_id, concept_class_id "
@@ -127,7 +127,7 @@ class VocabSpark():
 
     @staticmethod
     def map_hl7_to_omop(spark, code_system, code):
-        """ returns OMOP concept_id from HL7 codeSystem and code 
+        """ returns OMOP concept_id from HL7 codeSystem and code
         """
 
         if code_system in oid_map:

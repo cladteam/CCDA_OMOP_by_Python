@@ -48,7 +48,7 @@ class SparkUtil():
     # https://stackoverflow.com/questions/70700195/load-spark-bucketed-table-from-disk-previously-written-via-saveastable?rq=3
 
     def start(self):
-        """ sets up the tables used (deploy  might be a better name? TODO 
+        """ sets up the tables used (deploy  might be a better name? TODO
         """
         self.spark.sql("CREATE DATABASE ccda_omop_spark_db")
         self.spark.sql("USE ccda_omop_spark_db")

@@ -7,11 +7,15 @@
 import xml.etree.ElementTree as ET  # https://docs.python.org/3/library/xml.etree.elementtree.html
 import re  # https://docs.python.org/3.9/library/re.html
 
-# credit: https://stackoverflow.com/questions/68215347/
-#       capture-all-xml-element-paths-using-xml-etree-elementtree
 
 
 def pathGen(fn):
+    """ a visitor function to pass to ET.iterparse that builds the paths as
+        the parser descends the tree.
+
+        credit: https://stackoverflow.com/questions/68215347/
+        capture-all-xml-element-paths-using-xml-etree-elementtree
+    """
     path = []
     it = ET.iterparse(fn, events=('start', 'end'))
     for evt, el in it:
