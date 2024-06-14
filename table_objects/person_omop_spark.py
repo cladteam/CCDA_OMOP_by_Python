@@ -46,7 +46,7 @@ class PersonOmopSpark:
         return self.person_id is not None and \
             self.gender_concept_id is not None and \
             self.birth_date_time is not None and \
-            self.race_concept_id  is not None and \
+            self.race_concept_id is not None and \
             self.ethnicity_concept_id is not None
 
     def populate(self, person_id, gender_concept_id, birth_date_time,

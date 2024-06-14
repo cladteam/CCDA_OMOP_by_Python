@@ -46,7 +46,8 @@ for path in TU.pathGen(INPUT_FILENAME):
                            " \"{concept_name}\" domain:{domain_id} class:{class_id}"))
                 else:
                     print((f"{path}  vocab:{vocabulary_id} code:{concept_code} "
-                            "(code not available in OMOP vocabulary here)"))
+                          "(code not available in OMOP vocabulary here)"))
             except Exception:
-                print(f"{path}  -- no attributes, or not both -- oid:{vocabulary_oid}  code:{concept_code}")
+                print((f"{path}  -- no attributes, or not both --"
+                      f" oid:{vocabulary_oid}  code:{concept_code}"))
 

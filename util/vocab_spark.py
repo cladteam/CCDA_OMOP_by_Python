@@ -60,7 +60,7 @@ class VocabSpark(object):
 
         df = self.spark.sql(sql)
         if (df.count() < 1):
-            print(f"ERROR vocab did not load from existing files {self.dw_path}")  
+            print(f"ERROR vocab did not load from existing files {self.dw_path}")
             print(f"INFO load sql is {sql}")
         else:
             print(f"INFO vocab seems to have loaded from  existing files {self.dw_path}")
@@ -72,7 +72,7 @@ class VocabSpark(object):
         if (vocab_df.count() < 1):
             print("ERROR vocab did not load from CSV")
         else:
-            print(f"INFO vocab seems to have loaded from  CSV  {self.dw_path}")  
+            print(f"INFO vocab seems to have loaded from  CSV  {self.dw_path}")
             vocab_df.write \
                 .mode("overwrite") \
                 .saveAsTable("concept")   # .option("path", self.DW_PATH) \
@@ -85,7 +85,8 @@ class VocabSpark(object):
                f"WHERE vocabulary_id = '{vocabulary_id}' "
                f"AND concept_code = '{concept_code}'")
         df = spark.sql(sql)
-        # print(f"INFO: looking up {vocabulary_id}:{concept_code} df is {df.count()} x {len(df.columns)}")
+        # print((f"INFO: looking up {vocabulary_id}:{concept_code}"
+                f" df is {df.count()} x {len(df.columns)}"))
         try:
             # print(f"INFO: looking up {vocabulary_id}:{concept_code} and returning {df.head()[0]}")
             return df.head()[0]

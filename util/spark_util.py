@@ -96,7 +96,7 @@ class SparkUtil():
 #             ethnicity_source_value varchar(50) NULL,
 #             ethnicity_source_concept_id integer NULL );
 #         """
-# 
+#
 #     def _prep_observation(self):
 #         """ junk for later """
 #         schema = """
@@ -119,7 +119,7 @@ class SparkUtil():
 #             unit_source_value varchar(50) NULL,
 #             qualifier_source_value varchar(50) NULL );
 #         """
-# 
+#
 #     def _prep_location(self):
 #         """ junk for later """
 #         schema = """
@@ -132,7 +132,7 @@ class SparkUtil():
 #             county varchar(20) NULL,
 #             location_source_value varchar(50) NULL );
 #         """
-# 
+#
 #     def _prep_visit_occurrence(self):
 #         """ junk for later """
 #         schema = """

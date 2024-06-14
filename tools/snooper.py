@@ -59,6 +59,7 @@ def pathGen(fn):
         else:
             path.pop()
 
+
 def parse_code_element_to_omop(element):
     ''' given a code element from a CCDA document, this function converts
         its codeSystem OID to a vocabulary id, then uses it and the code
@@ -97,13 +98,13 @@ def parse_code_element_to_omop(element):
     # TODO
     # if this element is a section, give some detail
     # if this element is a person or patient, give some detail about elements below it.
-
-        return (vocabulary_oid, vocabulary_id, concept_code, domain_id, class_id, concept_name, concept_id, code_system_name, display_name)
+        return (vocabulary_oid, vocabulary_id, concept_code, domain_id, class_id,
+                concept_name, concept_id, code_system_name, display_name)
     elif 'code' in element.attrib:
-        return ('n/a', 'n/a', element.attrib['code'], 'n/a', 
+        return ('n/a', 'n/a', element.attrib['code'], 'n/a',
                 'n/a', 'n/a', 'n/a', code_system_name, display_name)
     else:
-        return ('n/a', 'n/a', 'n/a', 'n/a', 
+        return ('n/a', 'n/a', 'n/a', 'n/a',
                 'n/a', 'n/a', 'n/a', code_system_name, display_name)
 
 
