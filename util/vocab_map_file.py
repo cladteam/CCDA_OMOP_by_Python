@@ -27,10 +27,10 @@ complex_mappings = {
 
    #  ("urn:oid:2.16.840.1.113883.6.238", "2186-5"):
    #       ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
-   ("2.16.840.1.113883.6.238", "2186-5"):
-       ("Ethnicity", "Not Hispanic", "Not Hispanic or Latino", 38003564),
-   ("2.16.840.1.113883.6.238", None):
-       ("Ethnicity", "Hispanic", "Hispanic or Latino", 9998, 38003563)
+   ("2.16.840.1.113883.6.238", "2186-5"): ("Ethnicity", "Not Hispanic",
+                                           "Not Hispanic or Latino", 38003564)
+   # ("2.16.840.1.113883.6.238", None):
+   #    ("Ethnicity", "Hispanic", "Hispanic or Latino", 9998, 38003563)
 }
 
 # possible "domain" sections under this (prefix omitted) path:

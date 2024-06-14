@@ -50,4 +50,3 @@ for path in TU.pathGen(INPUT_FILENAME):
             except Exception:
                 print((f"{path}  -- no attributes, or not both --"
                       f" oid:{vocabulary_oid}  code:{concept_code}"))
-

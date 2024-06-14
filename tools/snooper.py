@@ -40,7 +40,8 @@ parser.add_argument('-t', '--tag', default='code',
 args = parser.parse_args()
 
 
-# credit: https://stackoverflow.com/questions/68215347/capture-all-xml-element-paths-using-xml-etree-elementtree
+# credit: https://stackoverflow.com/questions/68215347/
+#         capture-all-xml-element-paths-using-xml-etree-elementtree
 def pathGen(fn):
     path = []
     it = ET.iterparse(fn, events=('start', 'end'))
