@@ -46,13 +46,16 @@ parser = argparse.ArgumentParser(
     prog='CCDA - OMOP Code Snooper',
     description="finds all code elements and shows what concepts the represent",
     epilog='epilog?')
+
 parser.add_argument('-f', '--filename', default=INPUT_FILENAME,
                     help="filename to parse")
+
 parser.add_argument('-t', '--tag', default='code',
                     help="tag name to filter by. Try patient, assignedPerson or code")
 
 parser.add_argument('-v', '--verbose', default=False,
                     help="verbose output")
+
 parser.add_argument('-sh', '--shallow', default=False,
                     help="just shows the tags code parts, doesn't filter and dig deeper")
 # Sections:
@@ -107,13 +110,15 @@ def parse_code_element_to_omop(element):
     display_name = 'n/a'
     if 'codeSystem' in element.attrib:
         vocabulary_oid = element.attrib['codeSystem']
-        vocabulary_id = oid_map[vocabulary_oid][0]
+        vocabulary_id = "n/a"
+        if vocabulary_oid in  oid_map:
+            vocabulary_id = oid_map[vocabulary_oid][0]
         concept_code = element.attrib['code']
 
         # codeSystemName should echo vocabulary_id
         if 'codeSystemName' in element.attrib:
             code_system_name = element.attrib['codeSystemName']
-            if code_system_name != vocabulary_id:
+            if code_system_name != vocabulary_id and args.verbose:
                 print((f"INFO **** != {vocabulary_id} != {code_system_name}"
                       " *** different vocabulary_id & code_system names"))
 
@@ -158,20 +163,20 @@ def element_has_specific_code(element, codeSystem, code):
         code_element = element.find('code', ns)
     if code_element is None:
         print(f"element_has_specific_code FALSE {element.tag}")
-        return False
+        return None
 
     if 'code' in code_element.attrib and 'codeSystem' in code_element.attrib:
         if code_element.attrib['code'] == code  and \
                code_element.attrib['codeSystem'] == codeSystem :
             if args.verbose:
                 print(f"element_has_specific_code and both match {code_element.attrib} {code} {codeSystem}")
-            return True
+            return code_element
         elif args.verbose:
             print(f"element_has_specific_code both do not matchFALSE {code_element.attrib} {code} {codeSystem}")
     elif args.verbose:
         print(f"element_has_specific_code does not have code and codeSystem attributes {code_element.attrib}")
 
-    return False
+    return None
 
 def element_has_code(element):
     """ Checks to see if the passed-in element has a sub element named code.
@@ -199,19 +204,21 @@ def element_has_code(element):
 # LOINC code maps to a list of tuples. Each tuple has a name and path.
 # MED PROC?   section/entry/substanceAdministration/entryRelationship/act/code
 section_metadata = {
-    '11369-6' : [('immunizations', 
-                  "section/entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial/code")],
-    '46240-8' : [('encounters', 
-                  "section/entry/encounter/code")],
+    '11369-6' : [ ('immunizations', 
+                  "section/entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial/code") ],
+    '46240-8' : [ ('encounters', "section/entry/encounter/code") ],
     '10160-0' : [
         ('medications', 
          "section/entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial/code"),
         ('medications', 
          "section/entry/substanceAdministration/entryRelationship/supply/product/manufacturedProduct/manufacturedMaterial/code") 
     ],
-    '47519-4' : [('procedures', "section/entry/procedure/code")],
-    '30954-2' : [('results', "section/entry/organizer/component/observation/code")],
-    '8716-3' : [('vital signs', "section/entry/organizer/component/observation/code")]
+    '47519-4' : [ ('procedures', "section/entry/procedure/code") ],
+    '30954-2' : [ 
+                  # ('results', "./{urn:hl7-org:v3}entry/{urn:hl7-org:v3}organizer/{urn:hl7-org:v3}component/{urn:hl7-org:v3}observation/{urn:hl7-org:v3}code") ,
+                  ('results', "./entry/organizer/component/observation"),
+    ],
+    '8716-3' : [ ('vital signs', "section/entry/organizer/component/observation/code") ]
 }
 
 def dump_element(section_element, code):
@@ -227,10 +234,15 @@ def dump_element(section_element, code):
     for path_tuple in section_metadata[code]:
         section_name = path_tuple[0] 
         path = path_tuple[1] 
-        for code_element in element.find(path):
-           parts = parse_code_element_to_omop(code_element)
-           print((f"    {trimmed_tag}  {parts[1]} {parts[2]}"
-                   " {parts[3]} \"{parts[5]}\" {parts[6]} "))
+        print(f"{code} {section_element.tag} {section_element.attrib}")
+        print(f"   {section_name}  \"{path}\" ")
+        parts = section_element.find(path, ns)
+        if parts is not None:
+            for element in parts:
+                parts = parse_code_element_to_omop(element)
+                print((f"     {parts[1]} {parts[2]}"
+                       f" {parts[3]} \"{parts[5]}\" {parts[6]} "))
+            print("\n")
 
 def snoop_tag(tag, codeSystem, code):
     ''' Looks for entities at the bottom (leaves) of the tree named with the given tag.
@@ -239,12 +251,15 @@ def snoop_tag(tag, codeSystem, code):
         relevant attributes to OMOP.
         if the entity is some other entity it looks for a code and only
         continues with those whose codeSystem/code match
+
+        return (vocabulary_oid, vocabulary_id, concept_code, domain_id, class_id,
+                concept_name, concept_id, code_system_name, display_name)
     '''
     for path in path_gen(INPUT_FILENAME):
         if re.fullmatch(f".*/{tag}", path):
             i = 0
             for element in tree.findall(path, ns):
-                print(f"{i} {tag} {code} {path} ")
+                # #################print(f"{i} {tag} {code} {path} ")
                 trimmed_tag = re.sub(r"{.*}", '', element.tag)
                 if trimmed_tag == 'code':
                     parts = parse_code_element_to_omop(element)
@@ -255,28 +270,20 @@ def snoop_tag(tag, codeSystem, code):
                         code_element = element_has_code(element)
                         if code_element is not None:
                             parts = parse_code_element_to_omop(code_element)
-                            print((f"   {tag}    {trimmed_tag}  {parts[1]} {parts[2]}"
-                                   f" {parts[3]} \"{parts[5]}\" {parts[6]} "))
+                            print((f"   tag:{tag} vocab:{parts[1]} code:{parts[2]}"
+                                   f" domain:{parts[3]} name:\"{parts[5]}\" concept_id:{parts[6]} "))
                             print("\n")
                         elif args.verbose:
                             print(f"shallow, no code {element.tag} {element.attrib}")
                 
                     else:
-                        if element_has_specific_code(element, codeSystem, code):
-                            try:
-                                for attribute_name in element.attrib:
-                                    attribute_value = 'n/a'
-                                    try:
-                                        attribute_value = element.get(attribute_name)
-                                    except Exception:
-                                        attribute_value = 'N/A'
-                                    print(f"    {trimmed_tag}  {attribute_name} {attribute_value}")
-                            except RuntimeError as error:
-                                print(error)
-                                print(f"{i} {path}  -- no attributes, or not both -- ")
+                        code_element = element_has_specific_code(element, codeSystem, code)
+                        if code_element is not None:
+                            dump_element(element, code)
                         elif args.verbose:
                             trimmed_tag = re.sub(r"{.*}", '', element.tag)
-                            print(f"     no specific code element? {trimmed_tag} {path} {codeSystem} {code}")
+                            print(f"     no specific code element? tag:{trimmed_tag} path:{path} target vocab:{codeSystem} target code:{code}")
+                            print(f"     {element.tag} {element.attrib}")
             i += 1
 
 
