@@ -28,6 +28,16 @@
         Finds all paths to "sections" elements, 
         checking/filtering that a code element immediately below has the specified codesystema and code, 
         then shows specific detail specifed in metadata below
+
+BUG
+TODO  with the path './entry/organizer/component/observation, it keeps finding the same observation
+      over and over. You need to find a component, stop and then find all the observations from
+      that point on. There are three observations, HGB, ? and ? under the entry/organizer/component
+      where the entry is for results. We get quite a bit more than 3 repeats of HGB though, so 
+      some how it's trigged by more parts higher up the path as well....and finds HGB each time.
+      The path is just tag names, it's not full-on instances.
+
+
 """
 
 import argparse
@@ -38,7 +48,8 @@ from util.vocab_map_file import oid_map
 from util import spark_util
 from util.vocab_spark import VocabSpark
 
-INPUT_FILENAME = 'resources/CCDA_CCD_b1_InPatient_v2.xml'
+#INPUT_FILENAME = 'resources/CCDA_CCD_b1_InPatient_v2.xml'
+INPUT_FILENAME = 'resources/CCDA_CCD_b1_Ambulatory_v2.xml'
 spark_util_object = spark_util.SparkUtil()
 spark = spark_util_object.get_spark()
 
@@ -214,10 +225,8 @@ section_metadata = {
          "section/entry/substanceAdministration/entryRelationship/supply/product/manufacturedProduct/manufacturedMaterial/code") 
     ],
     '47519-4' : [ ('procedures', "section/entry/procedure/code") ],
-    '30954-2' : [ 
-                  # ('results', "./{urn:hl7-org:v3}entry/{urn:hl7-org:v3}organizer/{urn:hl7-org:v3}component/{urn:hl7-org:v3}observation/{urn:hl7-org:v3}code") ,
-                  ('results', "./entry/organizer/component/observation"),
-    ],
+    '30954-2' : [ ('results', "./entry/organizer/component/observation") ],
+# BUG there are multiple components, each with an observation. Does the path need broken there?
     '8716-3' : [ ('vital signs', "section/entry/organizer/component/observation/code") ]
 }
 
@@ -230,19 +239,24 @@ def dump_element(section_element, code):
          The idea here is to explore domains and domain_id mapping.
          Not to go deeper with values or dates.
     """
-
+    print("        dump_element >>>>>>>>>")
     for path_tuple in section_metadata[code]:
         section_name = path_tuple[0] 
         path = path_tuple[1] 
-        print(f"{code} {section_element.tag} {section_element.attrib}")
-        print(f"   {section_name}  \"{path}\" ")
-        parts = section_element.find(path, ns)
-        if parts is not None:
-            for element in parts:
+        trimmed_section_tag = re.sub(r"{.*}", '', section_element.tag)
+        print(f"{trimmed_section_tag} {code} \"{section_name}\"  \"{path}\" ")
+        print(f"            path_tuple >>>>> {path_tuple}")
+        for element in section_element.find(path, ns):
+            print(f"                element >>>>> {element.tag} {element.attrib}")
+            trimmed_tag = re.sub(r"{.*}", '', element.tag)
+            if trimmed_tag == 'code':  # because I couldn't get it to work with code at the end of the path?
                 parts = parse_code_element_to_omop(element)
-                print((f"     {parts[1]} {parts[2]}"
-                       f" {parts[3]} \"{parts[5]}\" {parts[6]} "))
-            print("\n")
+                print((f"{path} {trimmed_tag}  {element.attrib} "))
+                print((f"   {parts[1]} {parts[2]} {parts[3]} \"{parts[5]}\" {parts[6]} "))
+            print("                element <<<<<<< ")
+        print("            path_tuple <<<<<<< ")
+        print("\n")
+    print("        dump_element <<<<<<< ")
 
 def snoop_tag(tag, codeSystem, code):
     ''' Looks for entities at the bottom (leaves) of the tree named with the given tag.
@@ -258,7 +272,9 @@ def snoop_tag(tag, codeSystem, code):
     for path in path_gen(INPUT_FILENAME):
         if re.fullmatch(f".*/{tag}", path):
             i = 0
+            print(path)
             for element in tree.findall(path, ns):
+                print(f"    {element.tag} {element.attrib}")
                 # #################print(f"{i} {tag} {code} {path} ")
                 trimmed_tag = re.sub(r"{.*}", '', element.tag)
                 if trimmed_tag == 'code':
@@ -284,6 +300,8 @@ def snoop_tag(tag, codeSystem, code):
                             trimmed_tag = re.sub(r"{.*}", '', element.tag)
                             print(f"     no specific code element? tag:{trimmed_tag} path:{path} target vocab:{codeSystem} target code:{code}")
                             print(f"     {element.tag} {element.attrib}")
+                print("    element -------------------")
+            print("path -------------------")
             i += 1
 
 
