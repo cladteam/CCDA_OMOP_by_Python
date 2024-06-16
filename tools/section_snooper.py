@@ -13,7 +13,8 @@ from util.vocab_map_file import oid_map
 from util import spark_util
 from util.vocab_spark import VocabSpark
 
-INPUT_FILENAME = 'resources/CCDA_CCD_b1_InPatient_v2.xml'
+# INPUT_FILENAME = 'resources/CCDA_CCD_b1_InPatient_v2.xml'
+INPUT_FILENAME = 'resources/CCDA_CCD_b1_Ambulatory_v2.xml'
 spark_util_object = spark_util.SparkUtil()
 spark = spark_util_object.get_spark()
 
@@ -30,7 +31,22 @@ tree = ET.parse(INPUT_FILENAME)
 SECTION_PATH = "./component/structuredBody/component/section"
 SECTION_CODE = "./code"
 #OBSERVATION_SECTION_CODE = "./code[@code=\"30954-2\"]"
-OBSERVATION_PATH = "./entry/organizer/component/observation"
+
+section_metadata = {
+    '11369-6' : [ "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" ],
+    '46240-8' : [ "./entry/encounter" ],
+    '10160-0' : [
+         "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial",
+         "./entry/substanceAdministration/entryRelationship/supply/product/manufacturedProduct/manufacturedMaterial" ],
+    '10183-2' : [
+         "./entry/act/",
+         "./entry/act/entryRelationship/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial",
+         "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity",
+         "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity/representedOrganization"],
+    '47519-4' : [ "./entry/procedure" ],
+    '30954-2' : [ "./entry/organizer/component/observation" ],
+    '8716-3' :  [ "./entry/organizer/component/observation" ],
+}
 
 section_elements = tree.findall(SECTION_PATH, ns)
 print("\n\n")
@@ -38,62 +54,55 @@ print("\n\n")
 for section_element in section_elements:
 
     section_type=''
-    #for section_code_element in section_element.findall(OBSERVATION_SECTION_CODE, ns):
+    section_code=''
+    #section_code_element = section_element.find(SECTION_CODE, ns)  # just a find doesn't work
     for section_code_element in section_element.findall(SECTION_CODE, ns):
         if 'displayName' in section_code_element.attrib:
             section_type = section_code_element.attrib['displayName']
         elif 'code' in section_code_element.attrib:
             section_type = section_code_element.attrib['code']
+        section_code = section_code_element.attrib['code']
 
-    # just a find doesn't work
-    #section_code_element = section_element.find(OBSERVATION_SECTION_CODE, ns)
+    print(f"SECTION {section_type} {section_code}")
+    section_code = section_code_element.attrib['code']
+    if section_code is not None and section_code in section_metadata:
+        for entity_path in section_metadata[section_code]:
+            print(f"  {entity_path}")
+            for entity in section_element.findall(entity_path, ns):
+                print(f"    {section_type} {section_code}, ", end='')
 
-    for observation in section_element.findall(OBSERVATION_PATH, ns):
-        print(f"{section_type}, ", end='')
-        for code_element in observation.findall('./code', ns):
-            vocabulary_id = oid_map[code_element.attrib['codeSystem']][0]
-            print(f"{code_element.attrib['displayName']}, {vocabulary_id}, {code_element.attrib['code']},", end=' ')
+                # effectiveTime
+                for time_element in entity.findall('./effectiveTime', ns):
+                     print(f"{time_element.attrib}", end="")
 
-        display_string=""
-        for value_element in observation.findall('./value', ns):
-            if 'value' in value_element.attrib: 
-                display_string = f"{display_string}, {value_element.attrib['value']} "
-            else:
-                display_string = f"{display_string}, None "
-            if 'unit' in value_element.attrib: 
-                display_string = f"{display_string}, {value_element.attrib['unit']}  "
-            else:
-                display_string = f"{display_string}, None "
-            if 'xsi:type' in value_element.attrib: 
-                display_string = f"{display_string}, {value_element.attrib['xsi:type']} "
-            else:
-                display_string = f"{display_string}, None "
-        print(display_string, end='')
-        print("")
-    
+                # referenceRange
+
+                # ID
+                for id_element in entity.findall('./id', ns):
+                    if 'root' in id_element:
+                         print(f"{id_element.attrib['root']}", end="")
+                    if 'translation' in id_element:
+                         print(f" {id_element.attrib['translation']},", end=' ')
+                # CODE
+                for code_element in entity.findall('./code', ns):
+                    vocabulary_id = oid_map[code_element.attrib['codeSystem']][0]
+                    print(f"{code_element.attrib['displayName']}, {vocabulary_id}, {code_element.attrib['code']},", end=' ')
+       
+                # VALUE 
+                display_string=""
+                for value_element in entity.findall('./value', ns):
+                    if 'value' in value_element.attrib: 
+                        display_string = f"{display_string}, {value_element.attrib['value']} "
+                    else:
+                        display_string = f"{display_string}, None "
+                    if 'unit' in value_element.attrib: 
+                        display_string = f"{display_string}, {value_element.attrib['unit']}  "
+                    else:
+                        display_string = f"{display_string}, None "
+                    if 'xsi:type' in value_element.attrib: 
+                        display_string = f"{display_string}, {value_element.attrib['xsi:type']} "
+                    else:
+                        display_string = f"{display_string}, None "
+                print(display_string, end='')
+                print("")
         
-
-
-
-
-
-uselese = """
-        for code_element in tree.findall(path, ns):
-            try:
-                vocabulary_oid = code_element.attrib['codeSystem']
-                vocabulary_id = oid_map[vocabulary_oid][0]
-                concept_code = code_element.attrib['code']
-                details = VocabSpark.lookup_omop_details(spark, vocabulary_id, concept_code)
-                if details is not None:
-                    concept_name = details[2]
-                    domain_id = details[3]
-                    class_id = details[4]
-                    print((f"{path}  vocab:{vocabulary_id} code:{concept_code}"
-                           " \"{concept_name}\" domain:{domain_id} class:{class_id}"))
-                else:
-                    print((f"{path}  vocab:{vocabulary_id} code:{concept_code} "
-                          "(code not available in OMOP vocabulary here)"))
-            except Exception:
-                print((f"{path}  -- no attributes, or not both --"
-                      f" oid:{vocabulary_oid}  code:{concept_code}"))
-"""
