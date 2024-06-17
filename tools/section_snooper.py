@@ -30,22 +30,60 @@ tree = ET.parse(INPUT_FILENAME)
 
 SECTION_PATH = "./component/structuredBody/component/section"
 SECTION_CODE = "./code"
-#OBSERVATION_SECTION_CODE = "./code[@code=\"30954-2\"]"
+# OBSERVATION_SECTION_CODE = "./code[@code=\"30954-2\"]"
+
+
+entity_metadata = {  # can be recursive, hopefully not looping
+    'observation' : [ 'id', 'code', 'effectvieTime', 'value', referenceRange/observationRange ],
+    'procedure' : [ 'id', 'code', 'effectiveTime', 'targetSite', 'performer', 'participant']
+    'encounter' : ['id', 'code', 'effectiveTime', 'performer/assignedEntity', 'participant/participantRole', # provider, care_site
+                    'entryRelationship/observation', 'entryRelationship/act']
+    'act' : [ 'id', 'code', 'entryRelationship/observation' ]
+
+    'performer/assignedEntity'; [ 'id', 'code'],
+    'participant/participantRole': [ 'code', 'addr', 'telecom', 'playingEntity']
+    'entryRelationship/observation' : see obserg
+    'entryRelationship/act'  : see act
+}
 
 section_metadata = {
-    '11369-6' : [ "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" ],
-    '46240-8' : [ "./entry/encounter" ],
-    '10160-0' : [
-         "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial",
-         "./entry/substanceAdministration/entryRelationship/supply/product/manufacturedProduct/manufacturedMaterial" ],
-    '10183-2' : [
-         "./entry/act/",
-         "./entry/act/entryRelationship/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial",
-         "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity",
-         "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity/representedOrganization"],
-    '47519-4' : [ "./entry/procedure" ],
-    '30954-2' : [ "./entry/organizer/component/observation" ],
-    '8716-3' :  [ "./entry/organizer/component/observation" ],
+    '46240-8' : { # ECOUNTERS, HISTORY OF
+        "./entry/encounter"  : [ 'encounter' ]
+    },
+
+    '11369-6' : { # IMMUNIZATION ***
+        "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" 
+    {,
+
+    '10160-0' : { # MEDICATIONS, HISTORY OF ***
+         "./entry/substanceAdministration/" : [ "consumable/manufacturedProduct/manufacturedMaterial",
+                                                "performer",
+                                                "entryRelationship/observation",
+                                                "entryRelationship/supply/product/manufacturedProduct/manufacturedMaterial" ]
+    },
+
+    '10183-2' : { # HOSPITAL DISCHARGE ****
+         "./entry/act/" :[id, code, effectiveTime, entryRelationship/substanceAdministration ],
+         "./entry/act/entryRelationship/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" :[],
+         "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity" :[],
+         "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity/representedOrganization" :[]
+    },
+
+    '47519-4' : { # PROCEDURES, HISTORY OF
+        "./entry/procedure" :[ 'procedure' ]
+    },
+
+    '474020-5' : { # FUNCTIONAL STATUS (observations)
+        "./entry/observation" :  [ 'observation'] 
+    },
+
+    '30954-2' : { # RESULTS
+        "./entry/organizer/component/observation"  :[ 'observation' ] # may be multiple components
+    },
+
+    '8716-3' :  { # VITAL SIGNS
+        "./entry/organizer/component/observation" : [ 'observation' ] # may be multiple components
+    },
 }
 
 section_elements = tree.findall(SECTION_PATH, ns)
