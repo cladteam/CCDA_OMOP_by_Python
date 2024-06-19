@@ -32,19 +32,19 @@ SECTION_PATH = "./component/structuredBody/component/section"
 SECTION_CODE = "./code"
 # OBSERVATION_SECTION_CODE = "./code[@code=\"30954-2\"]"
 
-
-entity_metadata = {  # can be recursive, hopefully not looping
-    'observation' : [ 'id', 'code', 'effectvieTime', 'value', referenceRange/observationRange ],
-    'procedure' : [ 'id', 'code', 'effectiveTime', 'targetSite', 'performer', 'participant']
-    'encounter' : ['id', 'code', 'effectiveTime', 'performer/assignedEntity', 'participant/participantRole', # provider, care_site
-                    'entryRelationship/observation', 'entryRelationship/act']
-    'act' : [ 'id', 'code', 'entryRelationship/observation' ]
-
-    'performer/assignedEntity'; [ 'id', 'code'],
-    'participant/participantRole': [ 'code', 'addr', 'telecom', 'playingEntity']
-    'entryRelationship/observation' : see obserg
-    'entryRelationship/act'  : see act
-}
+#UNUSED
+###entity_metadata = {  # can be recursive, hopefully not looping
+###    'observation' : [ 'id', 'code', 'effectvieTime', 'value', referenceRange/observationRange ],
+###    'procedure' : [ 'id', 'code', 'effectiveTime', 'targetSite', 'performer', 'participant']
+###    'encounter' : ['id', 'code', 'effectiveTime', 'performer/assignedEntity', 'participant/participantRole', # provider, care_site
+###                    'entryRelationship/observation', 'entryRelationship/act']
+###    'act' : [ 'id', 'code', 'entryRelationship/observation' ]
+###
+###    'performer/assignedEntity'; [ 'id', 'code'],
+###    'participant/participantRole': [ 'code', 'addr', 'telecom', 'playingEntity']
+###    'entryRelationship/observation' : see obserg
+###    'entryRelationship/act'  : see act
+###}
 
 section_metadata = {
     '46240-8' : { # ECOUNTERS, HISTORY OF
