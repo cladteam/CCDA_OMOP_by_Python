@@ -1,0 +1,1444 @@
+<ClinicalDocument xmlns="urn:hl7-org:v3">
+    <realmCode code="US" />
+    <typeId root="2.16.840.1.113883.1.3" extension="POCD_HD000040" />
+    <templateId root="2.16.840.1.113883.10.20.22.1.1" />
+    <templateId root="2.16.840.1.113883.10.20.22.1.2" />
+    <templateId root="2.16.840.1.113883.10.20.3" />
+    <templateId root="2.16.840.1.113883.3.88.11.32.1" />
+    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.1" />
+    <id extension="MDQ2NGU0NTctYzNmZi00ZmM5LTg0ZDUtZDcwODdiZTMwOWQz" root="2.16.840.1.113883.3.651.2.1" />
+    <code code="34133-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Summarization Of Episode" />
+    <title>Summarization Of Episode</title>
+    <effectiveTime value="20180216101411" />
+    <confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" displayName="Normal" />
+    <languageCode code="en-US" />
+    <setId nullFlavor="NA" />
+    <versionNumber nullFlavor="NA" />
+    <recordTarget>
+        <patientRole>
+            <id extension="79559712" root="2.16.840.1.113883.3.651.2.1" />
+            <addr>
+                <streetAddressLine>1021 MAIN ST</streetAddressLine>
+                <city>COLUMBIA</city>
+                <state>MD</state>
+                <postalCode>21045</postalCode>
+            </addr>
+            <telecom nullFlavor="UNK" />
+            <patient>
+                <name>
+                    <family>CADENCE</family>
+                    <given>ANNA</given>
+                    <given></given>
+                </name>
+                <administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1" codeSystemName="Administrative Gender" displayName="F">
+                    <originalText>Female</originalText>
+                    <translation code="F" codeSystem="2.16.840.1.113883.5.1" codeSystemName="AdministrativeGenderCode" displayName="F" />
+                </administrativeGenderCode>
+                <birthTime value="19811116120000" />
+                <maritalStatusCode nullFlavor="UNK" />
+                <religiousAffiliationCode nullFlavor="UNK" />
+                <raceCode nullFlavor="UNK" />
+                <ethnicGroupCode nullFlavor="UNK" />
+                <languageCommunication>
+                    <templateId assigningAuthorityName="IHE PCC" root="1.3.6.1.4.1.19376.1.5.3.1.2.1" />
+                    <languageCode code="en" />
+                    <preferenceInd value="false" />
+                </languageCommunication>
+            </patient>
+        </patientRole>
+    </recordTarget>
+    <author>
+        <time value="20211022020237+0000" />
+        <assignedAuthor>
+            <id extension="DIL-SITE" root="2.16.840.1.113883.3.651.2.1" />
+            <addr nullFlavor="UNK" />
+            <telecom nullFlavor="UNK" />
+            <assignedPerson>
+                <name />
+            </assignedPerson>
+            <representedOrganization>
+                <id extension="DIL-SITE" root="2.16.840.1.113883.3.651.2.1" />
+                <name>CRISP</name>
+                <telecom nullFlavor="UNK" />
+                <addr nullFlavor="UNK" />
+            </representedOrganization>
+        </assignedAuthor>
+    </author>
+    <dataEnterer>
+        <time value="20211022100237-0400" />
+        <assignedEntity>
+            <id extension="DIL-SITE" root="2.16.840.1.113883.3.651.2.1" />
+            <addr nullFlavor="UNK" />
+            <telecom nullFlavor="UNK" />
+            <assignedPerson>
+                <name />
+            </assignedPerson>
+            <representedOrganization>
+                <id extension="DIL-SITE" root="2.16.840.1.113883.3.651.2.1" />
+                <name>DIL-SITE</name>
+                <telecom nullFlavor="UNK" />
+                <addr nullFlavor="UNK" />
+            </representedOrganization>
+        </assignedEntity>
+    </dataEnterer>
+    <custodian>
+        <assignedCustodian>
+            <representedCustodianOrganization>
+                <id extension="DIL-SITE" root="2.16.840.1.113883.3.651.2.1" />
+                <name>DIL-SITE</name>
+                <telecom nullFlavor="UNK" />
+                <addr nullFlavor="UNK" />
+            </representedCustodianOrganization>
+        </assignedCustodian>
+    </custodian>
+    <documentationOf typeCode="DOC">
+        <serviceEvent classCode="PCPR">
+            <effectiveTime>
+                <low value="20010129000000-0500" />
+                <high value="20161207092500-0500" />
+            </effectiveTime>
+        </serviceEvent>
+    </documentationOf>
+    <component>
+        <structuredBody>
+            <component typeCode="COMP" contextConductionInd="true">
+                <section nullFlavor="NI" classCode="DOCSECT" moodCode="EVN">
+                    <templateId root="2.16.840.1.113883.10.20.22.2.4.1" extension="2015-08-01" />
+                    <templateId root="2.16.840.1.113883.10.20.22.2.4.1" />
+                    <code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital Signs" />
+                    <title representation="TXT" mediaType="text/plain">Vital Signs</title>
+                    <text mediaType="text/x-hl7-text+xml">
+                        <content ID="noVitalSigns">No documented vital signs.</content>
+                    </text>
+                </section>
+            </component>
+            <component typeCode="COMP" contextConductionInd="true">
+                <section nullFlavor="NI" classCode="DOCSECT" moodCode="EVN">
+                    <templateId root="2.16.840.1.113883.10.20.22.2.17" extension="2015-08-01" />
+                    <templateId root="2.16.840.1.113883.10.20.22.2.17" />
+                    <code code="29762-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Social History" />
+                    <title representation="TXT" mediaType="text/plain">Social History</title>
+                    <text mediaType="text/x-hl7-text+xml">
+                        <content ID="noSocialHistory">No documented social history.</content>
+                    </text>
+                </section>
+            </component>
+            <component typeCode="COMP" contextConductionInd="true">
+                <section nullFlavor="NI" classCode="DOCSECT" moodCode="EVN">
+                    <templateId root="2.16.840.1.113883.10.20.22.2.3.1" extension="2015-08-01" />
+                    <templateId root="2.16.840.1.113883.10.20.22.2.3.1" />
+                    <code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Results" />
+                    <title representation="TXT" mediaType="text/plain">Labs</title>
+                    <text mediaType="text/x-hl7-text+xml">
+                        <content ID="noLabs">No documented Labs.</content>
+                    </text>
+                </section>
+            </component>
+            <component typeCode="COMP" contextConductionInd="true">
+                <section nullFlavor="NI" classCode="DOCSECT" moodCode="EVN">
+                    <templateId root="2.16.840.1.113883.10.20.22.2.1.1" extension="2014-06-09" />
+                    <templateId root="2.16.840.1.113883.10.20.22.2.1.1" />
+                    <code code="10160-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HISTORY OF MEDICATION USE" />
+                    <title representation="TXT" mediaType="text/plain">Medications</title>
+                    <text mediaType="text/x-hl7-text+xml">
+                        <content ID="noMedications">No documented medications.</content>
+                    </text>
+                </section>
+            </component>
+            <component typeCode="COMP" contextConductionInd="true">
+                <section nullFlavor="NI" classCode="DOCSECT" moodCode="EVN">
+                    <templateId root="2.16.840.1.113883.10.20.22.2.6.1" extension="2015-08-01" />
+                    <templateId root="2.16.840.1.113883.10.20.22.2.6.1" />
+                    <code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+                    <title representation="TXT" mediaType="text/plain">Allergies</title>
+                    <text mediaType="text/x-hl7-text+xml">
+                        <content ID="noAllergies">No documented allergies.</content>
+                    </text>
+                </section>
+            </component>
+            <component typeCode="COMP" contextConductionInd="true">
+                <section classCode="DOCSECT" moodCode="EVN">
+                    <templateId root="2.16.840.1.113883.10.20.22.2.5.1" extension="2015-08-01" />
+                    <templateId root="2.16.840.1.113883.10.20.22.2.5.1" />
+                    <code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Problem list" />
+                    <title>Problems, Conditions, and Diagnoses</title>
+                    <text mediaType="text/x-hl7-text+xml">
+                        <table border="1" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Update Date</th>
+                                    <th>Source</th>
+                                    <th>Alert Text</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <content ID="problem0" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - THISISMYFIRSTTIME</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem1" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem2" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - WHATISDOINGON</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem3" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - MyLittleTechBoi</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem4" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - MyLittleTechBoi</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem5" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - MyLittleTechBoi</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem6" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - MyLittleTechBoi</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem7" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - lolololololol</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem8" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - lolololololol</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem9" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - lolololololol</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem10" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - lolololololol</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem11" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - lolololololol</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem12" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - ASDKJDHFDGJHGJKHGF</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem13" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - ASDKJDHFDGJHGJKHGF</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem14" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - ASDKJDHFDGJHGJKHGF</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem15" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - WHODIS</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem16" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - WHATINTHEWORLD</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem17" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - HelloWorld</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem18" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - OMFG</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem19" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - FooBar</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem20" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>Hopkins - Department2</td>
+                                    <td>This is a care alert test narrative</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <content ID="problem21" />
+                                    </td>
+                                    <td>11/08/2019</td>
+                                    <td>Hopkins - Department1</td>
+                                    <td>This is a care alert test narrative</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </text>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem0" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem1" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem2" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem3" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem4" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem5" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem6" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem7" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem8" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem9" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem10" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem11" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem12" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem13" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem14" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem15" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem16" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem17" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem18" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem19" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem20" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                    <entry xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                        <act classCode="ACT" moodCode="EVN">
+                            <templateId root="2.16.840.1.113883.10.20.1.27" />
+                            <templateId root="2.16.840.1.113883.3.88.11.83.7" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" />
+                            <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" />
+                            <id root="2A04995F-70A8-486C-8612-ABEEE83518BE" />
+                            <code nullFlavor="NA" />
+                            <!-- status of careAlert -->
+                            <statusCode code="active" />
+                            <effectiveTime>
+                                <!-- Period.start (createDateTime) from CA -->
+                                <low value="20191108120000" />
+                                <!-- <high value='20191220000000'/>-->
+                            </effectiveTime>
+                            <entryRelationship typeCode="SUBJ" inversionInd="false">
+                                <observation classCode="OBS" moodCode="EVN">
+                                    <templateId root="2.16.840.1.113883.10.20.1.28" />
+                                    <templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" />
+                                    <id root="9406BBE0-6316-4E27-A0C7-D7B17FB1E8E6" />
+                                    <code nullFlavor="NA" />
+                                    <text>
+                                        <!-- reference to table entry -->
+                                        <reference value="#problem21" />
+                                    </text>
+                                    <!-- Must be 'completed' -->
+                                    <statusCode code="completed" />
+                                    <effectiveTime>
+                                        <!-- Period.start (createDateTime) from CA -->
+                                        <low value="20191108120000" />
+                                    </effectiveTime>
+                                    <!-- info that we don't have... this value needs to be coded to this codesystem. -->
+                                    <value xsi:type="CD" />
+                                </observation>
+                            </entryRelationship>
+                        </act>
+                    </entry>
+                </section>
+            </component>
+            <component>
+                <section>
+                    <templateId root="2.16.840.1.113883.10.20.22.2.9" />
+                    <id root="3BE93960-2015-1669-1A2F-001A64958C30" />
+                    <code code="51847-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" />
+                    <title>Assessment and Plan</title>
+                    <text mediaType="text/x-hl7-text+xml">
+                        <table border="1" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Data Source</th>
+                                    <th>Alert</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Alert.Source-E2651</td>
+                                    <td>11/20/2019</td>
+                                    <td>Alert.Source</td>
+                                    <td>This person's got TB - and not the good kind</td>
+                                </tr>
+                                <tr>
+                                    <td>Alert.Source-E2651</td>
+                                    <td>11/20/2019</td>
+                                    <td>Alert.Source</td>
+                                    <td>Infection Control Alert: Refer to facility and CDC policy for CRE isolation and treatment guidance</td>
+                                </tr>
+                                <tr>
+                                    <td>AAMC-992116208</td>
+                                    <td>06/30/2017</td>
+                                    <td>AAMC</td>
+                                    <td>Infection Control Alert: Refer to facility and CDC policy for CRE isolation and treatment guidance</td>
+                                </tr>
+                                <tr>
+                                    <td>MDH - Oncoloddgy-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - Oncoloddgy</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>MDH! - 399e0034-d2cf-41e2-8774-636e83ed57f9-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH! - 399e0034-d2cf-41e2-8774-636e83ed57f9</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>MDH - 22222222-2222-2222-222222222222-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - 22222222-2222-2222-222222222222</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>Hopkins - Oncology-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>Hopkins - Oncology</td>
+                                    <td>Delay Care Alert</td>
+                                </tr>
+                                <tr>
+                                    <td>MDH - Oncoloddgy-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - Oncoloddgy</td>
+                                    <td>Shock&amp;awe</td>
+                                </tr>
+                                <tr>
+                                    <td>MDH - Goncology-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - Goncology</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>MDH - Goncology-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - Goncology</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>MDH - Poncology-E2651</td>
+                                    <td>11/08/2019</td>
+                                    <td>MDH - Poncology</td>
+                                    <td>2019-11-08</td>
+                                </tr>
+                                <tr>
+                                    <td>UConn Health-T25002138</td>
+                                    <td>10/21/2021</td>
+                                    <td>UConn Health</td>
+                                    <td>Date: 2021-10-21 12:36:36
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Minnie Hamilton Healthcare Center-75865</td>
+                                    <td>09/27/2021</td>
+                                    <td>Minnie Hamilton Healthcare Center</td>
+                                    <td>Date: 2021-09-27 10:01:00
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Minnie Hamilton Healthcare Center-75865</td>
+                                    <td>09/27/2021</td>
+                                    <td>Minnie Hamilton Healthcare Center</td>
+                                    <td>Date: 2021-09-27 09:58:00
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Johns Hopkins Hospital-JH97537894</td>
+                                    <td>09/15/2021</td>
+                                    <td>Johns Hopkins Hospital</td>
+                                    <td>dischargeDisposition: Unknown
+                                        diagnosisCode: I50.21
+                                        diagnosisCodeText: Acute systolic (congestive) heart failure
+                                        diagnosisDescription: Acute systolic (congestive) heart failure
+                                        Date: 2021-09-15 11:01:56
+                                        eventType: Emergency Discharge</td>
+                                </tr>
+                                <tr>
+                                    <td>Sibley Memorial Hospital-SM105844</td>
+                                    <td>07/23/2021</td>
+                                    <td>Sibley Memorial Hospital</td>
+                                    <td>dischargeDisposition: Unknown
+                                        diagnosisCode: I50.21
+                                        diagnosisCodeText: Acute systolic (congestive) heart failure
+                                        diagnosisDescription: Acute systolic (congestive) heart failure
+                                        Date: 2021-07-23 18:16:50
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>TidalHealth-960005583</td>
+                                    <td>06/30/2021</td>
+                                    <td>TidalHealth</td>
+                                    <td>Date: 2021-06-30 13:54:33
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Suburban Hospital-SH2404313</td>
+                                    <td>05/25/2021</td>
+                                    <td>Suburban Hospital</td>
+                                    <td>dischargeDisposition: Unknown
+                                        diagnosisCode: I50.21
+                                        diagnosisCodeText: Acute systolic (congestive) heart failure
+                                        diagnosisDescription: Acute systolic (congestive) heart failure
+                                        Date: 2021-05-25 09:14:30
+                                        eventType: Emergency Discharge</td>
+                                </tr>
+                                <tr>
+                                    <td>Suburban Hospital-SH2404313</td>
+                                    <td>04/27/2021</td>
+                                    <td>Suburban Hospital</td>
+                                    <td>dischargeDisposition: Unknown
+                                        diagnosisCode: I50.21
+                                        diagnosisCodeText: Acute systolic (congestive) heart failure
+                                        diagnosisDescription: Acute systolic (congestive) heart failure
+                                        Date: 2021-04-27 15:14:14
+                                        eventType: Emergency Admission</td>
+                                </tr>
+                                <tr>
+                                    <td>Suburban Hospital-SH2404313</td>
+                                    <td>04/27/2021</td>
+                                    <td>Suburban Hospital</td>
+                                    <td>dischargeDisposition: Unknown
+                                        diagnosisCode: I50.21
+                                        diagnosisCodeText: Acute systolic (congestive) heart failure
+                                        diagnosisDescription: Acute systolic (congestive) heart failure
+                                        Date: 2021-04-27 15:14:09
+                                        eventType: Emergency Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Holy Cross Hospital-900194827</td>
+                                    <td>04/21/2021</td>
+                                    <td>Holy Cross Hospital</td>
+                                    <td>Date: 2021-04-14 11:47:25
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Holy Cross Germantown-900194827</td>
+                                    <td>04/21/2021</td>
+                                    <td>Holy Cross Germantown</td>
+                                    <td>Date: 2021-04-14 11:45:55
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Holy Cross Hospital-900194827</td>
+                                    <td>04/21/2021</td>
+                                    <td>Holy Cross Hospital</td>
+                                    <td>Date: 2021-03-30 15:10:55
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Doctors Community Hospital-993000062</td>
+                                    <td>03/12/2021</td>
+                                    <td>Doctors Community Hospital</td>
+                                    <td>Date: 2021-03-12 09:23:00
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Fort Washington Medical Center-1000040</td>
+                                    <td>02/16/2021</td>
+                                    <td>Fort Washington Medical Center</td>
+                                    <td>admitReason: PDMP
+                                        Date: 2021-02-09 20:15:01
+                                        eventType: Inpatient Admission</td>
+                                </tr>
+                                <tr>
+                                    <td>St. Francis Hospital-H000000226</td>
+                                    <td>02/15/2021</td>
+                                    <td>St. Francis Hospital</td>
+                                    <td>dischargeDisposition: Unknown
+                                        diagnosisCode: M54.9
+                                        diagnosisCodeText: M54.9 - Dorsalgia, unspecified
+                                        Date: 2021-01-19 10:40:00
+                                        eventType: Outpatient Registration</td>
+                                </tr>
+                                <tr>
+                                    <td>Doctors Community Hospital-993000062</td>
+                                    <td>12/10/2020</td>
+                                    <td>Doctors Community Hospital</td>
+                                    <td>diagnosisCodeText: abd pain
+                                        diagnosisDescription: abd pain
+                                        Date: 2020-12-10 10:32:00
+                                        eventType: Inpatient Admission</td>
+                                </tr>
+                                <tr>
+                                    <td>Anne Arundel Medical Center-993000062</td>
+                                    <td>12/10/2020</td>
+                                    <td>Anne Arundel Medical Center</td>
+                                    <td>admitReason: Hyperlipidemia, unspecified
+                                        dischargeDisposition: HSC
+                                        diagnosisCode: E78.5
+                                        diagnosisCodeText: Hyperlipidemia, unspecified
+                                        diagnosisDescription: Hyperlipidemia, unspecified
+                                        Date: 2020-12-10 10:19:00
+                                        eventType: Inpatient Discharge</td>
+                                </tr>
+                                <tr>
+                                    <td>Sibley Memorial Hospital-SM105844</td>
+                                    <td>10/22/2020</td>
+                                    <td>Sibley Memorial Hospital</td>
+                                    <td>dischargeDisposition: Unknown
+                                        diagnosisCodeText: low back pain
+                                        diagnosisDescription: low back pain
+                                        Date: 2020-09-28 14:58:19
+                                        eventType: Emergency Discharge</td>
+                                </tr>
+                                <tr>
+                                    <td>Holy Cross Inclusive Panel-</td>
+                                    <td>01/01/0001</td>
+                                    <td>Holy Cross Inclusive Panel</td>
+                                    <td>Holy Cross Inclusive Panel</td>
+                                </tr>
+                                <tr>
+                                    <td>Aledade Inc.-</td>
+                                    <td>01/01/0001</td>
+                                    <td>Aledade Inc.</td>
+                                    <td>Aledade Inc.</td>
+                                </tr>
+                                <tr>
+                                    <td>Kaiser Permanente-</td>
+                                    <td>01/01/0001</td>
+                                    <td>Kaiser Permanente</td>
+                                    <td>Care-Program: MDPCP. Phone: 344-333-1116.</td>
+                                </tr>
+                                <tr>
+                                    <td>Holy Cross Inclusive Panel 2-</td>
+                                    <td>01/01/0001</td>
+                                    <td>Holy Cross Inclusive Panel 2</td>
+                                    <td>Holy Cross Inclusive Panel 2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </text>
+                </section>
+            </component>
+        </structuredBody>
+    </component>
+</ClinicalDocument>

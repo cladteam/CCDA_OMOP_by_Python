@@ -1,0 +1,594 @@
+<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<realmCode code="US"/>
+	<typeId extension="POCD_HD000040" root="2.16.840.1.113883.1.3"/>
+	<templateId root="2.16.840.1.113883.10.20.22.1.1"/>
+	<templateId extension="2015-08-01" root="2.16.840.1.113883.10.20.22.1.1"/>
+	<templateId root="2.16.840.1.113883.10.20.22.1.2"/>
+	<templateId extension="2015-08-01" root="2.16.840.1.113883.10.20.22.1.2"/>
+	<id root="EE3513C4-D6B6-4D3D-AC29-D11FD8A62C02"/>
+	<code code="34133-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Health Summary"/>
+	<title>Homer Medical Center: Health Summary</title>
+	<effectiveTime value="20210226084622-0400"/>
+	<confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25" codeSystemName="Confidentiality Code" displayName="Normal"/>
+	<languageCode code="en"/>
+	<setId extension="sTT988" root="2.16.840.1.113883.19.5.99999.19"/>
+	<versionNumber value="1"/>
+	<recordTarget>
+		<patientRole>
+			<id extension="HMC1055415932" root="2.16.840.1.113883.3.564.14977"/>
+			<addr>
+				<city>Homer</city>
+				<country>US</country>
+				<postalCode>99603</postalCode>
+				<state>AK</state>
+				<streetAddressLine>4630 Hunter Dr</streetAddressLine>
+			</addr>
+			<telecom use="HP" value="tel:+1-907-888-9999"/>
+			<patient>
+				<name>
+					<family>Wait</family>
+					<given>Cece</given>
+				</name>
+				<administrativeGenderCode code="F" codeSystem="2.16.840.1.113883.5.1" codeSystemName="AdministrativeGender" displayName="Female"/>
+				<birthTime value="19991011"/>
+			</patient>
+			<providerOrganization>
+				<id root="2.16.840.1.113883.4.6"/>
+				<name>Homer Medical Center</name>
+				<telecom use="WP" value="tel:+1-907-929-5888"/>
+				<addr>
+					<city>Homer</city>
+					<country>US</country>
+					<postalCode>99603</postalCode>
+					<state>AK</state>
+					<streetAddressLine>4136 Bartlett St</streetAddressLine>
+				</addr>
+			</providerOrganization>
+		</patientRole>
+	</recordTarget>
+	<author>
+		<time value="20210226084622"/>
+		<assignedAuthor>
+			<id extension="1932198777" root="2.16.840.1.113883.4.6"/>
+			<code code="200000000X" codeSystem="2.16.840.1.113883.6.101" displayName="Homer Medical Center"/>
+			<addr>
+				<city>Homer</city>
+				<country>US</country>
+				<postalCode>99603</postalCode>
+				<state>AK</state>
+				<streetAddressLine>4136 Bartlett St</streetAddressLine>
+			</addr>
+			<telecom use="WP" value="tel:+1-907-929-5888"/>
+			<assignedAuthoringDevice>
+				<manufacturerModelName>Ai's Remote Gateway Generator 1.0.1</manufacturerModelName>
+				<softwareName>Generator 1.0.1</softwareName>
+			</assignedAuthoringDevice>
+			<representedOrganization>
+				<id root="1.2.3"/>
+				<name>Homer Medical Center</name>
+				<telecom use="WP" value="tel:+1-907-929-5888"/>
+				<addr>
+					<city>Homer</city>
+					<country>US</country>
+					<postalCode>99603</postalCode>
+					<state>AK</state>
+					<streetAddressLine>4136 Bartlett St</streetAddressLine>
+				</addr>
+			</representedOrganization>
+		</assignedAuthor>
+	</author>
+	<dataEnterer>
+		<assignedEntity>
+			<id extension="1932198777" root="2.16.840.1.113883.4.6"/>
+			<code code="200000000X" codeSystem="2.16.840.1.113883.6.101" displayName="Homer Medical Center"/>
+			<addr>
+				<city>Homer</city>
+				<country>US</country>
+				<postalCode>99603</postalCode>
+				<state>AK</state>
+				<streetAddressLine>4136 Bartlett St</streetAddressLine>
+			</addr>
+			<telecom use="WP" value="tel:+1-907-929-5888"/>
+			<assignedPerson>
+				<name>
+					<family>Other- TBD</family>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</dataEnterer>
+	<informant>
+		<assignedEntity>
+			<id extension="1932198777" root="2.16.840.1.113883.4.6"/>
+			<code code="200000000X" codeSystem="2.16.840.1.113883.6.101" displayName="Homer Medical Center"/>
+			<addr>
+				<city>Homer</city>
+				<country>US</country>
+				<postalCode>99603</postalCode>
+				<state>AK</state>
+				<streetAddressLine>4136 Bartlett St</streetAddressLine>
+			</addr>
+			<telecom use="WP" value="tel:+1-907-929-5888"/>
+			<assignedPerson>
+				<name>
+					<family>Other- TBD</family>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</informant>
+	<custodian>
+		<assignedCustodian>
+			<representedCustodianOrganization>
+				<id extension="1932198777" root="2.16.840.1.113883.4.6"/>
+				<name>Homer Medical Center</name>
+				<telecom use="WP" value="tel:+1-907-929-5888"/>
+				<addr>
+					<city>Homer</city>
+					<country>US</country>
+					<postalCode>99603</postalCode>
+					<state>AK</state>
+					<streetAddressLine>4136 Bartlett St</streetAddressLine>
+				</addr>
+			</representedCustodianOrganization>
+		</assignedCustodian>
+	</custodian>
+	<informationRecipient>
+		<intendedRecipient>
+			<informationRecipient>
+				<name>
+					<family>Other- TBD</family>
+				</name>
+			</informationRecipient>
+			<receivedOrganization>
+				<name>Homer Medical Center</name>
+			</receivedOrganization>
+		</intendedRecipient>
+	</informationRecipient>
+	<legalAuthenticator>
+		<time value="20210226084622"/>
+		<signatureCode code="S"/>
+		<assignedEntity>
+			<id extension="1932198777" root="2.16.840.1.113883.4.6"/>
+			<addr>
+				<city>Homer</city>
+				<country>US</country>
+				<postalCode>99603</postalCode>
+				<state>AK</state>
+				<streetAddressLine>4136 Bartlett St</streetAddressLine>
+			</addr>
+			<telecom use="WP" value="tel:+1-907-929-5888"/>
+			<assignedPerson>
+				<name>
+					<family>Other- TBD</family>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</legalAuthenticator>
+	<authenticator>
+		<time value="20210226084622"/>
+		<signatureCode code="S"/>
+		<assignedEntity>
+			<id extension="1932198777" root="2.16.840.1.113883.4.6"/>
+			<addr>
+				<city>Homer</city>
+				<country>US</country>
+				<postalCode>99603</postalCode>
+				<state>AK</state>
+				<streetAddressLine>4136 Bartlett St</streetAddressLine>
+			</addr>
+			<telecom use="WP" value="tel:+1-907-929-5888"/>
+			<assignedPerson>
+				<name>
+					<family>Other- TBD</family>
+				</name>
+			</assignedPerson>
+		</assignedEntity>
+	</authenticator>
+	<documentationOf>
+		<serviceEvent classCode="PCPR">
+			<effectiveTime>
+				<low value="20210226084622"/>
+				<high value="20210226084622"/>
+			</effectiveTime>
+			<performer typeCode="PRF">
+				<functionCode code="PCP" codeSystem="2.16.840.1.113883.5.88" codeSystemName="participationFunction" displayName="Primary Care Physician">
+					<originalText>Primary Care Provider</originalText>
+				</functionCode>
+				<assignedEntity>
+					<id extension="1932198777" root="2.16.840.1.113883.4.6"/>
+					<addr>
+						<city>Homer</city>
+						<country>US</country>
+						<postalCode>99603</postalCode>
+						<state>AK</state>
+						<streetAddressLine>4136 Bartlett St</streetAddressLine>
+					</addr>
+					<telecom use="WP" value="tel:+1-907-929-5888"/>
+					<assignedPerson>
+						<name>
+							<family>Other- TBD</family>
+						</name>
+					</assignedPerson>
+				</assignedEntity>
+			</performer>
+		</serviceEvent>
+	</documentationOf>
+	<component>
+		<structuredBody>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.6.1"/>
+					<code code="48765-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Allergies, adverse reactions, alerts"/>
+					<title>Allergies,  Adverse Reactions and Alerts</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Group Description</th>
+									<th>Code System</th>
+									<th>Code</th>
+									<th>Code Description</th>
+									<th>Date and Time</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="allergiesSection">
+									<td>ALLERGIC RHINITIS UNSPEC</td>
+									<td>ICD10</td>
+									<td>J30.9</td>
+									<td>ALLERGIC RHINITIS UNSPEC</td>
+									<td>5/2/2008 12:00:00 AM</td>
+									<td>Active</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.10.20.22.4.30"/>
+							<templateId extension="2015-08-01" root="2.16.840.1.113883.10.20.22.4.30"/>
+							<id root="36E3E930-7B14-11DB-9FE1-0800200C9A66"/>
+							<code code="CONC" codeSystem="2.16.840.1.113883.5.6"/>
+							<text>
+								<reference value="#allergiesSection"/>
+							</text>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20210226084622-0400"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ">
+								<observation classCode="OBS" moodCode="EVN" negationInd="true">
+									<templateId root="2.16.840.1.113883.10.20.22.4.7"/>
+									<templateId extension="2014-06-09" root="2.16.840.1.113883.10.20.22.4.7"/>
+									<id root="4ADC1020-7B14-11DB-9FE1-0800200C9A66"/>
+									<code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
+									<text>
+										<reference value="#allergiesSection"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime>
+										<low nullFlavor="NA"/>
+									</effectiveTime>
+									<value code="419199007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Allergy to substance (disorder)" xsi:type="CD"/>
+									<author>
+										<templateId root="2.16.840.1.113883.10.20.22.4.119"/>
+										<time value="20100103"/>
+										<assignedAuthor>
+											<id extension="99999999" root="2.16.840.1.113883.4.6"/>
+											<code code="207Q00000X" codeSystem="2.16.840.1.113883.6.101" codeSystemName="Health Care Provider Taxonomy" displayName="Family Medicine"/>
+											<assignedAuthoringDevice>
+												<manufacturerModelName>Ai's Remote Gateway Generator 1.0.1</manufacturerModelName>
+												<softwareName>Generator 1.0.1</softwareName>
+											</assignedAuthoringDevice>
+										</assignedAuthor>
+									</author>
+									<participant typeCode="CSM">
+										<participantRole classCode="MANU">
+											<playingEntity classCode="MMAT">
+												<code nullFlavor="NA"/>
+											</playingEntity>
+										</participantRole>
+									</participant>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.1.6"/>
+					<code code="11369-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of Immunizations"/>
+					<title>Immunizations</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Group Description</th>
+									<th>Code System</th>
+									<th>Code</th>
+									<th>Code Description</th>
+									<th>Date and Time</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="immun1">
+									<td>Hepatitis B</td>
+									<td>CPT</td>
+									<td>90744</td>
+									<td>HepB#1</td>
+									<td>6/25/2001 12:00:00 AM</td>
+								</tr>
+								<tr>
+									<td>Hepatitis B</td>
+									<td>CPT</td>
+									<td>90744</td>
+									<td>HepB#2</td>
+									<td>7/31/2001 12:00:00 AM</td>
+								</tr>
+								<tr>
+									<td>Hepatitis B</td>
+									<td>CPT</td>
+									<td>90744</td>
+									<td>HepB#3</td>
+									<td>12/3/2001 12:00:00 AM</td>
+								</tr>
+								<tr>
+									<td>Td Tetanus, Diptheria</td>
+									<td>CPT</td>
+									<td>90714</td>
+									<td>Td</td>
+									<td>8/3/2002 12:00:00 AM</td>
+								</tr>
+								<tr>
+									<td>Meningococcal ACWY</td>
+									<td>CPT</td>
+									<td>90734</td>
+									<td>Menactra#1</td>
+									<td>5/4/2007 12:00:00 AM</td>
+								</tr>
+								<tr>
+									<td>Td Tetanus, Diptheria</td>
+									<td>CPT</td>
+									<td>90715</td>
+									<td>Tdap</td>
+									<td>7/29/2009 12:00:00 AM</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry>
+						<substanceAdministration classCode="SBADM" moodCode="EVN" negationInd="false">
+							<templateId root="2.16.840.1.113883.10.20.22.4.52"/>
+							<templateId extension="2015-08-01" root="2.16.840.1.113883.10.20.22.4.52"/>
+							<id root="E6F1BA43-C0ED-4B9B-9F12-F435D8AD8F88"/>
+							<text>
+								<reference value="#immun1"/>
+							</text>
+							<statusCode code="completed"/>
+							<effectiveTime value="20210226084622-0400"/>
+							<consumable>
+								<manufacturedProduct classCode="MANU">
+									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
+									<templateId extension="2014-06-09" root="2.16.840.1.113883.10.20.22.4.54"/>
+									<manufacturedMaterial>
+										<code codeSystem="2.16.840.1.113883.6.96" nullFlavor="OTH">
+											<originalText>Vaccination</originalText>
+											<translation code="71181003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="vaccine"/>
+										</code>
+									</manufacturedMaterial>
+								</manufacturedProduct>
+							</consumable>
+						</substanceAdministration>
+					</entry>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.1"/>
+					<templateId extension="2014-06-09" root="2.16.840.1.113883.10.20.22.2.1"/>
+					<templateId root="2.16.840.1.113883.10.20.22.2.1.1"/>
+					<templateId extension="2014-06-09" root="2.16.840.1.113883.10.20.22.2.1.1"/>
+					<code code="10160-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of medication use"/>
+					<title>Medications</title>
+					<text>
+						<table>
+							<thead>
+								<tr>
+									<th>Group Description</th>
+									<th>Code System</th>
+									<th>Code</th>
+									<th>Code Description</th>
+									<th>Date and Time</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="MedicationSection">
+									<td>Narcotic</td>
+									<td>RxNorm</td>
+									<td>N/A</td>
+									<td>acetaminophen
+
+Sig: 160 mg/5 mL, Suspension, 1 1/2 tsp Q4 hours prn, Routine, Oral, 
+
+Dispense #1, 0 Refills</td>
+									<td>11/7/2010 12:00:00 AM</td>
+								</tr>
+								<tr>
+									<td>Aminopenicillins</td>
+									<td>RxNorm</td>
+									<td>598025</td>
+									<td>amoxicillin
+
+Sig: 250 mg, Tablet, Chewable, 1 tab BID x 10 days, Routine, Oral, 10 days
+
+Dispense #20, 0 Refills</td>
+									<td>11/8/2010 12:00:00 AM</td>
+								</tr>
+								<tr>
+									<td>HT3 Antagonists</td>
+									<td>RxNorm</td>
+									<td>876690</td>
+									<td>ZOFRAN ODT
+
+Sig: 4 mg, Tablet, Rapid Dissolve, 1 tab Q8 prn nausea, Routine, Oral, 
+
+Dispense #6, 0 Refills</td>
+									<td>11/8/2010 12:00:00 AM</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry>
+						<substanceAdministration classCode="SBADM" moodCode="EVN" negationInd="true">
+							<templateId root="2.16.840.1.113883.10.20.22.4.16"/>
+							<templateId extension="2014-06-09" root="2.16.840.1.113883.10.20.22.4.16"/>
+							<id root="CDBD33F0-6CDE-11DB-9FE1-0800200C9A66"/>
+							<text>
+								<reference value="#MedicationSection"/>
+							</text>
+							<statusCode code="active"/>
+							<effectiveTime value="20210226084622-0400"/>
+							<doseQuantity nullFlavor="NA"/>
+							<consumable>
+								<manufacturedProduct classCode="MANU">
+									<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
+									<templateId extension="2014-06-09" root="2.16.840.1.113883.10.20.22.4.23"/>
+									<manufacturedMaterial>
+										<code codeSystem="2.16.840.1.113883.6.88" nullFlavor="OTH">
+											<translation code="410942007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="drug or medication"/>
+										</code>
+									</manufacturedMaterial>
+								</manufacturedProduct>
+							</consumable>
+						</substanceAdministration>
+					</entry>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.5.1"/>
+					<code code="11450-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="PROBLEM LIST"/>
+					<title>Problems</title>
+					<text ID="problemsection">
+						<table>
+							<thead>
+								<tr>
+									<th>Group Description</th>
+									<th>Code System</th>
+									<th>Code</th>
+									<th>Code Description</th>
+									<th>Date and Time</th>
+									<th>Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ID="problem1">
+									<td>Wears glasses</td>
+									<td>ICD10</td>
+									<td>H53.19</td>
+									<td>Wears glasses</td>
+									<td>1/1/0001 12:00:00 AM</td>
+									<td>Active</td>
+								</tr>
+								<tr>
+									<td>N/A</td>
+									<td>ICD10</td>
+									<td>D57.819</td>
+									<td>N/A</td>
+									<td>5/4/2007 12:00:00 AM</td>
+									<td>Active</td>
+								</tr>
+								<tr>
+									<td>ALLERGIC RHINITIS UNSPEC</td>
+									<td>ICD10</td>
+									<td>J30.9</td>
+									<td>ALLERGIC RHINITIS UNSPEC</td>
+									<td>5/2/2008 12:00:00 AM</td>
+									<td>Active</td>
+								</tr>
+							</tbody>
+						</table>
+					</text>
+					<entry typeCode="DRIV">
+						<act classCode="ACT" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.10.20.22.4.3"/>
+							<templateId extension="2015-08-01" root="2.16.840.1.113883.10.20.22.4.3"/>
+							<id root="36E3E930-7B14-11DB-9FE1-0800200C9A66"/>
+							<code code="CONC" codeSystem="2.16.840.1.113883.5.6"/>
+							<text>
+								<reference value="#problemsection"/>
+							</text>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20210226084622-0400"/>
+							</effectiveTime>
+							<entryRelationship typeCode="SUBJ">
+								<observation classCode="OBS" moodCode="EVN" negationInd="true">
+									<templateId root="2.16.840.1.113883.10.20.22.4.4"/>
+									<templateId extension="2015-08-01" root="2.16.840.1.113883.10.20.22.4.4"/>
+									<id root="4ADC1021-7B14-11DB-9FE1-0800200C9A67"/>
+									<code code="64572001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Disease">
+										<translation code="75323-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Condition"/>
+									</code>
+									<text>
+										<reference value="#problem1"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime>
+										<low value="20210226084622-0400"/>
+									</effectiveTime>
+									<value code="55607006" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Problem" xsi:type="CD">
+										<originalText>
+											<reference value="#problem1"/>
+										</originalText>
+									</value>
+								</observation>
+							</entryRelationship>
+						</act>
+					</entry>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.7.1"/>
+					<code code="47519-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="History of Procedures"/>
+					<title>Procedures</title>
+					<text>No information</text>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.3.1"/>
+					<code code="30954-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Relevant diagnostic tests and/or laboratory data"/>
+					<title>Results</title>
+					<text>No information</text>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.17"/>
+					<code code="29762-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Social History"/>
+					<title>Social History</title>
+					<text>No information</text>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.4.1"/>
+					<code code="8716-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Vital Signs"/>
+					<title>Vital Signs</title>
+					<text>No information</text>
+				</section>
+			</component>
+			<component>
+				<section>
+					<templateId root="2.16.840.1.113883.10.20.22.2.10"/>
+					<code code="18776-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Plan of Care"/>
+					<title>Plan of Care</title>
+					<text>No information</text>
+				</section>
+			</component>
+		</structuredBody>
+	</component>
+</ClinicalDocument>
