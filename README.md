@@ -11,6 +11,17 @@ This is a python project to use an XPath XML parser in Python to extract data fr
 - prototype is the inital prototype
   - run with bash> python -m prototype.main
 
+## Tools detail
+These tools reflect an evolution of ideas.
+- id_snooper 
+  - uses tools/util's pathGen function that has been deprecated
+- header_snooper
+- code_snooper
+  - uses tools/util's pathGen function that has been deprecated
+- section_snooper
+- snooper
+  - explores a metadata approach
+
 ## Getting Started running the Code
 This needs more detail, but works on macos. I've not been successful yet on Windows.
 - Install Python3
