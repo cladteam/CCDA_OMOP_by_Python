@@ -4,6 +4,13 @@
 This is a python project to use an XPath XML parser in Python to extract data from HL7 CCDA documents.
 [Project Documentation on Google](https://docs.google.com/document/d/1pUxCQSuucQGJcXhrEg3miWuVTkcGLBdN2v88vYdVgrM/edit)
 
+## Sub Projects/Directories
+- tools is a collection of different file snoopers, scripts that find and show a XML elements with a certain tag, like id, code or section.
+- util is a collection of utilities used elsewhere
+- table_objects is the start of an investigation into using objects instead of dictionaries for the resulting OMOP rows. Very nascent.
+- prototype is the inital prototype
+  - run with bash> python -m prototype.main
+
 ## Getting Started running the Code
 This needs more detail, but works on macos. I've not been successful yet on Windows.
 - Install Python3
