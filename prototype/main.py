@@ -17,9 +17,9 @@ import difflib
 import argparse
 import sys
 
-import location
-import person
-import observation
+from prototype import location
+from prototype import person
+from prototype import observation
 
 from util import util
 from util import spark_util

@@ -9,11 +9,12 @@
 
 
 from util import vocab_spark
+from util import vocab_map_file
 from util.spark_util import SparkUtil
 from util.xml_ns import ns
 from util import util
 from util import id_map
-import location
+from prototype import location
 from table_objects import person_omop_spark
 
 
@@ -57,19 +58,32 @@ def convert(tree, spark):
     race_concept_id = vocab_spark.map_hl7_to_omop(
         race_code.get("codeSystem"), race_code.get("code"))
     if race_concept_id is None:
-        print(f"None concept from {race_code.get('codeSystem')}, {race_code.get('code')}")
+        print(f"WARN, No OMOP concept for {race_code.get('codeSystem')}, {race_code.get('code')}")
+        race_tuple = (race_code.get("codeSystem"), race_code.get("code"))
+        race_concept_id = vocab_map_file.complex_mappings[race_tuple][3]
+    if race_concept_id is None:
+        print(f"ERROR, No concept from map for race {race_code.get('codeSystem')}, {race_code.get('code')}")
 
     ethnicity_code = patient.find("ethnicGroupCode", ns)
     ethnicity_concept_id = vocab_spark.map_hl7_to_omop(
         ethnicity_code.get("codeSystem"), ethnicity_code.get("code"))
     if ethnicity_concept_id is None:
         print(f"None concept from {ethnicity_code.get('codeSystem')}, {ethnicity_code.get('code')}")
+        ethnicity_tuple = (ethnicity_code.get("codeSystem"), ethnicity_code.get("code"))
+        ethnicity_concept_id = vocab_map_file.complex_mappings[ethnicity_tuple][3]
+    if ethnicity_concept_id is None:
+        print(f"ERROR, No concept from map for ethnicity {ethnicity_code.get('codeSystem')}, {ethnicity_code.get('code')}")
 
     gender_code = patient.find("administrativeGenderCode", ns)
     gender_concept_id = vocab_spark.map_hl7_to_omop(
         gender_code.get("codeSystem"), gender_code.get("code"))
     if gender_concept_id is None:
-        print(f"No concept from {gender_code.get('codeSystem')}, {gender_code.get('code')}")
+        print(f"WARN, No OMOP concept for {gender_code.get('codeSystem')}, {gender_code.get('code')}")
+        gender_tuple = (gender_code.get("codeSystem"), gender_code.get("code"))
+        gender_concept_id = vocab_map_file.complex_mappings[gender_tuple][3]
+    if gender_concept_id is None:
+        print(f"ERROR, No concept from map for gender {gender_code.get('codeSystem')}, {gender_code.get('code')}")
+
 
     birth_date = util.convert_date(patient.find("birthTime", ns).get("value"))
 
