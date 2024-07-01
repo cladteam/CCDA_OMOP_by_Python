@@ -9,6 +9,7 @@ from util.xml_ns import ns
 from util.vocab_map_file import oid_map
 from util import spark_util
 from util.vocab_spark import VocabSpark
+from util.vocab_map_file import oid_map
 
 # INPUT_FILENAME = 'resources/CCDA_CCD_b1_InPatient_v2.xml'
 INPUT_FILENAME = 'resources/CCDA_CCD_b1_Ambulatory_v2.xml'
@@ -91,19 +92,23 @@ print("\n\n")
 
 for section_element in section_elements:
 
-    section_type=''
-    section_code=''
+    section_type = ''
+    section_code = ''
+    section_code_system = ''
     #section_code_element = section_element.find(SECTION_CODE, ns)  # just a find doesn't work
     for section_code_element in section_element.findall(SECTION_CODE, ns):
         if 'displayName' in section_code_element.attrib:
             section_type = section_code_element.attrib['displayName']
-        elif 'code' in section_code_element.attrib:
-            section_type = section_code_element.attrib['code']
-        section_code = section_code_element.attrib['code']
+        if 'code' in section_code_element.attrib:
+            section_code = section_code_element.attrib['code']
+        if 'codeSystem' in section_code_element.attrib:
+            section_code_system = section_code_element.attrib['codeSystem']
         if section_type == '':
-           details = VocabSpark.lookup_omop(section_code) 
-           if details is not None:
-               section_type = details[2]
+            if section_code_system in oid_map:
+                vocab = oid_map[section_code_system][0]
+                details = VocabSpark.lookup_omop_details(spark, vocab, section_code) 
+                if details is not None:
+                    section_type = details[2]
 
     print(f"SECTION type:\"{section_type}\" code:\"{section_code}\" ", end='')
     section_code = section_code_element.attrib['code']
