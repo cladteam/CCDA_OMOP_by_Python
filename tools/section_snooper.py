@@ -1,9 +1,6 @@
 
 """
-    CodeSnooper - looks for code elements, fetches their code and codeSystem
-                  attributes, mapping OIDs to vocabularies and
-                  concept codes to names, lists the paths to the elements
-                  with their attributes.
+    section_snooper - looks for specfic sections driven by metadata, and shows any ID, CODE and VALUE elements within them. 
 """
 
 import argparse
@@ -47,13 +44,16 @@ SECTION_CODE = "./code"
 ###}
 
 section_metadata = {
+    '48765-2': { # ALLERGIES # /entry/act?
+        "./entry/"  : [ 'encounter', 'act' ]
+    },
     '46240-8' : { # ECOUNTERS, HISTORY OF
         "./entry/encounter"  : [ 'encounter' ]
     },
 
     '11369-6' : { # IMMUNIZATION ***
         "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" 
-    {,
+    },
 
     '10160-0' : { # MEDICATIONS, HISTORY OF ***
          "./entry/substanceAdministration/" : [ "consumable/manufacturedProduct/manufacturedMaterial",
@@ -63,7 +63,7 @@ section_metadata = {
     },
 
     '10183-2' : { # HOSPITAL DISCHARGE ****
-         "./entry/act/" :[id, code, effectiveTime, entryRelationship/substanceAdministration ],
+         "./entry/act/" :['id', 'code', 'effectiveTime', 'entryRelationship/substanceAdministration' ],
          "./entry/act/entryRelationship/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" :[],
          "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity" :[],
          "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity/representedOrganization" :[]
@@ -100,47 +100,57 @@ for section_element in section_elements:
         elif 'code' in section_code_element.attrib:
             section_type = section_code_element.attrib['code']
         section_code = section_code_element.attrib['code']
+        if section_type == '':
+           details = VocabSpark.lookup_omop(section_code) 
+           if details is not None:
+               section_type = details[2]
 
-    print(f"SECTION {section_type} {section_code}")
+    print(f"SECTION type:\"{section_type}\" code:\"{section_code}\" ", end='')
     section_code = section_code_element.attrib['code']
     if section_code is not None and section_code in section_metadata:
+        print(f"")
         for entity_path in section_metadata[section_code]:
-            print(f"  {entity_path}")
+            print(f"  path: {entity_path}")
             for entity in section_element.findall(entity_path, ns):
-                print(f"    {section_type} {section_code}, ", end='')
+                print(f"    type:\"{section_type}\" code:\"{section_code}\", ", end='')
 
                 # effectiveTime
                 for time_element in entity.findall('./effectiveTime', ns):
-                     print(f"{time_element.attrib}", end="")
+                     if 'value' in time_element.attrib:
+                        print(f" time:{time_element.attrib['value']}", end="")
+                     else:
+                        print((f" time:{time_element.attrib['low']}"
+                               f" time:{time_element.attrib['high']}"), end="")
 
                 # referenceRange
 
                 # ID
                 for id_element in entity.findall('./id', ns):
                     if 'root' in id_element:
-                         print(f"{id_element.attrib['root']}", end="")
+                         print(f" root:{id_element.attrib['root']}", end="")
                     if 'translation' in id_element:
-                         print(f" {id_element.attrib['translation']},", end=' ')
+                         print(f" translation:{id_element.attrib['translation']},", end=' ')
                 # CODE
                 for code_element in entity.findall('./code', ns):
                     vocabulary_id = oid_map[code_element.attrib['codeSystem']][0]
-                    print(f"{code_element.attrib['displayName']}, {vocabulary_id}, {code_element.attrib['code']},", end=' ')
+                    print(f" code: {code_element.attrib['displayName']}, {vocabulary_id}, {code_element.attrib['code']}, ", end=' ')
        
                 # VALUE 
-                display_string=""
+                value_string="value: "
                 for value_element in entity.findall('./value', ns):
                     if 'value' in value_element.attrib: 
-                        display_string = f"{display_string}, {value_element.attrib['value']} "
+                        value_string = f"{value_string}, {value_element.attrib['value']} "
                     else:
-                        display_string = f"{display_string}, None "
+                        value_string = f"{value_string}, None "
                     if 'unit' in value_element.attrib: 
-                        display_string = f"{display_string}, {value_element.attrib['unit']}  "
+                        value_string = f"{value_string}, {value_element.attrib['unit']}  "
                     else:
-                        display_string = f"{display_string}, None "
+                        value_string = f"{value_string}, None "
                     if 'xsi:type' in value_element.attrib: 
-                        display_string = f"{display_string}, {value_element.attrib['xsi:type']} "
+                        value_string = f"{value_string}, {value_element.attrib['xsi:type']} "
                     else:
-                        display_string = f"{display_string}, None "
-                print(display_string, end='')
+                        value_string = f"{value_string}, None "
+                print(value_string, end='')
                 print("")
-        
+    else:
+        print(f"No metadata for \"{section_code}\"     ")
