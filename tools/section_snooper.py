@@ -1,6 +1,8 @@
 
 """
     section_snooper - looks for specfic sections driven by metadata, and shows any ID, CODE and VALUE elements within them. 
+
+    TODO: the list after a path in metadata isn't used currently. Ultimately it would replce the hard-coded id, code, value and effectiveTime parts
 """
 
 import argparse
@@ -45,9 +47,22 @@ SECTION_CODE = "./code"
 ###}
 
 section_metadata = {
-    '48765-2': { # ALLERGIES # /entry/act?
-        "./entry/"  : [ 'encounter', 'act' ]
-    },
+    '48765-2': { # ALLERGIES  (Dx of allergy)
+        './entry/' :[],
+        './entry/act/effectiveTime' :[],
+        './entry/act/entryRelationship/observation' :[],
+        #'./entry/act/entryRelationship/observation/code' :[],
+        #'./entry/act/entryRelationship/observation/value' :[],
+        #'./entry/act/entryRelationship/observation/effectiveTime' :[],
+
+        './entry/act/entryRelationship/observation/participant/participantRole/playingEntity' :[],
+
+        './entry/act/entryRelationship/observation/entryRelationship/observation' :[],
+        #'./entry/act/entryRelationship/observation/entryRelationship/observation/effectiveTime' :[],
+        #'./entry/act/entryRelationship/observation/entryRelationship/observation/code' :[],
+        #'./entry/act/entryRelationship/observation/entryRelationship/observation/value' :[]
+    }
+    ,
     '46240-8' : { # ECOUNTERS, HISTORY OF
         "./entry/encounter"  : [ 'encounter' ]
     },
@@ -115,32 +130,42 @@ for section_element in section_elements:
     if section_code is not None and section_code in section_metadata:
         print(f"")
         for entity_path in section_metadata[section_code]:
-            print(f"  path: {entity_path}")
+            print(f"  MD section code: \"{section_code}\" path: \"{entity_path}\" ")
             for entity in section_element.findall(entity_path, ns):
-                print(f"    type:\"{section_type}\" code:\"{section_code}\", ", end='')
+                print(f"    type:\"{section_type}\" code:\"{section_code}\",  tag:{entity.tag} attrib:{entity.attrib}", end='')
 
                 # effectiveTime
                 for time_element in entity.findall('./effectiveTime', ns):
                      if 'value' in time_element.attrib:
                         print(f" time:{time_element.attrib['value']}", end="")
                      else:
-                        print((f" time:{time_element.attrib['low']}"
-                               f" time:{time_element.attrib['high']}"), end="")
+                        for part in time_element.findall('./*',ns):
+                            if 'value' in time_element.attrib:
+                                print(f" time:{time_element.attrib['value']}", end="")
 
                 # referenceRange
 
-                # ID
+                # ID : root, translation
                 for id_element in entity.findall('./id', ns):
                     if 'root' in id_element:
                          print(f" root:{id_element.attrib['root']}", end="")
                     if 'translation' in id_element:
                          print(f" translation:{id_element.attrib['translation']},", end=' ')
-                # CODE
+                # CODE : code, displayName, codeSystem
                 for code_element in entity.findall('./code', ns):
-                    vocabulary_id = oid_map[code_element.attrib['codeSystem']][0]
-                    print(f" code: {code_element.attrib['displayName']}, {vocabulary_id}, {code_element.attrib['code']}, ", end=' ')
+                    if 'codeSystem' in code_element.attrib:
+                        vocabulary_id = oid_map[code_element.attrib['codeSystem']][0]
+                        display_name = ''
+                        code = ''
+                        if 'displayName' in code_element.attrib:
+                            display_name = code_element.attrib['displayName']
+                        if 'code' in section_code_element.attrib:
+                            code = section_code_element.attrib['code']
+                        print(f" code: {display_name}, {vocabulary_id}, {code}, ", end=' ')
+                    else:
+                        print(f" code: 'N/A' ", end=' ')
        
-                # VALUE 
+                # VALUE : value, unit, type
                 value_string="value: "
                 for value_element in entity.findall('./value', ns):
                     if 'value' in value_element.attrib: 

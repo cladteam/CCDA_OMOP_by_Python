@@ -1,9 +1,7 @@
 
 """
-    CodeSnooper - looks for code elements, fetches their code and codeSystem
-                  attributes, mapping OIDs to vocabularies and
-                  concept codes to names, lists the paths to the elements
-                  with their attributes.
+    header_snooper - driven by three levels of metadata for top-level header elements, middle elements, and attributes,
+        shows what is foudn in the header. Mostly involving time, assinged person, assigned entity and encompassing encounter.
 
 header_elements --> middle_elements --> element_attributes
 and sometimes middle_elements --> middle_elements
