@@ -17,16 +17,16 @@ jobs:
               ssh -T git@github.com   || true
               git clone git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
               mv CCDA_OMOP_Private ref_data
-          - name: show ref_data files 
+          - name: show ref_data files
             shell: bash
             run: |
                 ls ref_data
           - name: Install pyspark
             run: |
                 pip install pyspark
-          - name: run main.py 
+          - name: run main.py
             run: |
-                python3 main.py -n=2
+                python3 -m prototype.main -n=2
           - name: Run Code Snooper
             run: |
                 python3 -m tools.id_snooper
