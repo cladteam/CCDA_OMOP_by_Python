@@ -72,14 +72,16 @@ section_metadata = {
     },
 
     '10160-0': {  # MEDICATIONS, HISTORY OF ***
-         "./entry/substanceAdministration/": ["consumable/manufacturedProduct/manufacturedMaterial",
-                                              "performer",
-                                              "entryRelationship/observation",
-                                              "entryRelationship/supply/product/manufacturedProduct/manufacturedMaterial"]
+         "./entry/substanceAdministration/": [
+            "consumable/manufacturedProduct/manufacturedMaterial",
+            "performer",
+            "entryRelationship/observation",
+            "entryRelationship/supply/product/manufacturedProduct/manufacturedMaterial"]
     },
 
     '10183-2': {  # HOSPITAL DISCHARGE ****
-         "./entry/act/": ['id', 'code', 'effectiveTime', 'entryRelationship/substanceAdministration'],
+         "./entry/act/": ['id', 'code', 'effectiveTime',
+                          'entryRelationship/substanceAdministration'],
          (subs_admin_prefix + "/consumable/manufacturedProduct/manufacturedMaterial"): [],
          (subs_admin_prefix + "/performer/assignedEntity"): [],
          (subs_admin_prefix + "/performer/assignedEntity/representedOrganization"): []
