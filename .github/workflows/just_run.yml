@@ -27,15 +27,12 @@ jobs:
           - name: run main.py
             run: |
                 python3 -m prototype.main -n=2
-          - name: Run Code Snooper
-            run: |
-                python3 -m tools.id_snooper
-          - name: Run ID Snooper
-            run: |
-                python3 -m tools.code_snooper
           - name: Run (generic) Snooper
             run: |
-                python3 -m tools.snooper
+                python3 -m tools.header_snooper
+          - name: Run (generic) Snooper
+            run: |
+                python3 -m tools.section_snooper
           - name: Run test_util_spark
             run: |
                 python3 -m test_spark_util
