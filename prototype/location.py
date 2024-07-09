@@ -4,11 +4,6 @@
 """ Collects OMOP patient address attributes from CCDA patientRole
     depends:
     CCDA document: CCD
-
-
-TBD!!!! BUG FIX THIS TODO: this gets the patient's home, not the care-site!!!!!
-
-
 """
 
 import sys
