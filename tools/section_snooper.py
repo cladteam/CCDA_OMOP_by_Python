@@ -105,9 +105,6 @@ section_metadata = {
 }
 
 
-
-
-
 section_elements = tree.findall(SECTION_PATH, ns)
 print("\n\n")
 
@@ -141,15 +138,15 @@ for section_element in section_elements:
                 print((f"    type:\"{section_type}\" code:\"{section_code}\", "
                        f" tag:{entity.tag} attrib:{entity.attrib}"), end='')
 
-                show_effective_time(entity)
+                # show_effective_time(entity)
 
                 # referenceRange
 
-                show_id(entity)
+                # show_id(entity)
 
-                show_code(entity)
+                # show_code(entity)
 
-                show_value(entity)
+                # show_value(entity)
                 print("")
     else:
         print(f"No metadata for \"{section_code}\"     ")

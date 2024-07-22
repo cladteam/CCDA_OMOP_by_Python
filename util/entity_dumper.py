@@ -1,3 +1,6 @@
+from util.xml_ns import ns
+from util.vocab_map_file import oid_map
+
 def show_effective_time(entity):
     # effectiveTime
     for time_element in entity.findall('./effectiveTime', ns):
@@ -27,8 +30,8 @@ def show_code(entity):
             code = ''
             if 'displayName' in code_element.attrib:
                 display_name = code_element.attrib['displayName']
-            if 'code' in section_code_element.attrib:
-                code = section_code_element.attrib['code']
+            if 'code' in code_element.attrib:
+                code = code_element.attrib['code']
             print(f" code: {display_name}, {vocabulary_id}, {code}, ", end=' ')
         else:
             print(" code: 'N/A' ", end=' ')
@@ -52,10 +55,10 @@ def show_value(entity):
             value_string = f"{value_string}, None "
     print(value_string, end='')
 
-def show_person(entity):
+# def show_person(entity):
 
-def show_performer(entity):
+# def show_performer(entity):
 
-def show_organization(entity):
+# def show_organization(entity):
 
-def show_encounter(entity):
+# def show_encounter(entity):
