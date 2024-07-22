@@ -35,6 +35,9 @@ def _get_location_parts(tree):
     addr = addresses[0]
 
     line = addr.find("streetAddressLine", ns).text
+    print(f"    LOCATION {addr.find('streetAddressLine', ns)} ")
+    print(f"    LOCATION {addr.find('streetAddressLine', ns).text} ")
+    print(f"    LOCATION {addr.find('streetAddressLine', ns).attrib} ")
     city = addr.find("city", ns).text
     state = addr.find("state", ns).text
     country = addr.find("country", ns).text

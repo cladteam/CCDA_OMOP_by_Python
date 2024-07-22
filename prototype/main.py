@@ -74,9 +74,18 @@ def report_diffs(diff_generator):
     print(f"INFO:No differences found for {input_filename}:")
     return False
 
+def test():
+    print("TEST---------------------->")
+    df = spark.sql("select count(*) from concept")
+    df.show()
 
+    df = spark.sql("select count(*) as ct,  vocabulary_id from concept group by vocabulary_id order by count(*) desc ")
+    df.show()
+    print("TEST----------------------<")
+
+
+test()
 FILE_NUM = 0
-
 todo_list = input_filename_list
 if (len(input_filename_list) >= int(args.num_tests) and int(args.num_tests) > 0):
     todo_list = input_filename_list[:(int(args.num_tests))]

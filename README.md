@@ -29,6 +29,7 @@ This needs more detail, but works on macos. I've not been successful yet on Wind
 - Consider an IDE. For simple things, clearly I use a shell a lot, but also PyCharm.
   - https://www.jetbrains.com/pycharm/download/?section=mac
 - Create an environment for the is project
+- Clone the private vocabulary repo: git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
 - Clone the project repo. git@github.com:chrisroederucdenver/CCDA_OMOP_by_Python.git
 - Add packages to it using Pip
   - long list in requirements.txt, but it's basically pyspark. This is what depends on Java.
@@ -54,7 +55,7 @@ The default to a particular file in the resources directory, and can be run with
 - output is where created output files live. For now they are serialized dictionaries, but may evolve to CSV.
 - resources is where the sample XML files live
 - ref_data, short for reference data, is a place to keep the concept table and the spark data
-  - a bit messy because I was trying to keep the concept table's vocabularies private in another workspace. TODO.
+    - link the CONCEPT file from the private repo here: (from the base directory  CCDA_OMOP_by_Python run: ln -s ../CCDA_OMP_Private/CONCEPT.csv ref_data. This should create a symbolic link from within the main repo's ref_data directory to the CONCEPT.csv file in the private repo. You might copy it, but linking saves the 1GB of disk space from having 2. Or copy and delete the original.
 - tests is a driectory for vetted output we compare to when testing. If new code doesn't produce the same output it either added something good, and the comparision files need to be updated, or something is broken or both.
 - table_objects is where I've started to experiment with table objects in Python for the OMOP tables. 
   - just using dictionaries is an option.

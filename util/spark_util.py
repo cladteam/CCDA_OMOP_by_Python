@@ -26,12 +26,13 @@ class SparkUtil():
     def __init__(self):
         """ sets up constants and starts Spark if necessary """
 
-        self.spark = SparkSession.builder \
+        self.spark = SparkSession\
+            .builder \
+            .master("local") \
             .appName('CCDA_OMOP_ETL') \
+            .config("spark.sql.legacy.createHiveTableByDefault", False) \
             .config("spark.hadoop.hive.metastore.warehouse.dir", SparkUtil.DW_PATH) \
             .config("spark.sql.warehouse.dir", SparkUtil.DW_PATH) \
-            .config("spark.sql.legacy.createHiveTableByDefault", False) \
-            .master("local") \
             .getOrCreate()
 
         # Odd that you try to start and if that fails you restart. Backwards? TODO
@@ -58,7 +59,8 @@ class SparkUtil():
         vocab_obj = vocab_spark.VocabSpark(self.spark, SparkUtil.DW_PATH)
         try:
             vocab_obj.load_from_csv()
-        except Exception:
+        except Exception as e:
+            print(f"ERROR load_from_csv() failed {e}")
             vocab_obj.load_from_existing()
 
         print("PERSON")
