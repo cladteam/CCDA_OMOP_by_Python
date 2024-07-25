@@ -2,7 +2,7 @@ name: CCDA parsing with Spark
 run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
 on: [push, workflow_dispatch]
 jobs:
-    Run-main:
+    Run-prototype-1:
         runs-on: ubuntu-latest
         steps:
           - name: Check out repository code
@@ -21,30 +21,69 @@ jobs:
             shell: bash
             run: |
                 ls ref_data
+                pwd
           - name: Install pyspark
             run: |
                 pip install pyspark
-          - name: Run prototype_2/parse.py
-            run: |
-                python3 -m prototype_2.parse
-          - name: Run prototype_2/data_driven_parse.py
-            run: |
-                python3 -m prototype_2.data_driven_parse
-          - name: Run prototype_2/layer_datsets.py
-            run: |
-                python3 -m prototype_2.layer_datasets
           - name: run protoype/main.py
             run: |
                 python3 -m prototype.main -n=2
+          - name: Run test_util_spark
+            run: |
+                python3 -m test_spark_util
+    Run-snoopers:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out repository code
+            uses: actions/checkout@v4
+            with:
+              ref: main
+          - name:  Get vocabulary data from private repo
+            shell: bash
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com   || true
+              git clone git@github.com:chrisroederucdenver/CCDA_OMOP_Private.git
+              mv CCDA_OMOP_Private ref_data
+          - name: show ref_data files
+            shell: bash
+            run: |
+                ls ref_data
+                pwd
+          - name: Install pyspark
+            run: |
+                pip install pyspark
           - name: Run (generic) Snooper
             run: |
                 python3 -m tools.header_snooper
           - name: Run (generic) Snooper
             run: |
                 python3 -m tools.section_snooper
-          - name: Run test_util_spark
+    Run-prototype-2:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out repository code
+            uses: actions/checkout@v4
+            with:
+              ref: main
+          - name: change directory to prototype_2
+            shell: bash
             run: |
-                python3 -m test_spark_util
+                cd prototype_2
+                pwd
+          - name: Install pandas
+            run: |
+                pip install pandas
+          - name: Run parse.py
+            run: |
+                python3 -m parse
+          - name: Run data_driven_parse.py
+            run: |
+                python3 -m data_driven_parse
+          - name: Run layer_datsets.py
+            run: |
+                python3 -m layer_datasets
     Lint-Flake8:
         runs-on: ubuntu-latest
         steps:
