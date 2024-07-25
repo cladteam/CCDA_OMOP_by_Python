@@ -73,6 +73,7 @@ jobs:
                 ls
                 cd prototype_2
                 pwd
+                ls
           - name: Install pandas
             run: |
                 pip install pandas
