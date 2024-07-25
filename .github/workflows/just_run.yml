@@ -70,6 +70,7 @@ jobs:
           - name: change directory to prototype_2
             shell: bash
             run: |
+                ls
                 cd prototype_2
                 pwd
           - name: Install pandas
