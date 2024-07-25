@@ -79,12 +79,15 @@ jobs:
                 pip install pandas
           - name: Run parse.py
             run: |
+                cd prototype_2
                 python3 parse.py
           - name: Run data_driven_parse.py
             run: |
+                cd prototype_2
                 python3 data_driven_parse.py
           - name: Run layer_datsets.py
             run: |
+                cd prototype_2
                 python3 layer_datasets.py
     Lint-Flake8:
         runs-on: ubuntu-latest
