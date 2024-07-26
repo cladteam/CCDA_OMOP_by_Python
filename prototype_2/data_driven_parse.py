@@ -10,6 +10,7 @@
  
  Chris Roeder
  2024-07-25: needs access to vocabulary, needs to do multiple obsrvations, needs dervied values from code on foundry
+ 2024-07-26: needs test driver, the main function needs broken out into file, field and attribute
 """
 
 import pandas as pd
@@ -38,20 +39,42 @@ ns = {
 PK_dict = {}
 
 def map_oid(vocabuarly_oid):
+    """ maps an OID used in CCDA to indicate the vocabulary
+        to an OMOP vocabulary_id.
+        FIX: needs the data, needs written
+    """
     return 1
     
 def map_to_omop_concept_id(vocabulary_id, concept_code):
+    """ Simply maps vocabulary_id, concept_code to an OMOP concept_id.
+        FIX: needs the data, needs written.
+        Somewhat redundant in that map_to_standard_omop_concept_id
+        is much more useful and likely to be used.
+    """
     return 2
 
-def map_hl7_to_omop(args_dict):
-    # expects: vocabulary_oid, concept_code
-        # This would map an HL7 vocabulary_oid to an OMOP vocabulary_id,
-        # then map both vocabulary_id and concept_code to an OMOP concept_id
-        # STUB
-        #vocabulary_id = map_oid(args_dict['vocabulary_oid'])
-        #concept_id = map_to_omop_concept_id(vocabulary_id, args_dict['concept_code'])
-        #return concept_id
-        return 123456
+def map_to_standard_omop_concept_id(vocabulary_id, concept_code):
+    """ Maps vocabulary_id, concept_code to a standard OMOP 
+        concept_id by joining through concept_relationship.
+        FIX: needs the data, needs written
+    """
+    return 2
+
+def map_hl7_to_omop(vocabulary_oid, concept_code):
+    """ This would map an HL7 vocabulary_oid to an OMOP vocabulary_id,
+        then map both vocabulary_id and concept_code to an OMOP concept_id
+    """
+    #vocabulary_id = map_oid(args_dict['vocabulary_oid'])
+    #concept_id = map_to_standard_omop_concept_id(vocabulary_id, args_dict['concept_code'])
+    #return concept_id
+    return 123456
+
+def map_hl7_to_omop_w_dict_args(args_dict):
+    """ expects: vocabulary_oid, concept_code
+        FIX: needs the data, needs written
+        FIX: consider kwargs and the pythonic way of doing this!
+    """
+    map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
 
 meta_dict = {
     # domain : { field : [ element, attribute ] }
@@ -78,7 +101,7 @@ meta_dict = {
         },
         'gender_concept_id' : {
             'DERIVED': "", # marks as derived from other fields
-            'FUNCTION' : map_hl7_to_omop, # not the string representing the name, but function itself in Python space.
+            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'gender_concept_code', 
                 'vocabulary_oid' : 'gender_concept_codeSystem'
@@ -98,7 +121,7 @@ meta_dict = {
         },
         'race_concept_id':{
             'DERIVED': "", # marks as derived from other fields
-            'FUNCTION' : map_hl7_to_omop, # not the string representing the name, but function itself in Python space.
+            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'race_concept_code', 
                 'vocabulary_oid' : 'race_concept_codeSystem'
@@ -114,7 +137,7 @@ meta_dict = {
         },
         'ethnicity_concept_id' : {
             'DERIVED': "", # marks as derived from other fields
-            'FUNCTION' : map_hl7_to_omop, # not the string representing the name, but function itself in Python space.
+            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'ethnicity_concept_code', 
                 'vocabulary_oid' : 'ethnicity_concept_codeSystem'
@@ -139,7 +162,7 @@ meta_dict = {
         }, 
         'visit_concept_id' : {
             'DERIVED': "", # marks as derived from other fields
-            'FUNCTION' : map_hl7_to_omop, # not the string representing the name, but function itself in Python space.
+            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'visit_concept_code', 
                 'vocabulary_oid' : 'visit_concept_codeSystem'
@@ -181,7 +204,7 @@ meta_dict = {
         },
         'observation_concept_id' : {
             'DERIVED': "", # marks as derived from other fields
-            'FUNCTION' : map_hl7_to_omop, # not the string representing the name, but function itself in Python space.
+            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'observation_concept_code', 
                 'vocabulary_oid' : 'observation_concept_codeSystem'
@@ -213,7 +236,12 @@ meta_dict = {
 
     
 def parse_domain_from_dict(tree, domain, domain_meta_dict):
-
+    """ The main logic is here. 
+        Given a tree from ElementTree representing a CCDA document (ClinicalDocument, not just file),
+        parse the different domains out of it, linking PK and FKs between them.
+        Return a dictionary, keyed by domain name, of dictionaries of rows, each a dictionary
+        of fields.
+    """
     # Find root
     logging.info(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}")
     root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
@@ -274,6 +302,9 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
   
  
 def parse_doc(file_path):
+    """ Parses many domains from a single file, collects them
+        into a dict to return.
+    """
     omop_dict = {}
     tree = ET.parse(file_path)
     for domain, domain_meta_dict in meta_dict.items():
@@ -283,12 +314,15 @@ def parse_doc(file_path):
 
 
 def print_omop_structure(omop):
-        print(f"PK_dict: {PK_dict}")
-        for domain, domain_list in omop.items():
-            for domain_data_dict in domain_list:
-                print(f"\n\nDOMAIN: {domain}")
-                for field, parts in domain_data_dict.items():
-                    print(f"    FIELD:{field} VALUE:{parts}")
+    """ prints a dict of parsed domains as returned from parse_doc()
+        or parse_domain_from_dict()
+    """
+    print(f"PK_dict: {PK_dict}")
+    for domain, domain_list in omop.items():
+        for domain_data_dict in domain_list:
+            print(f"\n\nDOMAIN: {domain}")
+            for field, parts in domain_data_dict.items():
+                print(f"    FIELD:{field} VALUE:{parts}")
 
 if __name__ == '__main__':  
     
