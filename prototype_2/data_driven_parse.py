@@ -24,6 +24,8 @@ logger = logging.getLogger('basic logging')
 logger.setLevel(logging.DEBUG)
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(levelname)s %(message)s')
+console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
 ns = {
@@ -86,66 +88,76 @@ def map_hl7_to_omop_w_dict_args(args_dict):
     return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
 
 meta_dict = {
-    # domain : { field : [ element, attribute ] }
-    # evo: domain : { field : [ element, attribute, value_transformation_function ] }
+    # domain : { field : [ element, attribute, value_transformation_function ] }
     'person': { 
-        'root' : {'element': "./recordTarget/patientRole"} , # root is a special case, no attribute here, and the name matters
+        'root' : { # name is required to be root, see foolish consistency below
+            'type' : 'ROOT', # (really a foolish consistency, not used here)
+            'element': "./recordTarget/patientRole"
+        }, 
         # [@root='2.16.840.1.113883.4.1']
         'person_other_id' : {
+            'type' : 'FIELD',
             'element' : 'id[@root="2.16.840.1.113883.4.6"]',
             'attribute' : "extension"
         },
         'person_id' : {
-            'PK' : "",  # used as a tag to mark this field for addition to the PK_dict 
+            'type' : 'PK',
             'element' : 'id[@root="2.16.840.1.113883.4.1"]',
             'attribute' : "extension"
         },
         'gender_concept_code' : { 
+            'type' : 'FIELD',
             'element' : "patient/administrativeGenderCode", 
             'attribute' : "code"
         },
         'gender_concept_codeSystem' : { 
+            'type' : 'FIELD',
             'element' : "patient/administrativeGenderCode", 
             'attribute' : "code"
         },
         'gender_concept_id' : {
-            'DERIVED': "", # marks as derived from other fields
-            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
+            'type' : 'DERIVED',
+            'FUNCTION' : map_hl7_to_omop_w_dict_args, 
             'argument_names' : { 
                 'concept_code' : 'gender_concept_code', 
                 'vocabulary_oid' : 'gender_concept_codeSystem'
             }
         },
         'date_of_birth': { 
+            'type' : 'FIELD',
             'element' : "patient/birthTime", 
             'attribute' : "value" 
         },
         'race_concept_code' : { 
+            'type' : 'FIELD',
             'element' : "patient/raceCode", 
             'attribute' : "code"
         },
         'race_concept_codeSystem' : { 
+            'type' : 'FIELD',
             'element' : "patient/raceCode", 
             'attribute' : "codeSystem"
         },
         'race_concept_id':{
-            'DERIVED': "", # marks as derived from other fields
-            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
+            'type' : 'DERIVED',
+            'FUNCTION' : map_hl7_to_omop_w_dict_args,
             'argument_names' : { 
                 'concept_code' : 'race_concept_code', 
                 'vocabulary_oid' : 'race_concept_codeSystem'
             }
         },
         'ethnicity_concept_code' : {
+            'type' : 'FIELD',
             'element' : "patient/ethnicGroupCode", 
             'attribute': "code"
         },
         'ethnicity_concept_codeSystem' : {
+            'type' : 'FIELD',
             'element' : "patient/ethnicGroupCode", 
             'attribute': "codeSystem"
         },
         'ethnicity_concept_id' : {
-            'DERIVED': "", # marks as derived from other fields
+            'type' : 'DERIVED',
             'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'ethnicity_concept_code', 
@@ -153,24 +165,33 @@ meta_dict = {
             }
         },
     },
+
     'encounter' : {
-        'root': {'element' : "./componentOf/encompassingEncounter"}, # FIX [@root='2.16.840.1.113883.4.6']
-        'person_id' : { 'FK' : 'person_id' }, # FK here means to get the value from the PK_dict instead of the XML tree.
+        'root': {
+            'type' : 'ROOT',
+            'element' : "./componentOf/encompassingEncounter"
+        }, # FIX [@root='2.16.840.1.113883.4.6']
+        'person_id' : { 
+            'type' : 'FK',
+            'FK' : 'person_id' 
+        },
         'visit_occurrence_id' : { 
+            'type' : 'PK',
             'element' : "id",
             'attribute': "root",
-            'PK' : "" # used as a tag to mark this field for addition to the PK_dict 
         },
         'visit_concept_code' : { 
+            'type' : 'FIELD',
             'element' : "code",   # FIX ToDo is this what I think it is?,
             'attribute' : "code"
         }, 
         'visit_concept_codeSystem' : { 
+            'type' : 'FIELD',
             'element' : "code",
             'attribute' : "codeSystem"
         }, 
         'visit_concept_id' : {
-            'DERIVED': "", # marks as derived from other fields
+            'type' : 'DERIVED',
             'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'visit_concept_code', 
@@ -178,41 +199,56 @@ meta_dict = {
             }
         },
         'care_site_id' : { 
+            'type' : 'FIELD',
             'element' : "location/healthCareFacility/id",
             'attribute' : "root"
         },
         # FIX is it consistenly a high/low pair? do we sometimes get just effectiveTime@value ?
         'start_time' : { 
+            'type' : 'FIELD',
             'element' : "effectiveTime/low",
             'attribute' : "value"
         },
         'end_time' :  { 
+            'type' : 'FIELD',
             'element' : "effectiveTime/high",
             'attribute' : "value"
         }
     },
+
     'observation' : {
-        'root' : {'element': 
+        'root' : {
+            'type' : 'ROOT',
+            'element': 
                   ("./component/structuredBody/component/section/"
                    "templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
                    "/../entry/organizer/component/observation")
                  },
-        'person_id' : { 'FK' : 'person_id' }, # FK here means to get the value from the PK_dict instead of the XML tree.
-        'visit_occurrence_id' :  { 'FK' : 'visit_occurrence_id' }, # FK here means to get the value from the PK_dict instead of the XML tree.
+        'person_id' : { 
+            'type' : 'FK', 
+            'FK' : 'person_id' 
+        }, 
+        'visit_occurrence_id' :  { 
+            'type' : 'FK', 
+            'FK' : 'visit_occurrence_id' 
+        }, 
         'observation_id' : {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
+            'type' : 'FIELD',
             'element' : 'id',
             'attribute' : 'root'   ### FIX ????
         },
         'observation_concept_code' : {
+            'type' : 'FIELD',
             'element' : "code" ,
             'attribute' : "code"
         },
         'observation_concept_codeSystem' : {
+            'type' : 'FIELD',
             'element' : "code",
             'attribute' : "codeSystem"
         },
         'observation_concept_id' : {
-            'DERIVED': "", # marks as derived from other fields
+            'type' : 'DERIVED', 
             'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'observation_concept_code', 
@@ -220,23 +256,28 @@ meta_dict = {
             }
         },
         'observation_concept_displayName' : {
+            'type' : 'FIELD',
             'element' : "code",
             'attribute' : "displayName"
         },
         # FIX same issue as above. Is it always just a single value, or do we ever get high and low?
         'time' : {
+            'type' : 'FIELD',
             'element' : "effectiveTime",
             'attribute' : "value"
         },
         'value' : { 
+            'type' : 'FIELD',
             'element' : "value" ,
             'attribute' : "value"
         },
         'value_type' : { 
+            'type' : 'FIELD',
             'element' : "value",
             'attribute' : "type"
         },
         'value_unit' :  { 
+            'type' : 'FIELD',
             'element' : 'value',
             'attribute' : 'unit'
         }
@@ -257,7 +298,7 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         if 'attribute' not in field_details_dict:
             logger.error(f"could not find key 'attribute' in the field_details_dict: {field_details_dict}")
         else: 
-            logger.info(f"  ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
+            logger.info(f"       ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
             attribute_value = field_element.get(field_details_dict['attribute'])
             if attribute_value is None:
                 logger.warning(f"no value for field element {field_details_dict['element']} for {domain}/{field_tag}")
@@ -272,11 +313,20 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         of fields.
     """
     # Find root
+    if 'root' not in domain_meta_dict:
+        logger.error(f"DOMAIN {domain} lacks a root element.")
+        return None
+
+    if 'element' not in domain_meta_dict['root']:
+        logger.error(f"DOMAIN {domain} root lacks an 'element' key.")
+        return None
+
     logger.info(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}")
     root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
     if root_element_list is None or len(root_element_list) == 0: 
-        logger.error(f"couldn't find root element for {domain} with {domain_meta_dict['root']['element']}")
+        logger.error(f"DOMAIN couldn't find root element for {domain} with {domain_meta_dict['root']['element']}")
         return None
+
     
     # Do others. 
     # Watch for two kinds of errors: 
@@ -287,35 +337,37 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
     for root_element in root_element_list:
         output_dict = {}
         logger.info(f"  ROOT for domain:{domain}, we have tag:{root_element.tag} attributes:{root_element.attrib}")
+
         for (field_tag, field_details_dict) in domain_meta_dict.items():
-            if field_tag != 'root' and 'DERIVED' not in field_details_dict:
-                if 'FK' in field_details_dict:
-                     logger.info(f"    FIELD FK for {domain}/{field_tag}")
-                     if field_tag in PK_dict:
-                        output_dict[field_tag] = PK_dict[field_tag] 
-                     else:
-                        logger.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
-                        output_dict[field_tag] = None
-                elif 'element' not in field_details_dict:
-                    logger.error(f"could find key 'element' in the field_details_dict: {field_details_dict}")
+            logger.info(f"     FIELD domain:'{domain}' field_tag:'{field_tag}' {field_details_dict}")
+            type_tag = field_details_dict['type']
+            if type_tag == 'FIELD':
+                logger.info(f"     FIELD for {domain}/{field_tag}")
+                attribute_value = parse_field_from_dict(field_details_dict, root_element, domain, field_tag)
+                output_dict[field_tag] = attribute_value
+            elif type_tag == 'PK':
+                logger.info(f"     PK for {domain}/{field_tag}")
+                attribute_value = parse_field_from_dict(field_details_dict, root_element, domain, field_tag)
+                output_dict[field_tag] = attribute_value
+                PK_dict[field_tag] = attribute_value
+            elif type_tag == 'FK':
+                logger.info(f"     FK for {domain}/{field_tag}")
+                if field_tag in PK_dict:
+                    output_dict[field_tag] = PK_dict[field_tag] 
                 else:
-                    logger.info(f"    FIELD non-FK {field_details_dict['element']} for {domain}/{field_tag}")
-                    attribute_value = parse_field_from_dict(field_details_dict, root_element, domain, field_tag)
-                    output_dict[field_tag] = attribute_value
- 
-                    if 'PK' in field_details_dict:
-                       PK_dict[field_tag] = attribute_value
+                    logger.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
+                    output_dict[field_tag] = None
 
         # Do derived values now that their inputs should be available in the output_dict                           
         for (field_tag, field_details_dict) in domain_meta_dict.items():
-            if field_tag != 'root' and 'DERIVED' in field_details_dict:
+            if field_details_dict['type'] == 'DERIVED':
                 logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
                 args_dict = {}
                 for arg_name, field_name in field_details_dict['argument_names'].items():
-                    print(f"XXXX {arg_name} {field_name}")
-                    #args_dict[arg_name] = output_dict[field_name]
-                    #output_dict[field_tag] = field_details_dict['FUNCTION'](args_dict)
-                #logger.info(f"     DERIV-ed {field_tag}, {field_details_dict} {output_dict[field_tag]}")
+                    logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
+                    args_dict[arg_name] = output_dict[field_name]
+                output_dict[field_tag] = field_details_dict['FUNCTION'](args_dict)
+                logger.info(f"     DERIV-ed {field_tag}, {field_details_dict} {output_dict[field_tag]}")
 
         output_list.append(output_dict)
         
