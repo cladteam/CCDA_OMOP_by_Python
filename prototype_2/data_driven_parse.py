@@ -21,12 +21,15 @@ from lxml import etree as ET
 import logging
 
 logger = logging.getLogger('basic logging')
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.ERROR)
 console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.DEBUG)
+#console_handler.setLevel(logging.DEBUG)
+console_handler.setLevel(logging.ERROR)
 formatter = logging.Formatter('%(levelname)s %(message)s')
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
+
 
 ns = {
    '': 'urn:hl7-org:v3',  # default namespace
@@ -36,18 +39,10 @@ ns = {
 }
 
 
-
-""" The meatadata is 3 nested dictionaries: 
-    - meta_dict: the dict of all domains
-    - domain_dict: a dict describing a particular domain
-    - field_dict: a dict describing a field component of a domain
-    These names are used in the code to help orient the reader
-    
-    An output_dict is created for each domain. The keys are the field names,
-    and the values are the values of the attributes from the elements.
-"""    
-
 PK_dict = {}
+
+
+
 
 def map_oid(vocabuarly_oid):
     """ maps an OID used in CCDA to indicate the vocabulary
@@ -86,14 +81,28 @@ def map_hl7_to_omop_w_dict_args(args_dict):
     """
     return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
 
+
+""" The meatadata is 3 nested dictionaries: 
+    - meta_dict: the dict of all domains
+    - domain_dict: a dict describing a particular domain
+    - field_dict: a dict describing a field component of a domain
+    These names are used in the code to help orient the reader
+    
+    An output_dict is created for each domain. The keys are the field names,
+    and the values are the values of the attributes from the elements.
+
+    FIX: the document as a whole has a few template IDs: 
+        root="2.16.840.1.113883.10.20.22.1.1"
+        root="2.16.840.1.113883.10.20.22.1.2"
+"""    
 meta_dict = {
     # domain : { field : [ element, attribute, value_transformation_function ] }
     'person': { 
+        # person nor patientRole have templateIDs
         'root' : { # name is required to be root, see foolish consistency below
             'type' : 'ROOT', # (really a foolish consistency, not used here)
             'element': "./recordTarget/patientRole"
         }, 
-        # [@root='2.16.840.1.113883.4.1']
         'person_other_id' : {
             'type' : 'FIELD',
             'element' : 'id[@root="2.16.840.1.113883.4.6"]',
@@ -166,18 +175,21 @@ meta_dict = {
     },
 
     'encounter' : {
+        # FIX: there's a code for what might be admitting diagnosis here 
         'root': {
             'type' : 'ROOT',
             'element' : "./componentOf/encompassingEncounter"
-        }, # FIX [@root='2.16.840.1.113883.4.6']
+        }, 
         'person_id' : { 
             'type' : 'FK',
             'FK' : 'person_id' 
         },
-        'visit_occurrence_id' : { 
+        'visit_occurrence_id' : {  
+            # FIX: why would an occurence_id be an NPI????!!!!!!!
             'type' : 'PK',
-            'element' : "id",
-            'attribute': "root",
+            'element' : 'id[@root="2.16.840.1.113883.4.6"]',
+                # The root says "NPI". The extension is the actual NPI
+            'attribute': "extension",
         },
         'visit_concept_code' : { 
             'type' : 'FIELD',
@@ -202,6 +214,31 @@ meta_dict = {
             'element' : "location/healthCareFacility/id",
             'attribute' : "root"
         },
+        'provider_id_field' : { 
+            'type' : 'FK',
+            'FK' : 'provider_id'
+        },
+        'provider_id_field' : { 
+            'type' : 'FIELD',
+            'element' : "responsibleParty/assignedEntity/id",
+            'attribute' : "root"
+        },
+        # leaving these here more for testing how to pull #text
+        'provider_prefix' : { 
+            'type' : 'FIELD',
+            'element' : "responsibleParty/assignedEntity/assignedPerson/name/prefix",
+            'attribute' : "#text"
+        },
+        'provider_given' : { 
+            'type' : 'FIELD',
+            'element' : "responsibleParty/assignedEntity/assignedPerson/name/given",
+            'attribute' : "#text"
+        },
+        'provider_family' : { 
+            'type' : 'FIELD',
+            'element' : "responsibleParty/assignedEntity/assignedPerson/name/family",
+            'attribute' : "#text"
+        },
         # FIX is it consistenly a high/low pair? do we sometimes get just effectiveTime@value ?
         'start_time' : { 
             'type' : 'FIELD',
@@ -222,6 +259,7 @@ meta_dict = {
                   ("./component/structuredBody/component/section/"
                    "templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
                    "/../entry/organizer/component/observation")
+                    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
                  },
         'person_id' : { 
             'type' : 'FK', 
@@ -299,6 +337,9 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         else: 
             logger.info(f"       ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
             attribute_value = field_element.get(field_details_dict['attribute'])
+            #if attribute_value is None and field_details_dict['attribute'] == "#text":
+            if field_details_dict['attribute'] == "#text":
+                attribute_value = field_element.text
             if attribute_value is None:
                 logger.warning(f"no value for field element {field_details_dict['element']} for {domain}/{field_tag}")
             return(attribute_value)
