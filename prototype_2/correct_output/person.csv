@@ -1,0 +1,2 @@
+person_other_id,person_id,gender_concept_code,gender_concept_codeSystem,date_of_birth,race_concept_code,race_concept_codeSystem,ethnicity_concept_code,ethnicity_concept_codeSystem,gender_concept_id,race_concept_id,ethnicity_concept_id
+1,123-101-5230,F,F,19470501,2106-3,2.16.840.1.113883.6.238,2186-5,2.16.840.1.113883.6.238,,,
