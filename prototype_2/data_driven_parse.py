@@ -83,7 +83,6 @@ def map_hl7_to_omop(vocabulary_oid, concept_code):
 def map_hl7_to_omop_w_dict_args(args_dict):
     """ expects: vocabulary_oid, concept_code
         FIX: needs the data, needs written
-        FIX: consider kwargs and the pythonic way of doing this!
     """
     return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
 
@@ -362,6 +361,8 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         for (field_tag, field_details_dict) in domain_meta_dict.items():
             if field_details_dict['type'] == 'DERIVED':
                 logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
+                # NB Using an explicit dict here instead of kwargs because this code here
+                # doesn't know what the keywords are at 'compile' time.
                 args_dict = {}
                 for arg_name, field_name in field_details_dict['argument_names'].items():
                     logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
