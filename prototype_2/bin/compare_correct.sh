@@ -3,5 +3,5 @@
 for file in *.csv
 do
     echo $file
-    diff $file correct_output/$file
+    diff correct_output/$file $file
 done
