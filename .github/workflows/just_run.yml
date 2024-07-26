@@ -90,6 +90,9 @@ jobs:
             run: |
                 cd prototype_2
                 python3 layer_datasets.py
+          - name: compare output
+            run: |
+                bin/compare_correct.sh
     Lint-Flake8:
         runs-on: ubuntu-latest
         steps:
