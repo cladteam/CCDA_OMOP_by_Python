@@ -11,6 +11,7 @@
  Chris Roeder
  2024-07-25: needs access to vocabulary, needs to do multiple obsrvations, needs dervied values from code on foundry
  2024-07-26: needs test driver, the main function needs broken out into file, field and attribute
+- change tags to be values of a 'tag' key so it looks more like a column in a csv
 """
 
 import pandas as pd
@@ -19,12 +20,20 @@ import lxml
 from lxml import etree as ET
 import logging
 
+logger = logging.getLogger('basic logging')
+logger.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+logger.addHandler(console_handler)
+
 ns = {
    '': 'urn:hl7-org:v3',  # default namespace
    'hl7': 'urn:hl7-org:v3',
    'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
    'sdtc': 'urn:hl7-org:sdtc'
 }
+
+
 
 """ The meatadata is 3 nested dictionaries: 
     - meta_dict: the dict of all domains
@@ -74,7 +83,7 @@ def map_hl7_to_omop_w_dict_args(args_dict):
         FIX: needs the data, needs written
         FIX: consider kwargs and the pythonic way of doing this!
     """
-    map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
+    return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
 
 meta_dict = {
     # domain : { field : [ element, attribute ] }
@@ -234,7 +243,27 @@ meta_dict = {
     }
 }
 
+
+def parse_field_from_dict(field_details_dict, domain_root_element, domain, field_tag):
+    if 'element' not in field_details_dict:
+        logger.error(f"could find key 'element' in the field_details_dict: {field_details_dict}")
+    else:
+        logger.info(f"    FIELD {field_details_dict['element']} for {domain}/{field_tag}")
+        field_element = domain_root_element.find(field_details_dict['element'], ns)
+        if field_element is None:
+            logger.error(f"could find field element {field_details_dict['element']} for {domain}/{field_tag}")
+            return None
     
+        if 'attribute' not in field_details_dict:
+            logger.error(f"could not find key 'attribute' in the field_details_dict: {field_details_dict}")
+        else: 
+            logger.info(f"  ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
+            attribute_value = field_element.get(field_details_dict['attribute'])
+            if attribute_value is None:
+                logger.warning(f"no value for field element {field_details_dict['element']} for {domain}/{field_tag}")
+            return(attribute_value)
+    
+
 def parse_domain_from_dict(tree, domain, domain_meta_dict):
     """ The main logic is here. 
         Given a tree from ElementTree representing a CCDA document (ClinicalDocument, not just file),
@@ -243,10 +272,10 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         of fields.
     """
     # Find root
-    logging.info(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}")
+    logger.info(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}")
     root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
     if root_element_list is None or len(root_element_list) == 0: 
-        logging.error(f"couldn't find root element for {domain} with {domain_meta_dict['root']['element']}")
+        logger.error(f"couldn't find root element for {domain} with {domain_meta_dict['root']['element']}")
         return None
     
     # Do others. 
@@ -257,44 +286,36 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
     print(f"NUM ROOTS {len(root_element_list)}")
     for root_element in root_element_list:
         output_dict = {}
-        logging.info(f"ROOT for domain:{domain}, we have tag:{root_element.tag} attributes:{root_element.attrib}")
+        logger.info(f"  ROOT for domain:{domain}, we have tag:{root_element.tag} attributes:{root_element.attrib}")
         for (field_tag, field_details_dict) in domain_meta_dict.items():
             if field_tag != 'root' and 'DERIVED' not in field_details_dict:
                 if 'FK' in field_details_dict:
-                     logging.info(f"FIELD FK for {domain}/{field_tag}")
+                     logger.info(f"    FIELD FK for {domain}/{field_tag}")
                      if field_tag in PK_dict:
                         output_dict[field_tag] = PK_dict[field_tag] 
                      else:
-                        logging.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
+                        logger.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
                         output_dict[field_tag] = None
                 elif 'element' not in field_details_dict:
-                    logging.error(f"could find key 'element' in the field_details_dict: {field_details_dict}")
+                    logger.error(f"could find key 'element' in the field_details_dict: {field_details_dict}")
                 else:
-                    logging.info(f"FIELD non-FK {field_details_dict['element']} for {domain}/{field_tag}")
-                    field_element = root_element.find(field_details_dict['element'], ns)
-                    if field_element is None:
-                        logging.error(f"could find field element {field_details_dict['element']} for {domain}/{field_tag}")
-                        return None
-                
-                    if 'attribute' not in field_details_dict:
-                        logging.error(f"could not find key 'attribute' in the field_details_dict: {field_details_dict}")
-                    else: 
-                        logging.info(f"ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
-                        attribute_value = field_element.get(field_details_dict['attribute'])
-                        if attribute_value is None:
-                            logging.warning(f"no value for field element {field_details_dict['element']} for {domain}/{field_tag}")
-                        output_dict[field_tag] = attribute_value
-                        if 'PK' in field_details_dict:
-                            PK_dict[field_tag] = attribute_value
+                    logger.info(f"    FIELD non-FK {field_details_dict['element']} for {domain}/{field_tag}")
+                    attribute_value = parse_field_from_dict(field_details_dict, root_element, domain, field_tag)
+                    output_dict[field_tag] = attribute_value
+ 
+                    if 'PK' in field_details_dict:
+                       PK_dict[field_tag] = attribute_value
 
         # Do derived values now that their inputs should be available in the output_dict                           
         for (field_tag, field_details_dict) in domain_meta_dict.items():
             if field_tag != 'root' and 'DERIVED' in field_details_dict:
-                logging.info(f" DERIVING {field_tag}, {field_details_dict}")
+                logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
                 args_dict = {}
                 for arg_name, field_name in field_details_dict['argument_names'].items():
-                    args_dict[arg_name] = output_dict[field_name] 
-                output_dict[field_tag] = field_details_dict['FUNCTION'](args_dict)
+                    print(f"XXXX {arg_name} {field_name}")
+                    #args_dict[arg_name] = output_dict[field_name]
+                    #output_dict[field_tag] = field_details_dict['FUNCTION'](args_dict)
+                #logger.info(f"     DERIV-ed {field_tag}, {field_details_dict} {output_dict[field_tag]}")
 
         output_list.append(output_dict)
         

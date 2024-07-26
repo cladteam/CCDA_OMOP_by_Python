@@ -1,4 +1,4 @@
-person_id,visit_occurrence_id,observation_id,observation_concept_code,observation_concept_codeSystem,observation_concept_displayName,time,value,value_type,value_unit,observation_concept_id
-123-101-5230,2.16.840.1.113883.4.6,107c2dc0-67a5-11db-bd13-0800200c9a66,30313-1,2.16.840.1.113883.6.1,HGB,20120810,10.2,,g/dl,
-123-101-5230,2.16.840.1.113883.4.6,107c2dc0-67a5-11db-bd13-0800200c9a66,33765-9,2.16.840.1.113883.6.1,WBC,20120810,12.3,,10+3/ul,
-123-101-5230,2.16.840.1.113883.4.6,107c2dc0-67a5-11db-bd13-0800200c9a66,26515-7,2.16.840.1.113883.6.1,PLT,20120810,123,,10+3/ul,
+person_id,visit_occurrence_id,observation_id,observation_concept_code,observation_concept_codeSystem,observation_concept_displayName,time,value,value_type,value_unit
+123-101-5230,2.16.840.1.113883.4.6,107c2dc0-67a5-11db-bd13-0800200c9a66,30313-1,2.16.840.1.113883.6.1,HGB,20120810,10.2,,g/dl
+123-101-5230,2.16.840.1.113883.4.6,107c2dc0-67a5-11db-bd13-0800200c9a66,33765-9,2.16.840.1.113883.6.1,WBC,20120810,12.3,,10+3/ul
+123-101-5230,2.16.840.1.113883.4.6,107c2dc0-67a5-11db-bd13-0800200c9a66,26515-7,2.16.840.1.113883.6.1,PLT,20120810,123,,10+3/ul
