@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import data_driven_parse as DDP
 import pandas as PD
+import data_driven_parse as DDP
+from metadata import get_meta_dict
 
 def create_omop_domain_dataframes(omop_data):
     """ transposes the rows into columns, 
@@ -44,7 +45,7 @@ if __name__ == '__main__':
         ccd_ambulatory_files = ccd_ambulatory.files().download()
         ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
  
-    omop_data = DDP.parse_doc(ccd_ambulatory_path) 
+    omop_data = DDP.parse_doc(ccd_ambulatory_path, get_meta_dict()) 
     DDP.print_omop_structure(omop_data) 
     dataframe_dict = create_omop_domain_dataframes(omop_data)
     write_csvs_from_dataframe_dict(dataframe_dict)
