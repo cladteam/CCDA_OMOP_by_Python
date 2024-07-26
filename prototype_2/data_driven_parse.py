@@ -19,6 +19,7 @@ import pandas as pd
 import lxml
 from lxml import etree as ET
 import logging
+from metadata import get_meta_dict
 
 logger = logging.getLogger('basic logging')
 #logger.setLevel(logging.DEBUG)
@@ -41,285 +42,6 @@ ns = {
 
 PK_dict = {}
 
-
-
-
-def map_oid(vocabuarly_oid):
-    """ maps an OID used in CCDA to indicate the vocabulary
-        to an OMOP vocabulary_id.
-        FIX: needs the data, needs written
-    """
-    return 1
-    
-def map_to_omop_concept_id(vocabulary_id, concept_code):
-    """ Simply maps vocabulary_id, concept_code to an OMOP concept_id.
-        FIX: needs the data, needs written.
-        Somewhat redundant in that map_to_standard_omop_concept_id
-        is much more useful and likely to be used.
-    """
-    return 2
-
-def map_to_standard_omop_concept_id(vocabulary_id, concept_code):
-    """ Maps vocabulary_id, concept_code to a standard OMOP 
-        concept_id by joining through concept_relationship.
-        FIX: needs the data, needs written
-    """
-    return 2
-
-def map_hl7_to_omop(vocabulary_oid, concept_code):
-    """ This would map an HL7 vocabulary_oid to an OMOP vocabulary_id,
-        then map both vocabulary_id and concept_code to an OMOP concept_id
-    """
-    #vocabulary_id = map_oid(args_dict['vocabulary_oid'])
-    #concept_id = map_to_standard_omop_concept_id(vocabulary_id, args_dict['concept_code'])
-    #return concept_id
-    return 123456
-
-def map_hl7_to_omop_w_dict_args(args_dict):
-    """ expects: vocabulary_oid, concept_code
-        FIX: needs the data, needs written
-    """
-    return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
-
-
-""" The meatadata is 3 nested dictionaries: 
-    - meta_dict: the dict of all domains
-    - domain_dict: a dict describing a particular domain
-    - field_dict: a dict describing a field component of a domain
-    These names are used in the code to help orient the reader
-    
-    An output_dict is created for each domain. The keys are the field names,
-    and the values are the values of the attributes from the elements.
-
-    FIX: the document as a whole has a few template IDs: 
-        root="2.16.840.1.113883.10.20.22.1.1"
-        root="2.16.840.1.113883.10.20.22.1.2"
-"""    
-meta_dict = {
-    # domain : { field : [ element, attribute, value_transformation_function ] }
-    'person': { 
-        # person nor patientRole have templateIDs
-        'root' : { # name is required to be root, see foolish consistency below
-            'type' : 'ROOT', # (really a foolish consistency, not used here)
-            'element': "./recordTarget/patientRole"
-        }, 
-        'person_other_id' : {
-            'type' : 'FIELD',
-            'element' : 'id[@root="2.16.840.1.113883.4.6"]',
-            'attribute' : "extension"
-        },
-        'person_id' : {
-            'type' : 'PK',
-            'element' : 'id[@root="2.16.840.1.113883.4.1"]',
-            'attribute' : "extension"
-        },
-        'gender_concept_code' : { 
-            'type' : 'FIELD',
-            'element' : "patient/administrativeGenderCode", 
-            'attribute' : "code"
-        },
-        'gender_concept_codeSystem' : { 
-            'type' : 'FIELD',
-            'element' : "patient/administrativeGenderCode", 
-            'attribute' : "code"
-        },
-        'gender_concept_id' : {
-            'type' : 'DERIVED',
-            'FUNCTION' : map_hl7_to_omop_w_dict_args, 
-            'argument_names' : { 
-                'concept_code' : 'gender_concept_code', 
-                'vocabulary_oid' : 'gender_concept_codeSystem'
-            }
-        },
-        'date_of_birth': { 
-            'type' : 'FIELD',
-            'element' : "patient/birthTime", 
-            'attribute' : "value" 
-        },
-        'race_concept_code' : { 
-            'type' : 'FIELD',
-            'element' : "patient/raceCode", 
-            'attribute' : "code"
-        },
-        'race_concept_codeSystem' : { 
-            'type' : 'FIELD',
-            'element' : "patient/raceCode", 
-            'attribute' : "codeSystem"
-        },
-        'race_concept_id':{
-            'type' : 'DERIVED',
-            'FUNCTION' : map_hl7_to_omop_w_dict_args,
-            'argument_names' : { 
-                'concept_code' : 'race_concept_code', 
-                'vocabulary_oid' : 'race_concept_codeSystem'
-            }
-        },
-        'ethnicity_concept_code' : {
-            'type' : 'FIELD',
-            'element' : "patient/ethnicGroupCode", 
-            'attribute': "code"
-        },
-        'ethnicity_concept_codeSystem' : {
-            'type' : 'FIELD',
-            'element' : "patient/ethnicGroupCode", 
-            'attribute': "codeSystem"
-        },
-        'ethnicity_concept_id' : {
-            'type' : 'DERIVED',
-            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
-            'argument_names' : { 
-                'concept_code' : 'ethnicity_concept_code', 
-                'vocabulary_oid' : 'ethnicity_concept_codeSystem'
-            }
-        },
-    },
-
-    'encounter' : {
-        # FIX: there's a code for what might be admitting diagnosis here 
-        'root': {
-            'type' : 'ROOT',
-            'element' : "./componentOf/encompassingEncounter"
-        }, 
-        'person_id' : { 
-            'type' : 'FK',
-            'FK' : 'person_id' 
-        },
-        'visit_occurrence_id' : {  
-            # FIX: why would an occurence_id be an NPI????!!!!!!!
-            'type' : 'PK',
-            'element' : 'id[@root="2.16.840.1.113883.4.6"]',
-                # The root says "NPI". The extension is the actual NPI
-            'attribute': "extension",
-        },
-        'visit_concept_code' : { 
-            'type' : 'FIELD',
-            'element' : "code",   # FIX ToDo is this what I think it is?,
-            'attribute' : "code"
-        }, 
-        'visit_concept_codeSystem' : { 
-            'type' : 'FIELD',
-            'element' : "code",
-            'attribute' : "codeSystem"
-        }, 
-        'visit_concept_id' : {
-            'type' : 'DERIVED',
-            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
-            'argument_names' : { 
-                'concept_code' : 'visit_concept_code', 
-                'vocabulary_oid' : 'visit_concept_codeSystem'
-            }
-        },
-        'care_site_id' : { 
-            'type' : 'FIELD',
-            'element' : "location/healthCareFacility/id",
-            'attribute' : "root"
-        },
-        'provider_id_field' : { 
-            'type' : 'FK',
-            'FK' : 'provider_id'
-        },
-        'provider_id_field' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/id",
-            'attribute' : "root"
-        },
-        # leaving these here more for testing how to pull #text
-        'provider_prefix' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/assignedPerson/name/prefix",
-            'attribute' : "#text"
-        },
-        'provider_given' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/assignedPerson/name/given",
-            'attribute' : "#text"
-        },
-        'provider_family' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/assignedPerson/name/family",
-            'attribute' : "#text"
-        },
-        # FIX is it consistenly a high/low pair? do we sometimes get just effectiveTime@value ?
-        'start_time' : { 
-            'type' : 'FIELD',
-            'element' : "effectiveTime/low",
-            'attribute' : "value"
-        },
-        'end_time' :  { 
-            'type' : 'FIELD',
-            'element' : "effectiveTime/high",
-            'attribute' : "value"
-        }
-    },
-
-    'observation' : {
-        'root' : {
-            'type' : 'ROOT',
-            'element': 
-                  ("./component/structuredBody/component/section/"
-                   "templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
-                   "/../entry/organizer/component/observation")
-                    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
-                 },
-        'person_id' : { 
-            'type' : 'FK', 
-            'FK' : 'person_id' 
-        }, 
-        'visit_occurrence_id' :  { 
-            'type' : 'FK', 
-            'FK' : 'visit_occurrence_id' 
-        }, 
-        'observation_id' : {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
-            'type' : 'FIELD',
-            'element' : 'id',
-            'attribute' : 'root'   ### FIX ????
-        },
-        'observation_concept_code' : {
-            'type' : 'FIELD',
-            'element' : "code" ,
-            'attribute' : "code"
-        },
-        'observation_concept_codeSystem' : {
-            'type' : 'FIELD',
-            'element' : "code",
-            'attribute' : "codeSystem"
-        },
-        'observation_concept_id' : {
-            'type' : 'DERIVED', 
-            'FUNCTION' : map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
-            'argument_names' : { 
-                'concept_code' : 'observation_concept_code', 
-                'vocabulary_oid' : 'observation_concept_codeSystem'
-            }
-        },
-        'observation_concept_displayName' : {
-            'type' : 'FIELD',
-            'element' : "code",
-            'attribute' : "displayName"
-        },
-        # FIX same issue as above. Is it always just a single value, or do we ever get high and low?
-        'time' : {
-            'type' : 'FIELD',
-            'element' : "effectiveTime",
-            'attribute' : "value"
-        },
-        'value' : { 
-            'type' : 'FIELD',
-            'element' : "value" ,
-            'attribute' : "value"
-        },
-        'value_type' : { 
-            'type' : 'FIELD',
-            'element' : "value",
-            'attribute' : "type"
-        },
-        'value_unit' :  { 
-            'type' : 'FIELD',
-            'element' : 'value',
-            'attribute' : 'unit'
-        }
-    }
-}
 
 
 def parse_field_from_dict(field_details_dict, domain_root_element, domain, field_tag):
@@ -416,13 +138,13 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
     return output_list
   
  
-def parse_doc(file_path):
+def parse_doc(file_path, metadata):
     """ Parses many domains from a single file, collects them
         into a dict to return.
     """
     omop_dict = {}
     tree = ET.parse(file_path)
-    for domain, domain_meta_dict in meta_dict.items():
+    for domain, domain_meta_dict in metadata.items():
         domain_data_dict =  parse_domain_from_dict(tree, domain, domain_meta_dict)
         omop_dict[domain] = domain_data_dict
     return omop_dict
@@ -449,5 +171,5 @@ if __name__ == '__main__':
         ccd_ambulatory_files = ccd_ambulatory.files().download()
         ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
  
-    data = parse_doc(ccd_ambulatory_path) 
+    data = parse_doc(ccd_ambulatory_path, get_meta_dict()) 
     print_omop_structure(data) 
