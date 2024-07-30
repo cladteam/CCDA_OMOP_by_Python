@@ -1,18 +1,26 @@
-
+# TODO
+# - code to read CSV into strucutre below that the code uses
+# - column for resulting types like integers and dates
+# - column for conditionals: a) if the field shouldn't be generaated like value_as_number when it's a concpet type
+#                            b) to deal with domain_id routing
+# domain routing: maybe name the DOMAINs consistently after OMOP domains, that then align with the domain_id of the
+# domain's concpet_id and the filtering happends behind the scenes. 
+# FIX:
+# - encounter should be visit_occurrence here.
    
-DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
-PERSON, root,  ROOT, "./recordTarget/patientRole", ,,
-PERSON, person_other_id, FIELD, 'id[@root="2.16.840.1.113883.4.6"]', "extension", ,
-PERSON, person_id, PK, 'id[@root="2.16.840.1.113883.4.1"]', "extension", ,
-PERSON, gender_concept_code, FIELD, patient/administrativeGenderCode, code, ,
-PERSON, gender_concept_codeSystem, FIELD, patient/administrativeGenderCode, codeSystem, ,
-PERSON, gender_concept_code_id, DERIVED, , , 'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
-PERSON, race_concept_code, FIELD, patient/raceCode, code, ,
-PERSON, race_concept_codeSystem, FIELD, patient/raceCode, codeSystem, ,
-PERSON, race_concept_code_id, DERIVED, , , 'concept_code' : 'race_concept_code'| 'vocabulary_oid' : 'race_concept_codeSystem'
-PERSON, ethnicity_concept_code, FIELD, patient/ethnicityCode, code, ,
-PERSON, ethnicity_concept_codeSystem, FIELD, patient/ethnicityCode, codeSystem, ,
-PERSON, ethnicity_concept_code_id, DERIVED, , , 'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
+# DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
+# PERSON, root,  ROOT, "./recordTarget/patientRole", ,,
+# PERSON, person_other_id, FIELD, 'id[@root="2.16.840.1.113883.4.6"]', "extension", ,
+# PERSON, person_id, PK, 'id[@root="2.16.840.1.113883.4.1"]', "extension", ,
+# PERSON, gender_concept_code, FIELD, patient/administrativeGenderCode, code, ,
+# PERSON, gender_concept_codeSystem, FIELD, patient/administrativeGenderCode, codeSystem, ,
+# PERSON, gender_concept_code_id, DERIVED, , , 'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
+# PERSON, race_concept_code, FIELD, patient/raceCode, code, ,
+# PERSON, race_concept_codeSystem, FIELD, patient/raceCode, codeSystem, ,
+# PERSON, race_concept_code_id, DERIVED, , , 'concept_code' : 'race_concept_code'| 'vocabulary_oid' : 'race_concept_codeSystem'
+# PERSON, ethnicity_concept_code, FIELD, patient/ethnicityCode, code, ,
+# PERSON, ethnicity_concept_codeSystem, FIELD, patient/ethnicityCode, codeSystem, ,
+# PERSON, ethnicity_concept_code_id, DERIVED, , , 'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
 
  'person': { 
         # person nor patientRole have templateIDs
@@ -91,13 +99,21 @@ PERSON, ethnicity_concept_code_id, DERIVED, , , 'concept_code' : 'gender_concept
         },
     },
 
-DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
-encounter, root, ROOT
-encounter, person_id, FK
-encounter, visit_occurrence_id, PK
-encounter, visit_concept_code, FIELD, code, code
-encounter, visit_concept_codeSystem, FIELD, code, codeSystem
-encounter, visit_concept_id, DERIVED,,, 'concept_code' : 'visit_concept_code' | 'vocabulary_oid' : 'visit_concept_codeSystem' 
+# DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
+# encounter, root, ROOT
+# encounter, person_id, FK
+# encounter, visit_occurrence_id, PK
+# encounter, visit_concept_code, FIELD, code, code
+# encounter, visit_concept_codeSystem, FIELD, code, codeSystem
+# encounter, visit_concept_id, DERIVED,,, 'concept_code' : 'visit_concept_code' | 'vocabulary_oid' : 'visit_concept_codeSystem' 
+# encounter, care_site_id, FIELD, location/healthCareFacility/id, root, ,,
+# encounter, provider_id_field, FIELD,  responsibleParty/assignedEntity/assignedPerson/name/prefix, root,,
+# encounter, provider_prefix, FIELD, "responsibleParty/assignedEntity/assignedPerson/name/prefix", #text
+# encounter, provider_given, FIELD, "responsibleParty/assignedEntity/assignedPerson/name/given", #text
+# encounter, provider_family, FIELD, "responsibleParty/assignedEntity/assignedPerson/name/family", #text
+# encounter, start_time, FIELD, effectiveTime/low", value
+# encounter, end_time, FIELD, effectiveTime/high", value
+
     'encounter' : {
         # FIX: there's a code for what might be admitting diagnosis here 
         'root': {
@@ -138,11 +154,7 @@ encounter, visit_concept_id, DERIVED,,, 'concept_code' : 'visit_concept_code' | 
             'element' : "location/healthCareFacility/id",
             'attribute' : "root"
         },
-        'provider_id_field' : { 
-            'type' : 'FK',
-            'FK' : 'provider_id'
-        },
-        'provider_id_field' : { 
+        'provider_id' : { 
             'type' : 'FIELD',
             'element' : "responsibleParty/assignedEntity/id",
             'attribute' : "root"
@@ -176,7 +188,20 @@ encounter, visit_concept_id, DERIVED,,, 'concept_code' : 'visit_concept_code' | 
         }
     },
 
-DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
+# DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
+# observation, root, ROOT,"./component/structuredBody/component/section/templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']/../entry/organizer/component/observation", ,,,
+# observation, person_id, FK, person_id,,,,
+# observation, visit_occurrence_id, FK, visit_occurrence_id,,,,
+# observation, observation_concept_code, FIELD,observation_concept_code,code,code
+# observation, observation_concept_codeSystem, FIELD,observation_concept_codeSytem,code,codeSystem
+# observation, observation_concept_id, DERIVED, observation_concept_id,,, 'concept_code' : 'observation_concept_code'| 'vocabulary_oid' : 'observation_concept_codeSystem'
+# observation, observation_concept_displayName, FIELD, observation_concept_displayName, code, displayName,,
+# observation, observation_date, FIELD, time,
+# observation, value_as_string, FIELD, value, value,,,
+# observation, value_as_number, DERIVED, ,, 'input' : 'value_as_string'
+# observation, value_as_concept_id, DERIVED, ,, 'input' : 'value_as_string'
+# observation, value_unit, FIELD, value, unit,,,
+
     'observation' : {
         'root' : {
             'type' : 'ROOT',
@@ -223,12 +248,12 @@ DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES
             'attribute' : "displayName"
         },
         # FIX same issue as above. Is it always just a single value, or do we ever get high and low?
-        'time' : {
+        'observation_date' : {
             'type' : 'FIELD',
             'element' : "effectiveTime",
             'attribute' : "value"
         },
-        'value' : { 
+        'value_as_string' : { 
             'type' : 'FIELD',
             'element' : "value" ,
             'attribute' : "value"
@@ -237,6 +262,22 @@ DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES
             'type' : 'FIELD',
             'element' : "value",
             'attribute' : "type"
+        },
+        'value_as_number' : { 
+            'type' : 'DERIVED',
+            'FUNCTION' : 'cast_string_to_int',
+            'argument_names' : { 
+                'input' : 'value_as_string', 
+                'type' : 'type'
+            }
+        },
+        'value_as_concept_id' : { 
+            'type' : 'DERIVED',
+            'FUNCTION' : 'cast_string_to_concept_id',
+            'argument_names' : { 
+                'input' : 'value_as_string', 
+                'type' : 'type'
+            }
         },
         'value_unit' :  { 
             'type' : 'FIELD',
