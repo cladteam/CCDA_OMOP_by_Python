@@ -23,9 +23,12 @@ from metadata import get_meta_dict
 
 logger = logging.getLogger('basic logging')
 #logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.INFO)
 logger.setLevel(logging.ERROR)
+
 console_handler = logging.StreamHandler()
 #console_handler.setLevel(logging.DEBUG)
+#console_handler.setLevel(logging.INFO)
 console_handler.setLevel(logging.ERROR)
 formatter = logging.Formatter('%(levelname)s %(message)s')
 console_handler.setFormatter(formatter)
@@ -129,9 +132,18 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                 args_dict = {}
                 for arg_name, field_name in field_details_dict['argument_names'].items():
                     logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
-                    args_dict[arg_name] = output_dict[field_name]
-                output_dict[field_tag] = field_details_dict['FUNCTION'](args_dict)
-                logger.info(f"     DERIV-ed {field_tag}, {field_details_dict} {output_dict[field_tag]}")
+                    if field_name not in output_dict:
+                        logger.error(f" domain:{domain} field:{field_tag} could not find {field_name} in {output_dict}")
+                    try:
+                        args_dict[arg_name] = output_dict[field_name]
+                    except Exception as x:
+                        logger.error(f" arg_name: {arg_name} field_name:{field_name} args_dict:{args_dict} output_dict:{output_dict}")
+                try:
+                    output_dict[field_tag] = field_details_dict['FUNCTION'](args_dict)
+                    logger.info(f"     DERIV-ed {field_tag}, {field_details_dict} {output_dict[field_tag]}")
+                except TypeError as e:
+                    logger.error(e)
+                    logger.error(f"calling something that isn't a function {field_details_dict['FUNCTION']}. You may have quotes around it in  a python mapping structure if this is a string: {type(field_details_dict['FUNCTION'])}")
 
         output_list.append(output_dict)
         

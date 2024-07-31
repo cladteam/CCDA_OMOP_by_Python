@@ -18,8 +18,8 @@ meta_dict = {
     # domain : { field : [ element, attribute, value_transformation_function ] }
     'person': { 
         # person nor patientRole have templateIDs
-        'root' : { # name is required to be root, see foolish consistency below
-            'type' : 'ROOT', # (really a foolish consistency, not used here)
+        'root' : { 
+            'type' : 'ROOT',
             'element': "./recordTarget/patientRole"
         }, 
         'person_other_id' : {
@@ -133,11 +133,7 @@ meta_dict = {
             'element' : "location/healthCareFacility/id",
             'attribute' : "root"
         },
-        'provider_id_field' : { 
-            'type' : 'FK',
-            'FK' : 'provider_id'
-        },
-        'provider_id_field' : { 
+        'provider_id' : { 
             'type' : 'FIELD',
             'element' : "responsibleParty/assignedEntity/id",
             'attribute' : "root"
@@ -222,7 +218,7 @@ meta_dict = {
             'element' : "effectiveTime",
             'attribute' : "value"
         },
-        'value' : { 
+        'value_as_string' : { 
             'type' : 'FIELD',
             'element' : "value" ,
             'attribute' : "value"
@@ -231,6 +227,23 @@ meta_dict = {
             'type' : 'FIELD',
             'element' : "value",
             'attribute' : "type"
+        },
+        'value_as_number' : { 
+            'type' : 'DERIVED',
+            #'FUNCTION' : VT.cast_string_to_int,
+            'FUNCTION' : VT.cast_string_to_float,
+            'argument_names' : { 
+                'input' : 'value_as_string', 
+                'type' : 'value_type'
+            }
+        },
+        'value_as_concept_id' : { 
+            'type' : 'DERIVED',
+            'FUNCTION' : VT.cast_string_to_concept_id,
+            'argument_names' : { 
+                'input' : 'value_as_string', 
+                'type' : 'value_type'
+            }
         },
         'value_unit' :  { 
             'type' : 'FIELD',

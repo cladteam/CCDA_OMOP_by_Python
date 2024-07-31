@@ -1,4 +1,31 @@
 
+import logging
+logger = logging.getLogger(__name__)
+
+def cast_string_to_float(args_dict):
+    sv=0
+    string_value = args_dict['input']
+    try:
+        sv = float(string_value)
+    except ValueError as e:
+       logging.error(f"Value error casting {string_value} as integer") 
+    return sv
+
+def cast_string_to_int(args_dict):
+    sv=0
+    string_value = args_dict['input']
+    try:
+        sv = int(string_value)
+    except ValueError as e:
+       logging.error(f"Value error casting {string_value} as integer") 
+    return sv
+
+def cast_string_to_concept_id(args_dict):
+    string_value = args_dict['input']
+    # immediate qustion is if the string_value is a concept_code, which vocabulary_id do you use?
+    # next question is at a larger scope, what is the string?
+    return ""
+
 def map_oid(vocabuarly_oid):
     """ maps an OID used in CCDA to indicate the vocabulary
         to an OMOP vocabulary_id.
