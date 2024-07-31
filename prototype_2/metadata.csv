@@ -1,291 +1,39 @@
-# TODO
-# - code to read CSV into strucutre below that the code uses
-# - column for resulting types like integers and dates
-# - column for conditionals: a) if the field shouldn't be generaated like value_as_number when it's a concpet type
-#                            b) to deal with domain_id routing
-# domain routing: maybe name the DOMAINs consistently after OMOP domains, that then align with the domain_id of the
-# domain's concpet_id and the filtering happends behind the scenes. 
-# FIX:
-# - encounter should be visit_occurrence here.
-   
-# DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
-# PERSON, root,  ROOT, "./recordTarget/patientRole", ,,
-# PERSON, person_other_id, FIELD, 'id[@root="2.16.840.1.113883.4.6"]', "extension", ,
-# PERSON, person_id, PK, 'id[@root="2.16.840.1.113883.4.1"]', "extension", ,
-# PERSON, gender_concept_code, FIELD, patient/administrativeGenderCode, code, ,
-# PERSON, gender_concept_codeSystem, FIELD, patient/administrativeGenderCode, codeSystem, ,
-# PERSON, gender_concept_code_id, DERIVED, , , 'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
-# PERSON, race_concept_code, FIELD, patient/raceCode, code, ,
-# PERSON, race_concept_codeSystem, FIELD, patient/raceCode, codeSystem, ,
-# PERSON, race_concept_code_id, DERIVED, , , 'concept_code' : 'race_concept_code'| 'vocabulary_oid' : 'race_concept_codeSystem'
-# PERSON, ethnicity_concept_code, FIELD, patient/ethnicityCode, code, ,
-# PERSON, ethnicity_concept_codeSystem, FIELD, patient/ethnicityCode, codeSystem, ,
-# PERSON, ethnicity_concept_code_id, DERIVED, , , 'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
+DOMAIN,FIELD,TYPE,ELEMENT,ATTRIBUTE,FUNCTION,ARGUMENT_NAMES
+PERSON,root, ROOT,"./recordTarget/patientRole",,,,
+PERSON,person_other_id,FIELD,'id[@root="2.16.840.1.113883.4.6"]',"extension",,,
+PERSON,person_id,PK,'id[@root="2.16.840.1.113883.4.1"]',"extension",,
+PERSON,gender_concept_code,FIELD,patient/administrativeGenderCode,code,,,
+PERSON,gender_concept_codeSystem,FIELD,patient/administrativeGenderCode,codeSystem,,,
+PERSON,gender_concept_code_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
+PERSON,race_concept_code,FIELD,patient/raceCode,code,,,
+PERSON,race_concept_codeSystem,FIELD,patient/raceCode,codeSystem,,,
+PERSON,race_concept_code_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'race_concept_code'| 'vocabulary_oid' : 'race_concept_codeSystem'
+PERSON,ethnicity_concept_code,FIELD,patient/ethnicityCode,code,,,
+PERSON,ethnicity_concept_codeSystem,FIELD,patient/ethnicityCode,codeSystem,,,
+PERSON,ethnicity_concept_code_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
+VISIT_OCCURRENCE,root,ROOT,  ,,,
+VISIT_OCCURRENCE,person_id,FK
+VISIT_OCCURRENCE,visit_occurrence_id,PK
+VISIT_OCCURRENCE,visit_concept_code,FIELD,code,code,,,
+VISIT_OCCURRENCE,visit_concept_codeSystem,FIELD,code,codeSystem,,,
+VISIT_OCCURRENCE,visit_concept_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'visit_concept_code' | 'vocabulary_oid' : 'visit_concept_codeSystem' 
+VISIT_OCCURRENCE,care_site_id,FIELD,location/healthCareFacility/id,root,,,
+VISIT_OCCURRENCE,provider_id_field,FIELD, responsibleParty/assignedEntity/assignedPerson/name/prefix,root,,,
+VISIT_OCCURRENCE,provider_prefix,FIELD,"responsibleParty/assignedEntity/assignedPerson/name/prefix",#text,,,
+VISIT_OCCURRENCE,provider_given,FIELD,"responsibleParty/assignedEntity/assignedPerson/name/given",#text,,,
+VISIT_OCCURRENCE,provider_family,FIELD,"responsibleParty/assignedEntity/assignedPerson/name/family",#text,,,
+VISIT_OCCURRENCE,start_time,FIELD,effectiveTime/low",value,,,
+VISIT_OCCURRENCE,end_time,FIELD,effectiveTime/high",value,,,
+OBSERVATION,root,ROOT,"./component/structuredBody/component/section/templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']/../entry/organizer/component/observation",,,
+OBSERVATION,person_id,FK,person_id,,,,
+OBSERVATION,visit_occurrence_id,FK,visit_occurrence_id,,,,
+OBSERVATION,observation_concept_code,FIELD,code,code,,,
+OBSERVATION,observation_concept_codeSystem,FIELD,code,codeSystem,,,
+OBSERVATION,observation_concept_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'observation_concept_code'| 'vocabulary_oid' : 'observation_concept_codeSystem'
+OBSERVATION,observation_concept_displayName,FIELD,code,displayName,,,
+OBSERVATION,observation_date,FIELD,time,,,
+OBSERVATION,value_as_string,FIELD,value,value,,,
+OBSERVATION,value_as_number,DERIVED,,,'VT.cast_string_to_int','input' : 'value_as_string'
+OBSERVATION,value_as_concept_id,DERIVED,,,'VT.cast_string_to_concept_id','input' : 'value_as_string'
+OBSERVATION,value_unit,FIELD,value,unit,,,
 
- 'person': { 
-        # person nor patientRole have templateIDs
-        'root' : { # name is required to be root, see foolish consistency below
-            'type' : 'ROOT', # (really a foolish consistency, not used here)
-            'element': "./recordTarget/patientRole"
-        }, 
-        'person_other_id' : {
-            'type' : 'FIELD',
-            'element' : 'id[@root="2.16.840.1.113883.4.6"]',
-            'attribute' : "extension"
-        },
-        'person_id' : {
-            'type' : 'PK',
-            'element' : 'id[@root="2.16.840.1.113883.4.1"]',
-            'attribute' : "extension"
-        },
-        'gender_concept_code' : { 
-            'type' : 'FIELD',
-            'element' : "patient/administrativeGenderCode", 
-            'attribute' : "code"
-        },
-        'gender_concept_codeSystem' : { 
-            'type' : 'FIELD',
-            'element' : "patient/administrativeGenderCode", 
-            'attribute' : "codeSystem"
-        },
-        'gender_concept_id' : {
-            'type' : 'DERIVED',
-            'FUNCTION' : VT.map_hl7_to_omop_w_dict_args, 
-            'argument_names' : { 
-                'concept_code' : 'gender_concept_code', 
-                'vocabulary_oid' : 'gender_concept_codeSystem'
-            }
-        },
-        'date_of_birth': { 
-            'type' : 'FIELD',
-            'element' : "patient/birthTime", 
-            'attribute' : "value" 
-        },
-        'race_concept_code' : { 
-            'type' : 'FIELD',
-            'element' : "patient/raceCode", 
-            'attribute' : "code"
-        },
-        'race_concept_codeSystem' : { 
-            'type' : 'FIELD',
-            'element' : "patient/raceCode", 
-            'attribute' : "codeSystem"
-        },
-        'race_concept_id':{
-            'type' : 'DERIVED',
-            'FUNCTION' : VT.map_hl7_to_omop_w_dict_args,
-            'argument_names' : { 
-                'concept_code' : 'race_concept_code', 
-                'vocabulary_oid' : 'race_concept_codeSystem'
-            }
-        },
-        'ethnicity_concept_code' : {
-            'type' : 'FIELD',
-            'element' : "patient/ethnicGroupCode", 
-            'attribute': "code"
-        },
-        'ethnicity_concept_codeSystem' : {
-            'type' : 'FIELD',
-            'element' : "patient/ethnicGroupCode", 
-            'attribute': "codeSystem"
-        },
-        'ethnicity_concept_id' : {
-            'type' : 'DERIVED',
-            'FUNCTION' : VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
-            'argument_names' : { 
-                'concept_code' : 'ethnicity_concept_code', 
-                'vocabulary_oid' : 'ethnicity_concept_codeSystem'
-            }
-        },
-    },
-
-# DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
-# encounter, root, ROOT
-# encounter, person_id, FK
-# encounter, visit_occurrence_id, PK
-# encounter, visit_concept_code, FIELD, code, code
-# encounter, visit_concept_codeSystem, FIELD, code, codeSystem
-# encounter, visit_concept_id, DERIVED,,, 'concept_code' : 'visit_concept_code' | 'vocabulary_oid' : 'visit_concept_codeSystem' 
-# encounter, care_site_id, FIELD, location/healthCareFacility/id, root, ,,
-# encounter, provider_id_field, FIELD,  responsibleParty/assignedEntity/assignedPerson/name/prefix, root,,
-# encounter, provider_prefix, FIELD, "responsibleParty/assignedEntity/assignedPerson/name/prefix", #text
-# encounter, provider_given, FIELD, "responsibleParty/assignedEntity/assignedPerson/name/given", #text
-# encounter, provider_family, FIELD, "responsibleParty/assignedEntity/assignedPerson/name/family", #text
-# encounter, start_time, FIELD, effectiveTime/low", value
-# encounter, end_time, FIELD, effectiveTime/high", value
-
-    'encounter' : {
-        # FIX: there's a code for what might be admitting diagnosis here 
-        'root': {
-            'type' : 'ROOT',
-            'element' : "./componentOf/encompassingEncounter"
-        }, 
-        'person_id' : { 
-            'type' : 'FK',
-            'FK' : 'person_id' 
-        },
-        'visit_occurrence_id' : {  
-            # FIX: why would an occurence_id be an NPI????!!!!!!!
-            'type' : 'PK',
-            'element' : 'id[@root="2.16.840.1.113883.4.6"]',
-                # The root says "NPI". The extension is the actual NPI
-            'attribute': "extension",
-        },
-        'visit_concept_code' : { 
-            'type' : 'FIELD',
-            'element' : "code",   # FIX ToDo is this what I think it is?,
-            'attribute' : "code"
-        }, 
-        'visit_concept_codeSystem' : { 
-            'type' : 'FIELD',
-            'element' : "code",
-            'attribute' : "codeSystem"
-        }, 
-        'visit_concept_id' : {
-            'type' : 'DERIVED',
-            'FUNCTION' : VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
-            'argument_names' : { 
-                'concept_code' : 'visit_concept_code', 
-                'vocabulary_oid' : 'visit_concept_codeSystem'
-            }
-        },
-        'care_site_id' : { 
-            'type' : 'FIELD',
-            'element' : "location/healthCareFacility/id",
-            'attribute' : "root"
-        },
-        'provider_id' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/id",
-            'attribute' : "root"
-        },
-        # leaving these here more for testing how to pull #text
-        'provider_prefix' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/assignedPerson/name/prefix",
-            'attribute' : "#text"
-        },
-        'provider_given' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/assignedPerson/name/given",
-            'attribute' : "#text"
-        },
-        'provider_family' : { 
-            'type' : 'FIELD',
-            'element' : "responsibleParty/assignedEntity/assignedPerson/name/family",
-            'attribute' : "#text"
-        },
-        # FIX is it consistenly a high/low pair? do we sometimes get just effectiveTime@value ?
-        'start_time' : { 
-            'type' : 'FIELD',
-            'element' : "effectiveTime/low",
-            'attribute' : "value"
-        },
-        'end_time' :  { 
-            'type' : 'FIELD',
-            'element' : "effectiveTime/high",
-            'attribute' : "value"
-        }
-    },
-
-# DOMAIN, FIELD, TYPE, ELEMENT, ATTRIBUTE, FUNCTION, ARGUMENT_NAMES 
-# observation, root, ROOT,"./component/structuredBody/component/section/templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']/../entry/organizer/component/observation", ,,,
-# observation, person_id, FK, person_id,,,,
-# observation, visit_occurrence_id, FK, visit_occurrence_id,,,,
-# observation, observation_concept_code, FIELD,observation_concept_code,code,code
-# observation, observation_concept_codeSystem, FIELD,observation_concept_codeSytem,code,codeSystem
-# observation, observation_concept_id, DERIVED, observation_concept_id,,, 'concept_code' : 'observation_concept_code'| 'vocabulary_oid' : 'observation_concept_codeSystem'
-# observation, observation_concept_displayName, FIELD, observation_concept_displayName, code, displayName,,
-# observation, observation_date, FIELD, time,
-# observation, value_as_string, FIELD, value, value,,,
-# observation, value_as_number, DERIVED, ,, 'input' : 'value_as_string'
-# observation, value_as_concept_id, DERIVED, ,, 'input' : 'value_as_string'
-# observation, value_unit, FIELD, value, unit,,,
-
-    'observation' : {
-        'root' : {
-            'type' : 'ROOT',
-            'element': 
-                  ("./component/structuredBody/component/section/"
-                   "templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
-                   "/../entry/organizer/component/observation")
-                    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
-                 },
-        'person_id' : { 
-            'type' : 'FK', 
-            'FK' : 'person_id' 
-        }, 
-        'visit_occurrence_id' :  { 
-            'type' : 'FK', 
-            'FK' : 'visit_occurrence_id' 
-        }, 
-        'observation_id' : {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
-            'type' : 'FIELD',
-            'element' : 'id',
-            'attribute' : 'root'   ### FIX ????
-        },
-        'observation_concept_code' : {
-            'type' : 'FIELD',
-            'element' : "code" ,
-            'attribute' : "code"
-        },
-        'observation_concept_codeSystem' : {
-            'type' : 'FIELD',
-            'element' : "code",
-            'attribute' : "codeSystem"
-        },
-        'observation_concept_id' : {
-            'type' : 'DERIVED', 
-            'FUNCTION' : VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
-            'argument_names' : { 
-                'concept_code' : 'observation_concept_code', 
-                'vocabulary_oid' : 'observation_concept_codeSystem'
-            }
-        },
-        'observation_concept_displayName' : {
-            'type' : 'FIELD',
-            'element' : "code",
-            'attribute' : "displayName"
-        },
-        # FIX same issue as above. Is it always just a single value, or do we ever get high and low?
-        'observation_date' : {
-            'type' : 'FIELD',
-            'element' : "effectiveTime",
-            'attribute' : "value"
-        },
-        'value_as_string' : { 
-            'type' : 'FIELD',
-            'element' : "value" ,
-            'attribute' : "value"
-        },
-        'value_type' : { 
-            'type' : 'FIELD',
-            'element' : "value",
-            'attribute' : "type"
-        },
-        'value_as_number' : { 
-            'type' : 'DERIVED',
-            'FUNCTION' : 'cast_string_to_int',
-            'argument_names' : { 
-                'input' : 'value_as_string', 
-                'type' : 'type'
-            }
-        },
-        'value_as_concept_id' : { 
-            'type' : 'DERIVED',
-            'FUNCTION' : 'cast_string_to_concept_id',
-            'argument_names' : { 
-                'input' : 'value_as_string', 
-                'type' : 'type'
-            }
-        },
-        'value_unit' :  { 
-            'type' : 'FIELD',
-            'element' : 'value',
-            'attribute' : 'unit'
-        }
-    }
-}
-
-def get_meta_dict():
-    return meta_dict
