@@ -93,7 +93,7 @@ meta_dict = {
         },
     },
 
-    'encounter' : {
+    'visit_occurrence' : {
         # FIX: there's a code for what might be admitting diagnosis here 
         'root': {
             'type' : 'ROOT',
