@@ -9,9 +9,10 @@
    figure out how to use them once there.
  
  Chris Roeder
- 2024-07-25: needs access to vocabulary, needs to do multiple obsrvations, needs dervied values from code on foundry
- 2024-07-26: needs test driver, the main function needs broken out into file, field and attribute
-- change tags to be values of a 'tag' key so it looks more like a column in a csv
+
+2024-07-31: visit_concept_id is incorrect, It's picking up pnemonia a Condition when we want a Visit domain_id
+"           need to run on multiple files, need to bring over the test script and correct_files,
+"           test script needs sophistication to correlate input with expected output
 """
 
 import pandas as pd

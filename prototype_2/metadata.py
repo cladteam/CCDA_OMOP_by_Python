@@ -40,7 +40,7 @@ meta_dict = {
         'gender_concept_codeSystem' : { 
             'type' : 'FIELD',
             'element' : "patient/administrativeGenderCode", 
-            'attribute' : "code"
+            'attribute' : "codeSystem"
         },
         'gender_concept_id' : {
             'type' : 'DERIVED',

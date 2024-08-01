@@ -1,0 +1,10 @@
+vocabulary_id,concept_code,concept_id,domain_id
+LOINC,30313-1,3002173,Measurement
+LOINC,33765-9,3028866,Measurement
+LOINC,26515-7,3007461,Measurement
+AdministrativeGender,F,2000000002,Gender
+AdministrativeGender,M,2000000001,Gender
+Race & Ethnicity - CDC,2106-3,2000000003,Race
+Race & Ethnicity - CDC,2186-5,2000000004,Ethnicity
+SNOMED,233604007,255848,Condition
+
