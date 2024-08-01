@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import data_driven_parse as DDP
 import pandas as PD
+import data_driven_parse as DDP
+from metadata import get_meta_dict
 
 def create_omop_domain_dataframes(omop_data):
     """ transposes the rows into columns, 

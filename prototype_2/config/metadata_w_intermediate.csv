@@ -1,0 +1,63 @@
+
+# Step 1 1:1 map from XPaths to Quasi-CCDA: NEED FK HERE!!!
+QSECTION, QFIELD, TYPE,ELEMENT,ATTRIBUTE,FUNCTION,ARGUMENT_NAMES
+PERSON,root, ROOT,"./recordTarget/patientRole",,,,
+QPATIENT,Qpatient_id,PK,'id[@root="2.16.840.1.113883.4.1"]',"extension",,
+QPATIENT,Qadmin_gender_code,FIELD,patient/administrativeGenderCode,code,,,
+QPATIENT,Qadmin_gender_codeSystem,FIELD,patient/administrativeGenderCode,codeSystem,,,
+
+# Step 2 1:many map from Qausi-CCDA to OMOP, dealing with domain_id mapping and derived values here
+OMOP_DOMAIN,OMOP_FIELD,TYPE,QSECTION,QFIELD,ATTRIBUTE,FUNCTION,ARGUMENT_NAMES
+PERSON,person_id,PK,QPATIENT,Qpatient_id,,
+PERSON,gender_concept_code,FIELD,QPATIENT,Qadmin_gender_code,,,
+PERSON,gender_concept_codeSystem,FIELD,QPATIENT,Qadmin_gender_codeSystem,,,
+PERSON,gender_concept_code_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'Qadmin_gender_code'| 'vocabulary_oid' : 'Qadmin_gender_codeSystem'
+
+## Can  you make Step 1 implicit ? 
+- What is the relationship betweeen QSection and Eelement(path)?,  One is a gnarly path, the other a simple made-up table-name
+- QField and attribute? SAME
+
+
+## Can you use the mapping, especially step2 in a Spark transform? Of course, its' just python.
+
+
+######################
+DOMAIN,FIELD,TYPE,ELEMENT,ATTRIBUTE,FUNCTION,ARGUMENT_NAMES
+PERSON,root, ROOT,"./recordTarget/patientRole",,,,
+PERSON,person_other_id,FIELD,'id[@root="2.16.840.1.113883.4.6"]',"extension",,,
+PERSON,person_id,PK,'id[@root="2.16.840.1.113883.4.1"]',"extension",,
+PERSON,gender_concept_code,FIELD,patient/administrativeGenderCode,code,,,
+PERSON,gender_concept_codeSystem,FIELD,patient/administrativeGenderCode,codeSystem,,,
+PERSON,gender_concept_code_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
+PERSON,race_concept_code,FIELD,patient/raceCode,code,,,
+PERSON,race_concept_codeSystem,FIELD,patient/raceCode,codeSystem,,,
+PERSON,race_concept_code_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'race_concept_code'| 'vocabulary_oid' : 'race_concept_codeSystem'
+PERSON,ethnicity_concept_code,FIELD,patient/ethnicityCode,code,,,
+PERSON,ethnicity_concept_codeSystem,FIELD,patient/ethnicityCode,codeSystem,,,
+PERSON,ethnicity_concept_code_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'gender_concept_code'| 'vocabulary_oid' : 'gender_concept_codeSystem'
+VISIT_OCCURRENCE,root,ROOT,  ,,,
+VISIT_OCCURRENCE,person_id,FK
+VISIT_OCCURRENCE,visit_occurrence_id,PK
+VISIT_OCCURRENCE,visit_concept_code,FIELD,code,code,,,
+VISIT_OCCURRENCE,visit_concept_codeSystem,FIELD,code,codeSystem,,,
+VISIT_OCCURRENCE,visit_concept_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'visit_concept_code' | 'vocabulary_oid' : 'visit_concept_codeSystem' 
+VISIT_OCCURRENCE,care_site_id,FIELD,location/healthCareFacility/id,root,,,
+VISIT_OCCURRENCE,provider_id_field,FIELD, responsibleParty/assignedEntity/assignedPerson/name/prefix,root,,,
+VISIT_OCCURRENCE,provider_prefix,FIELD,"responsibleParty/assignedEntity/assignedPerson/name/prefix",#text,,,
+VISIT_OCCURRENCE,provider_given,FIELD,"responsibleParty/assignedEntity/assignedPerson/name/given",#text,,,
+VISIT_OCCURRENCE,provider_family,FIELD,"responsibleParty/assignedEntity/assignedPerson/name/family",#text,,,
+VISIT_OCCURRENCE,start_time,FIELD,effectiveTime/low",value,,,
+VISIT_OCCURRENCE,end_time,FIELD,effectiveTime/high",value,,,
+OBSERVATION,root,ROOT,"./component/structuredBody/component/section/templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']/../entry/organizer/component/observation",,,
+OBSERVATION,person_id,FK,person_id,,,,
+OBSERVATION,visit_occurrence_id,FK,visit_occurrence_id,,,,
+OBSERVATION,observation_concept_code,FIELD,code,code,,,
+OBSERVATION,observation_concept_codeSystem,FIELD,code,codeSystem,,,
+OBSERVATION,observation_concept_id,DERIVED,,,VT.map_hl7_to_omop_w_dict_args,'concept_code' : 'observation_concept_code'| 'vocabulary_oid' : 'observation_concept_codeSystem'
+OBSERVATION,observation_concept_displayName,FIELD,code,displayName,,,
+OBSERVATION,observation_date,FIELD,time,,,
+OBSERVATION,value_as_string,FIELD,value,value,,,
+OBSERVATION,value_as_number,DERIVED,,,'VT.cast_string_to_int','input' : 'value_as_string'
+OBSERVATION,value_as_concept_id,DERIVED,,,'VT.cast_string_to_concept_id','input' : 'value_as_string'
+OBSERVATION,value_unit,FIELD,value,unit,,,
+
