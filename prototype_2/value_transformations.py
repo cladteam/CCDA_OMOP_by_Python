@@ -2,8 +2,8 @@ import logging
 import pandas as pd
 logger = logging.getLogger(__name__)
 
-oid_df = pd.read_csv("oid.csv")
-concept_df = pd.read_csv("concept.csv")
+oid_df = pd.read_csv("config/oid.csv")
+concept_df = pd.read_csv("config/concept.csv")
 
 
 def cast_string_to_float(args_dict):
