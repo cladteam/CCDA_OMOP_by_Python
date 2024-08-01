@@ -1,0 +1,2 @@
+person_id,visit_occurrence_id,visit_concept_code,visit_concept_codeSystem,care_site_id,provider_id,provider_prefix,provider_given,provider_family,start_time,end_time,visit_concept_id
+123-101-5230,1,233604007,2.16.840.1.113883.6.96,2.16.840.1.113883.4.6,2.16.840.1.113883.4.6,Dr,Henry,Seven,20120806,20120813,255848

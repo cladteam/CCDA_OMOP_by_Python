@@ -49,6 +49,10 @@ PK_dict = {}
 
 
 def parse_field_from_dict(field_details_dict, domain_root_element, domain, field_tag):
+    """ Retrieves a value for the field descrbied in field_details_dict that lies below
+        the domain_root_element. 
+        Domain and field_tag are here for error messages.
+    """
     if 'element' not in field_details_dict:
         logger.error(f"could find key 'element' in the field_details_dict: {field_details_dict}")
     else:
@@ -63,7 +67,6 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         else: 
             logger.info(f"       ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
             attribute_value = field_element.get(field_details_dict['attribute'])
-            #if attribute_value is None and field_details_dict['attribute'] == "#text":
             if field_details_dict['attribute'] == "#text":
                 attribute_value = field_element.text
             if attribute_value is None:
@@ -75,8 +78,10 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
     """ The main logic is here. 
         Given a tree from ElementTree representing a CCDA document (ClinicalDocument, not just file),
         parse the different domains out of it, linking PK and FKs between them.
-        Return a dictionary, keyed by domain name, of dictionaries of rows, each a dictionary
-        of fields.
+        Returns a list, output_list, of dictionaries, output_dict, keyed by field name, containing a list of the value and the path to it:
+            [ { field_1 : (value, path), field_2: (value, path)}, { field_1: (value, path)}, {field_2: (value, path)} ]
+        It's a list of because you might have more than one instance of the root path, like when you
+        get many observations.
     """
     # Find root
     if 'root' not in domain_meta_dict:
@@ -87,7 +92,8 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         logger.error(f"DOMAIN {domain} root lacks an 'element' key.")
         return None
 
-    logger.info(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}")
+    root_path = domain_meta_dict['root']['element']
+    logger.info(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}   ROOT path:{root_path}")
     root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
     if root_element_list is None or len(root_element_list) == 0: 
         logger.error(f"DOMAIN couldn't find root element for {domain} with {domain_meta_dict['root']['element']}")
@@ -100,7 +106,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
     #  2) the paths that appear as values to 'element' keys don't work in ElementTree (XPath domain)
     output_list = []
     print(f"NUM ROOTS {len(root_element_list)}")
-    for root_element in root_element_list:
+    for root_element in root_element_list: 
         output_dict = {}
         logger.info(f"  ROOT for domain:{domain}, we have tag:{root_element.tag} attributes:{root_element.attrib}")
 
@@ -110,19 +116,19 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
             if type_tag == 'FIELD':
                 logger.info(f"     FIELD for {domain}/{field_tag}")
                 attribute_value = parse_field_from_dict(field_details_dict, root_element, domain, field_tag)
-                output_dict[field_tag] = attribute_value
+                output_dict[field_tag] = (attribute_value, root_path + "/" + field_details_dict['element'] + "/@" + field_details_dict['attribute'])
             elif type_tag == 'PK':
                 logger.info(f"     PK for {domain}/{field_tag}")
                 attribute_value = parse_field_from_dict(field_details_dict, root_element, domain, field_tag)
-                output_dict[field_tag] = attribute_value
+                output_dict[field_tag] = (attribute_value, root_path + "/" + field_details_dict['element'] + "/@" + field_details_dict['attribute'])
                 PK_dict[field_tag] = attribute_value
             elif type_tag == 'FK':
                 logger.info(f"     FK for {domain}/{field_tag}")
                 if field_tag in PK_dict:
-                    output_dict[field_tag] = PK_dict[field_tag] 
+                    output_dict[field_tag] = (PK_dict[field_tag], 'FK')
                 else:
                     logger.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
-                    output_dict[field_tag] = None
+                    output_dict[field_tag] = (None, root_path + "/" + field_details_dict['element'] + "/@" + field_details_dict['attribute'])
 
         # Do derived values now that their inputs should be available in the output_dict                           
         for (field_tag, field_details_dict) in domain_meta_dict.items():
@@ -136,18 +142,21 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                     if field_name not in output_dict:
                         logger.error(f" domain:{domain} field:{field_tag} could not find {field_name} in {output_dict}")
                     try:
-                        args_dict[arg_name] = output_dict[field_name]
+                        args_dict[arg_name] = output_dict[field_name][0]
                     except Exception as x:
                         logger.error(f" arg_name: {arg_name} field_name:{field_name} args_dict:{args_dict} output_dict:{output_dict}")
                 try:
-                    output_dict[field_tag] = field_details_dict['FUNCTION'](args_dict)
+                    output_dict[field_tag] = (field_details_dict['FUNCTION'](args_dict), 'Derived')
                     logger.info(f"     DERIV-ed {field_tag}, {field_details_dict} {output_dict[field_tag]}")
                 except TypeError as e:
                     logger.error(e)
                     logger.error(f"calling something that isn't a function {field_details_dict['FUNCTION']}. You may have quotes around it in  a python mapping structure if this is a string: {type(field_details_dict['FUNCTION'])}")
 
+        # Add a "root" column to show where this came from
+        print(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}   ROOT path:{root_path}")
+        output_dict['root_path'] = (root_path, 'root_path')
+
         output_list.append(output_dict)
-        
     return output_list
   
  
@@ -169,10 +178,14 @@ def print_omop_structure(omop):
     """
     print(f"PK_dict: {PK_dict}")
     for domain, domain_list in omop.items():
-        for domain_data_dict in domain_list:
-            print(f"\n\nDOMAIN: {domain}")
-            for field, parts in domain_data_dict.items():
-                print(f"    FIELD:{field} VALUE:{parts}")
+        if domain_list is None:
+            logger.error(f"no data for domain {domain}")
+        else:
+            for domain_data_dict in domain_list:
+                print(f"\n\nDOMAIN: {domain}")
+                for field, parts in domain_data_dict.items():
+                    print(f"    FIELD:{field} VALUE:{parts[0]}")
+                    print(f"        PATH:{parts[1]}")
 
 if __name__ == '__main__':  
     
@@ -182,8 +195,8 @@ if __name__ == '__main__':
         '../resources/CCDA_CCD_b1_InPatient_v2.xml',
         '../resources/170.314b2_AmbulatoryToC.xml',
         '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
-        '../resources/Manifest_Medex/bennis_shauna_ccda.xml.txt',
-        '../resources/Manifest_Medex/eHX_Terry.xml.txt',
+#        '../resources/Manifest_Medex/bennis_shauna_ccda.xml.txt',
+#        '../resources/Manifest_Medex/eHX_Terry.xml.txt',
         '../resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
         '../resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
     ]
@@ -192,6 +205,7 @@ if __name__ == '__main__':
         ccd_ambulatory = Dataset.get("ccda_ccd_b1_ambulatory_v2")
         ccd_ambulatory_files = ccd_ambulatory.files().download()
         ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
- 
-    data = parse_doc(ccd_ambulatory_path, get_meta_dict()) 
-    print_omop_structure(data) 
+
+    for filepath in file_paths: 
+        data = parse_doc(filepath, get_meta_dict()) 
+        print_omop_structure(data) 

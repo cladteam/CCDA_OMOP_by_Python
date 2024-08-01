@@ -2,10 +2,14 @@
 
 import os.path
 import pandas as PD
+import logging
 import data_driven_parse as DDP
 from metadata import get_meta_dict
 
-def create_omop_domain_dataframes(omop_data):
+
+logger = logging.getLogger('basic logging')
+
+def create_omop_domain_dataframes(omop_data, filepath):
     """ transposes the rows into columns, 
         creates a Pandas dataframe
     """
@@ -15,13 +19,19 @@ def create_omop_domain_dataframes(omop_data):
 
         # Initialize a dictionary of columns from the first row
         column_dict = {}
-        for field, parts in domain_list[0].items():
-            column_dict[field] = []
+        if domain_list is None or len(domain_list) < 1:
+            logger.error(f"No data for {domain_name} from {filepath}")
+        else:     
+            for field, parts in domain_list[0].items():
+                column_dict[field] = []
 
         # Add the data from all the rows
-        for domain_data_dict in domain_list:
-            for field, parts in domain_data_dict.items():
-                column_dict[field].append(parts)
+        if domain_list is None or len(domain_list) < 1:
+            logger.error(f"No data for {domain_name} from {filepath}")
+        else:
+            for domain_data_dict in domain_list:
+                for field, parts in domain_data_dict.items():
+                    column_dict[field].append(parts[0])
 
 
         # create a Pandas dataframe from the data_dict
@@ -43,8 +53,8 @@ if __name__ == '__main__':
         '../resources/CCDA_CCD_b1_Ambulatory_v2.xml',
         '../resources/CCDA_CCD_b1_InPatient_v2.xml',
         '../resources/170.314b2_AmbulatoryToC.xml',
-        # '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
-        '../resources/Manifest_Medex/bennis_shauna_ccda.xml',
+         '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
+        #'../resources/Manifest_Medex/bennis_shauna_ccda.xml', # missing : in XML from ElementTree.parse()
         '../resources/Manifest_Medex/eHX_Terry.xml',
         '../resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
         '../resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
@@ -60,7 +70,10 @@ if __name__ == '__main__':
         print(f"PROCESSING {filepath} ")
         omop_data = DDP.parse_doc(filepath, get_meta_dict()) 
         #DDP.print_omop_structure(omop_data) 
-        dataframe_dict = create_omop_domain_dataframes(omop_data)
+        if omop_data is not None or len(omop_data) < 1:
+            dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
+        else:
+            print(f"ERROR sorry pal, no data from {filepath}")
         file_name = os.path.basename(filepath)
         write_csvs_from_dataframe_dict(dataframe_dict, file_name)
 
