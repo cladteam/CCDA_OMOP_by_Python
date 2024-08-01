@@ -177,8 +177,17 @@ def print_omop_structure(omop):
 if __name__ == '__main__':  
     
     # GET FILE
-    ccd_ambulatory_path = '../resources/CCDA_CCD_b1_Ambulatory_v2.xml'
-    if False:
+    file_paths = [ 
+        '../resources/CCDA_CCD_b1_Ambulatory_v2.xml',
+        '../resources/CCDA_CCD_b1_InPatient_v2.xml',
+        '../resources/170.314b2_AmbulatoryToC.xml',
+        '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
+        '../resources/Manifest_Medex/bennis_shauna_ccda.xml.txt',
+        '../resources/Manifest_Medex/eHX_Terry.xml.txt',
+        '../resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
+        '../resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
+    ]
+    if False: # for getting them on the Foundry
         from foundry.transforms import Dataset
         ccd_ambulatory = Dataset.get("ccda_ccd_b1_ambulatory_v2")
         ccd_ambulatory_files = ccd_ambulatory.files().download()
