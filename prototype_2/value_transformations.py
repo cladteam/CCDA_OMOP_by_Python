@@ -52,7 +52,7 @@ def map_to_omop_concept_id(vocabulary_id, concept_code):
     try:
         concept_id = concept_df[concept_df['vocabulary_id'] == vocabulary_id]\
                                [concept_df['concept_code'] == concept_code].concept_id.iloc[0]
-        return concept_id
+        return int(concept_id)
     except Exception as e:
         print(e)
         print(f"ERROR no concept for \"{vocabulary_id}\" \"{concept_code}\"")

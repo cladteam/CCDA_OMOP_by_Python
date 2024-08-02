@@ -136,6 +136,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         # Do derived values now that their inputs should be available in the output_dict                           
         for (field_tag, field_details_dict) in domain_meta_dict.items():
             if field_details_dict['type'] == 'DERIVED' or field_details_dict['type'] == 'DOMAIN':
+                output_tag = field_details_dict['output']
                 logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
                 # NB Using an explicit dict here instead of kwargs because this code here
                 # doesn't know what the keywords are at 'compile' time.
@@ -159,13 +160,19 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                 except TypeError as e:
                     logger.error(e)
                     logger.error(f"calling something that isn't a function {field_details_dict['FUNCTION']}. You may have quotes around it in  a python mapping structure if this is a string: {type(field_details_dict['FUNCTION'])}")
-    
+   
+	# Clean the dict by removing fields with a False output tag  
+        clean_output_dict = {}
+        for key in output_dict:
+       	    field_details_dict = domain_meta_dict[key]
+            if field_details_dict['output'] :
+                clean_output_dict[key] = output_dict[key]
 
         # Add a "root" column to show where this came from
         print(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}   ROOT path:{root_path}")
-        output_dict['root_path'] = (root_path, 'root_path')
+        clean_output_dict['root_path'] = (root_path, 'root_path')
 
-        output_list.append(output_dict)
+        output_list.append(clean_output_dict)
     # Check if the domain matches the domain_id that comes up from this concept, drop the row if they don't match.
     if domain_id is None or domain_id[0] == domain:            
         logger.info(f"******* ADDING  {domain_id} {domain}")
@@ -201,10 +208,14 @@ def print_omop_structure(omop):
             logger.error(f"no data for domain {domain}")
         else:
             for domain_data_dict in domain_list:
+                n=0
                 print(f"\n\nDOMAIN: {domain}")
                 for field, parts in domain_data_dict.items():
-                    print(f"    FIELD:{field} VALUE:{parts[0]}")
+                    print(f"    FIELD:{field}")
+                    print(f"        VALUE:{parts[0]}")
                     print(f"        PATH:{parts[1]}")
+                    n=n+1
+                print(f"\n\nDOMAIN: {domain} {n}\n\n")
 
 if __name__ == '__main__':  
     
