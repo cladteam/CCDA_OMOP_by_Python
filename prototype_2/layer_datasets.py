@@ -50,12 +50,20 @@ def write_csvs_from_dataframe_dict(df_dict, file_name):
 if __name__ == '__main__':
   # GET FILE
     file_paths = [
+
+        # Original 4
         '../resources/CCDA_CCD_b1_Ambulatory_v2.xml',
         '../resources/CCDA_CCD_b1_InPatient_v2.xml',
         '../resources/170.314b2_AmbulatoryToC.xml',
-         '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
-        #'../resources/Manifest_Medex/bennis_shauna_ccda.xml', # missing : in XML from ElementTree.parse()
-        '../resources/Manifest_Medex/eHX_Terry.xml',
+         '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',    
+
+        # Manifest Medex
+        #'../resources/Manifest_Medex/bennis_shauna_ccda.xml', 
+        #    missing ':' in XML from ElementTree.parse() (bennis...)
+        #'../resources/Manifest_Medex/eHX_Terry.xml',
+        #    won't parse, reason as-yet unknown
+
+        # CRISP etc.
         '../resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
         '../resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
     ]
