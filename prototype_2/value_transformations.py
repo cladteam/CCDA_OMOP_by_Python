@@ -89,7 +89,7 @@ def map_hl7_to_omop(vocabulary_oid, concept_code):
     vocabulary_id = map_oid(vocabulary_oid)
     concept_id = map_to_omop_concept_id(vocabulary_id, concept_code)
     #concept_id = map_to_standard_omop_concept_id(vocabulary_id, args_dict['concept_code'])
-    return concept_id
+    return int(concept_id)
 
 def map_hl7_to_omop_w_dict_args(args_dict):
     """ expects: vocabulary_oid, concept_code

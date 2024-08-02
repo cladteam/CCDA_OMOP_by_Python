@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
         # Original 4
         'resources/CCDA_CCD_b1_Ambulatory_v2.xml',
-#        'resources/CCDA_CCD_b1_InPatient_v2.xml',
+        'resources/CCDA_CCD_b1_InPatient_v2.xml',
 #        'resources/170.314b2_AmbulatoryToC.xml',
 #         'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',    
 
