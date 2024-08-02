@@ -70,6 +70,7 @@ jobs:
           - name: change directory to prototype_2
             shell: bash
             run: |
+                mkdir output
                 ls
                 cd prototype_2
                 pwd
