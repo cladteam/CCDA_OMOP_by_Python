@@ -3,11 +3,11 @@
 import os.path
 import pandas as PD
 import logging
-import data_driven_parse as DDP
-from metadata import get_meta_dict
+import prototype_2.data_driven_parse as DDP
+from prototype_2.metadata import get_meta_dict
 
 
-logger = logging.getLogger('basic logging')
+logger = logging.getLogger(__name__)
 
 def create_omop_domain_dataframes(omop_data, filepath):
     """ transposes the rows into columns, 
@@ -52,20 +52,20 @@ if __name__ == '__main__':
     file_paths = [
 
         # Original 4
-        '../resources/CCDA_CCD_b1_Ambulatory_v2.xml',
-        '../resources/CCDA_CCD_b1_InPatient_v2.xml',
-        '../resources/170.314b2_AmbulatoryToC.xml',
-         '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',    
+        'resources/CCDA_CCD_b1_Ambulatory_v2.xml',
+#        'resources/CCDA_CCD_b1_InPatient_v2.xml',
+#        'resources/170.314b2_AmbulatoryToC.xml',
+#         'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',    
 
         # Manifest Medex
-        #'../resources/Manifest_Medex/bennis_shauna_ccda.xml', 
+        #'resources/Manifest_Medex/bennis_shauna_ccda.xml', 
         #    missing ':' in XML from ElementTree.parse() (bennis...)
-        #'../resources/Manifest_Medex/eHX_Terry.xml',
+        #'resources/Manifest_Medex/eHX_Terry.xml',
         #    won't parse, reason as-yet unknown
 
         # CRISP etc.
-        '../resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
-        '../resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
+#        'resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
+#        'resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
     ]
 
     if False: # for getting them on the Foundry
@@ -75,13 +75,13 @@ if __name__ == '__main__':
         ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
 
     for filepath in file_paths:
-        print(f"PROCESSING {filepath} ")
+        logger.info(f"PROCESSING {filepath} ")
         omop_data = DDP.parse_doc(filepath, get_meta_dict()) 
         #DDP.print_omop_structure(omop_data) 
         if omop_data is not None or len(omop_data) < 1:
             dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
         else:
-            print(f"ERROR sorry pal, no data from {filepath}")
+            logger.error(f"no data from {filepath}")
         file_name = os.path.basename(filepath)
         write_csvs_from_dataframe_dict(dataframe_dict, file_name)
 
