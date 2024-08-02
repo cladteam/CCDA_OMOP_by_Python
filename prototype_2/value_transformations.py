@@ -46,7 +46,6 @@ def map_oid(codeSystem):
     
 def map_to_omop_concept_id(vocabulary_id, concept_code):
     """ Simply maps vocabulary_id, concept_code to an OMOP concept_id.
-        FIX: needs the data, needs written.
         Somewhat redundant in that map_to_standard_omop_concept_id
         is much more useful and likely to be used.
     """
@@ -54,6 +53,26 @@ def map_to_omop_concept_id(vocabulary_id, concept_code):
         concept_id = concept_df[concept_df['vocabulary_id'] == vocabulary_id]\
                                [concept_df['concept_code'] == concept_code].concept_id.iloc[0]
         return concept_id
+    except Exception as e:
+        print(e)
+        print(f"ERROR no concept for \"{vocabulary_id}\" \"{concept_code}\"")
+        return None
+
+def map_to_omop_domain_id(vocabulary_id, concept_code):
+    """ Simply maps vocabulary_id, concept_code to an OMOP domain_id.
+        FIX: needs the data, needs written.
+        Somewhat redundant in that map_to_standard_omop_concept_id
+        is much more useful and likely to be used.
+        Definitely redudant with the concept_id function and duplicates cpu effort,
+        but fits neatly into the mapping file and keeps the code simple in some respects.
+        The key issue is that these functions return a single value, and to do
+        both concept_id and domain_id would make them return a list, and then you
+        have to know when its a value or a list...
+    """
+    try:
+        domain_id = concept_df[concept_df['vocabulary_id'] == vocabulary_id]\
+                               [concept_df['concept_code'] == concept_code].domain_id.iloc[0]
+        return domain_id
     except Exception as e:
         print(e)
         print(f"ERROR no concept for \"{vocabulary_id}\" \"{concept_code}\"")
@@ -70,7 +89,6 @@ def map_hl7_to_omop(vocabulary_oid, concept_code):
     """ This would map an HL7 vocabulary_oid to an OMOP vocabulary_id,
         then map both vocabulary_id and concept_code to an OMOP concept_id
     """
-
     vocabulary_id = map_oid(vocabulary_oid)
     concept_id = map_to_omop_concept_id(vocabulary_id, concept_code)
     #concept_id = map_to_standard_omop_concept_id(vocabulary_id, args_dict['concept_code'])
@@ -78,6 +96,12 @@ def map_hl7_to_omop(vocabulary_oid, concept_code):
 
 def map_hl7_to_omop_w_dict_args(args_dict):
     """ expects: vocabulary_oid, concept_code
-        FIX: needs the data, needs written
     """
     return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
+
+def map_hl7_to_omop_domain_id(args_dict):
+    """ expects: vocabulary_oid, concept_code
+    """
+    vocabulary_id = map_oid(args_dict['vocabulary_oid'])
+    return map_to_omop_domain_id(vocabulary_id, args_dict['concept_code'])
+

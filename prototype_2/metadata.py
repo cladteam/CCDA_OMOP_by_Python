@@ -103,6 +103,13 @@ meta_dict = {
             'type' : 'FK',
             'FK' : 'person_id' 
         },
+        'visit_occurrence_id_170' : {   # for the 170.314...file
+            # FIX: why would an occurence_id be an NPI????!!!!!!!
+            'type' : 'PK',
+            'element' : 'id[@root="1.3.6.1.4.1.42424242.4.99930.4.3.4"]',
+                # The root says "NPI". The extension is the actual NPI
+            'attribute': "extension",
+        },
         'visit_occurrence_id' : {  
             # FIX: why would an occurence_id be an NPI????!!!!!!!
             'type' : 'PK',
@@ -133,10 +140,42 @@ meta_dict = {
             'element' : "location/healthCareFacility/id",
             'attribute' : "root"
         },
+        # FIX TODO sometimes a document will have more than one encounterParticipant. The way this is configured, they will be awkwardly merged.
+        'provider_id_ep_170' : { 
+            'type' : 'FIELD',
+            'element' : 'encounterParticipant/assignedEntity/id[@root="1.3.6.1.4.1.42424242.4.99930.4"]',
+            'attribute' : "extension"
+        },
+        'provider_id_ep_npi_170' : { 
+            'type' : 'FIELD',
+            'element' : 'encounterParticipant/assignedEntity/id[@root="2.16.840.1.113883.4.6"]',
+            'attribute' : "extension"
+        },
         'provider_id' : { 
             'type' : 'FIELD',
             'element' : "responsibleParty/assignedEntity/id",
             'attribute' : "root"
+        },
+        # leaving these here more for testing how to pull #text
+        'provider_prefix_ep' : { 
+            'type' : 'FIELD',
+            'element' : "encounterParticipant/assignedEntity/assignedPerson/name/prefix",
+            'attribute' : "#text"
+        },
+        'provider_given_ep' : { 
+            'type' : 'FIELD',
+            'element' : "encounterParticipant/assignedEntity/assignedPerson/name/given",
+            'attribute' : "#text"
+        },
+        'provider_family_ep' : { 
+            'type' : 'FIELD',
+            'element' : "encounterParticipant/assignedEntity/assignedPerson/name/family",
+            'attribute' : "#text"
+        },
+        'provider_suffix_ep' : { 
+            'type' : 'FIELD',
+            'element' : "encounterParticipant/assignedEntity/assignedPerson/name/suffix",
+            'attribute' : "#text"
         },
         # leaving these here more for testing how to pull #text
         'provider_prefix' : { 
@@ -167,7 +206,99 @@ meta_dict = {
         }
     },
 
-    'observation' : {
+    'Measurement' : {
+        'root' : {
+            'type' : 'ROOT',
+            'element': 
+                  ("./component/structuredBody/component/section/"
+                   "templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
+                   "/../entry/organizer/component/observation")
+                    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
+                 },
+        'person_id' : { 
+            'type' : 'FK', 
+            'FK' : 'person_id' 
+        }, 
+        'visit_occurrence_id' :  { 
+            'type' : 'FK', 
+            'FK' : 'visit_occurrence_id' 
+        }, 
+        'measurement_id' : {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
+            'type' : 'FIELD',
+            'element' : 'id',
+            'attribute' : 'root'   ### FIX ????
+        },
+        'measurement_concept_code' : {
+            'type' : 'FIELD',
+            'element' : "code" ,
+            'attribute' : "code"
+        },
+        'measurement_concept_codeSystem' : {
+            'type' : 'FIELD',
+            'element' : "code",
+            'attribute' : "codeSystem"
+        },
+        'measurement_concept_id' : {
+            'type' : 'DERIVED', 
+            'FUNCTION' : VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
+            'argument_names' : { 
+                'concept_code' : 'measurement_concept_code', 
+                'vocabulary_oid' : 'measurement_concept_codeSystem'
+            }
+        },
+        'measurement_concept_domain_id' : {
+            'type' : 'DOMAIN', 
+            'FUNCTION' : VT.map_hl7_to_omop_domain_id, # not the string representing the name, but function itself in Python space.
+            'argument_names' : { 
+                'concept_code' : 'measurement_concept_code', 
+                'vocabulary_oid' : 'measurement_concept_codeSystem'
+            }
+        },
+        'measurement_concept_displayName' : {
+            'type' : 'FIELD',
+            'element' : "code",
+            'attribute' : "displayName"
+        },
+        # FIX same issue as above. Is it always just a single value, or do we ever get high and low?
+        'time' : {
+            'type' : 'FIELD',
+            'element' : "effectiveTime",
+            'attribute' : "value"
+        },
+        'value_as_string' : { 
+            'type' : 'FIELD',
+            'element' : "value" ,
+            'attribute' : "value"
+        },
+        'value_type' : { 
+            'type' : 'FIELD',
+            'element' : "value",
+            'attribute' : "type"
+        },
+        'value_as_number' : { 
+            'type' : 'DERIVED',
+            #'FUNCTION' : VT.cast_string_to_int,
+            'FUNCTION' : VT.cast_string_to_float,
+            'argument_names' : { 
+                'input' : 'value_as_string', 
+                'type' : 'value_type'
+            }
+        },
+        'value_as_concept_id' : { 
+            'type' : 'DERIVED',
+            'FUNCTION' : VT.cast_string_to_concept_id,
+            'argument_names' : { 
+                'input' : 'value_as_string', 
+                'type' : 'value_type'
+            }
+        },
+        'value_unit' :  { 
+            'type' : 'FIELD',
+            'element' : 'value',
+            'attribute' : 'unit'
+        }
+    },
+    'Observation' : {
         'root' : {
             'type' : 'ROOT',
             'element': 
@@ -204,6 +335,14 @@ meta_dict = {
             'FUNCTION' : VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
             'argument_names' : { 
                 'concept_code' : 'observation_concept_code', 
+                'vocabulary_oid' : 'observation_concept_codeSystem'
+            }
+        },
+        'observation_concept_domain_id' : {
+            'type' : 'DOMAIN',
+            'FUNCTION' : VT.map_hl7_to_omop_domain_id, # not the string representing the name, but function itself in Python space.
+            'argument_names' : {
+                'concept_code' : 'observation_concept_code',
                 'vocabulary_oid' : 'observation_concept_codeSystem'
             }
         },
