@@ -40,12 +40,12 @@ def create_omop_domain_dataframes(omop_data, filepath):
 
     return df_dict
 
-def write_csvs_from_dataframe_dict(df_dict, file_name):
+def write_csvs_from_dataframe_dict(df_dict, file_name, folder):
     """ writes a CSV file for each dataframe 
         uses the key of the dict as filename
     """
     for domain_name, domain_dataframe in df_dict.items():
-        domain_dataframe.to_csv(file_name + "__" + domain_name + ".csv", sep=",", header=True, index=False)
+        domain_dataframe.to_csv(folder + "/" + file_name + "__" + domain_name + ".csv", sep=",", header=True, index=False)
 
 if __name__ == '__main__':
   # GET FILE
@@ -83,6 +83,6 @@ if __name__ == '__main__':
         else:
             logger.error(f"no data from {filepath}")
         file_name = os.path.basename(filepath)
-        write_csvs_from_dataframe_dict(dataframe_dict, file_name)
+        write_csvs_from_dataframe_dict(dataframe_dict, file_name, "output")
 
 
