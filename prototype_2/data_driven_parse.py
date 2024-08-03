@@ -20,20 +20,10 @@ import pandas as pd
 import lxml
 from lxml import etree as ET
 import logging
-from metadata import get_meta_dict
+from prototype_2.metadata import get_meta_dict
 
-logger = logging.getLogger('basic logging')
-#logger.setLevel(logging.DEBUG)
-#logger.setLevel(logging.INFO)
-logger.setLevel(logging.ERROR)
+logger = logging.getLogger(__name__)
 
-console_handler = logging.StreamHandler()
-#console_handler.setLevel(logging.DEBUG)
-#console_handler.setLevel(logging.INFO)
-console_handler.setLevel(logging.ERROR)
-formatter = logging.Formatter('%(levelname)s %(message)s')
-console_handler.setFormatter(formatter)
-logger.addHandler(console_handler)
 
 
 ns = {
@@ -53,25 +43,30 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         the domain_root_element. 
         Domain and field_tag are here for error messages.
     """
+
+
     if 'element' not in field_details_dict:
         logger.error(f"could find key 'element' in the field_details_dict: {field_details_dict} root:{root_path}")
-    else:
-        logger.info(f"    FIELD {field_details_dict['element']} for {domain}/{field_tag}")
-        field_element = domain_root_element.find(field_details_dict['element'], ns)
-        if field_element is None:
-            logger.error(f"could not find field element {field_details_dict['element']} for {domain}/{field_tag} root:{root_path}")
-            return None
-    
-        if 'attribute' not in field_details_dict:
-            logger.error(f"could not find key 'attribute' in the field_details_dict: {field_details_dict} root:{root_path}")
-        else: 
-            logger.info(f"       ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
-            attribute_value = field_element.get(field_details_dict['attribute'])
-            if field_details_dict['attribute'] == "#text":
-                attribute_value = field_element.text
-            if attribute_value is None:
-                logger.warning(f"no value for field element {field_details_dict['element']} for {domain}/{field_tag} root:{root_path}")
-            return(attribute_value)
+        return None
+
+    logger.info(f"    FIELD {field_details_dict['element']} for {domain}/{field_tag}")
+    field_element = domain_root_element.find(field_details_dict['element'], ns)
+    if field_element is None:
+        logger.error(f"could not find field element {field_details_dict['element']} for {domain}/{field_tag} root:{root_path}")
+        return None
+
+    if 'attribute' not in field_details_dict:
+        logger.error(f"could not find key 'attribute' in the field_details_dict: {field_details_dict} root:{root_path}")
+        return None
+
+    logger.info(f"       ATTRIBUTE   {field_details_dict['attribute']} for {domain}/{field_tag} {field_details_dict['element']} ")
+    attribute_value = field_element.get(field_details_dict['attribute'])
+    if field_details_dict['attribute'] == "#text":
+        attribute_value = field_element.text
+    if attribute_value is None:
+        logger.warning(f"no value for field element {field_details_dict['element']} for {domain}/{field_tag} root:{root_path}")
+
+    return(attribute_value)
     
 
 def parse_domain_from_dict(tree, domain, domain_meta_dict):
@@ -106,8 +101,9 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
     #  1) the metadata has mis-spelled keys (Python domain)
     #  2) the paths that appear as values to 'element' keys don't work in ElementTree (XPath domain)
     output_list = []
+    error_fields_set = set()
     domain_id = None
-    print(f"NUM ROOTS {len(root_element_list)}")
+    logger.info(f"NUM ROOTS {domain} {len(root_element_list)}")
     for root_element in root_element_list: 
         output_dict = {}
         logger.info(f"  ROOT for domain:{domain}, we have tag:{root_element.tag} attributes:{root_element.attrib}")
@@ -131,6 +127,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                 else:
                     logger.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
                     output_dict[field_tag] = (None, root_path + "/" + field_details_dict['element'] + "/@" + field_details_dict['attribute'])
+                    error_fields_set.add(field_tag)
                 
 
         # Do derived values now that their inputs should be available in the output_dict                           
@@ -144,10 +141,12 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                 for arg_name, field_name in field_details_dict['argument_names'].items():
                     logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
                     if field_name not in output_dict:
+                        error_fields_set.add(field_tag)
                         logger.error(f" domain:{domain} field:{field_tag} could not find {field_name} in {output_dict}")
                     try:
                         args_dict[arg_name] = output_dict[field_name][0]
                     except Exception as x:
+                        error_fields_set.add(field_tag)
                         logger.error(f" arg_name: {arg_name} field_name:{field_name} args_dict:{args_dict} output_dict:{output_dict}")
                 try:
                     function_value = (field_details_dict['FUNCTION'](args_dict), 'Derived')
@@ -158,6 +157,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                         output_dict[field_tag] = function_value
                         logger.info(f"     DERIV-ed {function_value} for {field_tag}, {field_details_dict} {output_dict[field_tag]}")
                 except TypeError as e:
+                    error_fields_set.add(field_tag)
                     logger.error(e)
                     logger.error(f"calling something that isn't a function {field_details_dict['FUNCTION']}. You may have quotes around it in  a python mapping structure if this is a string: {type(field_details_dict['FUNCTION'])}")
    
@@ -169,16 +169,17 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                 clean_output_dict[key] = output_dict[key]
 
         # Add a "root" column to show where this came from
-        print(f"DOMAIN domain:{domain} root:{domain_meta_dict['root']['element']}   ROOT path:{root_path}")
-        clean_output_dict['root_path'] = (root_path, 'root_path')
+        output_dict['root_path'] = (root_path, 'root_path')
+        output_list.append(output_dict)
+            
+        # report fields with errors 
+        if len(error_fields_set) > 0:
+            logger.error(f"Fields with errors in domain {domain} {error_fields_set}")
 
-        output_list.append(clean_output_dict)
     # Check if the domain matches the domain_id that comes up from this concept, drop the row if they don't match.
     if domain_id is None or domain_id[0] == domain:            
-        logger.info(f"******* ADDING  {domain_id} {domain}")
         return output_list
     else:
-        logger.info(f"******* DROPPING  {domain_id} {domain}")
         return None
   
  
@@ -205,7 +206,7 @@ def print_omop_structure(omop):
     print(f"PK_dict: {PK_dict}")
     for domain, domain_list in omop.items():
         if domain_list is None:
-            logger.error(f"no data for domain {domain}")
+            logger.warning(f"no data for domain {domain}")
         else:
             for domain_data_dict in domain_list:
                 n=0
@@ -221,14 +222,14 @@ if __name__ == '__main__':
     
     # GET FILE
     file_paths = [ 
-        '../resources/CCDA_CCD_b1_Ambulatory_v2.xml',
-#        '../resources/CCDA_CCD_b1_InPatient_v2.xml',
-#        '../resources/170.314b2_AmbulatoryToC.xml',  # has errors and uses different OIDs
-#         '../resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
-##        '../resources/Manifest_Medex/bennis_shauna_ccda.xml.txt',
-##        '../resources/Manifest_Medex/eHX_Terry.xml.txt',
-#        '../resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
-#        '../resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
+        'resources/CCDA_CCD_b1_Ambulatory_v2.xml',
+        'resources/CCDA_CCD_b1_InPatient_v2.xml',
+#        'resources/170.314b2_AmbulatoryToC.xml',  # has errors and uses different OIDs
+#        'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
+##        'resources/Manifest_Medex/bennis_shauna_ccda.xml.txt',
+##        'resources/Manifest_Medex/eHX_Terry.xml.txt',
+#        'resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
+#        'resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
     ]
     if False: # for getting them on the Foundry
         from foundry.transforms import Dataset
