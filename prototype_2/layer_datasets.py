@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os.path
+import sys
 import pandas as PD
 import logging
 import prototype_2.data_driven_parse as DDP
@@ -56,6 +57,7 @@ if __name__ == '__main__':
         'resources/CCDA_CCD_b1_InPatient_v2.xml',
 #        'resources/170.314b2_AmbulatoryToC.xml',
 #         'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',    
+        #   all arrays must be the same length
 
         # Manifest Medex
         #'resources/Manifest_Medex/bennis_shauna_ccda.xml', 
@@ -64,8 +66,8 @@ if __name__ == '__main__':
         #    won't parse, reason as-yet unknown
 
         # CRISP etc.
-#        'resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
-#        'resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
+        'resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
+        'resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
     ]
 
     if False: # for getting them on the Foundry
@@ -75,6 +77,18 @@ if __name__ == '__main__':
         ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
 
     for filepath in file_paths:
+        file_name = os.path.basename(filepath)
+
+        logging.basicConfig(
+            format='%(levelname)s: %(message)s',
+            #stream=sys.stdout, 
+            filename=f"logs/log_layer_ds_{file_name}.log",
+            # level=logging.ERROR
+            level=logging.WARNING,
+            # level=logging.INFO
+            # level=logging.DEBUG
+            force=True
+        )
         logger.info(f"PROCESSING {filepath} ")
         omop_data = DDP.parse_doc(filepath, get_meta_dict()) 
         #DDP.print_omop_structure(omop_data) 
@@ -82,7 +96,6 @@ if __name__ == '__main__':
             dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
         else:
             logger.error(f"no data from {filepath}")
-        file_name = os.path.basename(filepath)
         write_csvs_from_dataframe_dict(dataframe_dict, file_name, "output")
 
 
