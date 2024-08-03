@@ -170,7 +170,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
         # Add a "root" column to show where this came from
         output_dict['root_path'] = (root_path, 'root_path')
-        output_list.append(output_dict)
+        output_list.append(clean_output_dict)
             
         # report fields with errors 
         if len(error_fields_set) > 0:
