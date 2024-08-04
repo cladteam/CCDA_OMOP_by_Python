@@ -22,8 +22,7 @@ subs_admin_prefix = './entry/act/entryRelationship/substanceAdministration'
 
 
 section_metadata = {
-
-# Sections ...10.20.22.2.[ 1.1, 3.1, 4.1, 7.1, 14, 22, 22.1, 41 ]
+    # Sections ...10.20.22.2.[ 1.1, 3.1, 4.1, 7.1, 14, 22, 22.1, 41 ]
 
     'Encounters' : {
     	'loinc_code' : '46240-8',
@@ -76,83 +75,77 @@ section_metadata = {
         'sub_elements' : ['observation']  
     },
 
-# Sections Out of Scope 2.16.840.1.113883.10.20.22.2.[2, 2.1, 5.1, 6.1, 8, 9, 10, 11, 12 ,14, 15, 17, 18, 21, 45]
-# Sections Out of Scope 2.16.840.1.113883.10.20.22.1.[6]
-# Sections Out of Scope 1.3.6.1.4.1.19376.1.5.3.1.3.1
-# Section Immunizations OoS   'root'="2.16.840.1.113883.10.20.1.6"/>
-# Section Immunizations OoS   'root'="2.16.840.1.113883.10.20.22.2.2.1"/>
-# Section Immunizations OoS   'root'="2.16.840.1.113883.10.20.22.2.2"/>
-#    '11369-6': { "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial"
-
-# Section Problem List OoS?    root="2.16.840.1.113883.10.20.22.2.5.1"/>
-# Section Allergies OoS       'root'="2.16.840.1.113883.10.20.22.2.6.1"/>
-#    '48765-2': { './entry/': [], './entry/act/effectiveTime': [],
-#        './entry/act/entryRelationship/observation': [],
-#        './entry/act/entryRelationship/observation/entryRelationship/observation': [],
-
-# Section Functional and Cognitive Status  'root'="2.16.840.1.113883.10.20.22.2.14"/>
-#    '474020-5': {  # FUNCTIONAL STATUS (observations)
-#        "./entry/observation":  ['observation']
-
-# Section Assessments  OoS             root="2.16.840.1.113883.10.20.22.2.8"/>
-# Section ????  OoS                    root="2.16.840.1.113883.10.20.22.2.9"/>
-# Section Care Plan OoS                root="2.16.840.1.113883.10.20.22.2.10"/>
-# Section Discharge Medications OoS?   root="2.16.840.1.113883.10.20.22.2.11.1"/>
-# Section Reason For Visit OoS?        root="2.16.840.1.113883.10.20.22.2.12"/>
-# Section Family History OoS           root="2.16.840.1.113883.10.20.22.2.15"/>
-# Section Social History OsS           root="2.16.840.1.113883.10.20.22.2.17"/>
-# Section Payers OsS                   root="2.16.840.1.113883.10.20.22.2.18"/>
-# Section Reason for Referral OoS      root="1.3.6.1.4.1.19376.1.5.3.1.3.1"/>
-# Section Advanced Directives OoS      root="2.16.840.1.113883.10.20.22.2.21"/>
-# Section Instructions OoS      root="2.16.840.1.113883.10.20.22.2.45"/>
-
+    # Sections Out of Scope 2.16.840.1.113883.10.20.22.2.[2, 2.1, 5.1, 6.1, 8, 9, 10, 11, 12 ,14, 15, 17, 18, 21, 45]
+    # Sections Out of Scope 2.16.840.1.113883.10.20.22.1.[6]
+    # Sections Out of Scope 1.3.6.1.4.1.19376.1.5.3.1.3.1
+    #
+    # Section Immunizations OoS   'root'="2.16.840.1.113883.10.20.1.6"/>
+    # Section Immunizations OoS   'root'="2.16.840.1.113883.10.20.22.2.2.1"/>
+    # Section Immunizations OoS   'root'="2.16.840.1.113883.10.20.22.2.2"/>
+    #    '11369-6': { "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial"
+    # Section Problem List OoS?    root="2.16.840.1.113883.10.20.22.2.5.1"/>
+    # Section Allergies OoS       'root'="2.16.840.1.113883.10.20.22.2.6.1"/>
+    #    '48765-2': { './entry/': [], './entry/act/effectiveTime': [],
+    #        './entry/act/entryRelationship/observation': [],
+    #        './entry/act/entryRelationship/observation/entryRelationship/observation': [],
+    # Section Functional and Cognitive Status  'root'="2.16.840.1.113883.10.20.22.2.14"/>
+    #    '474020-5': {  # FUNCTIONAL STATUS (observations)
+    #        "./entry/observation":  ['observation']
+    # Section Assessments  OoS             root="2.16.840.1.113883.10.20.22.2.8"/>
+    # Section ????  OoS                    root="2.16.840.1.113883.10.20.22.2.9"/>
+    # Section Care Plan OoS                root="2.16.840.1.113883.10.20.22.2.10"/>
+    # Section Discharge Medications OoS?   root="2.16.840.1.113883.10.20.22.2.11.1"/>
+    # Section Reason For Visit OoS?        root="2.16.840.1.113883.10.20.22.2.12"/>
+    # Section Family History OoS           root="2.16.840.1.113883.10.20.22.2.15"/>
+    # Section Social History OsS           root="2.16.840.1.113883.10.20.22.2.17"/>
+    # Section Payers OsS                   root="2.16.840.1.113883.10.20.22.2.18"/>
+    # Section Reason for Referral OoS      root="1.3.6.1.4.1.19376.1.5.3.1.3.1"/>
+    # Section Advanced Directives OoS      root="2.16.840.1.113883.10.20.22.2.21"/>
+    # Section Instructions OoS      root="2.16.840.1.113883.10.20.22.2.45"/>
 }
 
 
 def scan_section(base_name, section_name, section_element):
+    i=0
     output_filename = f"{base_name}_{section_name}.log"
-    print(f"output: {output_filename}")
     with  open(output_filename, 'w', encoding="utf-8") as f:
-        i=0
-        for section_element in section_elements:
+        for section_code_element in section_element.findall('.//code', ns):
             i += 1
-            print(f"{output_filename}  {i} ")
-            for section_code_element in section_element.findall('code', ns):
-                display_name=""
-                code=""
-                codeSystem=""
-                codeType=""
-                if 'displayName' in section_code_element.attrib:
-                    display_name = section_code_element.attrib['displayName']
-                if 'code' in section_code_element.attrib:
-                    code = section_code_element.attrib['code']
-                if 'codeSystem' in section_code_element.attrib:
-                    code_system = section_code_element.attrib['codeSystem']
-                #if codeType == '':
-                #    if section_code_system in oid_map:
-                #        vocab = oid_map[section_code_system][0]
-                #        #section_type = details[2]
-                #        #details = VocabSpark.lookup_omop_details(spark, vocab, section_code)
-                #section_type=""
-                #section_code=""
-                #section_codeSystem=""
-                #section_codeType=""
-                f.write(f" {i} {codeSystem} {code} {displayName}")
+            display_name=""
+            code=""
+            codeSystem=""
+            codeType=""
+            if 'displayName' in section_code_element.attrib:
+                display_name = section_code_element.attrib['displayName']
+            if 'code' in section_code_element.attrib:
+                code = section_code_element.attrib['code']
+            if 'codeSystem' in section_code_element.attrib:
+                code_system = section_code_element.attrib['codeSystem']
+            #if codeType == '':
+            #    if section_code_system in oid_map:
+            #        vocab = oid_map[section_code_system][0]
+            #        #section_type = details[2]
+            #        #details = VocabSpark.lookup_omop_details(spark, vocab, section_code)
+            #section_type=""
+            #section_code=""
+            #section_codeSystem=""
+            #section_codeType=""
+            f.write(f"{codeSystem} {code} {display_name} \n")
+    return i
 
 def scan_file(filename):
     base_name = os.path.basename(filename)
 
     tree = ET.parse(filename)
     for section_name, section_details in section_metadata.items():
-        print(f"{base_name} {section_name}")
+        total_n=0
         for template_id in section_details['root']:
             section_path = f"./component/structuredBody/component/section/templateId[@root=\"{template_id}\"]/.."
-            print(f"section path {section_path}")
             section_element_list = tree.findall(section_path, ns)
-            print(F" length of element list: {len(section_element_list)}")
             for section_element in section_element_list:
-                print(f"    {base_name} {section_name}")
-                scan_section(section_name, section_element, section_name)
+                n = scan_section(base_name, section_name, section_element)
+                total_n += n
+        print(f"FILE: {base_name}  SECTION: {section_name} {total_n} ")
     
     
 #        print(f"SECTION type:\"{section_type}\" code:\"{section_code}\" ", end='')
