@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 """
     header_snooper - driven by three levels of metadata for top-level header elements,
     middle elements, and attributes, shows what is foudn in the header. Mostly
@@ -21,24 +21,9 @@ TODO:
 import re
 import argparse
 import xml.etree.ElementTree as ET  # https://docs.python.org/3/library/xml.etree.elementtree.html
-from util.xml_ns import ns
-from util.vocab_map_file import oid_map
-from util import spark_util
+from xml_ns import ns
+from vocab_map_file import oid_map
 
-# INPUT_FILENAME = 'resources/CCDA_CCD_b1_InPatient_v2.xml'
-INPUT_FILENAME = 'resources/CCDA_CCD_b1_Ambulatory_v2.xml'
-spark_util_object = spark_util.SparkUtil()
-spark = spark_util_object.get_spark()
-
-parser = argparse.ArgumentParser(
-    prog='CCDA - OMOP Code Snooper',
-    description="finds all code elements and shows what concepts the represent",
-    epilog='epilog?')
-parser.add_argument('-f', '--filename', default=INPUT_FILENAME,
-                    help="filename to parse")
-args = parser.parse_args()
-
-tree = ET.parse(INPUT_FILENAME)
 
 # everything is optional, entities may repeat
 
@@ -56,16 +41,30 @@ element_attributes = {  # (or sub-elements with text)
 }
 
 middle_elements = {
-    'TIME':  {'low': 'LOW_TIME', 'high': 'HIGH_TIME'},
-    'ASSIGNED_PERSON': {'name': 'NAME'},
-    'REPRESENTED_ORGANIZATION': {'id': 'ID', 'name': 'TEXT', 'addr': 'ADDR'},
-    'ASSIGNED_ENTITY': {'id': 'ID', 'code': 'CODE', 'addr': 'ADDR',
-                        'assignedPerson': 'ASSIGNED_PERSON',
-                        'representedOrganization': 'REPRESENTED_ORGANIZATION'},
-    'ENCOMPASSING_ENCOUNTER': {'id': 'ID', 'code': 'CODE', 'effectiveTime': 'TIME',
-                               'responsbleParty/assignedEntity': 'ASSIGNED_ENTITY',
-                               'encounterParticipant/assignedEntity': 'ASSIGNED_ENTITY',
-                               'location/healthcareFacility': 'ID'}
+    'CODE': 
+        {'skip' : None },
+    'TIME':  {
+        'low': 'LOW_TIME', 
+        'high': 'HIGH_TIME'},
+    'ASSIGNED_PERSON': {
+        'name': 'NAME'},
+    'REPRESENTED_ORGANIZATION': {
+        'id': 'ID', 
+        'name': 'TEXT', 
+        'addr': 'ADDR'},
+    'ASSIGNED_ENTITY': {
+        'id': 'ID', 
+        'code': 'CODE', 
+        'addr': 'ADDR',
+        'assignedPerson': 'ASSIGNED_PERSON',
+        'representedOrganization': 'REPRESENTED_ORGANIZATION'},
+    'ENCOMPASSING_ENCOUNTER': {
+        'id': 'ID', 
+        'code': 'CODE', 
+        'effectiveTime': 'TIME',
+        'responsbleParty/assignedEntity': 'ASSIGNED_ENTITY',
+        'encounterParticipant/assignedEntity': 'ASSIGNED_ENTITY',
+        'location/healthcareFacility': 'ID'}
 }
 
 header_elements = {
@@ -75,13 +74,16 @@ header_elements = {
     'recordTarget/patientRole/patient/administrativeGenderCode': 'CODE',
     'recordTarget/patientRole/patient/raceCode': 'CODE',
     'recordTarget/patientRole/patient/ethnicGroupCode': 'CODE',
+
     #  VISIT type from here?
     'documentationOf/serviceEvent/code': 'CODE',
     'documentationOf/serviceEvent/effectiveTime': 'TIME',
+
     # PROVIDER and/or CARE_SITE
     'documentationOf/serviceEvent/performer/functionCode': 'CODE',
     'documentationOf/serviceEvent/performer/time': 'TIME',
     'documentationOf/serviceEvent/performer/assignedEntity': 'ASSIGNED_ENTITY',
+
     # VISIT provider and dates, care_site
     'componentOf/encompassingEncounter': 'ENCOMPASSING_ENCOUNTER'
 }
@@ -91,55 +93,51 @@ def dump_attributes(element, element_type):
     if type != 'TEXT':
         if element_type in element_attributes:
             for attr in element_attributes[element_type]:
-                print(f"        {element_type}   {attr}")
                 if attr in element.attrib:
                     if attr == 'root' or attr == 'codeSystem' and element.attrib[attr] in oid_map:
-                        print((f"      {re.sub(r'{.*}', '', element.tag)}.{attr}: "
+                        print((f"        A {re.sub(r'{.*}', '', element.tag)}.{attr}: "
                                f"{oid_map[element.attrib[attr]][0]} "
                                f"{oid_map[element.attrib[attr]][1]} "))
                     else:
-                        print((f"      {re.sub(r'{.*}', '', element.tag)}.{attr}:"
+                        print((f"        B {re.sub(r'{.*}', '', element.tag)}.{attr}:"
                                f" {element.attrib[attr]} "))
                 else:
                     attr_ele = element.find(attr, ns)
                     if attr_ele is not None:
-                        print((f"     {re.sub(r'{.*}', '', element.tag)}.{attr}:"
+                        print((f"        C {re.sub(r'{.*}', '', element.tag)}.{attr}:"
                                f" {attr_ele.text}"))
+                    else:
+                        print(f"        D None")
     else:
-        print(f"      {re.sub(r'{.*}', '', element.tag)}.{element.text}: ")
-
-# top: documentationOf/serviceEvent/effectiveTime TIME effectiveTime {}
-# mid    low LOW_TIME     TIME
-# mid    high HIGH_TIME     TIME
-# mid    value TIME_VALUE     TIME
-
+        print(f"        E {re.sub(r'{.*}', '', element.tag)}.{element.text}: ")
 
 def dump_middle(middle_element, middle_type):
     if middle_type in middle_elements:
         for (ele_path, ele_type) in middle_elements[middle_type].items():
-            print(f"mid    {ele_path} {ele_type}     {middle_type}")
-            elements = middle_element.findall(f"./{ele_path}", ns)
-            for ele in elements:
-                dump_attributes(ele, ele_type)
-
-        for (ele_path, ele_type) in middle_elements[middle_type].items():
-            print(f"mid    {ele_path} {ele_type}     {middle_type}")
-            if ele_type in middle_elements:
-                x = middle_elements[ele_type]
+            print(f"    {ele_path} {ele_type}     {middle_type}")
+            if ele_path == 'skip':
+                    dump_attributes(middle_element, middle_type)
+            else:
                 elements = middle_element.findall(f"./{ele_path}", ns)
                 for ele in elements:
-                    print(f"mid-2 {ele.tag} {ele.attrib}")
-            elif ele_type in element_attributes:
-                x = element_attributes[ele_type]
-                print(x)
-                #  elements = middle_element.findall(f"./{ele_path}", ns)
+                    dump_attributes(ele, ele_type)
+
+def dump_file(filename):
+    tree = ET.parse(args.filename)
+    for (element_path, element_type) in header_elements.items():
+        for element in tree.findall(element_path, ns):
+            print(f"{element_path} {element_type} {re.sub(r'{.*}', '', element.tag)}")
+            if element_type in middle_elements:
+                dump_middle(element, element_type)
 
 
-for (element_path, element_type) in header_elements.items():
-    for element in tree.findall(element_path, ns):
-        print((f"top: {element_path} {element_type} {re.sub(r'{.*}', '', element.tag)}"
-               f" {element.attrib}"))
-        if element_type in middle_elements:
-            dump_middle(element, element_type)
-        else:
-            dump_attributes(element, element_type)
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(
+        prog='CCDA - OMOP Code Snooper',
+        description="finds all code elements and shows what concepts the represent",
+        epilog='epilog?')
+    parser.add_argument('-f', '--filename', help="filename to parse")
+    args = parser.parse_args()
+
+    dump_file(args.filename)
