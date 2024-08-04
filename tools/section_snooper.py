@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 """
     section_snooper - looks for specfic sections driven by metadata,
         and shows any ID, CODE and VALUE elements within them.
@@ -10,15 +10,15 @@
 
 import argparse
 import xml.etree.ElementTree as ET  # https://docs.python.org/3/library/xml.etree.elementtree.html
-from util.xml_ns import ns
-from util.vocab_map_file import oid_map
-from util import spark_util
-from util.vocab_spark import VocabSpark
+from xml_ns import ns
+from vocab_map_file import oid_map
+#from util import spark_util
+#from util.vocab_spark import VocabSpark
 
-# INPUT_FILENAME = 'resources/CCDA_CCD_b1_InPatient_v2.xml'
-INPUT_FILENAME = 'resources/CCDA_CCD_b1_Ambulatory_v2.xml'
-spark_util_object = spark_util.SparkUtil()
-spark = spark_util_object.get_spark()
+# INPUT_FILENAME = '../resources/CCDA_CCD_b1_InPatient_v2.xml'
+INPUT_FILENAME = '../resources/CCDA_CCD_b1_Ambulatory_v2.xml'
+#spark_util_object = spark_util.SparkUtil()
+#spark = spark_util_object.get_spark()
 
 parser = argparse.ArgumentParser(
     prog='CCDA - OMOP Code Snooper',
@@ -124,9 +124,9 @@ for section_element in section_elements:
         if section_type == '':
             if section_code_system in oid_map:
                 vocab = oid_map[section_code_system][0]
-                details = VocabSpark.lookup_omop_details(spark, vocab, section_code)
-                if details is not None:
-                    section_type = details[2]
+                #details = VocabSpark.lookup_omop_details(spark, vocab, section_code)
+                #if details is not None:
+                #    section_type = details[2]
 
     print(f"SECTION type:\"{section_type}\" code:\"{section_code}\" ", end='')
     section_code = section_code_element.attrib['code']
