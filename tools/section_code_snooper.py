@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
 
 """
-    section_detail_snooper - looks for specfic sections driven by metadata,
-        and shows any ID, CODE and VALUE elements within them.
-	outputting these details in a file per section, per file.
+    section_code_snooper - driven by a list of sections and their template IDs,
+       this code looks for codes found in such a section and lists them.
 
-    TODO: the list after a path in metadata isn't used currently.
-        Ultimately it would replce the hard-coded id, code, value
-        and effectiveTime parts
-
-    TODO: templateIds vs concepts?
 """
 
 import argparse
