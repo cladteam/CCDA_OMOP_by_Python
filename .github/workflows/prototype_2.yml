@@ -1,4 +1,4 @@
-name: CCDA parsing with Spark
+name: Prototype 2
 run-name: ${{ github.actor }} is testing Prototype 2
 on: [push, workflow_dispatch]
 jobs:
