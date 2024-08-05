@@ -1,0 +1,93 @@
+recordTarget/patientRole/id ID id
+recordTarget/patientRole/id ID id
+recordTarget/patientRole/patient/name NAME name
+recordTarget/patientRole/patient/administrativeGenderCode CODE administrativeGenderCode
+    skip None     CODE
+        B administrativeGenderCode.code: F 
+        A administrativeGenderCode.codeSystem: XXGender 0 
+        B administrativeGenderCode.displayName: Female 
+recordTarget/patientRole/patient/raceCode CODE raceCode
+    skip None     CODE
+        B raceCode.code: 2106-3 
+        A raceCode.codeSystem: XXRaceEthnicity 1 
+        B raceCode.displayName: White 
+recordTarget/patientRole/patient/ethnicGroupCode CODE ethnicGroupCode
+    skip None     CODE
+        B ethnicGroupCode.code: 2186-5 
+        A ethnicGroupCode.codeSystem: XXRaceEthnicity 1 
+        B ethnicGroupCode.displayName: Not Hispanic or Latino 
+documentationOf/serviceEvent/code CODE code
+    skip None     CODE
+        B code.code: 233604007 
+        A code.codeSystem: SNOMED 32549 
+        B code.displayName: Pnuemonia 
+documentationOf/serviceEvent/effectiveTime TIME effectiveTime
+    low LOW_TIME     TIME
+        B low.value: 20120806 
+    high HIGH_TIME     TIME
+        B high.value: 20120813 
+documentationOf/serviceEvent/performer/functionCode CODE functionCode
+    skip None     CODE
+        B functionCode.code: PP 
+        A functionCode.codeSystem: XXY 2 
+        B functionCode.displayName: Primary Care Provider 
+documentationOf/serviceEvent/performer/functionCode CODE functionCode
+    skip None     CODE
+        B functionCode.code: PP 
+        A functionCode.codeSystem: XXY 2 
+        B functionCode.displayName: Primary Care Provider 
+documentationOf/serviceEvent/performer/time TIME time
+    low LOW_TIME     TIME
+        B low.value: 20120806 
+    high HIGH_TIME     TIME
+        B high.value: 20120813 
+documentationOf/serviceEvent/performer/time TIME time
+    low LOW_TIME     TIME
+        B low.value: 20120806 
+    high HIGH_TIME     TIME
+        B high.value: 20120813 
+documentationOf/serviceEvent/performer/assignedEntity ASSIGNED_ENTITY assignedEntity
+    id ID     ASSIGNED_ENTITY
+        A id.root: NPI 0 
+        B id.extension: PseudoMD-1 
+    code CODE     ASSIGNED_ENTITY
+        B code.code: 208D00000X 
+        A code.codeSystem: NUCC 44819137 
+        B code.displayName: General Practice 
+    addr ADDR     ASSIGNED_ENTITY
+        C addr.streetAddressLine: 1002 Healthcare Dr
+        C addr.city: Portland
+        C addr.state: OR
+        C addr.postalCode: 97266
+        C addr.country: US
+    assignedPerson ASSIGNED_PERSON     ASSIGNED_ENTITY
+    representedOrganization REPRESENTED_ORGANIZATION     ASSIGNED_ENTITY
+documentationOf/serviceEvent/performer/assignedEntity ASSIGNED_ENTITY assignedEntity
+    id ID     ASSIGNED_ENTITY
+        A id.root: NPI 0 
+        B id.extension: PseudoMD-3 
+    code CODE     ASSIGNED_ENTITY
+        B code.code: 208D00000X 
+        A code.codeSystem: NUCC 44819137 
+        B code.displayName: General Practice 
+    addr ADDR     ASSIGNED_ENTITY
+        C addr.streetAddressLine: 1002 Healthcare Dr
+        C addr.city: Portland
+        C addr.state: OR
+        C addr.postalCode: 97266
+        C addr.country: US
+    assignedPerson ASSIGNED_PERSON     ASSIGNED_ENTITY
+    representedOrganization REPRESENTED_ORGANIZATION     ASSIGNED_ENTITY
+componentOf/encompassingEncounter ENCOMPASSING_ENCOUNTER encompassingEncounter
+    id ID     ENCOMPASSING_ENCOUNTER
+        A id.root: NPI 0 
+        B id.extension: 1 
+    code CODE     ENCOMPASSING_ENCOUNTER
+        B code.code: 233604007 
+        A code.codeSystem: SNOMED 32549 
+        B code.displayName: Pnuemonia 
+    effectiveTime TIME     ENCOMPASSING_ENCOUNTER
+        D None
+    responsbleParty/assignedEntity ASSIGNED_ENTITY     ENCOMPASSING_ENCOUNTER
+    encounterParticipant/assignedEntity ASSIGNED_ENTITY     ENCOMPASSING_ENCOUNTER
+    location/healthcareFacility ID     ENCOMPASSING_ENCOUNTER

@@ -1,0 +1,92 @@
+
+
+
+SECTION type:"" code:"48765-2" 
+  MD section code: "48765-2" path: "./entry/" 
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}act attrib:{'classCode': 'ACT', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}act attrib:{'classCode': 'ACT', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}act attrib:{'classCode': 'ACT', 'moodCode': 'EVN'}
+  MD section code: "48765-2" path: "./entry/act/effectiveTime" 
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}effectiveTime attrib:{'value': '20070501'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}effectiveTime attrib:{'value': '20060501'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}effectiveTime attrib:{'value': '20080501'}
+  MD section code: "48765-2" path: "./entry/act/entryRelationship/observation" 
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+  MD section code: "48765-2" path: "./entry/act/entryRelationship/observation/participant/participantRole/playingEntity" 
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}playingEntity attrib:{'classCode': 'MMAT'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}playingEntity attrib:{'classCode': 'MMAT'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}playingEntity attrib:{'classCode': 'MMAT'}
+  MD section code: "48765-2" path: "./entry/act/entryRelationship/observation/entryRelationship/observation" 
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"" code:"48765-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+SECTION type:"History of encounters" code:"46240-8" 
+  MD section code: "46240-8" path: "./entry/encounter" 
+    type:"History of encounters" code:"46240-8",  tag:{urn:hl7-org:v3}encounter attrib:{'classCode': 'ENC', 'moodCode': 'EVN'}
+SECTION type:"History of immunizations" code:"11369-6" 
+  MD section code: "11369-6" path: "./entry/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" 
+    type:"History of immunizations" code:"11369-6",  tag:{urn:hl7-org:v3}manufacturedMaterial attrib:{}
+    type:"History of immunizations" code:"11369-6",  tag:{urn:hl7-org:v3}manufacturedMaterial attrib:{}
+SECTION type:"HISTORY OF MEDICATION USE" code:"10160-0" 
+  MD section code: "10160-0" path: "./entry/substanceAdministration/" 
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}templateId attrib:{'root': '2.16.840.1.113883.10.20.22.4.16'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}id attrib:{'root': 'cdbd33f0-6cde-11db-9fe1-0800200c9a66'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}text attrib:{}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}statusCode attrib:{'code': 'completed'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}effectiveTime attrib:{'{http://www.w3.org/2001/XMLSchema-instance}type': 'IVL_TS'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}effectiveTime attrib:{'{http://www.w3.org/2001/XMLSchema-instance}type': 'PIVL_TS', 'institutionSpecified': 'true', 'operator': 'A'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}routeCode attrib:{'code': 'C38216', 'codeSystem': '2.16.840.1.113883.3.26.1.1', 'codeSystemName': 'NCI Thesaurus', 'displayName': 'RESPIRATORY (INHALATION)'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}doseQuantity attrib:{'value': '0.09', 'unit': 'mg/actuat'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}rateQuantity attrib:{'value': '90', 'unit': 'ml/min'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}administrationUnitCode attrib:{'code': 'C42944', 'displayName': 'INHALANT', 'codeSystem': '2.16.840.1.113883.3.26.1.1', 'codeSystemName': 'NCI Thesaurus'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}consumable attrib:{}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}performer attrib:{}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}participant attrib:{'typeCode': 'CSM'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}entryRelationship attrib:{'typeCode': 'RSON'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}entryRelationship attrib:{'typeCode': 'REFR'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}entryRelationship attrib:{'typeCode': 'REFR'}
+    type:"HISTORY OF MEDICATION USE" code:"10160-0",  tag:{urn:hl7-org:v3}precondition attrib:{'typeCode': 'PRCN'}
+SECTION type:"Treatment plan" code:"18776-5" No metadata for "18776-5"     
+SECTION type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2" 
+  MD section code: "10183-2" path: "./entry/act/" 
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}templateId attrib:{'root': '2.16.840.1.113883.10.20.22.4.35'}
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}id attrib:{'root': '5a784260-6856-4f38-9638-80c751aff2fb'}
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}code attrib:{'code': '10183-2', 'codeSystem': '2.16.840.1.113883.6.1', 'codeSystemName': 'LOINC', 'displayName': 'Discharge medication'}
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}statusCode attrib:{'code': 'active'}
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}effectiveTime attrib:{}
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}entryRelationship attrib:{'typeCode': 'SUBJ'}
+  MD section code: "10183-2" path: "./entry/act/entryRelationship/substanceAdministration/consumable/manufacturedProduct/manufacturedMaterial" 
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}manufacturedMaterial attrib:{}
+  MD section code: "10183-2" path: "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity" 
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}assignedEntity attrib:{}
+  MD section code: "10183-2" path: "./entry/act/entryRelationship/substanceAdministration/performer/assignedEntity/representedOrganization" 
+    type:" HOSPITAL DISCHARGE MEDICATIONS " code:"10183-2",  tag:{urn:hl7-org:v3}representedOrganization attrib:{}
+SECTION type:"REASON FOR REFERRAL" code:"42349-1" No metadata for "42349-1"     
+SECTION type:"PROBLEM LIST" code:"11450-4" No metadata for "11450-4"     
+SECTION type:"HISTORY OF PROCEDURES" code:"47519-4" 
+  MD section code: "47519-4" path: "./entry/procedure" 
+    type:"HISTORY OF PROCEDURES" code:"47519-4",  tag:{urn:hl7-org:v3}procedure attrib:{'classCode': 'PROC', 'moodCode': 'EVN'}
+SECTION type:"" code:"47420-5" No metadata for "47420-5"     
+SECTION type:"RESULTS" code:"30954-2" 
+  MD section code: "30954-2" path: "./entry/organizer/component/observation" 
+    type:"RESULTS" code:"30954-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"RESULTS" code:"30954-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"RESULTS" code:"30954-2",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+SECTION type:"Social History" code:"29762-2" No metadata for "29762-2"     
+SECTION type:"VITAL SIGNS" code:"8716-3" 
+  MD section code: "8716-3" path: "./entry/organizer/component/observation" 
+    type:"VITAL SIGNS" code:"8716-3",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"VITAL SIGNS" code:"8716-3",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"VITAL SIGNS" code:"8716-3",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"VITAL SIGNS" code:"8716-3",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"VITAL SIGNS" code:"8716-3",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+    type:"VITAL SIGNS" code:"8716-3",  tag:{urn:hl7-org:v3}observation attrib:{'classCode': 'OBS', 'moodCode': 'EVN'}
+SECTION type:"HOSPITAL DISCHARGE INSTRUCTIONS" code:"8653-8" No metadata for "8653-8"     

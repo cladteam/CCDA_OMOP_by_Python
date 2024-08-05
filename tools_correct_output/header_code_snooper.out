@@ -1,0 +1,7 @@
+recordTarget/patientRole/patient  {'code': 'GPARNT', 'displayName': 'Grandfather', 'codeSystem': '2.16.840.1.113883.5.111', 'codeSystemName': 'HL7 Role code'}
+documentationOf/serviceEvent  {'code': '233604007', 'codeSystem': '2.16.840.1.113883.6.96', 'codeSystemName': 'SNOMED-CT', 'displayName': 'Pnuemonia'}
+documentationOf/serviceEvent  {'code': '208D00000X', 'displayName': 'General Practice', 'codeSystemName': 'Provider Codes', 'codeSystem': '2.16.840.1.113883.6.101'}
+documentationOf/serviceEvent  {'code': '208D00000X', 'displayName': 'General Practice', 'codeSystemName': 'Provider Codes', 'codeSystem': '2.16.840.1.113883.6.101'}
+documentationOf/serviceEvent/performer/assignedEntity  {'code': '208D00000X', 'displayName': 'General Practice', 'codeSystemName': 'Provider Codes', 'codeSystem': '2.16.840.1.113883.6.101'}
+documentationOf/serviceEvent/performer/assignedEntity  {'code': '208D00000X', 'displayName': 'General Practice', 'codeSystemName': 'Provider Codes', 'codeSystem': '2.16.840.1.113883.6.101'}
+componentOf/encompassingEncounter  {'code': '233604007', 'codeSystem': '2.16.840.1.113883.6.96', 'codeSystemName': 'SNOMED-CT', 'displayName': 'Pnuemonia'}
