@@ -1,5 +1,5 @@
 name: CCDA parsing with Spark
-run-name: ${{ github.actor }} is doing a test run of the CCDA parsing
+run-name: ${{ github.actor }} is testing Prototype 2
 on: [push, workflow_dispatch]
 jobs:
     Run-prototype-2:
@@ -30,6 +30,7 @@ jobs:
                 python3 -m prototype_2.data_driven_parse
           - name: Run layer_datsets.py
             run: |
+		mkdir logs
                 python3 -m prototype_2.layer_datasets
           - name: compare output
             run: |
