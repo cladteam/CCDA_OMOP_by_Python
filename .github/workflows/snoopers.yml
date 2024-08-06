@@ -32,7 +32,7 @@ jobs:
                 python3 header_snooper.py -f  ../resources/CCDA_CCD_b1_Ambulatory_v2.xml  > header_snooper.out
           - name: compare header snooper
             run: |
-                diff ../tools_correct_outut/header_snooper.out header_snooper.out
+                diff ../tools_correct_output/header_snooper.out header_snooper.out
 
           - name: Run Section Snooper
             run: |
@@ -41,7 +41,7 @@ jobs:
           - name: compare header snooper
             run: |
                 cd tools
-                diff ../tools_correct_outut/section_snooper.out section_snooper.out
+                diff ../tools_correct_output/section_snooper.out section_snooper.out
 
           - name: Run Section Code Snooper
             run: |
@@ -50,7 +50,7 @@ jobs:
           - name: compare section code snooper
             run: |
                 cd tools
-                diff ../tools_correct_outut/section_code_snooper.out section_code_snooper.out
+                diff ../tools_correct_output/section_code_snooper.out section_code_snooper.out
 
           - name: Run Header Code Snooper
             run: |
@@ -59,5 +59,5 @@ jobs:
           - name: compare header code snooper
             run: |
                 cd tools
-                diff ../tools_correct_outut/header_code_snooper.out header_code_snooper.out
+                diff ../tools_correct_output/header_code_snooper.out header_code_snooper.out
 
