@@ -25,6 +25,10 @@ The code here is meant to work, but also show and explain the approach. The meat
 
 ## Getting Started (how to run)
 From the directory above prototype_2:
+- #setup a venv (or not)
+- pip install lxml pandas
+- mkdir output
+- mkdir logs
 - python -m prototype_2.data_driven_parse
 - python -m prototype_2.layer_datasets
 - bin/compare_correct.sh
