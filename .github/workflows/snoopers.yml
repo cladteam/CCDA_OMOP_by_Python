@@ -32,8 +32,8 @@ jobs:
                 python3 header_snooper.py -f  ../resources/CCDA_CCD_b1_Ambulatory_v2.xml  > header_snooper.out
           - name: compare header snooper
             run: |
+                cd tools
                 diff ../tools_correct_output/header_snooper.out header_snooper.out
-
           - name: Run Section Snooper
             run: |
                 cd tools
@@ -42,7 +42,6 @@ jobs:
             run: |
                 cd tools
                 diff ../tools_correct_output/section_snooper.out section_snooper.out
-
           - name: Run Section Code Snooper
             run: |
                 cd tools
@@ -51,7 +50,6 @@ jobs:
             run: |
                 cd tools
                 diff ../tools_correct_output/section_code_snooper.out section_code_snooper.out
-
           - name: Run Header Code Snooper
             run: |
                 cd tools
