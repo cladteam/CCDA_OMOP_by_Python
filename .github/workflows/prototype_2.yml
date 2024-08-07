@@ -18,10 +18,13 @@ jobs:
           - name: housekeeping,  change directory to prototype_2
             shell: bash
             run: |
+                pwd
                 ln -s ../CCDA-data/resources .
                 mkdir output
-                echo "ls resources"
+                echo "-- ls resources"
                 ls resources
+                echo "-- ls resources/resources"
+                ls resources/resources
                 echo "----------"
                 ls
                 cd prototype_2
