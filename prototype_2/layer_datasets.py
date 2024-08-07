@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os.path
-import sys
 import pandas as PD
 import logging
 import prototype_2.data_driven_parse as DDP
@@ -10,8 +9,9 @@ from prototype_2.metadata import get_meta_dict
 
 logger = logging.getLogger(__name__)
 
+
 def create_omop_domain_dataframes(omop_data, filepath):
-    """ transposes the rows into columns, 
+    """ transposes the rows into columns,
         creates a Pandas dataframe
     """
     df_dict = {}
@@ -22,7 +22,7 @@ def create_omop_domain_dataframes(omop_data, filepath):
         column_dict = {}
         if domain_list is None or len(domain_list) < 1:
             logger.error(f"No data for {domain_name} from {filepath}")
-        else:     
+        else:
             for field, parts in domain_list[0].items():
                 column_dict[field] = []
 
@@ -34,43 +34,46 @@ def create_omop_domain_dataframes(omop_data, filepath):
                 for field, parts in domain_data_dict.items():
                     column_dict[field].append(parts[0])
 
-
         # create a Pandas dataframe from the data_dict
         domain_df = PD.DataFrame(column_dict)
         df_dict[domain_name] = domain_df
 
     return df_dict
 
+
 def write_csvs_from_dataframe_dict(df_dict, file_name, folder):
-    """ writes a CSV file for each dataframe 
+    """ writes a CSV file for each dataframe
         uses the key of the dict as filename
     """
     for domain_name, domain_dataframe in df_dict.items():
-        domain_dataframe.to_csv(folder + "/" + file_name + "__" + domain_name + ".csv", sep=",", header=True, index=False)
+        domain_dataframe.to_csv(f"{folder}/{file_name}__{domain_name}.csv",
+                                sep=",", header=True, index=False)
+
 
 if __name__ == '__main__':
-  # GET FILE
+    # GET FILE
     file_paths = [
 
         # Original 4
         'resources/CCDA_CCD_b1_Ambulatory_v2.xml',
         'resources/CCDA_CCD_b1_InPatient_v2.xml',
-#        'resources/170.314b2_AmbulatoryToC.xml',
-#         'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',    
+        # 'resources/170.314b2_AmbulatoryToC.xml',
+        # 'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
         #   all arrays must be the same length
 
         # Manifest Medex
-        #'resources/Manifest_Medex/bennis_shauna_ccda.xml', 
+        # 'resources/Manifest_Medex/bennis_shauna_ccda.xml',
         #    missing ':' in XML from ElementTree.parse() (bennis...)
-        #'resources/Manifest_Medex/eHX_Terry.xml',
+        # 'resources/Manifest_Medex/eHX_Terry.xml',
         #    won't parse, reason as-yet unknown
 
         # CRISP etc.
         'resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
-        'resources/CRISP Content Testing Samples/HealtheConnect Alaska/healtheconnectak-ccd-20210226.2.xml'
+        ('resources/CRISP Content Testing Samples/HealtheConnect Alaska/'
+         'healtheconnectak-ccd-20210226.2.xml')
     ]
 
-    if False: # for getting them on the Foundry
+    if False:  # for getting them on the Foundry
         from foundry.transforms import Dataset
         ccd_ambulatory = Dataset.get("ccda_ccd_b1_ambulatory_v2")
         ccd_ambulatory_files = ccd_ambulatory.files().download()
@@ -81,7 +84,7 @@ if __name__ == '__main__':
 
         logging.basicConfig(
             format='%(levelname)s: %(message)s',
-            #stream=sys.stdout, 
+            # stream=sys.stdout,
             filename=f"logs/log_layer_ds_{file_name}.log",
             # level=logging.ERROR
             level=logging.WARNING,
@@ -90,12 +93,10 @@ if __name__ == '__main__':
             force=True
         )
         logger.info(f"PROCESSING {filepath} ")
-        omop_data = DDP.parse_doc(filepath, get_meta_dict()) 
-        #DDP.print_omop_structure(omop_data) 
+        omop_data = DDP.parse_doc(filepath, get_meta_dict())
+        # DDP.print_omop_structure(omop_data)
         if omop_data is not None or len(omop_data) < 1:
             dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
         else:
             logger.error(f"no data from {filepath}")
         write_csvs_from_dataframe_dict(dataframe_dict, file_name, "output")
-
-
