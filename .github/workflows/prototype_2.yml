@@ -9,9 +9,16 @@ jobs:
             uses: actions/checkout@v4
             with:
               ref: main
-          - name: change directory to prototype_2
+          - name: Check out data
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com   || true
+              git clone git@github.com:chrisroederucdenver/CCDA-data.git
+          - name: housekeeping,  change directory to prototype_2
             shell: bash
             run: |
+                ln -s ../CCDA-data/resources resources
                 mkdir output
                 ls
                 cd prototype_2
