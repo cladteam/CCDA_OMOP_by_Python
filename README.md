@@ -7,20 +7,16 @@ This is a python project to use an XPath XML parser in Python to extract data fr
 ## Sub Projects/Directories
 - tools is a collection of different file snoopers, scripts that find and show a XML elements with a certain tag, like id, code or section.
 - util is a collection of utilities used elsewhere
-- table_objects is the start of an investigation into using objects instead of dictionaries for the resulting OMOP rows. Very nascent.
-- prototype is the inital prototype
-  - run with bash> python -m prototype.main
+- prototype_2 is the working code
+  - run with bash> python -m prototype_2.data_driven_parser
 
 ## Tools detail
-These tools reflect an evolution of ideas.
-- id_snooper 
-  - uses tools/util's pathGen function that has been deprecated
-- header_snooper
-- code_snooper
-  - uses tools/util's pathGen function that has been deprecated
-- section_snooper
-- snooper
-  - explores a metadata approach
+tools have been moved to their own repo https://github.com/chrisroederucdenver/CCDA-tools
+
+## Sample Data
+sample data is in it's own repo. The directory has been flattened compared to earlier work.
+https://github.com/chrisroederucdenver/CCDA-data
+
 
 ## Getting Started running the Code
 This needs more detail, but works on macos. I've not been successful yet on Windows.
@@ -35,35 +31,6 @@ This needs more detail, but works on macos. I've not been successful yet on Wind
   - long list in requirements.txt, but it's basically pyspark. This is what depends on Java.
 - Try and run basic_example.py
 
-## Additional Tools
-- code_snooper.py looks for XML elements tagged with "code" and tells the paths and  values of their code and codeSystem attributes when it can.
-- id_snooper.ph looks for XML elements tagged with "id" and tells the paths and values of their root and extension attributes.
-To run them from the project's main directory enter the following at a command prompt: 
-
-> python -m tools.code_snooper
-
-or 
-
-> python -m tools.id_snooper
-
-The default to a particular file in the resources directory, and can be run with a filename argument as well.
-
-> python -m tools.id_snooper -f resources/CCDA_CCD_b1_Ambulatory_v2.xml
-
-## Directory Layout
-- htmlcov is output from an html tool. This may not be part of the repo, but gets created.
-- output is where created output files live. For now they are serialized dictionaries, but may evolve to CSV.
-- resources is where the sample XML files live
-- ref_data, short for reference data, is a place to keep the concept table and the spark data
-    - link the CONCEPT file from the private repo here: (from the base directory  CCDA_OMOP_by_Python run: ln -s ../CCDA_OMP_Private/CONCEPT.csv ref_data. This should create a symbolic link from within the main repo's ref_data directory to the CONCEPT.csv file in the private repo. You might copy it, but linking saves the 1GB of disk space from having 2. Or copy and delete the original.
-- tests is a driectory for vetted output we compare to when testing. If new code doesn't produce the same output it either added something good, and the comparision files need to be updated, or something is broken or both.
-- table_objects is where I've started to experiment with table objects in Python for the OMOP tables. 
-  - just using dictionaries is an option.
-- util is for a package containing commonly used code developed for this project. Will likely evolve. Suggestsion welcome.
-- venv is the name of the local python environment
-- Try and run main.py that is much more elaborate
-- Have a look at the Github actions that drive tests.
-   
 ## High level Design
 
 ## Tests and Workflows

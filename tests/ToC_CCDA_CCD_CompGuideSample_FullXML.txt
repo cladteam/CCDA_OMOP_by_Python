@@ -1,9 +1,0 @@
-{'location_id': 2, 'address': '100 Marshall Lane', 'city': 'Springfield', 'state': 'VA', 'zip': '22153'}
-{'person_id': '123-456-7890', 'race_concept_id': 8527, 'ethnicity_concept_id': 38003564, 'gender_concept_id': 'Gender', 'birthdate': '1933-03-16', 'location_id': 2}
-{'observation_id': '1331eea1-3efe-497e-96bc-de56796a253d', 'person_id': '123-456-7890', 'observation_concept_id': 3009201, 'observation_date': '2012-11-26', 'value_as_number': '6', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
-{'observation_id': 'dc16a671-c8f7-4125-a3f6-c8787606f576', 'person_id': '123-456-7890', 'observation_concept_id': 3004410, 'observation_date': '2012-11-26', 'value_as_number': '8', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
-{'observation_id': '9cd43fa7-db31-4c29-ab30-83f92fdcaa20', 'person_id': '123-456-7890', 'observation_concept_id': 3016723, 'observation_date': '2012-11-26', 'value_as_number': '1.5', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
-{'observation_id': '78df60b1-daf7-4838-b509-ec3a3f4116c1', 'person_id': '123-456-7890', 'observation_concept_id': 3022217, 'observation_date': '2012-11-26', 'value_as_number': '1.5', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
-{'observation_id': 'aaa00f9e-0154-4eaa-be85-aeb34169f06a', 'person_id': '123-456-7890', 'observation_concept_id': 3015022, 'observation_date': '2012-11-26', 'value_as_number': '55', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
-{'observation_id': '347f958c-9b6b-4eeb-848d-624567117cb7', 'person_id': '123-456-7890', 'observation_concept_id': 3020064, 'observation_date': '2012-11-26', 'value_as_number': '1.5', 'value_as_string': None, 'value_as_concept_id': None, 'provider_id': None}
-6
