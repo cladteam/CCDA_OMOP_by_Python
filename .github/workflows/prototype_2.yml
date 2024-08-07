@@ -19,16 +19,10 @@ jobs:
             shell: bash
             run: |
                 pwd
-                echo "ls ../CCDA-data "
-                ls -lht ../CCDA-data
-                echo "ls ../CCDA-data/resources "
-                ls -lht ../CCDA-data/resources
-                ln -s ../CCDA-data/resources .
+                ln -s CCDA-data/resources .
                 mkdir output
                 echo "-- ls -lht resources"
                 ls resources
-                echo "-- file resources"
-                file resources
                 echo "----------"
                 ls
                 cd prototype_2
