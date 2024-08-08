@@ -246,15 +246,14 @@ if __name__ == '__main__':
 
     # GET FILE
     file_paths = [
-        # 'resources/CCDA_CCD_b1_Ambulatory_v2.xml',
-        # 'resources/CCDA_CCD_b1_InPatient_v2.xml',
-        # 'resources/170.314b2_AmbulatoryToC.xml',  # has errors and uses different OIDs
-        # 'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
-        # 'resources/Manifest_Medex/bennis_shauna_ccda.xml',
-        # 'resources/Manifest_Medex/eHX_Terry.xml',
-        # 'resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
-        # ('resources/CRISP Content Testing Samples/HealtheConnect Alaska'
-        #  '/healtheconnectak-ccd-20210226.2.xml')
+         '../CCDA-data/resources/CCDA_CCD_b1_Ambulatory_v2.xml',
+        # '../CCDA-data/resources/CCDA_CCD_b1_InPatient_v2.xml',
+        # '../CCDA-data//resources/170.314b2_AmbulatoryToC.xml',  # has errors and uses different OIDs
+        # '../CCDA-data/resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
+        # '../CCDA-data/resources/bennis_shauna_ccda.xml',
+        # '../CCDA-dat/resources/eHX_Terry.xml',
+        # '../CCDA-data/resources/anna_flux.xml',
+        # '../CCDA-data/resources/healtheconnectak-ccd-20210226.2.xml'
     ]
     if False:  # for getting them on the Foundry
         from foundry.transforms import Dataset

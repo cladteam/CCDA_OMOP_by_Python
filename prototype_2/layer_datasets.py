@@ -55,22 +55,21 @@ if __name__ == '__main__':
     file_paths = [
 
         # Original 4
-        'resources/CCDA_CCD_b1_Ambulatory_v2.xml',
-        'resources/CCDA_CCD_b1_InPatient_v2.xml',
-        # 'resources/170.314b2_AmbulatoryToC.xml',
-        # 'resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
+        '../CCDA-data/resources/CCDA_CCD_b1_Ambulatory_v2.xml',
+        #'../CCDA-data/resources/CCDA_CCD_b1_InPatient_v2.xml',
+        # '../CCDA-data/resources/170.314b2_AmbulatoryToC.xml',
+        # '../CCDA-data/resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
         #   all arrays must be the same length
 
         # Manifest Medex
-        # 'resources/Manifest_Medex/bennis_shauna_ccda.xml',
+        # '../CCDA-data/resources/Manifest_Medex/bennis_shauna_ccda.xml',
         #    missing ':' in XML from ElementTree.parse() (bennis...)
-        # 'resources/Manifest_Medex/eHX_Terry.xml',
+        # '../CCDA-data/resources/Manifest_Medex/eHX_Terry.xml',
         #    won't parse, reason as-yet unknown
 
         # CRISP etc.
-        'resources/CRISP Content Testing Samples/CRISP Main Node/anna_flux.xml',
-        ('resources/CRISP Content Testing Samples/HealtheConnect Alaska/'
-         'healtheconnectak-ccd-20210226.2.xml')
+        #'../CCDA-data/resources/anna_flux.xml',
+        #'../CCDA-data/resources/healtheconnectak-ccd-20210226.2.xml'
     ]
 
     if False:  # for getting them on the Foundry
