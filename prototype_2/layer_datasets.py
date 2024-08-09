@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import os.path
+import argparse
+import os
 import pandas as PD
 import logging
 import prototype_2.data_driven_parse as DDP
@@ -50,27 +51,49 @@ def write_csvs_from_dataframe_dict(df_dict, file_name, folder):
                                 sep=",", header=True, index=False)
 
 
-if __name__ == '__main__':
-    # GET FILE
-    file_paths = [
+def process_file(filepath):
+    print(f"PROCESSING {filepath} ")
+    logger.info(f"PROCESSING {filepath} ")
+    base_name = os.path.basename(filepath)
 
-        # Original 4
-        '../CCDA-data/resources/CCDA_CCD_b1_Ambulatory_v2.xml',
-        #'../CCDA-data/resources/CCDA_CCD_b1_InPatient_v2.xml',
-        # '../CCDA-data/resources/170.314b2_AmbulatoryToC.xml',
-        # '../CCDA-data/resources/ToC_CCDA_CCD_CompGuideSample_FullXML.xml',
-        #   all arrays must be the same length
+    logging.basicConfig(
+        format='%(levelname)s: %(message)s',
+        filename=f"logs/log_layer_ds_{base_name}.log",
+        force=True,
+        # level=logging.ERROR
+        level=logging.WARNING
+        # level=logging.INFO
+        # level=logging.DEBUG
+    )
 
-        # Manifest Medex
-        # '../CCDA-data/resources/Manifest_Medex/bennis_shauna_ccda.xml',
-        #    missing ':' in XML from ElementTree.parse() (bennis...)
-        # '../CCDA-data/resources/Manifest_Medex/eHX_Terry.xml',
-        #    won't parse, reason as-yet unknown
+    omop_data = DDP.parse_doc(filepath, get_meta_dict())
+    # DDP.print_omop_structure(omop_data)
+    if omop_data is not None or len(omop_data) < 1:
+        dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
+    else:
+        logger.error(f"no data from {filepath}")
+    write_csvs_from_dataframe_dict(dataframe_dict, base_name, "output")
 
-        # CRISP etc.
-        #'../CCDA-data/resources/anna_flux.xml',
-        #'../CCDA-data/resources/healtheconnectak-ccd-20210226.2.xml'
-    ]
+
+def main():
+
+    parser = argparse.ArgumentParser(
+        prog='CCDA - OMOP Code Snooper',
+        description="finds all code elements and shows what concepts the represent",
+        epilog='epilog?')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-d', '--directory', help="directory of files to parse")
+    group.add_argument('-f', '--filename', help="filename to parse")
+    args = parser.parse_args()
+
+    if args.filename is not None:
+        process_file(args.filename)
+    elif args.directory is not None:
+        only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
+        for file in (only_files):
+            process_file(os.path.join(args.directory, file))
+    else:
+        logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
     if False:  # for getting them on the Foundry
         from foundry.transforms import Dataset
@@ -78,24 +101,7 @@ if __name__ == '__main__':
         ccd_ambulatory_files = ccd_ambulatory.files().download()
         ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
 
-    for filepath in file_paths:
-        file_name = os.path.basename(filepath)
 
-        logging.basicConfig(
-            format='%(levelname)s: %(message)s',
-            # stream=sys.stdout,
-            filename=f"logs/log_layer_ds_{file_name}.log",
-            # level=logging.ERROR
-            level=logging.WARNING,
-            # level=logging.INFO
-            # level=logging.DEBUG
-            force=True
-        )
-        logger.info(f"PROCESSING {filepath} ")
-        omop_data = DDP.parse_doc(filepath, get_meta_dict())
-        # DDP.print_omop_structure(omop_data)
-        if omop_data is not None or len(omop_data) < 1:
-            dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
-        else:
-            logger.error(f"no data from {filepath}")
-        write_csvs_from_dataframe_dict(dataframe_dict, file_name, "output")
+
+if __name__ == '__main__':
+    main()
