@@ -53,9 +53,17 @@ def map_to_omop_concept_id(vocabulary_id, concept_code):
 	is much more useful and likely to be used.
     """
     try:
-        concept_id = concept_df[concept_df['vocabulary_id'] == vocabulary_id]\
-                               [concept_df['concept_code'] == concept_code].concept_id.iloc[0]
-        return concept_id
+        concept_id_df = concept_df[(concept_df['vocabulary_id'] == vocabulary_id) &
+                                (concept_df['concept_code'] == concept_code)]
+
+        if len(concept_id_df) < 1:
+           logger.error(f"no concept for \"{vocabulary_id}\" \"{concept_code}\" ")
+           return None
+
+        if len(concept_id_df) > 1:
+           logger.warning(f"more than one  concept for \"{vocabulary_id}\" \"{concept_code}\", chose the first")
+
+        return int(concept_id_df['concept_id'].iloc[0])
     except IndexError as e:
         logger.warning(f"no concept for \"{vocabulary_id}\" \"{concept_code}\" type:{type(e)}")
         return None
@@ -73,9 +81,17 @@ def map_to_omop_domain_id(vocabulary_id, concept_code):
 	have to know when its a value or a list...
     """
     try:
-        domain_id = concept_df[concept_df['vocabulary_id'] == vocabulary_id]\
-                              [concept_df['concept_code'] == concept_code].domain_id.iloc[0]
-        return domain_id
+        concept_id_df = concept_df[(concept_df['vocabulary_id'] == vocabulary_id) &
+                                  (concept_df['concept_code'] == concept_code)]
+        if len(concept_id_df) < 1:
+           logger.error(f"no concept for \"{vocabulary_id}\" \"{concept_code}\" ")
+           return None
+
+        if len(concept_id_df) > 1:
+           logger.warning(f"more than one  concept for \"{vocabulary_id}\" \"{concept_code}\", chose the first")
+
+        logger.warning(f" LENGTH in map_to_domain_id {len(concept_id_df)}")
+        return concept_id_df['domain_id'].iloc[0]
     except IndexError as e:
         logger.warning(f"no concept for \"{vocabulary_id}\" \"{concept_code}\" type:{type(e)}")
         return None
@@ -96,7 +112,7 @@ def map_hl7_to_omop(vocabulary_oid, concept_code):
     vocabulary_id = map_oid(vocabulary_oid)
     concept_id = map_to_omop_concept_id(vocabulary_id, concept_code)
     # concept_id = map_to_standard_omop_concept_id(vocabulary_id, args_dict['concept_code'])
-    return int(concept_id)
+    return concept_id
 
 
 def map_hl7_to_omop_w_dict_args(args_dict):
