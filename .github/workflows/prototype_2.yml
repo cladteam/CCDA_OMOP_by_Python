@@ -21,6 +21,7 @@ jobs:
                 pwd
                 ln -s CCDA-data/resources .
                 mkdir output
+                mkdir logs
                 echo "-- ls -lht resources"
                 ls resources
           - name: Install pandas
