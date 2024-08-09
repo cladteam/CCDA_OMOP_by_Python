@@ -213,12 +213,8 @@ def parse_doc(file_path, metadata):
     omop_dict = {}
     tree = ET.parse(file_path)
     for domain, domain_meta_dict in metadata.items():
-        try:
-            domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict)
-            omop_dict[domain] = domain_data_dict
-        except Exception as e:
-            logger.error("parse_doc threw")
-            logger.error(e)
+        domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict)
+        omop_dict[domain] = domain_data_dict
     return omop_dict
 
 
