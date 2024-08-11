@@ -143,9 +143,16 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                     output_dict[field_tag] = (PK_dict[field_tag], 'FK')
                 else:
                     logger.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
-                    output_dict[field_tag] = (None, root_path + "/" +
-                                              field_details_dict['element'] + "/@" +
-                                              field_details_dict['attribute'])
+                    path = root_path + "/"
+                    if 'element' in field_details_dict:
+                        path = path + field_details_dict['element'] + "/@"
+                    else:
+                        path = path + "no element/"
+                    if 'attribute' in field_details_dict:
+                        path = path + field_details_dict['attribute']
+                    else:
+                        path = path + "no attribute/"
+                    output_dict[field_tag] = (None, path)
                     error_fields_set.add(field_tag)
 
         # Do derived values now that their inputs should be available in the output_dict
