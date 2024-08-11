@@ -12,7 +12,7 @@ def cast_string_to_float(args_dict):
     try:
         sv = float(string_value)
     except ValueError:
-        logger.error(f"Value error casting {string_value} as integer")
+        logger.error(f"Value error casting {string_value} as float")
     return sv
 
 
