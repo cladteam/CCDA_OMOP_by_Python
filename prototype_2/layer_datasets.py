@@ -91,7 +91,8 @@ def main():
     elif args.directory is not None:
         only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
         for file in (only_files):
-            process_file(os.path.join(args.directory, file))
+            if file.endswith(".xml"):
+                process_file(os.path.join(args.directory, file))
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
