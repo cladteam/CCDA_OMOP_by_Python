@@ -1,0 +1,2 @@
+person_id,visit_occurrence_id,care_site_id,provider_id,start_time,end_time,visit_concept_id
+,,,,20120815100000-0800,20120815110000-0800,

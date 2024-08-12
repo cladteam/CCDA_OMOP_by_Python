@@ -175,7 +175,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                         logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
                 try:
-                    function_value = (field_details_dict['FUNCTION'](args_dict), 'Derived')
+                    function_value = field_details_dict['FUNCTION'](args_dict)
                     if field_details_dict['type'] == 'DOMAIN':
                         domain_id = function_value
                         logger.info((f"     DOMAIN captured as {function_value} for "
