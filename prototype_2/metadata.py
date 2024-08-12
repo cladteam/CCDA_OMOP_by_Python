@@ -16,7 +16,7 @@ import prototype_2.value_transformations as VT
 """
 meta_dict = {
     # domain: { field: [ element, attribute, value_transformation_function ] }
-    'person': {
+    'Person': {
     	# person nor patientRole have templateIDs
     	'root': {
     	    'output': False,
@@ -106,7 +106,7 @@ meta_dict = {
     	},
     },
 
-    'visit_occurrence': {
+    'Visit': {
     	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'output': False,
