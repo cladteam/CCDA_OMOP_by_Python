@@ -23,17 +23,19 @@ meta_dict = {
     	    'type': 'ROOT',
     	    'element': "./recordTarget/patientRole"
     	},
-    	'person_other_id': {
+    	'person_id': {
     	    'output': True,
     	    'type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.4.6"]',
-    	    'attribute': "extension"
+    	    'attribute': "extension",
+            'priority': ('person_id', 1)
     	},
-    	'person_id': {
+    	'person_id_2': {
     	    'output': True,
     	    'type': 'PK',
     	    'element': 'id[@root="2.16.840.1.113883.4.1"]',
-    	    'attribute': "extension"
+    	    'attribute': "extension",
+            'priority': ('person_id', 2)
     	},
     	'gender_concept_code': {
     	    'output': False,
