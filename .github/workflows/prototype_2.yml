@@ -20,8 +20,8 @@ jobs:
             run: |
                 pwd
                 ln -s CCDA-data/resources .
-                mkdir output
-                mkdir logs
+                mkdir -p output
+                mkdir -p logs
                 echo "-- ls -lht resources"
                 ls resources
           - name: Install pandas
@@ -33,7 +33,7 @@ jobs:
                 python3 -m prototype_2.data_driven_parse -d resources
           - name: Run layer_datsets.py
             run: |
-                mkdir logs
+                mkdir -p logs
                 python3 -m prototype_2.layer_datasets -d resources
           - name: compare output
             run: |
