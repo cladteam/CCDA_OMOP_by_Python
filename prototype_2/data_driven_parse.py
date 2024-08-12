@@ -46,19 +46,19 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
     """
 
     if 'element' not in field_details_dict:
-        logger.error(("could find key 'element' in the field_details_dict:"
+        logger.error(("FIELD could find key 'element' in the field_details_dict:"
                      f" {field_details_dict} root:{root_path}"))
         return None
 
     logger.info(f"    FIELD {field_details_dict['element']} for {domain}/{field_tag}")
     field_element = domain_root_element.find(field_details_dict['element'], ns)
     if field_element is None:
-        logger.error((f"could not find field element {field_details_dict['element']}"
+        logger.error((f"FIELD could not find field element {field_details_dict['element']}"
                       f" for {domain}/{field_tag} root:{root_path}"))
         return None
 
     if 'attribute' not in field_details_dict:
-        logger.error((f"could not find key 'attribute' in the field_details_dict:"
+        logger.error((f"FIELD could not find key 'attribute' in the field_details_dict:"
                      f" {field_details_dict} root:{root_path}"))
         return None
 
@@ -142,10 +142,17 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                 if field_tag in PK_dict:
                     output_dict[field_tag] = (PK_dict[field_tag], 'FK')
                 else:
-                    logger.error(f"could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
-                    output_dict[field_tag] = (None, root_path + "/" +
-                                              field_details_dict['element'] + "/@" +
-                                              field_details_dict['attribute'])
+                    logger.error(f"FK could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
+                    path = root_path + "/"
+                    if 'element' in field_details_dict:
+                        path = path + field_details_dict['element'] + "/@"
+                    else:
+                        path = path + "no element/"
+                    if 'attribute' in field_details_dict:
+                        path = path + field_details_dict['attribute']
+                    else:
+                        path = path + "no attribute/"
+                    output_dict[field_tag] = (None, path)
                     error_fields_set.add(field_tag)
 
         # Do derived values now that their inputs should be available in the output_dict
@@ -159,13 +166,13 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                     logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
                     if field_name not in output_dict:
                         error_fields_set.add(field_tag)
-                        logger.error((f" domain:{domain} field:{field_tag} could not "
+                        logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
                                       f"find {field_name} in {output_dict}"))
                     try:
                         args_dict[arg_name] = output_dict[field_name][0]
                     except Exception:
                         error_fields_set.add(field_tag)
-                        logger.error((f" arg_name: {arg_name} field_name:{field_name}"
+                        logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
                 try:
                     function_value = (field_details_dict['FUNCTION'](args_dict), 'Derived')
@@ -174,16 +181,17 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                         logger.info((f"     DOMAIN captured as {function_value} for "
                                      f"{field_tag}, {field_details_dict}"))
                     else:
-                        output_dict[field_tag] = function_value
-                        logger.info((f"     DERIV-ed {function_value} for "
+                        output_dict[field_tag] = (function_value, 'DERIVED')
+                        logger.info((f"     DERIVED {function_value} for "
                                     f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
                 except TypeError as e:
                     error_fields_set.add(field_tag)
-                    logger.error(e)
-                    logger.error(("calling something that isn't a function"
+                    logger.error(f"DERIVED exception: {e}")
+                    logger.error((f"DERIVED {field_tag} possibly calling something that isn't a function"
                                   f" {field_details_dict['FUNCTION']}. You may have quotes "
                                   "around it in  a python mapping structure if this is a "
                                   f"string: {type(field_details_dict['FUNCTION'])}"))
+                    output_dict[field_tag] = (None, 'DERIVED')
 
         # Clean the dict by removing fields with a False output tag
         clean_output_dict = {}
@@ -198,7 +206,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
         # report fields with errors
         if len(error_fields_set) > 0:
-            logger.error(f"Fields with errors in domain {domain} {error_fields_set}")
+            logger.error(f"DOMAIN Fields with errors in domain {domain} {error_fields_set}")
 
     # Check if the domain matches the domain_id that comes up from this concept,
     #   drop the row if they don't match.
@@ -260,7 +268,7 @@ def process_file(filepath):
     if omop_data is not None or len(omop_data) < 1:
         print_omop_structure(omop_data)
     else:
-        logger.error(f"no data from {filepath}")
+        logger.error(f"FILE no data from {filepath}")
 
 
 def main() :
@@ -278,7 +286,8 @@ def main() :
     elif args.directory is not None:
         only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
         for file in (only_files):
-            process_file(os.path.join(args.directory, file))
+            if file.endswith(".xml"):
+            	process_file(os.path.join(args.directory, file))
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
