@@ -153,7 +153,33 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                 output_dict[field_tag] = (None, 'DERIVED')
 
 
-#def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    """
+        returns the list of  priority_names so they can be added to "output" fields
+    """
+
+    # within the domain_meta_dict, find all fields tagged with priority and group them by their priority names in a dictionary keyed by that name
+    priority_fields = {}
+    for field_key, parts in domain_meta_dict.items():
+        if  'priority' in parts:
+            priority_name = parts['priority'][0]
+            if priority_name in priority_fields:
+                priority_fields[priority_name].append(field_key)
+            else:
+                priority_fields[priority_name] = [field_key]
+
+    print("PRIORITY")
+    print(priority_fields.keys())
+
+    #  first field with a non-null value in the output_dict adds that value to the dict with it's priority_name
+    for  priority_name, priority_contents in priority_fields.items():
+## need to sort by  the order of the second value in those "parts"  CHRIS FIX TODO
+        for  value_field in priority_contents:
+            if output_dict[value_field] is not None:
+                output_dict[priority_name] = output_dict[value_field]
+
+    return priority_fields
+
 
 
 def parse_domain_from_dict(tree, domain, domain_meta_dict):
@@ -204,14 +230,17 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
         do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
-        #do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+        priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
         # Clean the dict by removing fields with a False output tag
         clean_output_dict = {}
         for key in output_dict:
-            field_details_dict = domain_meta_dict[key]
-            if field_details_dict['output']:
+            if key in priority_field_names:
                 clean_output_dict[key] = output_dict[key]
+            else:
+                field_details_dict = domain_meta_dict[key]
+                if field_details_dict['output']:
+                    clean_output_dict[key] = output_dict[key]
 
         # Add a "root" column to show where this came from
         output_dict['root_path'] = (root_path, 'root_path')

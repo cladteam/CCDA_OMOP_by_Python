@@ -23,15 +23,15 @@ meta_dict = {
     	    'type': 'ROOT',
     	    'element': "./recordTarget/patientRole"
     	},
-    	'person_id': {
-    	    'output': True,
+    	'person_id_1': {
+    	    'output': False,
     	    'type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.4.6"]',
     	    'attribute': "extension",
             'priority': ('person_id', 1)
     	},
     	'person_id_2': {
-    	    'output': True,
+    	    'output': False,
     	    'type': 'PK',
     	    'element': 'id[@root="2.16.840.1.113883.4.1"]',
     	    'attribute': "extension",
