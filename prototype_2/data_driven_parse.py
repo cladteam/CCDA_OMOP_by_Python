@@ -121,7 +121,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         for (field_tag, field_details_dict) in domain_meta_dict.items():
             logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
                          f" {field_details_dict}"))
-            type_tag = field_details_dict['type']
+            type_tag = field_details_dict['config_type']
             if type_tag == 'FIELD':
                 logger.info(f"     FIELD for {domain}/{field_tag}")
                 attribute_value = parse_field_from_dict(field_details_dict, root_element,
@@ -157,7 +157,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
         # Do derived values now that their inputs should be available in the output_dict
         for (field_tag, field_details_dict) in domain_meta_dict.items():
-            if field_details_dict['type'] == 'DERIVED' or field_details_dict['type'] == 'DOMAIN':
+            if field_details_dict['config_type'] == 'DERIVED' or field_details_dict['config_type'] == 'DOMAIN':
                 logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
                 # NB Using an explicit dict here instead of kwargs because this code here
                 # doesn't know what the keywords are at 'compile' time.
@@ -176,7 +176,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
                 try:
                     function_value = field_details_dict['FUNCTION'](args_dict)
-                    if field_details_dict['type'] == 'DOMAIN':
+                    if field_details_dict['config_type'] == 'DOMAIN':
                         domain_id = function_value
                         logger.info((f"     DOMAIN captured as {function_value} for "
                                      f"{field_tag}, {field_details_dict}"))
