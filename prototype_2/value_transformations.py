@@ -3,7 +3,8 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 oid_df = pd.read_csv("prototype_2/config/oid.csv")
-concept_df = pd.read_csv("prototype_2/config/concept.csv")
+omop_concept_df = pd.read_csv("prototype_2/config/concept.csv")
+concept_df = pd.read_csv("../CCDA-tools/map_to_standard.csv")
 
 
 def cast_string_to_float(args_dict):
@@ -53,8 +54,8 @@ def map_to_omop_concept_id(vocabulary_id, concept_code):
 	is much more useful and likely to be used.
     """
     try:
-        concept_id_df = concept_df[(concept_df['vocabulary_id'] == vocabulary_id) &
-                                (concept_df['concept_code'] == concept_code)]
+        concept_id_df = omop_concept_df[(omop_concept_df['vocabulary_id'] == vocabulary_id) &
+                                (omop_concept_df['concept_code'] == concept_code)]
 
         if len(concept_id_df) < 1:
            logger.error(f"no concept for \"{vocabulary_id}\" \"{concept_code}\" ")
@@ -81,8 +82,8 @@ def map_to_omop_domain_id(vocabulary_id, concept_code):
 	have to know when its a value or a list...
     """
     try:
-        concept_id_df = concept_df[(concept_df['vocabulary_id'] == vocabulary_id) &
-                                  (concept_df['concept_code'] == concept_code)]
+        concept_id_df = omop_concept_df[(omop_concept_df['vocabulary_id'] == vocabulary_id) &
+                                  (omop_concept_df['concept_code'] == concept_code)]
         if len(concept_id_df) < 1:
            logger.error(f"no concept for \"{vocabulary_id}\" \"{concept_code}\" ")
            return None
@@ -97,14 +98,16 @@ def map_to_omop_domain_id(vocabulary_id, concept_code):
         return None
 
 
-def map_to_standard_omop_concept_id(vocabulary_id, concept_code):
+def map_to_standard_omop_concept_id(vocabulary_oid, concept_code):
     """ Maps vocabulary_id, concept_code to a standard OMOP
 	concept_id by joining through concept_relationship.
 	FIX: needs the data, needs written
     """
-    return 2
+    # oid,concept_code,concept_id,domain_id
+    df = concept_df[(concept_df['oid'] == vocabulary_oid) & 
+                   (concept_df['concept_code'] == concept_code) ]
 
-
+# deprecated
 def map_hl7_to_omop(vocabulary_oid, concept_code):
     """ This would map an HL7 vocabulary_oid to an OMOP vocabulary_id,
 	then map both vocabulary_id and concept_code to an OMOP concept_id
@@ -118,11 +121,14 @@ def map_hl7_to_omop(vocabulary_oid, concept_code):
 def map_hl7_to_omop_w_dict_args(args_dict):
     """ expects: vocabulary_oid, concept_code
     """
-    return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
+    #return map_hl7_to_omop(args_dict['vocabulary_oid'], args_dict['concept_code'])
+    return map_to_standard_omop_concept_id(args_dict['vocabulary_oid'], args_dict['concept_code'])['concept_id'].iloc[0]
 
 
 def map_hl7_to_omop_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
     """
-    vocabulary_id = map_oid(args_dict['vocabulary_oid'])
-    return map_to_omop_domain_id(vocabulary_id, args_dict['concept_code'])
+    #vocabulary_id = map_oid(args_dict['vocabulary_oid'])
+    #return map_to_omop_domain_id(vocabulary_id, args_dict['concept_code'])
+
+    return map_to_standard_omop_concept_id(args_dict['vocabulary_oid'], args_dict['concept_code'])['domain_id'].iloc[0]

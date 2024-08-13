@@ -178,6 +178,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                     function_value = field_details_dict['FUNCTION'](args_dict)
                     if field_details_dict['config_type'] == 'DOMAIN':
                         domain_id = function_value
+                        output_dict[field_tag] = (function_value, 'DOMAIN')
                         logger.info((f"     DOMAIN captured as {function_value} for "
                                      f"{field_tag}, {field_details_dict}"))
                     else:
@@ -191,7 +192,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                                   f" {field_details_dict['FUNCTION']}. You may have quotes "
                                   "around it in  a python mapping structure if this is a "
                                   f"string: {type(field_details_dict['FUNCTION'])}"))
-                    output_dict[field_tag] = (None, 'DERIVED')
+                    output_dict[field_tag] = (None, field_details_dict['config_type'])
 
         # Clean the dict by removing fields with a False output tag
         clean_output_dict = {}
