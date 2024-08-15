@@ -78,7 +78,7 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
-        type_tag = field_details_dict['type']
+        type_tag = field_details_dict['config_type']
         if type_tag == 'FIELD':
             logger.info(f"     FIELD for {domain}/{field_tag}")
             attribute_value = parse_field_from_dict(field_details_dict, root_element,
@@ -115,8 +115,9 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
 
 def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     # Do derived values now that their inputs should be available in the output_dict
+    domain_id = None
     for (field_tag, field_details_dict) in domain_meta_dict.items():
-        if field_details_dict['type'] == 'DERIVED' or field_details_dict['type'] == 'DOMAIN':
+        if field_details_dict['config_type'] == 'DERIVED' or field_details_dict['config_type'] == 'DOMAIN':
             logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
             # NB Using an explicit dict here instead of kwargs because this code here
             # doesn't know what the keywords are at 'compile' time.
@@ -135,8 +136,9 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                                   f" args_dict:{args_dict} output_dict:{output_dict}"))
             try:
                 function_value = field_details_dict['FUNCTION'](args_dict)
-                if field_details_dict['type'] == 'DOMAIN':
+                if field_details_dict['config_type'] == 'DOMAIN':
                     domain_id = function_value
+                    output_dict[field_tag] = (function_value, 'DOMAIN') ##########
                     logger.info((f"     DOMAIN captured as {function_value} for "
                                  f"{field_tag}, {field_details_dict}"))
                 else:
@@ -150,7 +152,10 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
-                output_dict[field_tag] = (None, 'DERIVED')
+                #output_dict[field_tag] = (None, 'DERIVED')
+                output_dict[field_tag] = (None, field_details_dict['config_type'])
+
+    return domain_id
 
 
 def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
@@ -228,7 +233,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
         do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
-        do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+        domain_id = do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
         priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
@@ -252,9 +257,11 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
     # Check if the domain matches the domain_id that comes up from this concept,
     #   drop the row if they don't match.
-    if domain_id is None or domain_id[0] == domain:
+    if domain_id is None or domain_id == domain:
+        print(F"KEEPING \"{domain_id}\" \"{domain}\" ")
         return output_list
     else:
+        print(F"DROPPING \"{domain_id}\" \"{domain}\" ")
         return None
 
 

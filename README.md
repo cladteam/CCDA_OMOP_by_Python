@@ -12,4 +12,4 @@ This repositor has siblings that might be of interest.
 sample data is in it's own repo. The directory has been flattened compared to earlier work.
 https://github.com/chrisroederucdenver/CCDA-data
 - CCDA_Private is a private repository for keeping and sharing the vocabularies used here. After dealing with licenses this data, the OMOP concepts can be dowloaded from athena.ohdsi.org.
-https://github.com/chrisroederucdenver/CCDA_Private
+https://github.com/chrisroederucdenver/CCDA_OMOP_Private
