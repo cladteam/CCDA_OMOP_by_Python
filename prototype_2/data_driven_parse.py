@@ -187,8 +187,8 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                                     f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
                 except TypeError as e:
                     error_fields_set.add(field_tag)
-                    logger.error(f"DERIVED exception: {e}")
-                    logger.error((f"DERIVED {field_tag} possibly calling something that isn't a function"
+                    logger.error(f"DERIVED/DOMAN exception: {e}")
+                    logger.error((f"DERIVED/DOMAIN {field_tag} possibly calling something that isn't a function"
                                   f" {field_details_dict['FUNCTION']}. You may have quotes "
                                   "around it in  a python mapping structure if this is a "
                                   f"string: {type(field_details_dict['FUNCTION'])}"))
