@@ -178,6 +178,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                     function_value = field_details_dict['FUNCTION'](args_dict)
                     if field_details_dict['config_type'] == 'DOMAIN':
                         domain_id = function_value
+                        output_dict[field_tag] = (function_value, 'DOMAIN')
                         logger.info((f"     DOMAIN captured as {function_value} for "
                                      f"{field_tag}, {field_details_dict}"))
                     else:
@@ -186,12 +187,12 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                                     f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
                 except TypeError as e:
                     error_fields_set.add(field_tag)
-                    logger.error(f"DERIVED exception: {e}")
-                    logger.error((f"DERIVED {field_tag} possibly calling something that isn't a function"
+                    logger.error(f"DERIVED/DOMAN exception: {e}")
+                    logger.error((f"DERIVED/DOMAIN {field_tag} possibly calling something that isn't a function"
                                   f" {field_details_dict['FUNCTION']}. You may have quotes "
                                   "around it in  a python mapping structure if this is a "
                                   f"string: {type(field_details_dict['FUNCTION'])}"))
-                    output_dict[field_tag] = (None, 'DERIVED')
+                    output_dict[field_tag] = (None, field_details_dict['config_type'])
 
         # Clean the dict by removing fields with a False output tag
         clean_output_dict = {}
@@ -210,7 +211,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
     # Check if the domain matches the domain_id that comes up from this concept,
     #   drop the row if they don't match.
-    if domain_id is None or domain_id[0] == domain:
+    if domain_id is None or domain_id == domain:
         return output_list
     else:
         return None

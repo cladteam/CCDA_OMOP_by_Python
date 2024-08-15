@@ -50,7 +50,7 @@ meta_dict = {
     	'gender_concept_id': {
     	    'output': True,
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_w_dict_args,
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		'concept_code': 'gender_concept_code',
     		'vocabulary_oid': 'gender_concept_codeSystem'
@@ -77,7 +77,7 @@ meta_dict = {
     	'race_concept_id':{
     	    'output': True,
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_w_dict_args,
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		'concept_code': 'race_concept_code',
     		'vocabulary_oid': 'race_concept_codeSystem'
@@ -98,7 +98,7 @@ meta_dict = {
     	'ethnicity_concept_id': {
     	    'output': True,
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		'concept_code': 'ethnicity_concept_code',
     		'vocabulary_oid': 'ethnicity_concept_codeSystem'
@@ -149,7 +149,7 @@ meta_dict = {
     	'visit_concept_id': {
     	    'output': True,
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		'concept_code': 'visit_concept_code',
     		'vocabulary_oid': 'visit_concept_codeSystem'
@@ -280,16 +280,16 @@ meta_dict = {
     	'measurement_concept_id': {
     	    'output': True,
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		'concept_code': 'measurement_concept_code',
     		'vocabulary_oid': 'measurement_concept_codeSystem'
     	    }
     	},
     	'measurement_concept_domain_id': {
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'DOMAIN',
-    	    'FUNCTION': VT.map_hl7_to_omop_domain_id, # not the string representing the name, but function itself in Python space.
+    	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
     		'concept_code': 'measurement_concept_code',
     		'vocabulary_oid': 'measurement_concept_codeSystem'
@@ -387,16 +387,16 @@ meta_dict = {
     	'observation_concept_id': {
     	    'output': True,
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_w_dict_args, # not the string representing the name, but function itself in Python space.
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id, 
     	    'argument_names': {
     		'concept_code': 'observation_concept_code',
     		'vocabulary_oid': 'observation_concept_codeSystem'
     	    }
     	},
     	'observation_concept_domain_id': {
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'DOMAIN',
-    	    'FUNCTION': VT.map_hl7_to_omop_domain_id, # not the string representing the name, but function itself in Python space.
+    	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
     		'concept_code': 'observation_concept_code',
     		'vocabulary_oid': 'observation_concept_codeSystem'
