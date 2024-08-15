@@ -211,7 +211,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
 
     # Check if the domain matches the domain_id that comes up from this concept,
     #   drop the row if they don't match.
-    if domain_id is None or domain_id[0] == domain:
+    if domain_id is None or domain_id == domain:
         return output_list
     else:
         return None

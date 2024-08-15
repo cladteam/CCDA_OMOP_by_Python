@@ -266,15 +266,13 @@ meta_dict = {
     	    'attribute': 'root'   ### FIX ????
     	},
     	'measurement_concept_code': {
-    	    #'output': False,
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': "code" ,
     	    'attribute': "code"
     	},
     	'measurement_concept_codeSystem': {
-    	    #'output': False,
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': "code",
     	    'attribute': "codeSystem"
@@ -289,7 +287,7 @@ meta_dict = {
     	    }
     	},
     	'measurement_concept_domain_id': {
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
@@ -375,15 +373,13 @@ meta_dict = {
     	    'attribute': 'root'   ### FIX ????
     	},
     	'observation_concept_code': {
-    	    #'output': False,
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': "code" ,
     	    'attribute': "code"
     	},
     	'observation_concept_codeSystem': {
-    	    #'output': False,
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': "code",
     	    'attribute': "codeSystem"
@@ -398,7 +394,7 @@ meta_dict = {
     	    }
     	},
     	'observation_concept_domain_id': {
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
