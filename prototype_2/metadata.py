@@ -23,17 +23,19 @@ meta_dict = {
     	    'config_type': 'ROOT',
     	    'element': "./recordTarget/patientRole"
     	},
-    	'person_other_id': {
-    	    'output': True,
+    	'person_id_ssn': {
+    	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.4.6"]',
-    	    'attribute': "extension"
+    	    'attribute': "extension",
+            'priority': ('person_id', 1) # (final field name, priority number)
     	},
-    	'person_id': {
-    	    'output': True,
-    	    'config_type': 'PK',
+    	'person_id_other': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.4.1"]',
-    	    'attribute': "extension"
+    	    'attribute': "extension",
+            'priority': ('person_id', 2)
     	},
     	'gender_concept_code': {
     	    'output': False,
@@ -287,7 +289,8 @@ meta_dict = {
     	    }
     	},
     	'measurement_concept_domain_id': {
-    	    'output': False,
+    	    #'output': False,
+    	    'output': True,
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
@@ -394,7 +397,8 @@ meta_dict = {
     	    }
     	},
     	'observation_concept_domain_id': {
-    	    'output': False,
+    	    #'output': False,
+    	    'output': True,
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {

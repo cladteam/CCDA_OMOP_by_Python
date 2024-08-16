@@ -55,11 +55,6 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code):
 def map_hl7_to_omop_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
     """
-    foo =  _map_to_omop_concept_row(args_dict['vocabulary_oid'], args_dict['concept_code'])
-    print(">----------")
-    print(args_dict)
-    print(foo)
-    print("<----------")
     return int(_map_to_omop_concept_row(args_dict['vocabulary_oid'], args_dict['concept_code'])['concept_id'].iloc[0])
 
 

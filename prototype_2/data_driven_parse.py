@@ -74,6 +74,126 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
     return attribute_value
 
 
+def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    for (field_tag, field_details_dict) in domain_meta_dict.items():
+        logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
+                     f" {field_details_dict}"))
+        type_tag = field_details_dict['config_type']
+        if type_tag == 'FIELD':
+            logger.info(f"     FIELD for {domain}/{field_tag}")
+            attribute_value = parse_field_from_dict(field_details_dict, root_element,
+                                                    domain, field_tag, root_path)
+            output_dict[field_tag] = (attribute_value, root_path + "/" +
+                                      field_details_dict['element'] + "/@" +
+                                      field_details_dict['attribute'])
+        elif type_tag == 'PK':
+            logger.info(f"     PK for {domain}/{field_tag}")
+            attribute_value = parse_field_from_dict(field_details_dict, root_element,
+                                                    domain, field_tag, root_path)
+            output_dict[field_tag] = (attribute_value, root_path + "/" +
+                                      field_details_dict['element'] + "/@" +
+                                      field_details_dict['attribute'])
+            PK_dict[field_tag] = attribute_value
+        elif type_tag == 'FK':
+            logger.info(f"     FK for {domain}/{field_tag}")
+            if field_tag in PK_dict:
+                output_dict[field_tag] = (PK_dict[field_tag], 'FK')
+            else:
+                logger.error(f"FK could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
+                path = root_path + "/"
+                if 'element' in field_details_dict:
+                    path = path + field_details_dict['element'] + "/@"
+                else:
+                    path = path + "no element/"
+                if 'attribute' in field_details_dict:
+                    path = path + field_details_dict['attribute']
+                else:
+                    path = path + "no attribute/"
+                output_dict[field_tag] = (None, path)
+                error_fields_set.add(field_tag)
+
+
+def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    # Do derived values now that their inputs should be available in the output_dict
+    domain_id = None
+    for (field_tag, field_details_dict) in domain_meta_dict.items():
+        if field_details_dict['config_type'] == 'DERIVED' or field_details_dict['config_type'] == 'DOMAIN':
+            logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
+            # NB Using an explicit dict here instead of kwargs because this code here
+            # doesn't know what the keywords are at 'compile' time.
+            args_dict = {}
+            for arg_name, field_name in field_details_dict['argument_names'].items():
+                logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
+                if field_name not in output_dict:
+                    error_fields_set.add(field_tag)
+                    logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
+                                  f"find {field_name} in {output_dict}"))
+                try:
+                    args_dict[arg_name] = output_dict[field_name][0]
+                except Exception:
+                    error_fields_set.add(field_tag)
+                    logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
+                                  f" args_dict:{args_dict} output_dict:{output_dict}"))
+            try:
+                function_value = field_details_dict['FUNCTION'](args_dict)
+                if field_details_dict['config_type'] == 'DOMAIN':
+                    domain_id = function_value
+                    output_dict[field_tag] = (function_value, 'DOMAIN') ##########
+                    logger.info((f"     DOMAIN captured as {function_value} for "
+                                 f"{field_tag}, {field_details_dict}"))
+                else:
+                    output_dict[field_tag] = (function_value, 'DERIVED')
+                    logger.info((f"     DERIVED {function_value} for "
+                                f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
+            except TypeError as e:
+                error_fields_set.add(field_tag)
+                logger.error(f"DERIVED exception: {e}")
+                logger.error((f"DERIVED {field_tag} possibly calling something that isn't a function"
+                              f" {field_details_dict['FUNCTION']}. You may have quotes "
+                              "around it in  a python mapping structure if this is a "
+                              f"string: {type(field_details_dict['FUNCTION'])}"))
+                #output_dict[field_tag] = (None, 'DERIVED')
+                output_dict[field_tag] = (None, field_details_dict['config_type'])
+
+    return domain_id
+
+
+def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    """
+        Returns the list of  priority_names so they can be added to "output" fields
+        Also, adds this field to the PK list?
+        within the domain_meta_dict, find all fields tagged with priority and group them by their priority names in a dictionary keyed by that name
+        Ex. { 'person_id': [ ('person_id_ssn', 1), ('person_id_unknown', 2) ]
+    """
+
+    # Create Ref Data
+    # for each new field, create a list of source fields and their priority:
+    # Ex. [('person_id_other', 2), ('person_id_ssn', 1)]
+    priority_fields = {}
+    for field_key, config_parts in domain_meta_dict.items():
+        if  'priority' in config_parts:
+            new_field_name = config_parts['priority'][0]
+            priority_number = config_parts['priority'][1]
+            if new_field_name in priority_fields:
+                priority_fields[new_field_name].append( (field_key, config_parts['priority'][1]))
+            else:
+                priority_fields[new_field_name] = [ (field_key, config_parts['priority'][1]) ]
+
+    # Choose Fields
+    # first field in each set with a non-null value in the output_dict adds that value to the dict with it's priority_name
+    for priority_name, priority_contents in priority_fields.items():
+        sorted_contents = sorted(priority_contents, key=lambda x: x[1])
+        # Ex. [('person_id_ssn', 1), ('person_id_other, 2)]
+        for value_field_pair in sorted_contents:
+            print(f"key:{priority_name} value:{sorted_contents} value_field_pair:{value_field_pair} ")
+            if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]] is not None:
+                output_dict[priority_name] = output_dict[value_field_pair[0]]
+                PK_dict[priority_name] = output_dict[value_field_pair[0]][0]
+
+    return priority_fields
+
+
+
 def parse_domain_from_dict(tree, domain, domain_meta_dict):
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
@@ -104,11 +224,6 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                       f" with {domain_meta_dict['root']['element']}"))
         return None
 
-    # Do others.
-    # Also look for the first DERIVED value that is tagged "MATCH_DOMAIN" and keep its domain_id.
-    # Watch for two kinds of errors:
-    #  1) the metadata has mis-spelled keys (Python domain)
-    #  2) the paths that appear as values to 'element' keys don't work in ElementTree (XPath domain)
     output_list = []
     error_fields_set = set()
     domain_id = None
@@ -118,88 +233,21 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         logger.info((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
                      f" attributes:{root_element.attrib}"))
 
-        for (field_tag, field_details_dict) in domain_meta_dict.items():
-            logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
-                         f" {field_details_dict}"))
-            type_tag = field_details_dict['config_type']
-            if type_tag == 'FIELD':
-                logger.info(f"     FIELD for {domain}/{field_tag}")
-                attribute_value = parse_field_from_dict(field_details_dict, root_element,
-                                                        domain, field_tag, root_path)
-                output_dict[field_tag] = (attribute_value, root_path + "/" +
-                                          field_details_dict['element'] + "/@" +
-                                          field_details_dict['attribute'])
-            elif type_tag == 'PK':
-                logger.info(f"     PK for {domain}/{field_tag}")
-                attribute_value = parse_field_from_dict(field_details_dict, root_element,
-                                                        domain, field_tag, root_path)
-                output_dict[field_tag] = (attribute_value, root_path + "/" +
-                                          field_details_dict['element'] + "/@" +
-                                          field_details_dict['attribute'])
-                PK_dict[field_tag] = attribute_value
-            elif type_tag == 'FK':
-                logger.info(f"     FK for {domain}/{field_tag}")
-                if field_tag in PK_dict:
-                    output_dict[field_tag] = (PK_dict[field_tag], 'FK')
-                else:
-                    logger.error(f"FK could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
-                    path = root_path + "/"
-                    if 'element' in field_details_dict:
-                        path = path + field_details_dict['element'] + "/@"
-                    else:
-                        path = path + "no element/"
-                    if 'attribute' in field_details_dict:
-                        path = path + field_details_dict['attribute']
-                    else:
-                        path = path + "no attribute/"
-                    output_dict[field_tag] = (None, path)
-                    error_fields_set.add(field_tag)
+        do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
-        # Do derived values now that their inputs should be available in the output_dict
-        for (field_tag, field_details_dict) in domain_meta_dict.items():
-            if field_details_dict['config_type'] == 'DERIVED' or field_details_dict['config_type'] == 'DOMAIN':
-                logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
-                # NB Using an explicit dict here instead of kwargs because this code here
-                # doesn't know what the keywords are at 'compile' time.
-                args_dict = {}
-                for arg_name, field_name in field_details_dict['argument_names'].items():
-                    logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
-                    if field_name not in output_dict:
-                        error_fields_set.add(field_tag)
-                        logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
-                                      f"find {field_name} in {output_dict}"))
-                    try:
-                        args_dict[arg_name] = output_dict[field_name][0]
-                    except Exception:
-                        error_fields_set.add(field_tag)
-                        logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
-                                      f" args_dict:{args_dict} output_dict:{output_dict}"))
-                try:
-                    function_value = field_details_dict['FUNCTION'](args_dict)
-                    if field_details_dict['config_type'] == 'DOMAIN':
-                        domain_id = function_value
-                        output_dict[field_tag] = (function_value, 'DOMAIN')
-                        logger.info((f"     DOMAIN captured as {function_value} for "
-                                     f"{field_tag}, {field_details_dict}"))
-                    else:
-                        output_dict[field_tag] = (function_value, 'DERIVED')
-                        logger.info((f"     DERIVED {function_value} for "
-                                    f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
-                except TypeError as e:
-                    error_fields_set.add(field_tag)
-                    logger.error(f"DERIVED/DOMAN exception: {e}")
-                    logger.error((f"DERIVED/DOMAIN {field_tag} possibly calling something that isn't a function"
-                                  f" {field_details_dict['FUNCTION']}. You may have quotes "
-                                  "around it in  a python mapping structure if this is a "
-                                  f"string: {type(field_details_dict['FUNCTION'])}"))
-                    output_dict[field_tag] = (None, field_details_dict['config_type'])
+        domain_id = do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+
+        priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
         # Clean the dict by removing fields with a False output tag
         clean_output_dict = {}
         for key in output_dict:
-            field_details_dict = domain_meta_dict[key]
-            if field_details_dict['output']:
+            if key in priority_field_names:
                 clean_output_dict[key] = output_dict[key]
+            else:
+                field_details_dict = domain_meta_dict[key]
+                if field_details_dict['output']:
+                    clean_output_dict[key] = output_dict[key]
 
         # Add a "root" column to show where this came from
         output_dict['root_path'] = (root_path, 'root_path')
