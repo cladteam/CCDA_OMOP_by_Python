@@ -160,28 +160,35 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
 
 def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     """
-        returns the list of  priority_names so they can be added to "output" fields
+        Returns the list of  priority_names so they can be added to "output" fields
+        Also, adds this field to the PK list?
+        within the domain_meta_dict, find all fields tagged with priority and group them by their priority names in a dictionary keyed by that name
+        Ex. { 'person_id': [ ('person_id_ssn', 1), ('person_id_unknown', 2) ]
     """
 
-    # within the domain_meta_dict, find all fields tagged with priority and group them by their priority names in a dictionary keyed by that name
+    # Create Ref Data
+    # for each new field, create a list of source fields and their priority:
+    # Ex. [('person_id_other', 2), ('person_id_ssn', 1)]
     priority_fields = {}
-    for field_key, parts in domain_meta_dict.items():
-        if  'priority' in parts:
-            priority_name = parts['priority'][0]
-            if priority_name in priority_fields:
-                priority_fields[priority_name].append(field_key)
+    for field_key, config_parts in domain_meta_dict.items():
+        if  'priority' in config_parts:
+            new_field_name = config_parts['priority'][0]
+            priority_number = config_parts['priority'][1]
+            if new_field_name in priority_fields:
+                priority_fields[new_field_name].append( (field_key, config_parts['priority'][1]))
             else:
-                priority_fields[priority_name] = [field_key]
+                priority_fields[new_field_name] = [ (field_key, config_parts['priority'][1]) ]
 
-    print("PRIORITY")
-    print(priority_fields.keys())
-
-    #  first field with a non-null value in the output_dict adds that value to the dict with it's priority_name
-    for  priority_name, priority_contents in priority_fields.items():
-## need to sort by  the order of the second value in those "parts"  CHRIS FIX TODO
-        for  value_field in priority_contents:
-            if output_dict[value_field] is not None:
-                output_dict[priority_name] = output_dict[value_field]
+    # Choose Fields
+    # first field in each set with a non-null value in the output_dict adds that value to the dict with it's priority_name
+    for priority_name, priority_contents in priority_fields.items():
+        sorted_contents = sorted(priority_contents, key=lambda x: x[1])
+        # Ex. [('person_id_ssn', 1), ('person_id_other, 2)]
+        for value_field_pair in sorted_contents:
+            print(f"key:{priority_name} value:{sorted_contents} value_field_pair:{value_field_pair} ")
+            if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]] is not None:
+                output_dict[priority_name] = output_dict[value_field_pair[0]]
+                PK_dict[priority_name] = output_dict[value_field_pair[0]][0]
 
     return priority_fields
 
@@ -217,11 +224,6 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
                       f" with {domain_meta_dict['root']['element']}"))
         return None
 
-    # Do others.
-    # Also look for the first DERIVED value that is tagged "MATCH_DOMAIN" and keep its domain_id.
-    # Watch for two kinds of errors:
-    #  1) the metadata has mis-spelled keys (Python domain)
-    #  2) the paths that appear as values to 'element' keys don't work in ElementTree (XPath domain)
     output_list = []
     error_fields_set = set()
     domain_id = None
@@ -258,10 +260,8 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
     # Check if the domain matches the domain_id that comes up from this concept,
     #   drop the row if they don't match.
     if domain_id is None or domain_id == domain:
-        print(F"KEEPING \"{domain_id}\" \"{domain}\" ")
         return output_list
     else:
-        print(F"DROPPING \"{domain_id}\" \"{domain}\" ")
         return None
 
 

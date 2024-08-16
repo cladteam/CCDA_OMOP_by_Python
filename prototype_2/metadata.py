@@ -23,16 +23,16 @@ meta_dict = {
     	    'config_type': 'ROOT',
     	    'element': "./recordTarget/patientRole"
     	},
-    	'person_id_1': {
+    	'person_id_ssn': {
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.4.6"]',
     	    'attribute': "extension",
-            'priority': ('person_id', 1)
+            'priority': ('person_id', 1) # (final field name, priority number)
     	},
-    	'person_id': {
-    	    'output': True,
-    	    'config_type': 'PK',
+    	'person_id_other': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.4.1"]',
     	    'attribute': "extension",
             'priority': ('person_id', 2)
