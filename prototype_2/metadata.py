@@ -289,8 +289,7 @@ meta_dict = {
     	    }
     	},
     	'measurement_concept_domain_id': {
-    	    #'output': False,
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
@@ -390,15 +389,14 @@ meta_dict = {
     	'observation_concept_id': {
     	    'output': True,
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id, 
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		'concept_code': 'observation_concept_code',
     		'vocabulary_oid': 'observation_concept_codeSystem'
     	    }
     	},
     	'observation_concept_domain_id': {
-    	    #'output': False,
-    	    'output': True,
+    	    'output': False,
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {

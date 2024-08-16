@@ -185,7 +185,6 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
         sorted_contents = sorted(priority_contents, key=lambda x: x[1])
         # Ex. [('person_id_ssn', 1), ('person_id_other, 2)]
         for value_field_pair in sorted_contents:
-            print(f"key:{priority_name} value:{sorted_contents} value_field_pair:{value_field_pair} ")
             if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]] is not None:
                 output_dict[priority_name] = output_dict[value_field_pair[0]]
                 PK_dict[priority_name] = output_dict[value_field_pair[0]][0]
