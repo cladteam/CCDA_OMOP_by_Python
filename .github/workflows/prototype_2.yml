@@ -28,12 +28,11 @@ jobs:
                 ls CCDA-data/resources
                 mkdir -p output
                 mkdir -p logs
-                echo "-- ls -lht resources"
           - name: check on tools
             shell: bash
             run: |
-                ls CCDA-tools/map_to_standard.csv .
-                head -10 CCDA-tools/map_to_standard.csv
+                cp CCDA-tools/map_to_standard.csv  .
+                head -10 map_to_standard.csv
           - name: Install pandas
             run: |
                 pip install pandas

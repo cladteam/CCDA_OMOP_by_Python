@@ -2,7 +2,7 @@ import logging
 import pandas as pd
 logger = logging.getLogger(__name__)
 
-concept_df = pd.read_csv("../CCDA-tools/map_to_standard.csv")
+concept_df = pd.read_csv("map_to_standard.csv")
 
 
 def cast_string_to_float(args_dict):

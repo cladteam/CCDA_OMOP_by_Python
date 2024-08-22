@@ -14,4 +14,7 @@ https://github.com/chrisroederucdenver/CCDA-data
 - CCDA_Private is a private repository for keeping and sharing the vocabularies used here. After dealing with licenses this data, the OMOP concepts can be dowloaded from athena.ohdsi.org.
 https://github.com/chrisroederucdenver/CCDA_OMOP_Private
 
+
+Code here, prototype_2/value_transformations.py  loads the concept map from a file map_to_standard.csv from the local top leve.
+It is not included in this repo however. It is in CCDA-tools.  Running locally, for the moment, requires the file to be copied over (or linked).
 (now owned by cladteam)
