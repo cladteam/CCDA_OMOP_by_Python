@@ -22,6 +22,7 @@
 import argparse
 import logging
 import os
+import hashlib
 from lxml import etree as ET
 from prototype_2.metadata import get_meta_dict
 
@@ -158,6 +159,20 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
     return domain_id
 
 
+def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    # These are basically derived, but the argument is a lsit of field names, instead of
+    # a fixed number of individually named fields.
+    domain_id = None
+    for (field_tag, field_details_dict) in domain_meta_dict.items():
+        if field_details_dict['config_type'] == 'HASH':
+            hash_input =  "-".join(field_details_dict['fields'])
+            hash_value = hashlib.sha256(hash_input.encode('utf-8')).hexdigest()
+            output_dict[field_tag] = (hash_value, 'HASH')
+            logger.info((f"     HASH {hash_value} for "
+                         f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
+    return domain_id
+
+
 def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     """
         Returns the list of  priority_names so they can be added to "output" fields
@@ -184,10 +199,12 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
     for priority_name, priority_contents in priority_fields.items():
         sorted_contents = sorted(priority_contents, key=lambda x: x[1])
         # Ex. [('person_id_ssn', 1), ('person_id_other, 2)]
+
         for value_field_pair in sorted_contents:
-            if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]] is not None:
+            if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]][0] is not None:
                 output_dict[priority_name] = output_dict[value_field_pair[0]]
                 PK_dict[priority_name] = output_dict[value_field_pair[0]][0]
+                break
 
     return priority_fields
 
@@ -235,6 +252,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
         domain_id = do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+        domain_id = do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
         priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 

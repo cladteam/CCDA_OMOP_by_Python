@@ -37,6 +37,48 @@ meta_dict = {
     	    'attribute': "extension",
             'priority': ('person_id', 2)
     	},
+    	'person_id_hash': {
+    	    'output': False,
+    	    'config_type': 'HASH',
+            'fields' : [ 'family_name', 'given_name', 'street_address', 'city', 'country', 'postal_code', 'gender_concept_code', 'race_concept_code', 'ethnicity_concept_code', 'date_of_birth', 'person_id_ssn', 'person_id_other' ],
+            'priority': ('person_id', 3) # (final field name, priority number)
+    	},
+        'family_name': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
+    	    'element': './recordTarget/patientRole/name/family',
+    	    'attribute': "#text"
+    	},
+        'given_name': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
+    	    'element': './recordTarget/patientRole/name/given',
+    	    'attribute': "#text"
+    	},
+        'street_address': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
+    	    'element': './recordTarget/patientRole/addr/streetAddressLine',
+    	    'attribute': "#text"
+    	},
+        'city': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
+    	    'element': './recordTarget/patientRole/addr/city',
+    	    'attribute': "#text"
+    	},
+        'country': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
+    	    'element': './recordTarget/patientRole/addr/country',
+    	    'attribute': "#text"
+    	},
+        'postal_code': {
+    	    'output': False,
+    	    'config_type': 'FIELD',
+    	    'element': './recordTarget/patientRole/addr/postalCode',
+    	    'attribute': "#text"
+    	},
     	'gender_concept_code': {
     	    'output': False,
     	    'config_type': 'FIELD',
@@ -54,8 +96,8 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		'concept_code': 'gender_concept_code',
-    		'vocabulary_oid': 'gender_concept_codeSystem'
+    		    'concept_code': 'gender_concept_code',
+    		    'vocabulary_oid': 'gender_concept_codeSystem'
     	    }
     	},
     	'date_of_birth': {
@@ -81,8 +123,8 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		'concept_code': 'race_concept_code',
-    		'vocabulary_oid': 'race_concept_codeSystem'
+    		    'concept_code': 'race_concept_code',
+    		    'vocabulary_oid': 'race_concept_codeSystem'
     	    }
     	},
     	'ethnicity_concept_code': {
@@ -102,7 +144,7 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		'concept_code': 'ethnicity_concept_code',
+    		    'concept_code': 'ethnicity_concept_code',
     		'vocabulary_oid': 'ethnicity_concept_codeSystem'
     	    }
     	},
@@ -153,8 +195,8 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		'concept_code': 'visit_concept_code',
-    		'vocabulary_oid': 'visit_concept_codeSystem'
+    		    'concept_code': 'visit_concept_code',
+    		    'vocabulary_oid': 'visit_concept_codeSystem'
     	    }
     	},
     	'care_site_id': {
@@ -284,8 +326,8 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		'concept_code': 'measurement_concept_code',
-    		'vocabulary_oid': 'measurement_concept_codeSystem'
+    		    'concept_code': 'measurement_concept_code',
+    		    'vocabulary_oid': 'measurement_concept_codeSystem'
     	    }
     	},
     	'measurement_concept_domain_id': {
@@ -293,8 +335,8 @@ meta_dict = {
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
-    		'concept_code': 'measurement_concept_code',
-    		'vocabulary_oid': 'measurement_concept_codeSystem'
+    		    'concept_code': 'measurement_concept_code',
+    		    'vocabulary_oid': 'measurement_concept_codeSystem'
     	    }
     	},
     	'measurement_concept_displayName': {
@@ -328,8 +370,8 @@ meta_dict = {
     	    #'FUNCTION': VT.cast_string_to_int,
     	    'FUNCTION': VT.cast_string_to_float,
     	    'argument_names': {
-    		'input': 'value_as_string',
-    		'config_type': 'value_type'
+    		    'input': 'value_as_string',
+    		    'config_type': 'value_type'
     	    }
     	},
     	'value_as_concept_id': {
@@ -337,8 +379,8 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.cast_string_to_concept_id,
     	    'argument_names': {
-    		'input': 'value_as_string',
-    		'config_type': 'value_type'
+    		    'input': 'value_as_string',
+    		    'config_type': 'value_type'
     	    }
     	},
     	'value_unit':  {
@@ -391,8 +433,8 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		'concept_code': 'observation_concept_code',
-    		'vocabulary_oid': 'observation_concept_codeSystem'
+    		    'concept_code': 'observation_concept_code',
+    		    'vocabulary_oid': 'observation_concept_codeSystem'
     	    }
     	},
     	'observation_concept_domain_id': {
@@ -400,8 +442,8 @@ meta_dict = {
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
-    		'concept_code': 'observation_concept_code',
-    		'vocabulary_oid': 'observation_concept_codeSystem'
+    		    'concept_code': 'observation_concept_code',
+    		    'vocabulary_oid': 'observation_concept_codeSystem'
     	    }
     	},
     	'observation_concept_displayName': {
@@ -435,8 +477,8 @@ meta_dict = {
     	    #'FUNCTION': VT.cast_string_to_int,
     	    'FUNCTION': VT.cast_string_to_float,
     	    'argument_names': {
-    		'input': 'value_as_string',
-    		'config_type': 'value_type'
+    		    'input': 'value_as_string',
+    		    'config_type': 'value_type'
     	    }
     	},
     	'value_as_concept_id': {
@@ -444,8 +486,8 @@ meta_dict = {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.cast_string_to_concept_id,
     	    'argument_names': {
-    		'input': 'value_as_string',
-    		'config_type': 'value_type'
+    		    'input': 'value_as_string',
+    		    'config_type': 'value_type'
     	    }
     	},
     	'value_unit':  {
