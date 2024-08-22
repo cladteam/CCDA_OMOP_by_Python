@@ -1,2 +1,2 @@
-person_other_id,person_id,date_of_birth,gender_concept_id,race_concept_id,ethnicity_concept_id
-,,19971006,2000000001,,
+date_of_birth,gender_concept_id,race_concept_id,ethnicity_concept_id,person_id
+19971006,8507,,,
