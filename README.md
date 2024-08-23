@@ -4,6 +4,9 @@ This is a project to convert CCDA documents to OMOP CDM format in Python.
 The bulk of the work is in the prototype_2 directory. Further instruction is in a README.md file there.
 
 
+## BADGE
+[![Prototype 2](https://github.com/cladteam/CCDA_OMOP_by_Python/actions/workflows/prototype_2.yml/badge.svg)](https://github.com/cladteam/CCDA_OMOP_by_Python/actions/workflows/prototype_2.yml)
+
 ## Sub Projects/Directories
 This repositor has siblings that might be of interest.
 - CCDA-tools is a collection of different file snoopers, scripts that find and show a XML elements with a certain tag, like id, code or section.
