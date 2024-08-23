@@ -50,3 +50,4 @@ jobs:
           - name: count errors
             run: |
                 bin/count_errors.sh > errors_counts.txt
+                cat errors_counts.txt
