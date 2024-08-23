@@ -193,7 +193,7 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
 
 
 
-def parse_domain_from_dict(tree, domain, domain_meta_dict):
+def parse_domain_from_dict(tree, domain, domain_meta_dict, filename):
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
         (ClinicalDocument, not just file),
@@ -205,6 +205,20 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict):
         It's a list of because you might have more than one instance of the root path, like when you
         get many observations.
     """
+
+    # log to a file per file/domain
+    base_name = os.path.basename(filename)
+    logging.basicConfig(
+        format='%(levelname)s: %(message)s',
+        filename=f"logs/log_domain_{base_name}_{domain}.log",
+        force=True,
+        # level=logging.ERROR
+        level=logging.WARNING
+        # level=logging.INFO
+        # level=logging.DEBUG
+    )
+
+
     # Find root
     if 'root' not in domain_meta_dict:
         logger.error(f"DOMAIN {domain} lacks a root element.")
@@ -270,8 +284,9 @@ def parse_doc(file_path, metadata):
     """
     omop_dict = {}
     tree = ET.parse(file_path)
+    base_name = os.path.basename(file_path)
     for domain, domain_meta_dict in metadata.items():
-        domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict)
+        domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict, base_name)
         omop_dict[domain] = domain_data_dict
     return omop_dict
 
@@ -303,7 +318,7 @@ def process_file(filepath):
 
     logging.basicConfig(
         format='%(levelname)s: %(message)s',
-        filename=f"logs/log_layer_ds_{base_name}.log",
+        filename=f"logs/log_file_{base_name}.log",
         force=True,
         # level=logging.ERROR
         level=logging.WARNING

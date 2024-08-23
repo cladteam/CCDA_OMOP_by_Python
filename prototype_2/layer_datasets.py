@@ -58,7 +58,7 @@ def process_file(filepath):
 
     logging.basicConfig(
         format='%(levelname)s: %(message)s',
-        filename=f"logs/log_layer_ds_{base_name}.log",
+        filename=f"logs/log_file_{base_name}.log",
         force=True,
         # level=logging.ERROR
         level=logging.WARNING
