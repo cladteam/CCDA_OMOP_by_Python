@@ -49,5 +49,4 @@ jobs:
                 bin/compare_correct.sh
           - name: count errors
             run: |
-                bin/count_errors.sh > errors_counts.txt
-                cat errors_counts.txt
+                bin/count_errors.sh
