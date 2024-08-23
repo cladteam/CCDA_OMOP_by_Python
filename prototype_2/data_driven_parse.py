@@ -116,9 +116,8 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
 
 def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     # Do derived values now that their inputs should be available in the output_dict
-    domain_id = None
     for (field_tag, field_details_dict) in domain_meta_dict.items():
-        if field_details_dict['config_type'] == 'DERIVED' or field_details_dict['config_type'] == 'DOMAIN':
+        if field_details_dict['config_type'] == 'DERIVED':
             logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
             # NB Using an explicit dict here instead of kwargs because this code here
             # doesn't know what the keywords are at 'compile' time.
@@ -137,14 +136,8 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                                   f" args_dict:{args_dict} output_dict:{output_dict}"))
             try:
                 function_value = field_details_dict['FUNCTION'](args_dict)
-                if field_details_dict['config_type'] == 'DOMAIN':
-                    domain_id = function_value
-                    output_dict[field_tag] = (function_value, 'DOMAIN') ##########
-                    logger.info((f"     DOMAIN captured as {function_value} for "
-                                 f"{field_tag}, {field_details_dict}"))
-                else:
-                    output_dict[field_tag] = (function_value, 'DERIVED')
-                    logger.info((f"     DERIVED {function_value} for "
+                output_dict[field_tag] = (function_value, 'DERIVED')
+                logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
             except TypeError as e:
                 error_fields_set.add(field_tag)
@@ -153,16 +146,54 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
-                #output_dict[field_tag] = (None, 'DERIVED')
                 output_dict[field_tag] = (None, field_details_dict['config_type'])
 
+
+def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    # nearly the same as derived above, but returns the domain for later filtering
+    domain_id = None
+    for (field_tag, field_details_dict) in domain_meta_dict.items():
+        if field_details_dict['config_type'] == 'DOMAIN':
+            logger.info(f"     Deriving DOMAIN {field_tag}, {field_details_dict}")
+
+            # Collect args for the function
+            args_dict = {}
+            for arg_name, field_name in field_details_dict['argument_names'].items():
+                logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
+                if field_name not in output_dict:
+                    error_fields_set.add(field_tag)
+                    logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
+                                  f"find {field_name} in {output_dict}"))
+                try:
+                    args_dict[arg_name] = output_dict[field_name][0]
+                except Exception:
+                    error_fields_set.add(field_tag)
+                    logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
+                                  f" args_dict:{args_dict} output_dict:{output_dict}"))
+            # Derive the value
+            try:
+                function_value = field_details_dict['FUNCTION'](args_dict)
+                domain_id = function_value
+                output_dict[field_tag] = (function_value, 'DOMAIN') ##########
+                logger.info((f"     DOMAIN captured as {function_value} for "
+                                 f"{field_tag}, {field_details_dict}"))
+            except TypeError as e:
+                error_fields_set.add(field_tag)
+                logger.error(f"DERIVED exception: {e}")
+                logger.error((f"DERIVED {field_tag} possibly calling something that isn't a function"
+                              f" {field_details_dict['FUNCTION']}. You may have quotes "
+                              "around it in  a python mapping structure if this is a "
+                              f"string: {type(field_details_dict['FUNCTION'])}"))
+                output_dict[field_tag] = (None, field_details_dict['config_type'])
+
+            #print(f"     DOMAIN-2  {field_tag} {domain} {domain_id} {len(domain_meta_dict.items())} ")
     return domain_id
 
 
 def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
-    # These are basically derived, but the argument is a lsit of field names, instead of
-    # a fixed number of individually named fields.
-    domain_id = None
+    """ These are basically derived, but the argument is a lsit of field names, instead of
+        a fixed number of individually named fields.
+    """
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'HASH':
             hash_input =  "-".join(field_details_dict['fields'])
@@ -170,7 +201,6 @@ def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_di
             output_dict[field_tag] = (hash_value, 'HASH')
             logger.info((f"     HASH {hash_value} for "
                          f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
-    return domain_id
 
 
 def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
@@ -209,6 +239,50 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
     return priority_fields
 
 
+def clean_dict(output_dict, priority_field_names, domain_meta_dict):
+    # Clean the dict by removing fields with a False output tag
+    clean_output_dict = {}
+    for key in output_dict:
+        if key in priority_field_names:
+            clean_output_dict[key] = output_dict[key]
+        elif key in domain_meta_dict:
+            field_details_dict = domain_meta_dict[key]
+            if field_details_dict['output']:
+                clean_output_dict[key] = output_dict[key]
+        elif key != 'root_path':
+            print(f"ERROR found key {key} that's neither a priority key nor in the domain_meta_dict. Impossible error #42")
+    return clean_output_dict
+
+
+def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set):
+    """  Parses for each field in the metadata for a domain out of the root_element passed in.
+         You may have more than one such root element, each making for a row in the output.
+
+        If the configuration includes a field of config_type DOMAIN, the value it generates
+        will be compared to the domain passed in. If they are different, null is returned.
+        This is how  OMOP "domain routing" is implemented here.
+    """
+    output_dict = {}
+    domain_id = None
+    logger.info((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
+                 f" attributes:{root_element.attrib}"))
+
+    do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    domain_id = do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+
+
+    # Add a "root" column to show where this came from
+    output_dict['root_path'] = (root_path, 'root_path')
+
+    if (domain == domain_id or domain_id is None):
+        clean_output_dict = clean_dict(output_dict, priority_field_names, domain_meta_dict)
+        return (clean_output_dict, error_fields_set)
+    else:
+        return (None, None)
+
 
 def parse_domain_from_dict(tree, domain, domain_meta_dict, filename):
     """ The main logic is here.
@@ -228,13 +302,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename):
     logging.basicConfig(
         format='%(levelname)s: %(message)s',
         filename=f"logs/log_domain_{base_name}_{domain}.log",
-        force=True,
-        # level=logging.ERROR
-        level=logging.WARNING
-        # level=logging.INFO
-        # level=logging.DEBUG
-    )
-
+        force=True, level=logging.WARNING)
 
     # Find root
     if 'root' not in domain_meta_dict:
@@ -256,44 +324,20 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename):
 
     output_list = []
     error_fields_set = set()
-    domain_id = None
     logger.info(f"NUM ROOTS {domain} {len(root_element_list)}")
+    print(f"NUM ROOTS {domain} {len(root_element_list)}")
     for root_element in root_element_list:
-        output_dict = {}
-        logger.info((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
-                     f" attributes:{root_element.attrib}"))
+        (output_dict, element_error_set) = parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set)
+        if output_dict is not None:
+            output_list.append(output_dict)
+        if element_error_set is not None:
+            error_fields_set.union(element_error_set)
 
-        do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    # report fields with errors
+    if len(error_fields_set) > 0:
+        logger.error(f"DOMAIN Fields with errors in domain {domain} {error_fields_set}")
 
-        domain_id = do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-        domain_id = do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-
-        priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-
-        # Clean the dict by removing fields with a False output tag
-        clean_output_dict = {}
-        for key in output_dict:
-            if key in priority_field_names:
-                clean_output_dict[key] = output_dict[key]
-            else:
-                field_details_dict = domain_meta_dict[key]
-                if field_details_dict['output']:
-                    clean_output_dict[key] = output_dict[key]
-
-        # Add a "root" column to show where this came from
-        output_dict['root_path'] = (root_path, 'root_path')
-        output_list.append(clean_output_dict)
-
-        # report fields with errors
-        if len(error_fields_set) > 0:
-            logger.error(f"DOMAIN Fields with errors in domain {domain} {error_fields_set}")
-
-    # Check if the domain matches the domain_id that comes up from this concept,
-    #   drop the row if they don't match.
-    if domain_id is None or domain_id == domain:
-        return output_list
-    else:
-        return None
+    return output_list
 
 
 def parse_doc(file_path, metadata):
@@ -320,13 +364,16 @@ def print_omop_structure(omop):
         else:
             for domain_data_dict in domain_list:
                 n = 0
-                print(f"\n\nDOMAIN: {domain}")
-                for field, parts in domain_data_dict.items():
-                    print(f"    FIELD:{field}")
-                    print(f"        VALUE:{parts[0]}")
-                    print(f"        PATH:{parts[1]}")
-                    n = n+1
-                print(f"\n\nDOMAIN: {domain} {n}\n\n")
+                if domain_data_dict is None:
+                    print(f"\n\nERROR DOMAIN: {domain} is NONE")
+                else:
+                    print(f"\n\nDOMAIN: {domain}")
+                    for field, parts in domain_data_dict.items():
+                        print(f"    FIELD:{field}")
+                        print(f"        VALUE:{parts[0]}")
+                        print(f"        PATH:{parts[1]}")
+                        n = n+1
+                    print(f"\n\nDOMAIN: {domain} {n}\n\n")
 
 
 def process_file(filepath):
