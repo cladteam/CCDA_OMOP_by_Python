@@ -34,10 +34,10 @@ sql_import_dict = {
 person_ddl= """
 CREATE OR REPLACE TABLE person (
             birth_datetime DATE NULL,
-            gender_concept_id integer NOT NULL,
-            race_concept_id integer NOT NULL,
-            ethnicity_concept_id integer NOT NULL,
-            person_id varchar(100) NOT NULL);
+            gender_concept_id integer NULL, --  this is NOT NULL officially TODO
+            race_concept_id integer NULL, -- NOT NULL officially,
+            ethnicity_concept_id integer NULL, --  NOT NULL officially
+            person_id varchar(100) NOT NULL); -- integer  officially TODO
 """
 
 """,
@@ -94,14 +94,14 @@ def _import_CSVs(domain):
     files = [f for f in files if  re.match('.*' + f"{domain}" + '.csv',f) ]
     for csv_filename in files:
         try:
-            print (csv_filename)
+            print(csv_filename)
             sql_string = sql_import_dict[domain]['sql']
             table_name = sql_import_dict[domain]['table_name']
             sql_string = sql_string.replace('FILENAME', OMOP_CSV_DATA_DIR + csv_filename)
             sql_string = sql_string.replace('TABLENAME', table_name)
-            print(sql_string)
+            #print(sql_string)
             x=conn.execute(sql_string)
-            print(x.df())
+            #print(x.df())
         except duckdb.BinderException as e:
             print(f"Failed to read {csv_filename} {type(e)} {e}")
 
@@ -109,8 +109,10 @@ def _import_CSVs(domain):
 def check_PK(domain):
     table_name = sql_import_dict[domain]['table_name']
     pk_query = sql_import_dict[domain]['pk_query']
-    conn.sql(f"SELECT * from  {omop_table_name}")
-    conn.sql(sql_pk_dict[omop_table_name])
+    df=conn.sql(f"SELECT * from  {table_name}").df()
+    print(df)
+    df=conn.sql(pk_query).df()
+    print(df)
 
 
 if __name__ == '__main__':
@@ -126,7 +128,7 @@ if __name__ == '__main__':
         df = conn.sql("SHOW TABLES;").df()
         print('"' + df['name'] + '"')
 
-    check_PK('person')
+    check_PK('Person')
     exit()
 
 
