@@ -124,12 +124,14 @@ metadata = {
     	'start_time': {
     	    'output': True,
     	    'config_type': 'FIELD',
+            'data_type':'DATE',
     	    'element': "effectiveTime/low",
     	    'attribute': "value"
     	},
     	'end_time':  {
     	    'output': True,
     	    'config_type': 'FIELD',
+            'data_type':'DATE',
     	    'element': "effectiveTime/high",
     	    'attribute': "value"
     	}

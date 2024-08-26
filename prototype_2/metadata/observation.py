@@ -69,6 +69,7 @@ metadata = {
     	    'output': True,
     	    'config_type': 'FIELD',
     	    'element': "effectiveTime",
+            'data_type':'DATETIME',
     	    'attribute': "value"
     	},
     	'value_as_string': {

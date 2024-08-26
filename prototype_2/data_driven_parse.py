@@ -20,6 +20,7 @@
 # mamba install -y -q lxml
 
 import argparse
+import datetime
 import logging
 import os
 import hashlib
@@ -38,6 +39,31 @@ ns = {
 
 
 PK_dict = {}
+
+
+def cast_to_date(string_value):
+    # TODO does CCDA always do dates as YYYYMMDD ?
+    # TODO  when  is it date and when datetime
+
+    # Step 1 : put dashes in  to make ISO-8601 happy, b/c python insists on dashes.
+    iso_8601_string = f"{string_value[0:4]}-{string_value[4:6]}-{string_value[6:8]}"
+    #print(f"DATE iso8601 string {string_value} {iso_8601_string}")
+
+    # Step 2: dont' both with fancy date classes that can't help us here.
+
+    return iso_8601_string
+
+
+def cast_to_datetime(string_value):
+    # TODO does CCDA always do dates as YYYYMMDD ? ...without dashes?
+    if len(string_value) > 8:
+        iso_8601_string = f"{string_value[0:4]}-{string_value[4:6]}-{string_value[6:8]} {string_value[8:10]}:{string_value[10:12]}"
+        #print(f"DATETIME iso8601 string {string_value}  {iso_8601_string}")
+        return iso_8601_string
+    else:
+        #print(f"{string_value} too short for DATETIME")
+        return cast_to_date(string_value)
+
 
 
 def parse_field_from_dict(field_details_dict, domain_root_element, domain, field_tag, root_path):
@@ -71,6 +97,12 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
     if attribute_value is None:
         logger.warning((f"no value for field element {field_details_dict['element']} "
                         f"for {domain}/{field_tag} root:{root_path}"))
+
+    if 'data_type' in field_details_dict:
+        if field_details_dict['data_type'] == 'DATE':
+            attribute_value = cast_to_date(attribute_value)
+        if field_details_dict['data_type'] == 'DATETIME':
+            attribute_value = cast_to_datetime(attribute_value)
 
     return attribute_value
 

@@ -147,6 +147,7 @@ metadata = {
     	'date_of_birth': {
     	    'output': True,
     	    'config_type': 'FIELD',
+            'data_type':'DATE',
     	    'element': "patient/birthTime",
     	    'attribute': "value"
     	},

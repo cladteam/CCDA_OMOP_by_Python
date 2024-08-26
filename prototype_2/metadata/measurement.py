@@ -22,11 +22,18 @@ metadata = {
     	    'config_type': 'FK',
     	    'FK': 'visit_occurrence_id'
     	},
-    	'measurement_id': {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
-    	    'output': True,
+    	'measurement_id_basic': {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
+    	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id',
-    	    'attribute': 'root'   ### FIX ????
+    	    'attribute': 'root',
+           'priority': ('measurement_id', 1)
+    	},
+    	'measurement_id_hash': { 
+    	    'output': False,
+    	    'config_type': 'HASH',
+            'fields' : ['person_id', 'visit_occurrence_id', 'measurement_concept_id', 'time', 'value_as_string'],
+            'priority': ('measurement_id', 100)
     	},
     	'measurement_concept_code': {
     	    'output': False,
@@ -68,6 +75,7 @@ metadata = {
     	'time': {
     	    'output': True,
     	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
     	    'element': "effectiveTime",
     	    'attribute': "value"
     	},
