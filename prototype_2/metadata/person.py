@@ -14,42 +14,45 @@ metadata = {
         # Often it's not clear these are legitimate or public  OIDs. I haven't found a definition for them.
         # TODO keep an eye on uniqueness and consider if our OMOP patient ID should be a concatination of
         # TODO (cont) root and extension...like if the extension is only unique within a system identified by the root.
+    	'person_id': {
+            'config_type': 'PRIORITY',
+            'order': 1
+        },
     	'person_id_anna_flux': {
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.3.651.2.1"]',
     	    'attribute': "extension",
-           'priority': ('person_id', 1)
+            'priority': ('person_id', 1)
     	},
     	'person_id_patient_170': {
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.3.6132"]',
     	    'attribute': "extension",
-           'priority': ('person_id', 2)
+            'priority': ('person_id', 2)
     	},
     	'person_id_patient_502': {
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.19.5.99999.2"]',
     	    'attribute': "extension",
-           'priority': ('person_id', 3)
+            'priority': ('person_id', 3)
     	},
     	'person_id_patient_healthconnectak': {
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.3.564.14977"]',
     	    'attribute': "extension",
-           'priority': ('person_id', 4)
+            'priority': ('person_id', 4)
     	},
     	'person_id_patient_bennis_shauna': { # same OID as for eHx_Terry
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'id[@root="2.16.840.1.113883.3.7732.100"]',
     	    'attribute': "extension",
-           'priority': ('person_id', 5)
+            'priority': ('person_id', 5)
     	},
-
         # more general types of person Ids
     	'person_id_ssn': {
     	    'output': False,
@@ -87,6 +90,7 @@ metadata = {
             'fields' : [ 'family_name', 'given_name', 'street_address', 'city', 'country', 'postal_code', 'gender_concept_code', 'race_concept_code', 'ethnicity_concept_code', 'date_of_birth', 'person_id_ssn', 'person_id_other' ],
             'priority': ('person_id', 107) # (final field name, priority number)
     	},
+        # not for output, but to support person_id_hash creation
         'family_name': {
     	    'output': False,
     	    'config_type': 'FIELD',
@@ -142,15 +146,30 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'gender_concept_code',
     		    'vocabulary_oid': 'gender_concept_codeSystem'
-    	    }
+    	    },
+            'order': 2
     	},
-    	'date_of_birth': {
+        'year_of_birth': { 'config_type': None, 'order': 3 },
+        'month_of_birth': { 'config_type': None, 'order': 4 },
+        'year_of_birth': { 'config_type': None, 'order': 5 },
+    	'day_of_birth': {
     	    'output': True,
     	    'config_type': 'FIELD',
             'data_type':'DATE',
     	    'element': "patient/birthTime",
-    	    'attribute': "value"
+    	    'attribute': "value",
+            'order': 6
     	},
+    	'birth_datetime': {
+    	    'output': True,
+    	    'config_type': 'FIELD',
+            'data_type':'DATE',
+    	    'element': "patient/birthTime",
+    	    'attribute': "value",
+            'order': 7 
+    	},
+
+
     	'race_concept_code': {
     	    'output': False,
     	    'config_type': 'FIELD',
@@ -170,7 +189,8 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'race_concept_code',
     		    'vocabulary_oid': 'race_concept_codeSystem'
-    	    }
+    	    },
+            'order' = 8 
     	},
     	'ethnicity_concept_code': {
     	    'output': False,
@@ -191,7 +211,20 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'ethnicity_concept_code',
     		'vocabulary_oid': 'ethnicity_concept_codeSystem'
-    	    }
+    	    },
+            'order' = 9 
     	},
+
+        'location_id': { 'config_type': None, 'order': 10 }
+        'provider_id': { 'config_type': None, 'order': 11 }
+        'care_site_id': { 'config_type': None, 'order': 12 }
+        'person_source_value': { 'config_type': None, 'order': 13 }
+        'gender_source_value'; { 'config_type': None, 'order': 14 }
+        'gender_source_concept_id': { 'config_type': None, 'order': 15 }
+        'race_source_value'; { 'config_type': None, 'order': 16 }
+        'race_source_concept_id': { 'config_type': None, 'order': 17 }
+        'ethnicity_source_value'; { 'config_type': None, 'order': 18 }
+        'ethnicity_source_concept_id': { 'config_type': None, 'order': 19 }
+ 
     }
 }
