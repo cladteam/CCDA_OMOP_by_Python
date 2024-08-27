@@ -32,7 +32,7 @@ metadata = {
     	'measurement_id_hash': { 
     	    'output': False,
     	    'config_type': 'HASH',
-            'fields' : ['person_id', 'visit_occurrence_id', 'measurement_concept_id', 'time', 'value_as_string'],
+            'fields' : ['person_id', 'visit_occurrence_id', 'measurement_concept_id', 'measurement_time', 'value_as_string'],
             'priority': ('measurement_id', 100)
     	},
     	'measurement_concept_code': {
@@ -72,7 +72,7 @@ metadata = {
     	    'attribute': "displayName"
     	},
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
-    	'time': {
+        'measurement_time': {
     	    'output': True,
     	    'config_type': 'FIELD',
             'data_type':'DATETIME',
