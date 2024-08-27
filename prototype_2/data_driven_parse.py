@@ -107,6 +107,15 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
     return attribute_value
 
 
+def do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    for (field_tag, field_details_dict) in domain_meta_dict.items():
+        logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
+                     f" {field_details_dict}"))
+        type_tag = field_details_dict['config_type']
+        if type_tag is None:
+            output_dict[field_tag] = (None, '(None type)')
+
+
 def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
@@ -279,6 +288,8 @@ def clean_dict(output_dict, priority_field_names, domain_meta_dict):
             clean_output_dict[key] = output_dict[key]
         elif key in domain_meta_dict:
             field_details_dict = domain_meta_dict[key]
+            if 'output' not in field_details_dict:
+                print(f"XXXXX {key}")
             if field_details_dict['output']:
                 clean_output_dict[key] = output_dict[key]
         elif key != 'root_path':
@@ -299,6 +310,7 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
     logger.info((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
                  f" attributes:{root_element.attrib}"))
 
+    do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     domain_id = do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)

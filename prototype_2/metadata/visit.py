@@ -75,7 +75,7 @@ metadata = {
     	    'attribute': "value",
             'order':4
     	},
-        'visit_start_datetime' : {  'config_type': None, 'order': 5 },
+        'visit_start_datetime' : {  'config_type': None, 'output': True, 'order': 5 },
     	'visit_end_date':  {
     	    'output': True,
     	    'config_type': 'FIELD',
@@ -83,10 +83,10 @@ metadata = {
     	    'element': "effectiveTime/high",
     	    'attribute': "value",
             'order':6
-    	}
-        'visit_end_datetime' : {  'config_type': None, 'order': 7 },
+    	},
+        'visit_end_datetime' : {  'config_type': None, 'output': True, 'order': 7 },
 
-        'visit_type_concept_id' : {  'config_type': None, 'order': 8 },
+        'visit_type_concept_id' : {  'config_type': None, 'output': True, 'order': 8 },
     	# FIX TODO sometimes a document will have more than one encounterParticipant. The way this is configured, they will be awkwardly merged.
     	'provider_id': {
     	    'output': True,
@@ -104,14 +104,14 @@ metadata = {
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'encounterParticipant/assignedEntity/id[@root="1.3.6.1.4.1.42424242.4.99930.4"]',
-    	    'attribute': "extension"
+    	    'attribute': "extension",
             'priority': ['provider_id', 1]
     	},
     	'provider_id_ep_npi_170': {
     	    'output': False,
     	    'config_type': 'FIELD',
     	    'element': 'encounterParticipant/assignedEntity/id[@root="2.16.840.1.113883.4.6"]',
-    	    'attribute': "extension"
+    	    'attribute': "extension",
             'priority': ['provider_id', 2]
     	},
 
@@ -123,12 +123,12 @@ metadata = {
             'order': 10
     	},
 
-        'visit_detail_source_value': { 'config_type': None, 'order': 11},
-        'visit_detail_source_concept_id': { 'config_type': None, 'order': 12},
-        'admitting_source_value': { 'config_type': None, 'order': 13},
-        'admitting_source_concept_id': { 'config_type': None, 'order': 14},
-        'discharge_to_source_value': { 'config_type': None, 'order': 15},
-        'discharge_to_source_concept_id': { 'config_type': None, 'order': 16},
-        'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17}
+        'visit_detail_source_value': { 'config_type': None, 'output': True, 'order': 11},
+        'visit_detail_source_concept_id': { 'config_type': None, 'output': True, 'order': 12},
+        'admitting_source_value': { 'config_type': None, 'output': True, 'order': 13},
+        'admitting_source_concept_id': { 'config_type': None, 'output': True, 'order': 14},
+        'discharge_to_source_value': { 'config_type': None, 'output': True, 'order': 15},
+        'discharge_to_source_concept_id': { 'config_type': None, 'output': True, 'order': 16},
+        'preceding_visit_occurrence_id': { 'config_type': None, 'output': True, 'order': 17}
     }
 }

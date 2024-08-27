@@ -4,25 +4,24 @@ import prototype_2.value_transformations as VT
 metadata = {
     'Measurement': {
     	'root': {
-    	    'output': False,
+    	    'output': True,
     	    'config_type': 'ROOT',
     	    'element':
     		  ("./component/structuredBody/component/section/"
     		   "templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
     		   "/../entry/organizer/component/observation")
     		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
-    		 },
         },
 
     	'measurement_id_basic': {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
-    	    'output': False,
+    	    'output': True,
     	    'config_type': 'FIELD',
     	    'element': 'id',
     	    'attribute': 'root',
            'priority': ('measurement_id', 1)
     	},
-    	'measurement_id_hash': { 
-    	    'output': False,
+    	'measurement_id_hash': {
+    	    'output': True,
     	    'config_type': 'HASH',
             'fields' : ['person_id', 'visit_occurrence_id', 'measurement_concept_id', 'measurement_time', 'value_as_string'],
             'priority': ('measurement_id', 100)
@@ -41,13 +40,13 @@ metadata = {
     	},
 
     	'measurement_concept_code': {
-    	    'output': False,
+    	    'output': True,
     	    'config_type': 'FIELD',
     	    'element': "code" ,
     	    'attribute': "code"
     	},
     	'measurement_concept_codeSystem': {
-    	    'output': False,
+    	    'output': True,
     	    'config_type': 'FIELD',
     	    'element': "code",
     	    'attribute': "codeSystem"
@@ -64,7 +63,7 @@ metadata = {
     	},
 
     	'measurement_concept_domain_id': {
-    	    'output': False,
+    	    'output': True,
     	    'config_type': 'DOMAIN',
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
@@ -81,13 +80,13 @@ metadata = {
     	    'attribute': "value",
             'order': 4
     	},
-        'measurement_datetime': { 'output': True, 'config_type':None, 'order': 5 },
-        'measurement_time': { 'output': True, 'config_type':None, 'order': 6 },
-        'measurement_type_concept_id': { 'output': True, 'config_type':None, 'order': 7 },
-        'operator_concept_id': { 'output': True, 'config_type':None, 'order': 8 },
+        'measurement_datetime': { 'output': True, 'config_type': None, 'output': True, 'order': 5 },
+        'measurement_time': { 'output': True, 'config_type': None, 'output': True,  'order': 6 },
+        'measurement_type_concept_id': { 'output': True, 'config_type': None, 'output': True,  'order': 7 },
+        'operator_concept_id': { 'output': True, 'config_type': None, 'output': True,  'order': 8 },
 
     	'value_as_string': {
-    	    'output': False,
+    	    'output': True,
     	    'config_type': 'FIELD',
     	    'element': "value" ,
     	    'attribute': "value",
@@ -114,9 +113,8 @@ metadata = {
             'order':  10
     	},
 
-
-    	'unit_concept_id': { 'output': True, 'config_type': None, 'order':  11 },
-    	'provider_id': { 'output': True, 'config_type': None, 'order':  12 },
+    	'unit_concept_id': { 'output': True, 'config_type': None, 'output': True,  'order':  11 },
+    	'provider_id': { 'output': True, 'config_type': None, 'output': True,  'order':  12 },
 
     	'visit_occurrence_id':	{
     	    'output': True,
@@ -124,10 +122,10 @@ metadata = {
     	    'FK': 'visit_occurrence_id',
             'order':  13
     	},
-    	'visit_detail_id':	{ 'output': True, 'config_type': None, 'order':  14 },
-    	'measurement_source_value':	{ 'output': True, 'config_type': None, 'order':  15 },
-    	'measurement_source_concept_id':	{ 'output': True, 'config_type': None, 'order':  16 },
-    	'unit_source_value':	{ 'output': True, 'config_type': None, 'order':  17 },
-    	'value_source_value':	{ 'output': True, 'config_type': None, 'order':  18 }
+    	'visit_detail_id':	{ 'output': True, 'config_type': None, 'output': True,  'order':  14 },
+    	'measurement_source_value':	{ 'output': True, 'config_type': None, 'output': True,  'order':  15 },
+    	'measurement_source_concept_id':	{ 'output': True, 'config_type': None, 'output': True,  'order':  16 },
+    	'unit_source_value':	{ 'output': True, 'config_type': None, 'output': True,  'order':  17 },
+    	'value_source_value':	{ 'output': True, 'config_type': None, 'output': True,  'order':  18 }
     }
 }
