@@ -18,7 +18,7 @@ metadata = {
     	    'config_type': 'FIELD',
     	    'element': 'id',
     	    'attribute': 'root',
-           'priority': ('measurement_id', 1)
+           'priority': ('measurement_id', 9999) # rejected, last in priority
     	},
     	'measurement_id_hash': {
     	    'output': True,

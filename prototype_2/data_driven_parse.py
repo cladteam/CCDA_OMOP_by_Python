@@ -23,6 +23,7 @@ import argparse
 import datetime
 import logging
 import os
+import sys
 import hashlib
 from lxml import etree as ET
 from prototype_2.metadata import get_meta_dict
@@ -248,8 +249,17 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
     """
         Returns the list of  priority_names so they can be added to "output" fields
         Also, adds this field to the PK list?
-        within the domain_meta_dict, find all fields tagged with priority and group them by their priority names in a dictionary keyed by that name
+        Within the domain_meta_dict, find all fields tagged with priority and group 
+        them by their priority names in a dictionary keyed by that name
         Ex. { 'person_id': [ ('person_id_ssn', 1), ('person_id_unknown', 2) ]
+
+        NB now there is a separate config_type PRIORITY to compliment the priority attribute.
+        So you might have person_id_npi, person_id_ssn and person_id_hash tagged with priority 
+        attributes to create a field person_id, but then also another field, just plain person_id.
+        The point of it is to have a unique place to put that field's order attribute. The code
+        here (and in the ordering code later) must be aware of a  that field in the 
+        domain_meta_dict (where it isn't used) ...and not clobber it. It's an issue over in the
+        sorting/ordering.
     """
 
     # Create Ref Data
@@ -289,12 +299,47 @@ def clean_dict(output_dict, priority_field_names, domain_meta_dict):
         elif key in domain_meta_dict:
             field_details_dict = domain_meta_dict[key]
             if 'output' not in field_details_dict:
-                print(f"XXXXX {key}")
+                print(f"\nXXXXX {key}\n")
             if field_details_dict['output']:
                 clean_output_dict[key] = output_dict[key]
         elif key != 'root_path':
             print(f"ERROR found key {key} that's neither a priority key nor in the domain_meta_dict. Impossible error #42")
     return clean_output_dict
+
+
+def get_extract_order_fn(dict):
+    def get_order_from_dict(field_key):
+        if field_key == 'person_id':
+            print(f"YYYYYYY {dict[field_key]}")
+        if 'output' in dict[field_key] and dict[field_key]['output']:
+            if 'order' in dict[field_key]:
+                print(f"INFO {field_key} {dict[field_key]['order']}")
+                return dict[field_key]['order']
+            else:
+                print(f"ERROR extract_order_fn, no order in {field_key}")
+                return sys.maxsize
+        else:
+                print(f"WARNING extract_order_fn {field_key} is not explicitly output")
+                return sys.maxsize
+    return get_order_from_dict
+
+def sort_output_dict(output_dict, domain_meta_dict, domain):
+    """ Sorts the ouput_dict by the value of the 'order' fields in the associated
+        domain_meta_dict. Fields without a value, or without an entry come last.
+        Fields with output False shouldn't appear here, but if they do they are
+        not included in the sorted list.
+    """
+    ordered_output_dict = {}
+    mah_fun = get_extract_order_fn(domain_meta_dict)
+    ordered_keys = sorted(domain_meta_dict.keys(), key=mah_fun)
+    print(f"\nXXXXX ordered-keys: {ordered_keys}\n")
+    for key in ordered_keys:
+        if key in output_dict:
+            ordered_output_dict[key] = output_dict[key]
+        elif key != 'root':
+            logger.error(f"had a problem sorting the field with key {key}")
+
+    return ordered_output_dict
 
 
 def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set):
@@ -317,9 +362,11 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
     do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
 
+    output_dict = sort_output_dict(output_dict, domain_meta_dict, domain)
 
     # Add a "root" column to show where this came from
     output_dict['root_path'] = (root_path, 'root_path')
+    # TODO: could add  more for filename and ID
 
     if (domain == domain_id or domain_id is None):
         clean_output_dict = clean_dict(output_dict, priority_field_names, domain_meta_dict)
