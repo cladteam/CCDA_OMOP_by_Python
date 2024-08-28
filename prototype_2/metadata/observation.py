@@ -62,8 +62,8 @@ metadata = {
     	'observation_date': {
     	    'output': True,
     	    'config_type': 'FIELD',
-    	    'element': "effectiveTime",
             'data_type':'DATETIME',
+    	    'element': "effectiveTime",
     	    'attribute': "value",
             'order': 4
     	},
@@ -80,13 +80,10 @@ metadata = {
 
     	'value_as_number': {
     	    'output': True,
-    	    'config_type': 'DERIVED',
-    	    #'FUNCTION': VT.cast_string_to_int,
-    	    'FUNCTION': VT.cast_string_to_float,
-    	    'argument_names': {
-    		    'input': 'value_as_string',
-    		    'config_type': 'value_type'
-    	    },
+    	    'config_type': 'FIELD',
+            'data_type': 'FLOAT',
+    	    'element': "value" ,
+    	    'attribute': "value",
             'order': 7
     	},
     	'value_as_string': {

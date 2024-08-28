@@ -25,6 +25,8 @@ import logging
 import os
 import sys
 import hashlib
+import zlib
+import ctypes
 from lxml import etree as ET
 from prototype_2.metadata import get_meta_dict
 
@@ -99,13 +101,26 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         logger.warning((f"no value for field element {field_details_dict['element']} "
                         f"for {domain}/{field_tag} root:{root_path}"))
 
+    # Do data-type conversions
     if 'data_type' in field_details_dict:
-        if field_details_dict['data_type'] == 'DATE':
-            attribute_value = cast_to_date(attribute_value)
-        if field_details_dict['data_type'] == 'DATETIME':
-            attribute_value = cast_to_datetime(attribute_value)
+        if attribute_value is not None:
+            if field_details_dict['data_type'] == 'DATE':
+                attribute_value = cast_to_date(attribute_value)
+            if field_details_dict['data_type'] == 'DATETIME':
+                attribute_value = cast_to_datetime(attribute_value)
+            if field_details_dict['data_type'] == 'INTEGER':
+                    attribute_value = int(attribute_value)
+            if field_details_dict['data_type'] == '32BINTEGER':
+                    attribute_value = ctypes.c_int32(attribute_value).value
+            if field_details_dict['data_type'] == 'INTEGERHASH':
+                # for DuckDB (RDB int type), we need a 32-bit  signed integer from almost anything. This may not be as unique as we need TODO FIX
+                attribute_value = ctypes.c_int32(hash(attribute_value)).value
+            if field_details_dict['data_type'] == 'FLOAT':
+                attribute_value = float(attribute_value)
+            return attribute_value
+        else:
+            return None
 
-    return attribute_value
 
 
 def do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
@@ -235,6 +250,9 @@ def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_
 def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     """ These are basically derived, but the argument is a lsit of field names, instead of
         a fixed number of individually named fields.
+        Dubiously useful in an environment where IDs are  32 bit integers.
+        See the code above for converting according to the data_type attribute
+        where a different kind of hash is beat into an integer.
     """
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'HASH':
@@ -313,10 +331,10 @@ def get_extract_order_fn(dict):
             print(f"YYYYYYY {dict[field_key]}")
         if 'output' in dict[field_key] and dict[field_key]['output']:
             if 'order' in dict[field_key]:
-                print(f"INFO {field_key} {dict[field_key]['order']}")
+                logger.info(f"{field_key} {dict[field_key]['order']}")
                 return dict[field_key]['order']
             else:
-                print(f"ERROR extract_order_fn, no order in {field_key}")
+                logger.warning(f"extract_order_fn, no order in {field_key}")
                 return sys.maxsize
         else:
                 print(f"WARNING extract_order_fn {field_key} is not explicitly output")

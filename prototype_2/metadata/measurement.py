@@ -93,13 +93,10 @@ metadata = {
     	},
     	'value_as_number': {
     	    'output': True,
-    	    'config_type': 'DERIVED',
-    	    #'FUNCTION': VT.cast_string_to_int,
-    	    'FUNCTION': VT.cast_string_to_float,
-    	    'argument_names': {
-    		    'input': 'value_as_string',
-    		    'config_type': 'value_type'
-    	    },
+    	    'config_type': 'FIELD',
+            'data_type': 'FLOAT',
+    	    'element': "value" ,
+    	    'attribute': "value",
             'order': 9
     	},
     	'value_as_concept_id': {

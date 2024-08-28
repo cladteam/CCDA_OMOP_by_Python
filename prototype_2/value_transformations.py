@@ -5,25 +5,6 @@ logger = logging.getLogger(__name__)
 concept_df = pd.read_csv("map_to_standard.csv")
 
 
-def cast_string_to_float(args_dict):
-    sv = 0
-    string_value = args_dict['input']
-    try:
-        sv = float(string_value)
-    except ValueError:
-        logger.error(f"Value error casting {string_value} as float")
-    return sv
-
-
-def cast_string_to_int(args_dict):
-    sv = 0
-    string_value = args_dict['input']
-    try:
-        sv = int(string_value)
-    except ValueError:
-        logger.error(f"Value error casting {string_value} as integer")
-    return sv
-
 
 def cast_string_to_concept_id(args_dict):
     # string_value = args_dict['input']
