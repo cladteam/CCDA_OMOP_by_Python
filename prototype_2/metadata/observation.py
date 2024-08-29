@@ -45,7 +45,8 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		    'concept_code': 'observation_concept_code',
-    		    'vocabulary_oid': 'observation_concept_codeSystem'
+    		    'vocabulary_oid': 'observation_concept_codeSystem',
+                'default': (0,'default')
     	    },
             'order': 3
     	},
@@ -55,7 +56,8 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
     		    'concept_code': 'observation_concept_code',
-    		    'vocabulary_oid': 'observation_concept_codeSystem'
+    		    'vocabulary_oid': 'observation_concept_codeSystem',
+                'default': (0,'default')
     	    }
     	},
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?

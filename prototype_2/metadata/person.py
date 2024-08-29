@@ -158,21 +158,38 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		    'concept_code': 'gender_concept_code',
-    		    'vocabulary_oid': 'gender_concept_codeSystem'
+    		    'vocabulary_oid': 'gender_concept_codeSystem',
+                'default': (8551, 'default') # unkown
     	    },
             'order': 2
     	},
 
-        'year_of_birth': { 'config_type': None, 'output': True,  'order': 3 },
-        'month_of_birth': { 'config_type': None, 'output': True,  'order': 4 },
-        'year_of_birth': { 'config_type': None, 'output': True,  'order': 5 },  ### need a function for this non-null one
+        'year_of_birth': {
+            'output': True,
+            'config_type': 'DERIVED',
+    	    'FUNCTION': VT.extract_year_of_birth,
+    	    'argument_names': {
+    		    'date_string': 'birth_datetime',
+    	    },
+            'order': 3
+        },
+        'month_of_birth': {
+            'output': True,
+            'config_type': 'DERIVED',
+    	    'FUNCTION': VT.extract_month_of_birth,
+    	    'argument_names': {
+    		    'date_string': 'birth_datetime',
+    	    },
+            'order': 4
+        },
     	'day_of_birth': {
     	    'output': True,
-    	    'config_type': 'FIELD',
-            'data_type':'DATE',
-    	    'element': "patient/birthTime",
-    	    'attribute': "value",
-            'order': 6
+            'config_type': 'DERIVED',
+    	    'FUNCTION': VT.extract_day_of_birth,
+    	    'argument_names': {
+    		    'date_string': 'birth_datetime',
+    	    },
+            'order': 5
     	},
     	'birth_datetime': {
     	    'output': True,
@@ -180,7 +197,7 @@ metadata = {
             'data_type':'DATE',
     	    'element': "patient/birthTime",
     	    'attribute': "value",
-            'order': 7 
+            'order': 6
     	},
 
 
@@ -202,9 +219,10 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		    'concept_code': 'race_concept_code',
-    		    'vocabulary_oid': 'race_concept_codeSystem'
+    		    'vocabulary_oid': 'race_concept_codeSystem',
+                'default': (0,'default')
     	    },
-            'order': 8 
+            'order': 7
     	},
 
     	'ethnicity_concept_code': {
@@ -225,21 +243,22 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		    'concept_code': 'ethnicity_concept_code',
-    		'vocabulary_oid': 'ethnicity_concept_codeSystem'
+    		    'vocabulary_oid': 'ethnicity_concept_codeSystem',
+                'default': (0,'default')
     	    },
-            'order': 9 
+            'order': 8
     	},
 
-        'location_id': { 'config_type': None, 'output': True,  'order': 10 },
-        'provider_id': { 'config_type': None, 'output': True,  'order': 11 },
-        'care_site_id': { 'config_type': None, 'output': True,  'order': 12 },
-        'person_source_value': { 'config_type': None, 'output': True,  'order': 13 },
-        'gender_source_value': { 'config_type': None, 'output': True,  'order': 14 },
-        'gender_source_concept_id': { 'config_type': None, 'output': True,  'order': 15 },
-        'race_source_value': { 'config_type': None, 'output': True,  'order': 16 },
-        'race_source_concept_id': { 'config_type': None, 'output': True,  'order': 17 },
-        'ethnicity_source_value': { 'config_type': None, 'output': True,  'order': 18 },
-        'ethnicity_source_concept_id': { 'config_type': None, 'output': True,  'order': 19 }
+        'location_id': { 'config_type': None, 'output': True,  'order': 9 },
+        'provider_id': { 'config_type': None, 'output': True,  'order': 10 },
+        'care_site_id': { 'config_type': None, 'output': True,  'order': 11 },
+        'person_source_value': { 'config_type': None, 'output': True,  'order': 12 },
+        'gender_source_value': { 'config_type': None, 'output': True,  'order': 13 },
+        'gender_source_concept_id': { 'config_type': None, 'output': True,  'order': 14 },
+        'race_source_value': { 'config_type': None, 'output': True,  'order': 15 },
+        'race_source_concept_id': { 'config_type': None, 'output': True,  'order': 16 },
+        'ethnicity_source_value': { 'config_type': None, 'output': True,  'order': 17 },
+        'ethnicity_source_concept_id': { 'config_type': None, 'output': True,  'order': 18 }
  
     }
 }

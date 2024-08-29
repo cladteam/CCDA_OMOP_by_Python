@@ -61,7 +61,8 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		    'concept_code': 'visit_concept_code',
-    		    'vocabulary_oid': 'visit_concept_codeSystem'
+    		    'vocabulary_oid': 'visit_concept_codeSystem',
+                'default': (0,'default')
     	    },
             'order': 3
     	},

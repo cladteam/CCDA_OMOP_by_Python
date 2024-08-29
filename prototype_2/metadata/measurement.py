@@ -57,7 +57,8 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		    'concept_code': 'measurement_concept_code',
-    		    'vocabulary_oid': 'measurement_concept_codeSystem'
+    		    'vocabulary_oid': 'measurement_concept_codeSystem',
+                'default': (0,'default')
     	    },
             'order': 3
     	},
@@ -68,7 +69,8 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
     	    'argument_names': {
     		    'concept_code': 'measurement_concept_code',
-    		    'vocabulary_oid': 'measurement_concept_codeSystem'
+    		    'vocabulary_oid': 'measurement_concept_codeSystem',
+                'default': (0,'default')
     	    }
     	},
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
@@ -89,7 +91,8 @@ metadata = {
     	    'output': True,
     	    'config_type': 'FIELD',
     	    'element': "value" ,
-    	    'attribute': "value",
+    	    'attribute': "#text", # 'attribute': "value", # TODO ??? bennis_shauna....xml needs #text
+            'order': 100
     	},
     	'value_as_number': {
     	    'output': True,
