@@ -120,7 +120,8 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
             return attribute_value
         else:
             return None
-
+    else:
+        return attribute_value
 
 
 def do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
@@ -138,12 +139,12 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
                      f" {field_details_dict}"))
         type_tag = field_details_dict['config_type']
         if type_tag == 'FIELD':
-            logger.info(f"     FIELD for {domain}/{field_tag}")
             attribute_value = parse_field_from_dict(field_details_dict, root_element,
                                                     domain, field_tag, root_path)
             output_dict[field_tag] = (attribute_value, root_path + "/" +
                                       field_details_dict['element'] + "/@" +
                                       field_details_dict['attribute'])
+            logger.info(f"     FIELD for {domain}/{field_tag} \"{attribute_value}\"")
         elif type_tag == 'PK':
             logger.info(f"     PK for {domain}/{field_tag}")
             attribute_value = parse_field_from_dict(field_details_dict, root_element,
@@ -173,6 +174,7 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
 
 def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     # Do derived values now that their inputs should be available in the output_dict
+    # Except for a special argument named 'default', when the value is what is other wise the field to look up in the output dict.
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'DERIVED':
             logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
@@ -180,26 +182,36 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
             # doesn't know what the keywords are at 'compile' time.
             args_dict = {}
             for arg_name, field_name in field_details_dict['argument_names'].items():
-                logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
-                if field_name not in output_dict:
-                    error_fields_set.add(field_tag)
-                    logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
-                                  f"find {field_name} in {output_dict}"))
-                try:
-                    args_dict[arg_name] = output_dict[field_name][0]
-                except Exception:
-                    error_fields_set.add(field_tag)
-                    logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
-                                  f" args_dict:{args_dict} output_dict:{output_dict}"))
+                if arg_name == 'default':
+                        args_dict[arg_name] = field_name
+                else:
+                    logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
+                    if field_name not in output_dict:
+                        error_fields_set.add(field_tag)
+                        logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
+                                      f"find {field_name} in {output_dict}"))
+                    try:
+                        args_dict[arg_name] = output_dict[field_name][0]
+                    except Exception:
+                        error_fields_set.add(field_tag)
+                        logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
+                                      f" args_dict:{args_dict} output_dict:{output_dict}"))
+
             try:
                 function_value = field_details_dict['FUNCTION'](args_dict)
                 output_dict[field_tag] = (function_value, 'DERIVED')
                 logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
+            except KeyError as e:
+                error_fields_set.add(field_tag)
+                logger.error(f"DERIVED exception: {e}")
+                logger.error(f"DERIVED KeyError {field_tag} function can't find key it expects in {args_dict}")
+                output_dict[field_tag] = (None, field_details_dict['config_type'])
             except TypeError as e:
                 error_fields_set.add(field_tag)
                 logger.error(f"DERIVED exception: {e}")
-                logger.error((f"DERIVED {field_tag} possibly calling something that isn't a function"
+                logger.error((f"DERIVED TypeError {field_tag} possibly calling something that isn't a function"
+                              " or that function was passed a null value." 
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
@@ -216,17 +228,20 @@ def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_
             # Collect args for the function
             args_dict = {}
             for arg_name, field_name in field_details_dict['argument_names'].items():
-                logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
-                if field_name not in output_dict:
-                    error_fields_set.add(field_tag)
-                    logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
-                                  f"find {field_name} in {output_dict}"))
-                try:
-                    args_dict[arg_name] = output_dict[field_name][0]
-                except Exception:
-                    error_fields_set.add(field_tag)
-                    logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
-                                  f" args_dict:{args_dict} output_dict:{output_dict}"))
+                if arg_name == 'default':
+                        args_dict[arg_name] = field_name
+                else:
+                    logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
+                    if field_name not in output_dict:
+                        error_fields_set.add(field_tag)
+                        logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
+                                      f"find {field_name} in {output_dict}"))
+                    try:
+                        args_dict[arg_name] = output_dict[field_name][0]
+                    except Exception:
+                        error_fields_set.add(field_tag)
+                        logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
+                                      f" args_dict:{args_dict} output_dict:{output_dict}"))
             # Derive the value
             try:
                 function_value = field_details_dict['FUNCTION'](args_dict)
@@ -234,6 +249,10 @@ def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_
                 output_dict[field_tag] = (function_value, 'DOMAIN') ##########
                 logger.info((f"     DOMAIN captured as {function_value} for "
                                  f"{field_tag}, {field_details_dict}"))
+            except KeyError as e:
+                error_fields_set.add(field_tag)
+                logger.error(f"DERIVED exception: {e}")
+                logger.error(f"DERIVED {field_tag} can't find argument in {args_dict}")
             except TypeError as e:
                 error_fields_set.add(field_tag)
                 logger.error(f"DERIVED exception: {e}")
@@ -317,8 +336,9 @@ def clean_dict(output_dict, priority_field_names, domain_meta_dict):
         elif key in domain_meta_dict:
             field_details_dict = domain_meta_dict[key]
             if 'output' not in field_details_dict:
-                print(f"\nXXXXX {key}\n")
+                print(f"\nDropping field  {key}\n")
             if field_details_dict['output']:
+                print(f"Outputting field  {key} {output_dict[key]}")
                 clean_output_dict[key] = output_dict[key]
         elif key != 'root_path':
             print(f"ERROR found key {key} that's neither a priority key nor in the domain_meta_dict. Impossible error #42")
@@ -327,8 +347,6 @@ def clean_dict(output_dict, priority_field_names, domain_meta_dict):
 
 def get_extract_order_fn(dict):
     def get_order_from_dict(field_key):
-        if field_key == 'person_id':
-            print(f"YYYYYYY {dict[field_key]}")
         if 'output' in dict[field_key] and dict[field_key]['output']:
             if 'order' in dict[field_key]:
                 logger.info(f"{field_key} {dict[field_key]['order']}")
@@ -340,6 +358,7 @@ def get_extract_order_fn(dict):
                 print(f"WARNING extract_order_fn {field_key} is not explicitly output")
                 return sys.maxsize
     return get_order_from_dict
+
 
 def sort_output_dict(output_dict, domain_meta_dict, domain):
     """ Sorts the ouput_dict by the value of the 'order' fields in the associated
