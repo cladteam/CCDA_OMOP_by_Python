@@ -1,2 +1,2 @@
-person_id,visit_occurrence_id,care_site_id,provider_id,start_time,end_time,visit_concept_id
-123-101-5230,1,2.16.840.1.113883.4.6,2.16.840.1.113883.4.6,20120806,20120813,255848
+person_id,visit_concept_id,visit_start_date,visit_start_datetime,visit_end_date,visit_end_datetime,visit_type_concept_id,provider_id,care_site_id,visit_detail_source_value,visit_detail_source_concept_id,admitting_source_value,admitting_source_concept_id,discharge_to_source_value,discharge_to_source_concept_id,preceding_visit_occurrence_id,visit_occurrence_id,visit_occurrence_id_other,visit_occurrence_id_catchall,provider_id_catchall
+1097906119,255848,2012-08-06,,2012-08-13,,,2.16.840.1.113883.4.6,2.16.840.1.113883.4.6,,,,,,,,1,1,1,2.16.840.1.113883.4.6

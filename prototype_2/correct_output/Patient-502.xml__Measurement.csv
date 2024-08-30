@@ -1,5 +1,5 @@
-person_id,visit_occurrence_id,measurement_id,time,value_as_string,value_type,value_unit,measurement_concept_id,value_as_number,value_as_concept_id
-998991,,107c2dc0-67a5-11db-bd13-0800200c9a66,20100414100000,55,,mg/dL,,55.0,
-998991,,107c2dc0-67a5-11db-bd13-0800200c9a66,20100414100000,153,,mg/dL,,153.0,
-998991,,107c2dc0-67a5-11db-bd13-0800200c9a66,20100414100000,240,,mg/dL,,240.0,
-998991,,107c2dc0-67a5-11db-bd13-0800200c9a66,20100414100000,160,,mg/dL,,160.0,
+measurement_id,person_id,measurement_concept_id,measurement_date,measurement_datetime,measurement_time,measurement_type_concept_id,operator_concept_id,value_as_number,value_as_concept_id,unit_concept_id,provider_id,visit_occurrence_id,visit_detail_id,measurement_source_value,measurement_source_concept_id,unit_source_value,value_source_value,value_as_string,measurement_id_basic,measurement_id_hash,measurement_concept_code,measurement_concept_codeSystem,measurement_concept_domain_id
+34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,-927965661,3023602,2010-04-14 10:00,,,,,55.0,,,,5283815,,,,,,,107c2dc0-67a5-11db-bd13-0800200c9a66,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,14646-4,2.16.840.1.113883.6.1,Measurement
+34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,-927965661,3028437,2010-04-14 10:00,,,,,153.0,,,,5283815,,,,,,,107c2dc0-67a5-11db-bd13-0800200c9a66,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,2089-1,2.16.840.1.113883.6.1,Measurement
+34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,-927965661,3027114,2010-04-14 10:00,,,,,240.0,,,,5283815,,,,,,,107c2dc0-67a5-11db-bd13-0800200c9a66,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,2093-3,2.16.840.1.113883.6.1,Measurement
+34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,-927965661,3007943,2010-04-14 10:00,,,,,160.0,,,,5283815,,,,,,,107c2dc0-67a5-11db-bd13-0800200c9a66,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,12951-0,2.16.840.1.113883.6.1,Measurement

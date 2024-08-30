@@ -1,3 +1,3 @@
-person_id,visit_occurrence_id,observation_id,time,value_as_string,value_type,value_unit,observation_concept_id,value_as_number,value_as_concept_id
-444222222,,aed821af-3330-4138-97f0-e84dfe5f3c35,200803200930-0800,,,,3299517,,
-444222222,,aed821af-3330-4138-97f0-e84dfe5f3c35,200803200930-0800,,,,3299517,,
+observation_id,person_id,observation_concept_id,observation_date,observation_datetime,observation_type_concept_id,value_as_number,value_as_string,value_as_concept_id,unit_concept_id,provider_id,visit_occurence_id,visit_detail_id,observation_source_value,observation_source_concept_id,unit_source_value,qualifier_source_value,observation_concept_code,observation_concept_codeSystem,observation_concept_domain_id,visit_occurrence_id,value_type,value_unit
+aed821af-3330-4138-97f0-e84dfe5f3c35,-791759727,,2008-03-20 09:30,,,,,,,,,,,,,,95971004,2.16.840.1.113883.6.96,,,,
+aed821af-3330-4138-97f0-e84dfe5f3c35,-791759727,,2008-03-20 09:30,,,,,,,,,,,,,,95971004,2.16.840.1.113883.6.96,,,,
