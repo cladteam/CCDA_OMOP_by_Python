@@ -2,6 +2,6 @@
 
 rm -f logs/*
 rm -f output/*
-python3 prototype_2/layer_datasets.py -d ../CCDA-data/resources
-python3 omop/setup_omop.py
+python3 -m prototype_2.layer_datasets -d ../CCDA-data/resources
+python3 -m omop.setup_omop
 
