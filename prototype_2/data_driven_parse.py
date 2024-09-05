@@ -334,54 +334,35 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
     return priority_fields
 
 
-def clean_dict(output_dict, priority_field_names, domain_meta_dict):
-    # Clean the dict by removing fields with a False output tag
-    clean_output_dict = {}
-    for key in output_dict:
-        if key in priority_field_names:
-            clean_output_dict[key] = output_dict[key]
-        elif key in domain_meta_dict:
-            field_details_dict = domain_meta_dict[key]
-            if 'output' not in field_details_dict:
-                print(f"\nDropping field  {key}\n")
-            if field_details_dict['output']:
-                print(f"Outputting field  {key} {output_dict[key]}")
-                clean_output_dict[key] = output_dict[key]
-        elif key != 'root_path':
-            print(f"ERROR found key {key} that's neither a priority key nor in the domain_meta_dict. Impossible error #42")
-    return clean_output_dict
-
-
 def get_extract_order_fn(dict):
     def get_order_from_dict(field_key):
-        if 'output' in dict[field_key] and dict[field_key]['output']:
-            if 'order' in dict[field_key]:
-                logger.info(f"{field_key} {dict[field_key]['order']}")
-                return dict[field_key]['order']
-            else:
-                logger.warning(f"extract_order_fn, no order in {field_key}")
-                return sys.maxsize
+        if 'order' in dict[field_key]:
+            logger.info(f"{field_key} {dict[field_key]['order']}")
+            return dict[field_key]['order']
         else:
-                print(f"WARNING extract_order_fn {field_key} is not explicitly output")
-                return sys.maxsize
+            logger.warning(f"extract_order_fn, no order in {field_key}")
+            return sys.maxsize
+
     return get_order_from_dict
 
+def get_filter_fn(dict):
+    def has_order_attribute(key):
+        return 'order' in dict[key] and dict[key]['order'] is not None
+    return has_order_attribute
 
 def sort_output_dict(output_dict, domain_meta_dict, domain):
     """ Sorts the ouput_dict by the value of the 'order' fields in the associated
-        domain_meta_dict. Fields without a value, or without an entry come last.
-        Fields with output False shouldn't appear here, but if they do they are
-        not included in the sorted list.
+        domain_meta_dict. Fields without a value, or without an entry used to 
+        come last, now are omitted.
     """
     ordered_output_dict = {}
-    mah_fun = get_extract_order_fn(domain_meta_dict)
-    ordered_keys = sorted(domain_meta_dict.keys(), key=mah_fun)
-    print(f"\nXXXXX ordered-keys: {ordered_keys}\n")
-    for key in ordered_keys:
+    sort_function = get_extract_order_fn(domain_meta_dict) # curry in the domain arg.
+    ordered_keys = sorted(domain_meta_dict.keys(), key=sort_function)
+    filter_function = get_filter_fn(domain_meta_dict)
+    filtered_ordered_keys = filter(filter_function, domain_meta_dict.keys())
+    for key in filtered_ordered_keys:
         if key in output_dict:
             ordered_output_dict[key] = output_dict[key]
-        elif key != 'root':
-            logger.error(f"had a problem sorting the field with key {key}")
 
     return ordered_output_dict
 
@@ -408,13 +389,8 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
 
     output_dict = sort_output_dict(output_dict, domain_meta_dict, domain)
 
-    # Add a "root" column to show where this came from
-    output_dict['root_path'] = (root_path, 'root_path')
-    # TODO: could add  more for filename and ID
-
     if (domain == domain_id or domain_id is None):
-        clean_output_dict = clean_dict(output_dict, priority_field_names, domain_meta_dict)
-        return (clean_output_dict, error_fields_set)
+        return (output_dict, error_fields_set)
     else:
         return (None, None)
 
@@ -493,7 +469,6 @@ def print_omop_structure(omop):
     """ prints a dict of parsed domains as returned from parse_doc()
         or parse_domain_from_dict()
     """
-    print(f"pk_dict: {pk_dict}")
     for domain, domain_list in omop.items():
         if domain_list is None:
             logger.warning(f"no data for domain {domain}")
