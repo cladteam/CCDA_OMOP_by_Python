@@ -1,8 +1,8 @@
-measurement_id,person_id,measurement_concept_id,measurement_date,measurement_datetime,measurement_time,measurement_type_concept_id,operator_concept_id,value_as_number,value_as_concept_id,unit_concept_id,provider_id,visit_occurrence_id,visit_detail_id,measurement_source_value,measurement_source_concept_id,unit_source_value,value_source_value,value_as_string,measurement_id_basic,measurement_id_hash,measurement_concept_code,measurement_concept_codeSystem,measurement_concept_domain_id
-34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,1559324668,3009201,2012-11-26,,,,,6.0,,,,1,,,,,,,1331eea1-3efe-497e-96bc-de56796a253d,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,3016-3,2.16.840.1.113883.6.1,Measurement
-34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,1559324668,3004410,2012-11-26,,,,,8.0,,,,1,,,,,,,dc16a671-c8f7-4125-a3f6-c8787606f576,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,4548-4,2.16.840.1.113883.6.1,Measurement
-34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,1559324668,3016723,2012-11-26,,,,,1.5,,,,1,,,,,,,9cd43fa7-db31-4c29-ab30-83f92fdcaa20,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,2160-0,2.16.840.1.113883.6.1,Measurement
-34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,1559324668,3022217,2012-11-26,,,,,1.5,,,,1,,,,,,,78df60b1-daf7-4838-b509-ec3a3f4116c1,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,6301-6,2.16.840.1.113883.6.1,Measurement
-34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,1559324668,3015022,2012-11-26,,,,,55.0,,,,1,,,,,,,aaa00f9e-0154-4eaa-be85-aeb34169f06a,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,18041-4,2.16.840.1.113883.6.1,Measurement
-34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,1559324668,3020064,2012-11-26,,,,,1.5,,,,1,,,,,,,347f958c-9b6b-4eeb-848d-624567117cb7,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,18089-3,2.16.840.1.113883.6.1,Measurement
-34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,1559324668,3004451,2012-11-26,,,,,,,,,1,,,,,,"EKG rate 60s, A fib, LBBB",ba4f85fa-586c-4898-9aad-b592d4c2c383,34521bc9c23f7c901da337bd76d636f9e20f13791e2dcaecaa8ca94e11c36a6b,18844-1,2.16.840.1.113883.6.1,Measurement
+measurement_id,person_id,measurement_concept_id,measurement_date,measurement_datetime,measurement_time,measurement_type_concept_id,operator_concept_id,value_as_string,value_as_number,value_as_concept_id,unit_concept_id,provider_id,visit_occurrence_id,visit_detail_id,measurement_source_value,measurement_source_concept_id,unit_source_value,value_source_value
+298019435,139937725,3009201,2012-11-26,,,,,,6.0,,,,,,,,,
+298019435,139937725,3004410,2012-11-26,,,,,,8.0,,,,,,,,,
+298019435,139937725,3016723,2012-11-26,,,,,,1.5,,,,,,,,,
+298019435,139937725,3022217,2012-11-26,,,,,,1.5,,,,,,,,,
+298019435,139937725,3015022,2012-11-26,,,,,,55.0,,,,,,,,,
+298019435,139937725,3020064,2012-11-26,,,,,,1.5,,,,,,,,,
+298019435,139937725,3004451,2012-11-26,,,,,"EKG rate 60s, A fib, LBBB",,,,,,,,,,
