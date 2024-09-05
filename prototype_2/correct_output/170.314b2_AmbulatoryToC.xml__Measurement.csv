@@ -1,2 +1,2 @@
-person_id,visit_occurrence_id,measurement_time,value_as_string,value_type,value_unit,measurement_concept_id,value_as_number,value_as_concept_id,measurement_id
-345678912-0154,,2012-08-15 10:05,27,,mmol/L,3015632,27.0,,503B5578-E8FF-11E4-B48A-460231621F93
+measurement_id,person_id,measurement_concept_id,measurement_date,measurement_datetime,measurement_time,measurement_type_concept_id,operator_concept_id,value_as_string,value_as_number,value_as_concept_id,unit_concept_id,provider_id,visit_occurrence_id,visit_detail_id,measurement_source_value,measurement_source_concept_id,unit_source_value,value_source_value
+298019435,939546828,3015632,2012-08-15 10:05,,,,,,27.0,,,,5283815,,,,,
