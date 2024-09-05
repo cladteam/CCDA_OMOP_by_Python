@@ -87,6 +87,27 @@ metadata = {
         'measurement_type_concept_id': { 'output': True, 'config_type': None, 'output': True,  'order': 7 },
         'operator_concept_id': { 'output': True, 'config_type': None, 'output': True,  'order': 8 },
 
+        # This is heinous. We don't need value_as_string in measurement, but as input to cast to value_as_number.
+        # IIRC the code currently treats priority fields as coming after DERIVED values, and here they
+        # would be input to one.
+        # FIX https://github.com/cladteam/CCDA_OMOP_by_Python/issues/77 #77
+    	#'value_as_string_text': {
+    	#    'output': False,
+        #    'config_type': 'FIELD',
+    	#    'element': "value" ,
+    	#    'attribute': "#text",
+        #    'priority' : ['value_as_string', 2]
+    	#},
+    	#'value_as_string_value': {
+    	#    'output': False,
+    	#    'config_type': 'FIELD',
+    	#    'element': "value" ,
+    	#    'attribute': "value",
+        #    'priority' : ['value_as_string', 1]
+    	#},
+        # This is so value_as_number has something to work with in some cases.
+        # In other cases, this will fail as described above and in #77
+        # and yes, this must conflict with the priority group above in some way.
     	'value_as_string': {
     	    'output': True,
     	    'config_type': 'FIELD',
