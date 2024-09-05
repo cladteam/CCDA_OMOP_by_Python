@@ -8,6 +8,9 @@
  - Value transformation is stubbed out waiting for vocabularies to be loaded, and to
    figure out how to use them once there.
 
+  - Deterministic hashing in Python3 https://stackoverflow.com/questions/27954892/deterministic-hashing-in-python-3
+  - https://stackoverflow.com/questions/16008670/how-to-hash-a-string-into-8-digits 
+
  Chris Roeder
 
 2024-07-31: visit_concept_id is incorrect, It's picking up pnemonia a Condition
@@ -41,7 +44,6 @@ ns = {
 }
 
 
-PK_dict = {}
 
 
 def cast_to_date(string_value):
@@ -111,10 +113,13 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
             if field_details_dict['data_type'] == 'INTEGER':
                     attribute_value = int(attribute_value)
             if field_details_dict['data_type'] == '32BINTEGER':
-                    attribute_value = ctypes.c_int32(attribute_value).value
+                    attribute_value = ctypes.c_int32(int(attribute_value)).value
             if field_details_dict['data_type'] == 'INTEGERHASH':
                 # for DuckDB (RDB int type), we need a 32-bit  signed integer from almost anything. This may not be as unique as we need TODO FIX
-                attribute_value = ctypes.c_int32(hash(attribute_value)).value
+                # attribute_value = ctypes.c_int32(hash(attribute_value)).value # NOT STABLE!
+                hash_value = hashlib.sha256(attribute_value.encode('utf-8')).hexdigest()
+                #attribute_value = int(hash_value, 16) % 10**8 # 8 digiti decimal
+                attribute_value = int(hash_value, 16) % 2**31 # signed 4 byte int
             if field_details_dict['data_type'] == 'FLOAT':
                 attribute_value = float(attribute_value)
             return attribute_value
@@ -133,7 +138,7 @@ def do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_di
             output_dict[field_tag] = (None, '(None type)')
 
 
-def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
@@ -152,13 +157,13 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
             output_dict[field_tag] = (attribute_value, root_path + "/" +
                                       field_details_dict['element'] + "/@" +
                                       field_details_dict['attribute'])
-            PK_dict[field_tag] = attribute_value
+            pk_dict[field_tag] = attribute_value
         elif type_tag == 'FK':
             logger.info(f"     FK for {domain}/{field_tag}")
-            if field_tag in PK_dict:
-                output_dict[field_tag] = (PK_dict[field_tag], 'FK')
+            if field_tag in pk_dict:
+                output_dict[field_tag] = (pk_dict[field_tag], 'FK')
             else:
-                logger.error(f"FK could not find {field_tag}  in PK_dict for {domain}/{field_tag}")
+                logger.error(f"FK could not find {field_tag}  in pk_dict for {domain}/{field_tag}")
                 path = root_path + "/"
                 if 'element' in field_details_dict:
                     path = path + field_details_dict['element'] + "/@"
@@ -277,12 +282,14 @@ def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_di
         if field_details_dict['config_type'] == 'HASH':
             hash_input =  "-".join(field_details_dict['fields'])
             hash_value = hashlib.sha256(hash_input.encode('utf-8')).hexdigest()
+            #hash_value = int(hash_value, 16) % 10**9 # ( digit decimal
+            hash_value = int(hash_value, 16) % 2**31 # ( signed 4 byte int )
             output_dict[field_tag] = (hash_value, 'HASH')
             logger.info((f"     HASH {hash_value} for "
                          f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
 
 
-def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
     """
         Returns the list of  priority_names so they can be added to "output" fields
         Also, adds this field to the PK list?
@@ -321,7 +328,7 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
         for value_field_pair in sorted_contents:
             if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]][0] is not None:
                 output_dict[priority_name] = output_dict[value_field_pair[0]]
-                PK_dict[priority_name] = output_dict[value_field_pair[0]][0]
+                pk_dict[priority_name] = output_dict[value_field_pair[0]][0]
                 break
 
     return priority_fields
@@ -379,7 +386,7 @@ def sort_output_dict(output_dict, domain_meta_dict, domain):
     return ordered_output_dict
 
 
-def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set):
+def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set, pk_dict):
     """  Parses for each field in the metadata for a domain out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
 
@@ -393,11 +400,11 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
                  f" attributes:{root_element.attrib}"))
 
     do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-    do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
     do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     domain_id = do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-    priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
 
     output_dict = sort_output_dict(output_dict, domain_meta_dict, domain)
 
@@ -412,7 +419,7 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
         return (None, None)
 
 
-def parse_domain_from_dict(tree, domain, domain_meta_dict, filename):
+def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
         (ClinicalDocument, not just file),
@@ -455,7 +462,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename):
     logger.info(f"NUM ROOTS {domain} {len(root_element_list)}")
     print(f"NUM ROOTS {domain} {len(root_element_list)}")
     for root_element in root_element_list:
-        (output_dict, element_error_set) = parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set)
+        (output_dict, element_error_set) = parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set, pk_dict)
         if output_dict is not None:
             output_list.append(output_dict)
         if element_error_set is not None:
@@ -473,10 +480,11 @@ def parse_doc(file_path, metadata):
         into a dict to return.
     """
     omop_dict = {}
+    pk_dict = {}
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for domain, domain_meta_dict in metadata.items():
-        domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict, base_name)
+        domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict, base_name, pk_dict)
         omop_dict[domain] = domain_data_dict
     return omop_dict
 
@@ -485,7 +493,7 @@ def print_omop_structure(omop):
     """ prints a dict of parsed domains as returned from parse_doc()
         or parse_domain_from_dict()
     """
-    print(f"PK_dict: {PK_dict}")
+    print(f"pk_dict: {pk_dict}")
     for domain, domain_list in omop.items():
         if domain_list is None:
             logger.warning(f"no data for domain {domain}")
