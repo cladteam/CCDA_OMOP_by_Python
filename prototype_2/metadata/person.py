@@ -14,12 +14,6 @@ metadata = {
         # Often it's not clear these are legitimate or public  OIDs. I haven't found a definition for them.
         # TODO keep an eye on uniqueness and consider if our OMOP patient ID should be a concatination of
         # TODO (cont) root and extension...like if the extension is only unique within a system identified by the root.
-    	'person_id': {
-    	    'output': True,
-            'config_type': 'PRIORITY',
-            'data_type': 'INTEGER', # not applied here, go to the priority fields
-            'order': 1
-        },
     	'person_id_anna_flux': {
     	    'output': False,
     	    'config_type': 'FIELD',
@@ -249,6 +243,12 @@ metadata = {
             'order': 8
     	},
 
+    	'person_id': { # down here to bait trouble with sorting
+    	    'output': True,
+            'config_type': 'PRIORITY',
+            'data_type': 'INTEGER', # not applied here, go to the priority fields
+            'order': 1
+        },
         'location_id': { 'config_type': None, 'output': True,  'order': 9 },
         'provider_id': { 'config_type': None, 'output': True,  'order': 10 },
         'care_site_id': { 'config_type': None, 'output': True,  'order': 11 },
