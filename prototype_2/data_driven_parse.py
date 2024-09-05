@@ -291,17 +291,19 @@ def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_di
 
 def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
     """
-        Returns the list of  priority_names so they can be added to "output" fields
-        Also, adds this field to the PK list?
-        Within the domain_meta_dict, find all fields tagged with priority and group 
+        Returns the list of  priority_names so the chosen one (first non-null) can be 
+        added to output fields Also, adds this field to the PK list?
+
+        Within the domain_meta_dict, find all fields tagged with priority and group
         them by their priority names in a dictionary keyed by that name
         Ex. { 'person_id': [ ('person_id_ssn', 1), ('person_id_unknown', 2) ]
+        Sort them, choose the first one that is not None.
 
         NB now there is a separate config_type PRIORITY to compliment the priority attribute.
-        So you might have person_id_npi, person_id_ssn and person_id_hash tagged with priority 
+        So you might have person_id_npi, person_id_ssn and person_id_hash tagged with priority
         attributes to create a field person_id, but then also another field, just plain person_id.
         The point of it is to have a unique place to put that field's order attribute. The code
-        here (and in the ordering code later) must be aware of a  that field in the 
+        here (and in the ordering code later) must be aware of a  that field in the
         domain_meta_dict (where it isn't used) ...and not clobber it. It's an issue over in the
         sorting/ordering.
     """
@@ -338,10 +340,10 @@ def get_extract_order_fn(dict):
     def get_order_from_dict(field_key):
         if 'order' in dict[field_key]:
             logger.info(f"{field_key} {dict[field_key]['order']}")
-            return dict[field_key]['order']
+            return int(dict[field_key]['order'])
         else:
             logger.warning(f"extract_order_fn, no order in {field_key}")
-            return sys.maxsize
+            return int(sys.maxsize)
 
     return get_order_from_dict
 
@@ -356,10 +358,13 @@ def sort_output_dict(output_dict, domain_meta_dict, domain):
         come last, now are omitted.
     """
     ordered_output_dict = {}
+
     sort_function = get_extract_order_fn(domain_meta_dict) # curry in the domain arg.
     ordered_keys = sorted(domain_meta_dict.keys(), key=sort_function)
+
     filter_function = get_filter_fn(domain_meta_dict)
-    filtered_ordered_keys = filter(filter_function, domain_meta_dict.keys())
+    filtered_ordered_keys = filter(filter_function, ordered_keys)
+
     for key in filtered_ordered_keys:
         if key in output_dict:
             ordered_output_dict[key] = output_dict[key]
@@ -436,7 +441,6 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
     output_list = []
     error_fields_set = set()
     logger.info(f"NUM ROOTS {domain} {len(root_element_list)}")
-    print(f"NUM ROOTS {domain} {len(root_element_list)}")
     for root_element in root_element_list:
         (output_dict, element_error_set) = parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set, pk_dict)
         if output_dict is not None:
@@ -465,7 +469,7 @@ def parse_doc(file_path, metadata):
     return omop_dict
 
 
-def print_omop_structure(omop):
+def print_omop_structure(omop, meta_data):
     """ prints a dict of parsed domains as returned from parse_doc()
         or parse_domain_from_dict()
     """
@@ -483,6 +487,7 @@ def print_omop_structure(omop):
                         print(f"    FIELD:{field}")
                         print(f"        VALUE:{parts[0]}")
                         print(f"        PATH:{parts[1]}")
+                        print(f"        ORDER: {meta_data[domain][field]['order']}")
                         n = n+1
                     print(f"\n\nDOMAIN: {domain} {n}\n\n")
 
@@ -502,10 +507,10 @@ def process_file(filepath):
         # level=logging.DEBUG
     )
 
-    omop_data = parse_doc(filepath, get_meta_dict())
-    # DDP.print_omop_structure(omop_data)
+    meta_data = get_meta_dict()
+    omop_data = parse_doc(filepath, meta_data)
     if omop_data is not None or len(omop_data) < 1:
-        print_omop_structure(omop_data)
+        print_omop_structure(omop_data, meta_data)
     else:
         logger.error(f"FILE no data from {filepath}")
 
