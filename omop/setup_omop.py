@@ -27,8 +27,8 @@ logging.basicConfig(
     format='%(levelname)s: %(message)s',
     filename=f"logs/load_omop.log",
     force=True,
-    level=logging.WARNING
-    # level=logging.ERROR # level=logging.INFO # level=logging.DEBUG
+    level=logging.INFO
+    # level=logging.WARNING level=logging.ERROR # level=logging.INFO # level=logging.DEBUG
 )
 
 sql_import_dict = {
