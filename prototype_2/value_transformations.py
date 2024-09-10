@@ -5,11 +5,30 @@ logger = logging.getLogger(__name__)
 concept_df = pd.read_csv("map_to_standard.csv")
 
 
+def cast_as_string(args_dict):
+    string_value = args_dict['input']
+    type_value = args_dict['type']
+    if type_value == 'ST':
+        return string(string_value)
+    else:
+        return None
 
-def cast_string_to_concept_id(args_dict):
-    # string_value = args_dict['input']
-    # immediate qustion is if the string_value is a concept_code, which vocabulary_id do you use?
-    # next question is at a larger scope, what is the string?
+def cast_as_number(args_dict):
+    string_value = args_dict['input']
+    type_value = args_dict['type']
+    if type_value == 'PQ':
+        return int(string_value)
+    else:
+        return None
+
+def cast_as_concept_id(args_dict):  # TBD FIX CHRIS
+    string_value = args_dict['input']
+    type_value = args_dict['type']
+    if type_value == 'CD' or type_value == 'CE':
+        return string_value
+    else:
+        return None
+
     return ""
 
 

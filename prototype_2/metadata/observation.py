@@ -70,35 +70,50 @@ metadata = {
     	    'FK': 'visit_occurrence_id'
     	},
 
-
-    	'value_as_number': {
-    	    'config_type': 'FIELD',
-            'data_type': 'FLOAT',
-    	    'element': "value" ,
-    	    'attribute': "value",
-            'order': 7
-    	},
-    	'value_as_string': {
-    	    'config_type': 'FIELD',
-    	    'element': "value" ,
-    	    'attribute': "value",
-            'order': 8
-    	},
-    	'value_as_concept_id': {
-    	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.cast_string_to_concept_id,
-    	    'argument_names': {
-    		    'input': 'value_as_string',
-    		    'config_type': 'value_type'
-    	    },
-            'order': 9 
-    	},
     	'value_type': {
     	    'config_type': 'FIELD',
     	    'element': "value",
-    	    'attribute': "type"
+    	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
+            'order': 100
     	},
-    	'value_unit':  {
+    	'value_as_string': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
+    	    'attribute': "#text",
+            'order': 7
+    	},
+    	'value_as_number': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
+    	    'attribute': "value",
+            'order':8
+    	},
+    	'value_as_code': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'attribute': "code",
+            'order' : 130
+        },
+    	'value_as_codeSystem': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'attribute': "codeSystem",
+            'order' : 131
+        },
+    	'value_as_concept_id': {
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'argument_names': {
+    		    'concept_code': 'value_as_code',
+    		    'vocabulary_oid': 'value_as_codeSystem',
+                'default': (0,'default')
+            },
+            'order':  9
+        },
+
+
+
+        'value_unit':  {
     	    'config_type': 'FIELD',
     	    'element': 'value',
     	    'attribute': 'unit'
@@ -107,9 +122,23 @@ metadata = {
         'provider_id': { 'config_type': None, 'order': 11 },
         'visit_occurence_id': { 'config_type': None, 'order': 12 },
         'visit_detail_id': { 'config_type': None, 'order': 13 },
-        'observation_source_value': { 'config_type': None, 'order': 14 },
+
+        'observation_source_value': {
+    	    'config_type': 'FIELD',
+    	    'element': "code" ,
+    	    'attribute': "code",
+            'order': 14
+        },
+
         'observation_source_concept_id': { 'config_type': None, 'order': 15 },
+
+
         'unit_source_value': { 'config_type': None, 'order': 16 },
         'qualifier_source_value': { 'config_type': None, 'order': 17 }
     }
 }
+
+
+
+
+

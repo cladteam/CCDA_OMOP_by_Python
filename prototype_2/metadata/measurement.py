@@ -96,25 +96,43 @@ metadata = {
         # This is so value_as_number has something to work with in some cases.
         # In other cases, this will fail as described above and in #77
         # and yes, this must conflict with the priority group above in some way.
+    	'value_type': {
+    	    'config_type': 'FIELD',
+    	    'element': "value",
+    	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
+#            'order': 100
+    	},
     	'value_as_string': {
     	    'config_type': 'FIELD',
-    	    'element': "value" ,
-    	    'attribute': "#text", # 'attribute': "value", # TODO ??? bennis_shauna....xml needs #text
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
+    	    'attribute': "#text",
     	},
     	'value_as_number': {
     	    'config_type': 'FIELD',
-            'data_type': 'FLOAT',
-    	    'element': "value" ,
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
     	    'attribute': "value",
             'order': 9
     	},
+    	'value_as_code': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'attribute': "code",
+#            'order' : 130
+        },
+    	'value_as_codeSystem': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'attribute': "codeSystem",
+#            'order' : 131
+        },
     	'value_as_concept_id': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.cast_string_to_concept_id,
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		    'input': 'value_as_string',
-    		    'config_type': 'value_type'
-    	    },
+    		    'concept_code': 'value_as_code',
+    		    'vocabulary_oid': 'valuse_as_codeSystem',
+                'default': (0,'default')
+            },
             'order':  10
     	},
 
@@ -127,9 +145,42 @@ metadata = {
             'order':  13
     	},
     	'visit_detail_id':	{ 'config_type': None, 'order':  14 },
+
     	'measurement_source_value':	{ 'config_type': None, 'order':  15 },
     	'measurement_source_concept_id':	{ 'config_type': None, 'order':  16 },
+
     	'unit_source_value':	{ 'config_type': None, 'order':  17 },
-    	'value_source_value':	{ 'config_type': None, 'order':  18 }
+
+    	'value_source_value_constant': {
+    	    'config_type': 'CONSTANT',
+            'constant_value': 'n/a',
+            'priority': ['value_source_value', 4],
+#            'order': 123
+        },
+    	'value_source_value_text': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
+    	    'attribute': "#text",
+            'priority': ['value_source_value', 3],
+#            'order': 120
+        },
+    	'value_source_value_code': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'attribute': "code",
+            'priority': ['value_source_value', 2],
+#            'order': 121
+        },
+    	'value_source_value_value': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
+    	    'attribute': "value",
+            'priority': ['value_source_value', 1],
+#            'order': 122
+        },
+        'value_source_value' : {
+            'config_type': 'PRIORITY',
+            'order':18
+        }
     }
 }
