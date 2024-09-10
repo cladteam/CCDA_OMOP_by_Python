@@ -131,11 +131,21 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
 
 def do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
     for (field_tag, field_details_dict) in domain_meta_dict.items():
-        logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
+        logger.info((f"     NONE FIELD domain:'{domain}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
-        type_tag = field_details_dict['config_type']
-        if type_tag is None:
+        config_type_tag = field_details_dict['config_type']
+        if config_type_tag is None:
             output_dict[field_tag] = (None, '(None type)')
+
+
+def do_constant_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+    for (field_tag, field_details_dict) in domain_meta_dict.items():
+        logger.info((f"     CONSTANT FIELD domain:'{domain}' field_tag:'{field_tag}'"
+                     f" {field_details_dict}"))
+        config_type_tag = field_details_dict['config_type']
+        if config_type_tag == 'CONSTANT':
+            constant_value = field_details_dict['constant_value']
+            output_dict[field_tag] = (constant_value, '(None type)')
 
 
 def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
@@ -386,6 +396,7 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
                  f" attributes:{root_element.attrib}"))
 
     do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    do_constant_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
     do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     domain_id = do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
