@@ -11,6 +11,10 @@ from prototype_2.metadata import get_meta_dict
 logger = logging.getLogger(__name__)
 
 
+def show_column_dict(column_dict):
+    for key,val in column_dict.items():
+        print(f" key:{key} length(val):{len(val)}")
+
 def create_omop_domain_dataframes(omop_data, filepath):
     """ transposes the rows into columns,
         creates a Pandas dataframe
@@ -36,7 +40,11 @@ def create_omop_domain_dataframes(omop_data, filepath):
                     column_dict[field].append(parts[0])
 
         # create a Pandas dataframe from the data_dict
-        domain_df = PD.DataFrame(column_dict)
+        try:
+            domain_df = PD.DataFrame(column_dict)
+        except ValueError as ve:
+            print(f"ERROR {ve}")
+            show_column_dict(column_dict)
         df_dict[domain_name] = domain_df
 
     return df_dict
