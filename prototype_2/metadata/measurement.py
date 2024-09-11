@@ -77,30 +77,10 @@ metadata = {
         'measurement_type_concept_id': { 'config_type': None, 'order': 7 },
         'operator_concept_id': { 'config_type': None, 'order': 8 },
 
-        # This is heinous. We don't need value_as_string in measurement, but as input to cast to value_as_number.
-        # IIRC the code currently treats priority fields as coming after DERIVED values, and here they
-        # would be input to one.
-        # FIX https://github.com/cladteam/CCDA_OMOP_by_Python/issues/77 #77
-    	#'value_as_string_text': {
-        #    'config_type': 'FIELD',
-    	#    'element': "value" ,
-    	#    'attribute': "#text",
-        #    'priority' : ['value_as_string', 2]
-    	#},
-    	#'value_as_string_value': {
-    	#    'config_type': 'FIELD',
-    	#    'element': "value" ,
-    	#    'attribute': "value",
-        #    'priority' : ['value_as_string', 1]
-    	#},
-        # This is so value_as_number has something to work with in some cases.
-        # In other cases, this will fail as described above and in #77
-        # and yes, this must conflict with the priority group above in some way.
     	'value_type': {
     	    'config_type': 'FIELD',
     	    'element': "value",
     	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
-#            'order': 100
     	},
     	'value_as_string': {
     	    'config_type': 'FIELD',
@@ -117,13 +97,11 @@ metadata = {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "code",
-#            'order' : 130
         },
     	'value_as_codeSystem': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "codeSystem",
-#            'order' : 131
         },
     	'value_as_concept_id': {
     	    'config_type': 'DERIVED',
@@ -146,7 +124,13 @@ metadata = {
     	},
     	'visit_detail_id':	{ 'config_type': None, 'order':  14 },
 
-    	'measurement_source_value':	{ 'config_type': None, 'order':  15 },
+    	'measurement_source_value':	{
+    	    'config_type': 'FIELD',
+    	    'element': "code" ,
+    	    'attribute': "code",
+            'order':  15
+        },
+
     	'measurement_source_concept_id':	{ 'config_type': None, 'order':  16 },
 
     	'unit_source_value':	{ 'config_type': None, 'order':  17 },
@@ -155,28 +139,24 @@ metadata = {
     	    'config_type': 'CONSTANT',
             'constant_value': 'n/a',
             'priority': ['value_source_value', 4],
-#            'order': 123
         },
     	'value_source_value_text': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
     	    'attribute': "#text",
             'priority': ['value_source_value', 3],
-#            'order': 120
         },
     	'value_source_value_code': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "code",
             'priority': ['value_source_value', 2],
-#            'order': 121
         },
     	'value_source_value_value': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
     	    'attribute': "value",
             'priority': ['value_source_value', 1],
-#            'order': 122
         },
         'value_source_value' : {
             'config_type': 'PRIORITY',

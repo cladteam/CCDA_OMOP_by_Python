@@ -74,7 +74,6 @@ metadata = {
     	    'config_type': 'FIELD',
     	    'element': "value",
     	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
-            'order': 100
     	},
     	'value_as_string': {
     	    'config_type': 'FIELD',
@@ -92,13 +91,11 @@ metadata = {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "code",
-            'order' : 130
         },
     	'value_as_codeSystem': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "codeSystem",
-            'order' : 131
         },
     	'value_as_concept_id': {
     	    'config_type': 'DERIVED',
