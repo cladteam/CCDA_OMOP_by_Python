@@ -12,7 +12,7 @@
       compared to OMOP. Can you leave out unused nullable fields?
 """
 
-OMOP_CDM_DIR =  "../CommonDataModel/inst/ddl/5.3/duckdb/"
+OMOP_CDM_DIR = "resources/" #  "../CommonDataModel/inst/ddl/5.3/duckdb/"
 OMOP_CSV_DATA_DIR = "output/"
 
 import io
@@ -95,14 +95,13 @@ def _apply_local_ddl():
     print(df[['database', 'schema', 'name']])
 
 
-def _apply_ddl():
-    with io.open(OMOP_CDM_DIR +  "OMOPCDM_duckdb_5.3_ddl.sql", "r") as ddl_file:
+def _apply_ddl(ddl_file):
+    print(f"\nApplying DDL file {ddl_file}")
+    with io.open(OMOP_CDM_DIR +  ddl_file, "r") as ddl_file:
         ddl_statements = ddl_file.read()
         for statement in ddl_statements.split(";"):
             statement = statement.replace("@cdmDatabaseSchema.", "") + ";"
-            #print(f"DDL:{statement} -----------------------")
             x=conn.execute(statement)
-            #print(x.df())
 
 
     print("o======================================")
@@ -111,6 +110,7 @@ def _apply_ddl():
 
 
 def _import_CSVs(domain):
+    print(f"\nImporting domain {domain} data")
     files = [f for f in os.listdir(OMOP_CSV_DATA_DIR) if os.path.isfile(os.path.join(OMOP_CSV_DATA_DIR, f)) ]
     files = [f for f in files if  re.match('.*' + f"{domain}" + '.csv',f) ]
     for csv_filename in files:
@@ -131,6 +131,7 @@ def _import_CSVs(domain):
 
 
 def check_PK(domain):
+    print(f"\nChecking PK on domain {domain} ")
     table_name = sql_import_dict[domain]['table_name']
     pk_query = sql_import_dict[domain]['pk_query']
     table_name = sql_import_dict[domain]['table_name']
@@ -144,16 +145,28 @@ def check_PK(domain):
 
 
 def main():
-    _apply_ddl()
-
+    #_apply_ddl("OMOPCDM_duckdb_5.3_ddl.sql")
+    _apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints.sql")
+    
     _import_CSVs('Person')
     check_PK('Person')
+    
+    _import_CSVs('Visit')
+    check_PK('Visit')
 
-    #_import_CSVs('Visit')
-    #check_PK('Visit')
-
-    #_import_CSVs('Measurement')
-    #check_PK('Measurement')
+    _import_CSVs('Measurement')
+    check_PK('Measurement')
+    
+    #_import_CSVs('Observation')
+    #check_PK('Observation')
+    
+    # not implemented in ALTER TABLE yet in v1.0
+    # https://github.com/OHDSI/CommonDataModel/issues/713 
+##    _apply_ddl("OMOPCDM_duckdb_5.3_primary_keys.sql")
+##    _apply_ddl("OMOPCDM_duckdb_5.3_constraints.sql")
+    _apply_ddl("OMOPCDM_duckdb_5.3_indices.sql")
+    
+    check_PK('Person')
 
     if False:
         df = conn.sql("SHOW ALL TABLES;").df()
