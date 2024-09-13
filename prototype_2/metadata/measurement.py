@@ -108,7 +108,7 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
     		    'concept_code': 'value_as_code',
-    		    'vocabulary_oid': 'valuse_as_codeSystem',
+    		    'vocabulary_oid': 'value_as_codeSystem',
                 'default': (0,'default')
             },
             'order':  10
