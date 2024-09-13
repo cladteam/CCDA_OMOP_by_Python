@@ -1,7 +1,7 @@
 --duckdb CDM DDL Specification for OMOP Common Data Model 5.3
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.person (
-			person_id integer PRIMARY KEY NOT NULL,
+			person_id integer PRIMARY KEY, --  NOT NULL,
 			gender_concept_id integer NOT NULL,
 			year_of_birth integer NOT NULL,
 			month_of_birth integer NULL,
@@ -38,7 +38,7 @@ CREATE TABLE @cdmDatabaseSchema.observation_period (
 			period_type_concept_id integer NOT NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.visit_occurrence (
-			visit_occurrence_id integer PRIMARY KEY NOT NULL,
+			visit_occurrence_id integer PRIMARY KEY, -- NOT NULL,
 			person_id integer NOT NULL,
 			visit_concept_id integer NOT NULL,
 			visit_start_date date NOT NULL,
@@ -164,7 +164,7 @@ CREATE TABLE @cdmDatabaseSchema.device_exposure (
 			device_source_concept_id integer NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.measurement (
-			measurement_id integer PRIMARY_KEY NOT NULL,
+			measurement_id integer PRIMARY KEY,
 			person_id integer NOT NULL,
 			measurement_concept_id integer NOT NULL,
 			measurement_date date NOT NULL,
@@ -183,21 +183,21 @@ CREATE TABLE @cdmDatabaseSchema.measurement (
 			measurement_source_value varchar(50) NULL,
 			measurement_source_concept_id integer NULL,
 			unit_source_value varchar(50) NULL,
-			value_source_value varchar(50) NULL ,
-    FOREIGN KEY (person_id) REFERENCES @cdmDatabaseSchema.PERSON (PERSON_ID),
+			value_source_value varchar(50) NULL,
+     FOREIGN KEY (person_id) REFERENCES @cdmDatabaseSchema.PERSON (PERSON_ID),
 --    FOREIGN KEY (measurement_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (measurement_type_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (operator_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (value_as_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (unit_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
-    FOREIGN KEY (provider_id) REFERENCES @cdmDatabaseSchema.PROVIDER (PROVIDER_ID),
-    FOREIGN KEY (visit_occurrence_id) REFERENCES @cdmDatabaseSchema.VISIT_OCCURRENCE (VISIT_OCCURRENCE_ID),
-    FOREIGN KEY (visit_detail_id) REFERENCES @cdmDatabaseSchema.VISIT_DETAIL (VISIT_DETAIL_ID),
+  --     FOREIGN KEY (provider_id) REFERENCES @cdmDatabaseSchema.PROVIDER (PROVIDER_ID),
+     FOREIGN KEY (visit_occurrence_id) REFERENCES @cdmDatabaseSchema.VISIT_OCCURRENCE (VISIT_OCCURRENCE_ID),
+  --   FOREIGN KEY (visit_detail_id) REFERENCES @cdmDatabaseSchema.VISIT_DETAIL (VISIT_DETAIL_ID),
 --    FOREIGN KEY (measurement_source_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID)
 );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.observation (
-			observation_id integer PRIMARY KEY NOT NULL,
+			observation_id integer PRIMARY KEY,
 			person_id integer NOT NULL,
 			observation_concept_id integer NOT NULL,
 			observation_date date NOT NULL,
@@ -215,15 +215,15 @@ CREATE TABLE @cdmDatabaseSchema.observation (
 			observation_source_concept_id integer NULL,
 			unit_source_value varchar(50) NULL,
 			qualifier_source_value varchar(50) NULL,
-    FOREIGN KEY (person_id) REFERENCES @cdmDatabaseSchema.PERSON (PERSON_ID),
+     FOREIGN KEY (person_id) REFERENCES @cdmDatabaseSchema.PERSON (PERSON_ID),
 --    FOREIGN KEY (observation_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (observation_type_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (value_as_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (qualifier_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (unit_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
-    FOREIGN KEY (provider_id) REFERENCES @cdmDatabaseSchema.PROVIDER (PROVIDER_ID),
-    FOREIGN KEY (visit_occurrence_id) REFERENCES @cdmDatabaseSchema.VISIT_OCCURRENCE (VISIT_OCCURRENCE_ID),
-    FOREIGN KEY (visit_detail_id) REFERENCES @cdmDatabaseSchema.VISIT_DETAIL (VISIT_DETAIL_ID),
+  --    FOREIGN KEY (provider_id) REFERENCES @cdmDatabaseSchema.PROVIDER (PROVIDER_ID),
+     FOREIGN KEY (visit_occurrence_id) REFERENCES @cdmDatabaseSchema.VISIT_OCCURRENCE (VISIT_OCCURRENCE_ID),
+  --    FOREIGN KEY (visit_detail_id) REFERENCES @cdmDatabaseSchema.VISIT_DETAIL (VISIT_DETAIL_ID),
 --    FOREIGN KEY (observation_source_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID)
 );
 --HINT DISTRIBUTE ON KEY (person_id)
