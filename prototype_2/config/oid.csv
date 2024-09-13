@@ -1,0 +1,43 @@
+oid,vocabulary_id
+2.16.840.1.113883.6.96,SNOMED
+2.16.840.1.113883.6.1,LOINC
+2.16.840.1.113883.6.88,RxNorm
+2.16.840.1.113883.5.1,AdministrativeGender
+2.16.840.1.113883.6.238,Race & Ethnicity - CDC
+2.16.840.1.113883.6.96,SNOMED CT
+2.16.840.1.113883.5.7,HL7ActPriority
+2.16.840.1.113883.5.14,HL7ActStatus
+2.16.840.1.113883.3.26.1.1,NCI Thesaurus (NCIt)
+2.16.840.1.113883.5.1,Administrative Gender
+1.3.6.1.4.1.12009.10.3.1,UCUM
+2.16.840.1.113883.5.88,HL7ParticipationFunction
+1.0.3166.1.2.2,"ISO 3166 Part 1 Country Codes, 2nd Edition, Alpha-2"
+2.16.840.1.113883.5.111,HL7RoleCode
+2.16.840.1.113883.5.1063,HL7ObservationValue
+2.16.840.1.113883.12.292,CDC Vaccine Code (CVX)
+1.2.840.10008.2.16.4,DCM
+2.16.840.1.113883.6.12,CPT
+2.16.840.1.113883.5.45,HL7EntityNameUse
+2.16.840.1.113883.5.43,HL7EntityNamePartQualifier
+2.16.840.1.113883.5.110,HL7RoleClass
+2.16.840.1.113883.3.88.12.3221.5.2,Insurance Type Code
+2.16.840.1.113883.6.101,Healthcare Provider Taxonomy (HIPAA)
+2.16.840.1.113883.6.259,HSLOC
+2.16.840.1.113883.5.25,HL7Confidentiality
+2.16.840.1.113883.6.121,Language
+2.16.840.1.113883.5.60,HL7LanguageAbilityMode
+2.16.840.1.113883.5.61,HL7LanguageAbilityProficiency
+2.16.840.1.113883.5.2,HL7MaritalStatus
+2.16.840.1.113883.5.1001,HL7ActMood
+2.16.840.1.113883.5.8,HL7ActReason
+2.16.840.1.113883.6.301.5,NUBC UB-04 Patient Discharge Status code set
+2.16.840.1.113883.5.83,ObservationInterpretation
+2.16.840.1.113883.3.221.5,Source of Payment Typology (PHDSC)
+2.16.840.1.113883.5.1119,HL7AddressUse
+2.16.840.1.113883.6.231,USPostalCodes
+2.16.840.1.113883.5.1076,HL7ReligiousAffiliation
+2.16.840.1.113883.6.92,FIPS 5-2 (State)
+2.16.840.1.113883.3.26.1.5,NDFRT
+2.16.840.1.113883.5.79,Media Type
+2.16.840.1.113883.5.1002,HL7ActRelationshipType
+2.16.840.1.113883.5.90,HL7ParticipationType

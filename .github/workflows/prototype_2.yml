@@ -1,0 +1,52 @@
+name: Prototype 2
+run-name: ${{ github.actor }} is testing Prototype 2
+on: [push, workflow_dispatch]
+jobs:
+    Run-prototype-2:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check out repository code
+            uses: actions/checkout@v4
+            with:
+              ref: main
+          - name: Check out data
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com   || true
+              git clone git@github.com:chrisroederucdenver/CCDA-data.git
+          - name: Check out tools
+            run: |
+              eval $(ssh-agent -s)
+              echo "${{ secrets.GH_WF }}" | ssh-add -
+              ssh -T git@github.com   || true
+              git clone git@github.com:chrisroederucdenver/CCDA-tools.git
+          - name: check on data
+            shell: bash
+            run: |
+                pwd
+                ls CCDA-data/resources
+                mkdir -p output
+                mkdir -p logs
+          - name: check on tools
+            shell: bash
+            run: |
+                cp CCDA-tools/map_to_standard.csv  .
+                head -10 map_to_standard.csv
+          - name: Install pandas
+            run: |
+                pip install pandas
+                pip install lxml
+          - name: Run data_driven_parse.py
+            run: |
+                python3 -m prototype_2.data_driven_parse -d CCDA-data/resources
+          - name: Run layer_datsets.py
+            run: |
+                mkdir -p logs
+                python3 -m prototype_2.layer_datasets -d CCDA-data/resources
+          - name: compare output
+            run: |
+                bin/compare_correct.sh
+          - name: count errors
+            run: |
+                bin/count_errors.sh

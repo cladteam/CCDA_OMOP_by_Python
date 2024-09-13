@@ -1,0 +1,21 @@
+vocabulary_id,concept_code,concept_id,domain_id,description
+LOINC,30313-1,3002173,Measurement,
+LOINC,33765-9,3028866,Measurement,
+LOINC,26515-7,3007461,Measurement
+LOINC,3094-0,3013682,Measurement
+AdministrativeGender,F,2000000002,Gender,
+AdministrativeGender,M,2000000001,Gender,
+Race & Ethnicity - CDC,2106-3,2000000003,Race,
+Race & Ethnicity - CDC,2186-5,2000000004,Ethnicity,
+SNOMED,233604007,255848,Condition,
+LOINC,2028-9,3015632,Measurement,
+LOINC,18844-1,3004451,Measurement,
+LOINC,18089-3,3020064,Measurement,
+LOINC,3016-3,3009201,Measurement,
+LOINC,4548-4,3004410,Measurement,
+LOINC,2160-0,3016723,Measurement,
+LOINC,6301-6,3022217,Measurement,
+LOINC,18041-4,3015022,Measurement,
+OID,1.3.6.1.4.1.42424242.4.99930.4,,,
+OID,1.3.6.1.4.1.42424242.4.99930.4.3.4,,,
+OID,2.16.840.1.113883.4.6,,,NPI

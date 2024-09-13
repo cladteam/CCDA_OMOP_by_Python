@@ -156,3 +156,6 @@ model.ckpt*
 *.tar.gz
 *.xlsx
 *.zip
+logs/*
+output/*
+prototype_2/__pycache__/*
