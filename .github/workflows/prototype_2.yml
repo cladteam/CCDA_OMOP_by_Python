@@ -53,3 +53,6 @@ jobs:
           - name: Load OMOP
             run: |
                 python3 -m omop.setup_omop
+          - name: Load OMOP
+            run: |
+                bin/grep_logs.sh
