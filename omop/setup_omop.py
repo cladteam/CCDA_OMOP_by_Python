@@ -96,7 +96,7 @@ def _apply_local_ddl():
 
 
 def _apply_ddl(ddl_file):
-    print(f"\nApplying DDL file {ddl_file}")
+    print(f"Applying DDL file {ddl_file}")
     with io.open(OMOP_CDM_DIR +  ddl_file, "r") as ddl_file:
         ddl_statements = ddl_file.read()
         for statement in ddl_statements.split(";"):
@@ -110,7 +110,7 @@ def _apply_ddl(ddl_file):
 
 
 def _import_CSVs(domain):
-    print(f"\nImporting domain {domain} data")
+    print(f"Importing domain {domain} data")
     files = [f for f in os.listdir(OMOP_CSV_DATA_DIR) if os.path.isfile(os.path.join(OMOP_CSV_DATA_DIR, f)) ]
     files = [f for f in files if  re.match('.*' + f"{domain}" + '.csv',f) ]
     for csv_filename in files:
@@ -131,7 +131,7 @@ def _import_CSVs(domain):
 
 
 def check_PK(domain):
-    print(f"\nChecking PK on domain {domain} ")
+    print(f"Checking PK on domain {domain} ")
     table_name = sql_import_dict[domain]['table_name']
     pk_query = sql_import_dict[domain]['pk_query']
     table_name = sql_import_dict[domain]['table_name']
@@ -145,18 +145,23 @@ def check_PK(domain):
 
 
 def main():
+    print("\nDDL")
     #_apply_ddl("OMOPCDM_duckdb_5.3_ddl.sql")
     _apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints.sql")
     
+    print("\nPERSON")
     _import_CSVs('Person')
     check_PK('Person')
     
+    print("\nVISIT")
     _import_CSVs('Visit')
     check_PK('Visit')
 
+    print("\nMEASUREMENT")
     _import_CSVs('Measurement')
     check_PK('Measurement')
     
+    #print("\nOBSERVATION")
     #_import_CSVs('Observation')
     #check_PK('Observation')
     
@@ -164,8 +169,11 @@ def main():
     # https://github.com/OHDSI/CommonDataModel/issues/713 
 ##    _apply_ddl("OMOPCDM_duckdb_5.3_primary_keys.sql")
 ##    _apply_ddl("OMOPCDM_duckdb_5.3_constraints.sql")
+
+    print("\nINDICES")
     _apply_ddl("OMOPCDM_duckdb_5.3_indices.sql")
     
+    print("\nSQL CHECKS")
     check_PK('Person')
 
     if False:
