@@ -12,7 +12,7 @@
       compared to OMOP. Can you leave out unused nullable fields?
 """
 
-OMOP_CDM_DIR =  "../CommonDataModel/inst/ddl/5.3/duckdb/"
+OMOP_CDM_DIR = "resources/" #  "../CommonDataModel/inst/ddl/5.3/duckdb/"
 OMOP_CSV_DATA_DIR = "output/"
 
 import io
@@ -30,6 +30,8 @@ logging.basicConfig(
     level=logging.INFO
     # level=logging.WARNING level=logging.ERROR # level=logging.INFO # level=logging.DEBUG
 )
+
+processing_status = True
 
 sql_import_dict = {
     'Person': {
@@ -95,14 +97,13 @@ def _apply_local_ddl():
     print(df[['database', 'schema', 'name']])
 
 
-def _apply_ddl():
-    with io.open(OMOP_CDM_DIR +  "OMOPCDM_duckdb_5.3_ddl.sql", "r") as ddl_file:
+def _apply_ddl(ddl_file):
+    print(f"Applying DDL file {ddl_file}")
+    with io.open(OMOP_CDM_DIR +  ddl_file, "r") as ddl_file:
         ddl_statements = ddl_file.read()
         for statement in ddl_statements.split(";"):
             statement = statement.replace("@cdmDatabaseSchema.", "") + ";"
-            #print(f"DDL:{statement} -----------------------")
             x=conn.execute(statement)
-            #print(x.df())
 
 
     print("o======================================")
@@ -111,6 +112,7 @@ def _apply_ddl():
 
 
 def _import_CSVs(domain):
+    print(f"Importing domain {domain} data")
     files = [f for f in os.listdir(OMOP_CSV_DATA_DIR) if os.path.isfile(os.path.join(OMOP_CSV_DATA_DIR, f)) ]
     files = [f for f in files if  re.match('.*' + f"{domain}" + '.csv',f) ]
     for csv_filename in files:
@@ -119,18 +121,27 @@ def _import_CSVs(domain):
             table_name = sql_import_dict[domain]['table_name']
             sql_string = sql_string.replace('FILENAME', OMOP_CSV_DATA_DIR + csv_filename)
             sql_string = sql_string.replace('TABLENAME', table_name)
-            try:
-                x=conn.execute(sql_string)
-                logger.info(f"Loaded {domain} from {csv_filename}")
-            except Exception as e:
-                logger.error(f"Failed to load {domain} from {csv_filename}")
-                logger.error(e)
-            #print(x.df())
+            # How to check for empty file?
+            if os.stat("output/" + csv_filename).st_size > 2:
+                output_path = f"output/{csv_filename}"
+                # print(f"loading file {csv_filename}  {output_path}  size:{os.stat(output_path).st_size}")
+                try:
+                    x=conn.execute(sql_string)
+                    logger.info(f"Loaded {domain} from {csv_filename}")
+                except Exception as e:
+                    processing_status = False
+                    print(f"Failed to load {domain} from {csv_filename}")
+                    logger.error(f"Failed to load {domain} from {csv_filename}")
+                    logger.error(e)
+                #print(x.df())
+            #else:
+                #print(f"skipping small size file {csv_filename}")
         except duckdb.BinderException as e:
             logger.error(f"Failed to read {csv_filename} {type(e)} {e}")
 
 
 def check_PK(domain):
+    print(f"Checking PK on domain {domain} ")
     table_name = sql_import_dict[domain]['table_name']
     pk_query = sql_import_dict[domain]['pk_query']
     table_name = sql_import_dict[domain]['table_name']
@@ -138,22 +149,43 @@ def check_PK(domain):
     df=conn.sql(pk_query).df()
     if df['row_ct'][0] != df['p_id'][0]:
         logger.error("row count not the same as id count, null IDs?")
+        processing_status = False
     if df['p_id'][0] != df['d_p_id'][0]:
         logger.error("id count not the same as distinct ID count, non-unique IDs?")
 
 
 
 def main():
-    _apply_ddl()
+    print("\nDDL")
+    #_apply_ddl("OMOPCDM_duckdb_5.3_ddl.sql")
+    _apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints.sql")
 
+    print("\nPERSON")
     _import_CSVs('Person')
     check_PK('Person')
 
-    #_import_CSVs('Visit')
-    #check_PK('Visit')
+    print("\nVISIT")
+    _import_CSVs('Visit')
+    check_PK('Visit')
 
-    #_import_CSVs('Measurement')
-    #check_PK('Measurement')
+    print("\nMEASUREMENT")
+    _import_CSVs('Measurement')
+    check_PK('Measurement')
+
+    #print("\nOBSERVATION")
+    #_import_CSVs('Observation')
+    #check_PK('Observation')
+
+    # not implemented in ALTER TABLE yet in v1.0
+    # https://github.com/OHDSI/CommonDataModel/issues/713
+##    _apply_ddl("OMOPCDM_duckdb_5.3_primary_keys.sql")
+##    _apply_ddl("OMOPCDM_duckdb_5.3_constraints.sql")
+
+    print("\nINDICES")
+    _apply_ddl("OMOPCDM_duckdb_5.3_indices.sql")
+
+    print("\nSQL CHECKS")
+    check_PK('Person')
 
     if False:
         df = conn.sql("SHOW ALL TABLES;").df()
@@ -163,9 +195,8 @@ def main():
         df = conn.sql("SHOW TABLES;").df()
         print('"' + df['name'] + '"')
 
-    exit()
+    exit(processing_status)
 
 if __name__ == '__main__':
     main()
-
-
+    

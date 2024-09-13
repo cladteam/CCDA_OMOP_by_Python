@@ -50,3 +50,6 @@ jobs:
           - name: count errors
             run: |
                 bin/count_errors.sh
+          - name: Load OMOP
+            run: |
+                python3 -m omop.setup_omop
