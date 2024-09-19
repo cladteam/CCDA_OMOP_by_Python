@@ -1,0 +1,22 @@
+inputs: []
+outputs:
+- alias: "observation"
+  properties:
+    type: "dataset"
+    dataset:
+      rid: "ri.foundry.main.dataset.b8f43652-d90b-4a3f-b1b9-7465ccaefb81"
+runtime:
+  type: "managedContainer"
+  managedContainer:
+    identifier: "code-workspaces-jupyter-python-3_9-image"
+    command: "/opt/palantir/transforms.d/run-ipynb.sh"
+    filePath: "resources/Untitled.ipynb"
+    envVars:
+      ENABLE_MANAGED_CONDA_ENVIRONMENTS: "false"
+      ENABLE_MANAGED_CRAN_ENVIRONMENTS: "false"
+      ENABLE_WRITE_BRANCH_PREFIX: "false"
+      UPLOAD_CODE_CHECKPOINTS: "true"
+resources:
+  cpu: "1"
+  memory: "8G"
+shouldArchiveLogsToOutputs: false

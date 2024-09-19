@@ -127,7 +127,7 @@ def main():
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
-    if False:  # for getting them on the Foundry
+    if True:  # for getting them on the Foundry
         from foundry.transforms import Dataset
         ccd_ambulatory = Dataset.get("ccda_ccd_b1_ambulatory_v2")
         ccd_ambulatory_files = ccd_ambulatory.files().download()
@@ -139,14 +139,19 @@ def main():
         print(f"Summary {key} {omop_data_dict[key].shape}")
 
     # EXPORT VARS
-    export_person = omop_data_dict['person']
+    export_person = omop_data_dict['Person']
     from foundry.transforms import Dataset
     person = Dataset.get("person")
     person.write_table(export_person)
 
-    export_observation = omop_data_dict['observation']
-    export_measurement = omop_data_dict['measurement']
-    export_visit = omop_data_dict['visit_occurrence']
+    export_observation = omop_data_dict['Observation']
+    observation = Dataset.get("observation")
+    observation.write_table(export_observation)
+    
+    export_measurement = omop_data_dict['Measurement']
+    export_visit = omop_data_dict['Visit']
+    visit = Dataset.get("visit")
+    visit.write_table(export_visit)
 
 if __name__ == '__main__':
     main()
