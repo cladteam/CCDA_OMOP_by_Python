@@ -127,10 +127,6 @@ def main():
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
-    if True:  # for getting them on the Foundry
-        from foundry.transforms import Dataset
-        ccd_ambulatory = Dataset.get("ccda_ccd_b1_ambulatory_v2")
-        ccd_ambulatory_files = ccd_ambulatory.files().download()
         ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
 
     print("")
@@ -149,6 +145,9 @@ def main():
     observation.write_table(export_observation)
     
     export_measurement = omop_data_dict['Measurement']
+    measurement = Dataset.get("measurement")
+    measurement.write_table(export_measurement)
+    
     export_visit = omop_data_dict['Visit']
     visit = Dataset.get("visit")
     visit.write_table(export_visit)
