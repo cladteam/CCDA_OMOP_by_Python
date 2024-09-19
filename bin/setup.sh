@@ -3,6 +3,14 @@
 # If only to document what's needed...
 # run from  base directory, CCDA_OMOP_by_Python
 
+# Setup mamba virtual environment
+mamba create --name default python=3.9 lxml duckdb
+mamba activate default
+mamba install duckdb
+mamba install lxml
+mamba install pandas
+mamab install numpy
+
 echo "installing lxml"
 mamba install -y -q lxml
 
