@@ -4,8 +4,10 @@
 # run from  base directory, CCDA_OMOP_by_Python
 
 # Setup mamba virtual environment
-mamba create --name default python=3.9 lxml duckdb
-mamba activate default
+#mamba create --name default python=3.9 lxml duckdb
+#mamba activate default
+#....doesn't include foundry packages.
+
 mamba install duckdb
 mamba install lxml
 mamba install pandas

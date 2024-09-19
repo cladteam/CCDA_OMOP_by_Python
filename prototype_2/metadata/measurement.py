@@ -2,7 +2,7 @@
 import prototype_2.value_transformations as VT
 
 metadata = {
-    'Measurement': {
+    'measurement': {
     	'root': {
     	    'config_type': 'ROOT',
     	    'element':
