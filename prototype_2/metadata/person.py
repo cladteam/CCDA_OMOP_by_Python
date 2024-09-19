@@ -2,7 +2,7 @@
 import prototype_2.value_transformations as VT
 
 metadata = {
-    'person': {
+    'Person': {
     	# person nor patientRole have templateIDs
     	'root': {
     	    'config_type': 'ROOT',

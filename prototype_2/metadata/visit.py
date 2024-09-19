@@ -2,7 +2,7 @@
 import prototype_2.value_transformations as VT
 
 metadata = {
-    'visit_occurrence': {
+    'Visit': {
     	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'config_type': 'ROOT',
