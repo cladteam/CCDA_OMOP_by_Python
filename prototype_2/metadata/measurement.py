@@ -139,25 +139,27 @@ metadata = {
     	},
 
     	'unit_concept_id': { 'config_type': None, 'order':  11 },
-    	'provider_id': { 'config_type': None, 'order':  12 },
+    	'range_low': { 'config_type': None, 'order':  12 },
+    	'range_high': { 'config_type': None, 'order':  13 },
+    	'provider_id': { 'config_type': None, 'order':  14 },
 
     	'visit_occurrence_id':	{
     	    'config_type': 'FK',
     	    'FK': 'visit_occurrence_id',
-            'order':  13
+            'order':  15
     	},
-    	'visit_detail_id':	{ 'config_type': None, 'order':  14 },
+    	'visit_detail_id':	{ 'config_type': None, 'order':  16 },
 
     	'measurement_source_value':	{
     	    'config_type': 'FIELD',
     	    'element': "code" ,
     	    'attribute': "code",
-            'order':  15
+            'order':  17
         },
 
-    	'measurement_source_concept_id':	{ 'config_type': None, 'order':  16 },
+    	'measurement_source_concept_id':	{ 'config_type': None, 'order':  18 },
 
-    	'unit_source_value':	{ 'config_type': None, 'order':  17 },
+    	'unit_source_value':	{ 'config_type': None, 'order':  19 },
 
     	'value_source_value_constant': {
     	    'config_type': 'CONSTANT',
@@ -184,7 +186,7 @@ metadata = {
         },
         'value_source_value' : {
             'config_type': 'PRIORITY',
-            'order':18
+            'order':20
         }
     }
 }

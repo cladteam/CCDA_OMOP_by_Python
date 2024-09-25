@@ -54,13 +54,17 @@ sql_import_dict = {
     'Visit': {
         'sql': """
                 INSERT INTO TABLENAME SELECT
-            person_id, visit_occurrence_id, care_site_id, provider_id,
-            visit_start_date, visit_end_date, visit_concept_id,
-            visit_start_date, visit_start_datetime, visit_end_date,
-            visit_end_datetime, visit_type_concept_id, visit_source_value,
-            visit_source_concept_id, admitting_source_concept_id,
-            admitting_source_value, discharge_to_concept_id,
-            discharge_to_source_value, preceding_visit_occurrence_id
+                    visit_occurrence_id, 
+                    person_id, 
+                    visit_concept_id,
+                    visit_start_date, visit_start_datetime, 
+                    visit_end_date, visit_end_datetime, 
+                    visit_type_concept_id, 
+                    provider_id, care_site_id, 
+                    visit_source_value, visit_source_concept_id, 
+                    admitting_source_concept_id, admitting_source_value, 
+                    discharge_to_source_concept_id, discharge_to_source_value, 
+                    preceding_visit_occurrence_id
                 FROM  read_csv('FILENAME', delim=',', header=True)
                """,
         'table_name': "visit_occurrence",
@@ -72,12 +76,15 @@ sql_import_dict = {
     'Measurement': {
         'sql': """
                 INSERT INTO TABLENAME SELECT 
-            person_id, visit_occurrence_id, measurement_time, value_as_string,
-            value_type, value_unit, measurement_concept_id, value_as_number,
-            value_as_concept_id, measurement_id, measurement_date, measurement_datetime,
-            measurement_type_concept_id, operator_concept_id, range_low, range_high,
-            provider_id, visit_detail_id, measurement_source_value,
-            measurement_source_concept_id, unit_source_value, value_source_value
+                    measurement_id,  person_id, measurement_concept_id,
+                    measurement_date, measurement_datetime, measurement_time, 
+                    measurement_type_concept_id, operator_concept_id, 
+                    value_as_number, value_as_concept_id,
+                    unit_concept_id, range_low, range_high, 
+                    provider_id, 
+                    visit_occurrence_id, visit_detail_id, 
+                    measurement_source_value, measurement_source_concept_id, 
+                    unit_source_value, value_source_value
                 FROM  read_csv('FILENAME', delim=',', header=True)
                """,
         'table_name': "measurement",
