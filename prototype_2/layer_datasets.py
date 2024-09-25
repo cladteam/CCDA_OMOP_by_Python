@@ -9,7 +9,6 @@ import pandas as pd
 import logging
 import prototype_2.data_driven_parse as DDP
 from prototype_2.metadata import get_meta_dict
-from foundry.transforms import Dataset
 
 
 import lxml
@@ -127,7 +126,7 @@ def main():
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
-        ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
+        ## ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']  ## FIX oddity from a merge?
 
     print("")
     print("SUMMARY")
