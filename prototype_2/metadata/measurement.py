@@ -93,24 +93,48 @@ metadata = {
     	    'attribute': "value",
             'order': 9
     	},
-    	'value_as_code': {
+    	'value_as_code_CD': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "code",
         },
-    	'value_as_codeSystem': {
+    	'value_as_codeSystem_CD': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "codeSystem",
         },
-    	'value_as_concept_id': {
+    	'value_as_concept_id_CD': {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		    'concept_code': 'value_as_code',
-    		    'vocabulary_oid': 'value_as_codeSystem',
+    		    'concept_code': 'value_as_code_CD',
+    		    'vocabulary_oid': 'value_as_codeSystem_CD',
                 'default': (0,'default')
             },
+            'priority': ['value_as_concept_id', 2]
+    	},
+    	'value_as_code_CE': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CE"]' ,
+    	    'attribute': "code",
+        },
+    	'value_as_codeSystem_CE': {
+    	    'config_type': 'FIELD',
+    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CE"]' ,
+    	    'attribute': "codeSystem",
+        },
+    	'value_as_concept_id_CE': {
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'argument_names': {
+    		    'concept_code': 'value_as_code_CE',
+    		    'vocabulary_oid': 'value_as_codeSystem_CE',
+                'default': (0,'default')
+            },
+            'priority': ['value_as_concept_id', 1]
+    	},
+    	'value_as_concept_id': {
+    	    'config_type': 'PRIORITY',
             'order':  10
     	},
 
