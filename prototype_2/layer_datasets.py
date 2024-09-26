@@ -137,6 +137,7 @@ def main():
     person = Dataset.get("person")
     person.write_table(export_person)
 
+
     export_observation = omop_data_dict['Observation']
     observation = Dataset.get("observation")
     observation.write_table(export_observation)
