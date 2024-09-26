@@ -1,0 +1,22 @@
+inputs: []
+outputs:
+- alias: "person"
+  properties:
+    type: "dataset"
+    dataset:
+      rid: "ri.foundry.main.dataset.d78e1f99-e6f5-47ce-b635-8bcc85af8816"
+runtime:
+  type: "managedContainer"
+  managedContainer:
+    identifier: "code-workspaces-jupyter-python-3_9-image"
+    command: "/opt/palantir/transforms.d/run-ipynb.sh"
+    filePath: "resources/Untitled.ipynb"
+    envVars:
+      ENABLE_MANAGED_CONDA_ENVIRONMENTS: "false"
+      ENABLE_MANAGED_CRAN_ENVIRONMENTS: "false"
+      ENABLE_WRITE_BRANCH_PREFIX: "false"
+      UPLOAD_CODE_CHECKPOINTS: "true"
+resources:
+  cpu: "1"
+  memory: "8G"
+shouldArchiveLogsToOutputs: false
