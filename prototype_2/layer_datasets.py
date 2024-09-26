@@ -49,7 +49,7 @@ def create_omop_domain_dataframes(omop_data, filepath):
         try:
             domain_df = pd.DataFrame(column_dict)
         except ValueError as ve:
-            print(f"ERROR {ve}")
+            logger.error(f"ERROR {ve}")
             show_column_dict(column_dict)
         df_dict[domain_name] = domain_df
 
@@ -69,7 +69,6 @@ def process_file(filepath):
     """ processes file, creates dataset and writes csv
         returns dataset
     """
-    print(f"PROCESSING {filepath} ")
     logger.info(f"PROCESSING {filepath} ")
     base_name = os.path.basename(filepath)
 
@@ -95,7 +94,7 @@ def process_file(filepath):
 
 def dict_summary(my_dict):
     for key in my_dict:
-        print(f"Summary {key} {len(mh_dict[key])}")
+        logger.info(f"Summary {key} {len(mh_dict[key])}")
 
 def main():
 
@@ -122,16 +121,15 @@ def main():
                             omop_data_dict[key] = pd.concat([omop_data_dict[key], new_data_dict[key]])
                     else:
                         omop_data_dict[key]= new_data_dict[key]
-                    print(f"{file} {key} {len(omop_data_dict)} {omop_data_dict[key].shape} {new_data_dict[key].shape}")
+                    logger.info(f"{file} {key} {len(omop_data_dict)} {omop_data_dict[key].shape} {new_data_dict[key].shape}")
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
         ## ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']  ## FIX oddity from a merge?
 
-    print("")
-    print("SUMMARY")
+
     for key in omop_data_dict:
-        print(f"Summary {key} {omop_data_dict[key].shape}")
+        logger.info(f"Summary {key} {omop_data_dict[key].shape}")
 
     # EXPORT VARS
     export_person = omop_data_dict['Person']
