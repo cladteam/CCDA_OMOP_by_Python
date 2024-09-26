@@ -1,10 +1,10 @@
 inputs: []
 outputs:
-- alias: "observation"
+- alias: "person"
   properties:
     type: "dataset"
     dataset:
-      rid: "ri.foundry.main.dataset.b8f43652-d90b-4a3f-b1b9-7465ccaefb81"
+      rid: "ri.foundry.main.dataset.5d7f581c-dbe5-44c4-86e3-90c28671087e"
 runtime:
   type: "managedContainer"
   managedContainer:
