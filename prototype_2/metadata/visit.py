@@ -68,6 +68,7 @@ metadata = {
             'order':4
     	},
         'visit_start_datetime' : {  'config_type': None, 'order': 5 },
+
     	'visit_end_date':  {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
@@ -78,6 +79,7 @@ metadata = {
         'visit_end_datetime' : {  'config_type': None, 'order': 7 },
 
         'visit_type_concept_id' : {  'config_type': None, 'order': 8 },
+
     	# FIX TODO sometimes a document will have more than one encounterParticipant. The way this is configured, they will be awkwardly merged.
     	'provider_id': {
     	    'config_type': 'PRIORITY',
@@ -109,12 +111,12 @@ metadata = {
             'order': 10
     	},
 
-        'visit_detail_source_value': { 'config_type': None, 'order': 11},
-        'visit_detail_source_concept_id': { 'config_type': None, 'order': 12},
-        'admitting_source_value': { 'config_type': None, 'order': 13},
-        'admitting_source_concept_id': { 'config_type': None, 'order': 14},
-        'discharge_to_source_value': { 'config_type': None, 'order': 15},
-        'discharge_to_source_concept_id': { 'config_type': None, 'order': 16},
+        'visit_source_value': { 'config_type': None, 'order': 11},
+        'visit_source_concept_id': { 'config_type': None, 'order': 12},
+        'admitting_source_concept_id': { 'config_type': None, 'order': 13},
+        'admitting_source_value': { 'config_type': None, 'order': 14},
+        'discharge_to_source_concept_id': { 'config_type': None, 'order': 15},
+        'discharge_to_source_value': { 'config_type': None, 'order': 16},
         'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17}
     }
 }

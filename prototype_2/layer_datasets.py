@@ -2,11 +2,17 @@
 
 import argparse
 import os
-import pandas as PD
+import pandas as pd
+
+
+
 import logging
 import prototype_2.data_driven_parse as DDP
 from prototype_2.metadata import get_meta_dict
 
+
+import lxml
+print(lxml.__file__)
 
 logger = logging.getLogger(__name__)
 
@@ -41,9 +47,9 @@ def create_omop_domain_dataframes(omop_data, filepath):
 
         # create a Pandas dataframe from the data_dict
         try:
-            domain_df = PD.DataFrame(column_dict)
+            domain_df = pd.DataFrame(column_dict)
         except ValueError as ve:
-            print(f"ERROR {ve}")
+            logger.error(f"ERROR {ve}")
             show_column_dict(column_dict)
         df_dict[domain_name] = domain_df
 
@@ -60,7 +66,9 @@ def write_csvs_from_dataframe_dict(df_dict, file_name, folder):
 
 
 def process_file(filepath):
-    print(f"PROCESSING {filepath} ")
+    """ processes file, creates dataset and writes csv
+        returns dataset
+    """
     logger.info(f"PROCESSING {filepath} ")
     base_name = os.path.basename(filepath)
 
@@ -81,7 +89,12 @@ def process_file(filepath):
     else:
         logger.error(f"no data from {filepath}")
     write_csvs_from_dataframe_dict(dataframe_dict, base_name, "output")
+    
+    return dataframe_dict
 
+def dict_summary(my_dict):
+    for key in my_dict:
+        logger.info(f"Summary {key} {len(mh_dict[key])}")
 
 def main():
 
@@ -94,23 +107,48 @@ def main():
     group.add_argument('-f', '--filename', help="filename to parse")
     args = parser.parse_args()
 
+    omop_data_dict = {}
     if args.filename is not None:
         process_file(args.filename)
     elif args.directory is not None:
         only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
         for file in (only_files):
             if file.endswith(".xml"):
-                process_file(os.path.join(args.directory, file))
+                new_data_dict = process_file(os.path.join(args.directory, file))
+                for key in new_data_dict:
+                    if key in omop_data_dict and omop_data_dict[key] is not None:
+                        if new_data_dict[key] is  not None:
+                            omop_data_dict[key] = pd.concat([omop_data_dict[key], new_data_dict[key]])
+                    else:
+                        omop_data_dict[key]= new_data_dict[key]
+                    logger.info(f"{file} {key} {len(omop_data_dict)} {omop_data_dict[key].shape} {new_data_dict[key].shape}")
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
-    if False:  # for getting them on the Foundry
-        from foundry.transforms import Dataset
-        ccd_ambulatory = Dataset.get("ccda_ccd_b1_ambulatory_v2")
-        ccd_ambulatory_files = ccd_ambulatory.files().download()
-        ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']
+        ## ccd_ambulatory_path = ccd_ambulatory_files['CCDA_CCD_b1_Ambulatory_v2.xml']  ## FIX oddity from a merge?
 
 
+    for key in omop_data_dict:
+        logger.info(f"Summary {key} {omop_data_dict[key].shape}")
+
+    # EXPORT VARS
+    export_person = omop_data_dict['Person']
+    from foundry.transforms import Dataset
+    person = Dataset.get("person")
+    person.write_table(export_person)
+
+
+    export_observation = omop_data_dict['Observation']
+    observation = Dataset.get("observation")
+    observation.write_table(export_observation)
+    
+    export_measurement = omop_data_dict['Measurement']
+    measurement = Dataset.get("measurement")
+    measurement.write_table(export_measurement)
+    
+    export_visit = omop_data_dict['Visit']
+    visit = Dataset.get("visit")
+    visit.write_table(export_visit)
 
 if __name__ == '__main__':
     main()
