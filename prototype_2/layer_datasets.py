@@ -132,23 +132,25 @@ def main():
         logger.info(f"Summary {key} {omop_data_dict[key].shape}")
 
     # EXPORT VARS
-    export_person = omop_data_dict['Person']
-    from foundry.transforms import Dataset
-    person = Dataset.get("person")
-    person.write_table(export_person)
+    if False:
+        export_person = omop_data_dict['Person']
+        from foundry.transforms import Dataset
+        #person = Dataset.get("person")
+        person = Dataset.get("person_second_try")
+        person.write_table(export_person)
 
 
-    export_observation = omop_data_dict['Observation']
-    observation = Dataset.get("observation")
-    observation.write_table(export_observation)
-    
-    export_measurement = omop_data_dict['Measurement']
-    measurement = Dataset.get("measurement")
-    measurement.write_table(export_measurement)
-    
-    export_visit = omop_data_dict['Visit']
-    visit = Dataset.get("visit")
-    visit.write_table(export_visit)
+        export_observation = omop_data_dict['Observation']
+        observation = Dataset.get("observation")
+        observation.write_table(export_observation)
+
+        export_measurement = omop_data_dict['Measurement']
+        measurement = Dataset.get("measurement")
+        measurement.write_table(export_measurement)
+
+        export_visit = omop_data_dict['Visit']
+        visit = Dataset.get("visit")
+        visit.write_table(export_visit)
 
 if __name__ == '__main__':
     main()
