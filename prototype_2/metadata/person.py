@@ -133,7 +133,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'gender_concept_code',
     		    'vocabulary_oid': 'gender_concept_codeSystem',
-                'default': (8551, 'default') # unkown
+                'default': 8551 # unkown
     	    },
             'order': 2
     	},
@@ -187,7 +187,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'race_concept_code',
     		    'vocabulary_oid': 'race_concept_codeSystem',
-                'default': (0,'default')
+                'default': 0
     	    },
             'order': 7
     	},
@@ -208,7 +208,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'ethnicity_concept_code',
     		    'vocabulary_oid': 'ethnicity_concept_codeSystem',
-                'default': (0,'default')
+                'default': 0
     	    },
             'order': 8
     	},
@@ -228,6 +228,6 @@ metadata = {
         'race_source_concept_id': { 'config_type': None, 'order': 16 },
         'ethnicity_source_value': { 'config_type': None, 'order': 17 },
         'ethnicity_source_concept_id': { 'config_type': None, 'order': 18 }
- 
+
     }
 }
