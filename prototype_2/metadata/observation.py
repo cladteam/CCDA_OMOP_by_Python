@@ -40,7 +40,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'observation_concept_code',
     		    'vocabulary_oid': 'observation_concept_codeSystem',
-                'default': (0,'default')
+                'default': 0
     	    },
             'order': 3
     	},
@@ -50,7 +50,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'observation_concept_code',
     		    'vocabulary_oid': 'observation_concept_codeSystem',
-                'default': (0,'default')
+                'default': 0
     	    }
     	},
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
@@ -103,7 +103,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'value_as_code',
     		    'vocabulary_oid': 'value_as_codeSystem',
-                'default': (0,'default')
+                'default': 0
             },
             'order':  9
         },

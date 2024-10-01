@@ -54,7 +54,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'visit_concept_code',
     		    'vocabulary_oid': 'visit_concept_codeSystem',
-                'default': (0,'default')
+                'default': 0
     	    },
             'order': 3
     	},

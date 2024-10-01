@@ -30,6 +30,7 @@ import sys
 import hashlib
 import zlib
 import ctypes
+import traceback
 from lxml import etree as ET
 from prototype_2.metadata import get_meta_dict
 
@@ -210,10 +211,12 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                                       f"find {field_name} in {output_dict}"))
                     try:
                         args_dict[arg_name] = output_dict[field_name][0]
-                    except Exception:
+                    except Exception as e:
+                        print(traceback.format_exc(e))
                         error_fields_set.add(field_tag)
                         logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
+                        logger.error(f"DERIVED exception {e}")
 
             try:
                 function_value = field_details_dict['FUNCTION'](args_dict)
@@ -221,11 +224,13 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                 logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
             except KeyError as e:
+                print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
                 logger.error(f"DERIVED exception: {e}")
                 logger.error(f"DERIVED KeyError {field_tag} function can't find key it expects in {args_dict}")
                 output_dict[field_tag] = (None, field_details_dict['config_type'])
             except TypeError as e:
+                print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
                 logger.error(f"DERIVED exception: {e}")
                 logger.error((f"DERIVED TypeError {field_tag} possibly calling something that isn't a function"
