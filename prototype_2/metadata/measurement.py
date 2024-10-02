@@ -96,12 +96,12 @@ metadata = {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
     	    'attribute': "value",
-            'priority': [value_as_number, 1]
+            'priority': ['value_as_number', 1]
     	},
     	'value_as_number_na': {
     	    'config_type': 'CONSTANT',
-    	    'constant_value': 0,
-            'priority': [value_as_number, 100]
+    	    'constant_value': "0",
+            'priority': ['value_as_number', 100]
             },
     	'value_as_number': {
     	    'config_type': 'PRIORITY',
