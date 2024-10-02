@@ -90,11 +90,21 @@ metadata = {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
     	    'attribute': "#text",
+            # field not present in measurement table
     	},
-    	'value_as_number': {
+    	'value_as_number_pq': {
     	    'config_type': 'FIELD',
     	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
     	    'attribute': "value",
+            'priority': [value_as_number, 1]
+    	},
+    	'value_as_number_na': {
+    	    'config_type': 'CONSTANT',
+    	    'constant_value': 0,
+            'priority': [value_as_number, 100]
+            },
+    	'value_as_number': {
+    	    'config_type': 'PRIORITY',
             'order': 9
     	},
     	'value_as_code_CD': {
