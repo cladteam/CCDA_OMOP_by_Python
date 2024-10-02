@@ -8,7 +8,6 @@ metadata = {
     	    'config_type': 'ROOT',
     	    'element': "./componentOf/encompassingEncounter"
     	},
-
     	'visit_occurrence_id': {
             'config_type': 'PRIORITY',
             'order': 1
@@ -30,6 +29,11 @@ metadata = {
     	    'element': 'id',
     	    'attribute': "extension",
             'priority': ['visit_occurrence_id', 3]
+    	},
+        'visit_occurrence_id_na': {
+    	    'config_type': 'CONSTANT',
+            'constant_value': "0",
+            'priority': ['visit_occurrence_id', 4]
     	},
 
     	'person_id': {
