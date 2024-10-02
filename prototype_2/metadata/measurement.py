@@ -74,7 +74,11 @@ metadata = {
     	},
         'measurement_datetime': { 'config_type': None, 'order': 5 },
         'measurement_time': { 'config_type': None, 'order': 6 },
-        'measurement_type_concept_id': { 'config_type': None, 'order': 7 },
+        'measurement_type_concept_id': {
+            'config_type': 'CONSTANT', 
+            'constant_value' : 32035,
+            'order': 8 
+        },
         'operator_concept_id': { 'config_type': None, 'order': 8 },
 
     	'value_type': {

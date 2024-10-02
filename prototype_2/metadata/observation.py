@@ -63,7 +63,11 @@ metadata = {
     	},
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
     	'observation_datetime': { 'config_type': None, 'order': 5 },
-    	'observation_type_concept_id': { 'config_type': None, 'order': 6 },
+    	'observation_type_concept_id': {
+            'config_type': 'CONSTANT', 
+            'constant_value' : 32035,
+            'order': 8 
+        },
 
     	'visit_occurrence_id':	{
     	    'config_type': 'FK',
