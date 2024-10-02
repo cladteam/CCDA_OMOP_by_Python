@@ -78,7 +78,11 @@ metadata = {
     	},
         'visit_end_datetime' : {  'config_type': None, 'order': 7 },
 
-        'visit_type_concept_id' : {  'config_type': None, 'order': 8 },
+        'visit_type_concept_id' : {  
+            'config_type': 'CONSTANT', 
+            'constant_value' : 32035,
+            'order': 8 
+        },
 
     	# FIX TODO sometimes a document will have more than one encounterParticipant. The way this is configured, they will be awkwardly merged.
     	'provider_id': {
