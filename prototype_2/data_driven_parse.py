@@ -402,6 +402,9 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
     domain_id = None
     logger.info((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
                  f" attributes:{root_element.attrib}"))
+    if domain == 'Observation':
+        print((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
+                 f" attributes:{root_element.attrib}"))
 
     do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     do_constant_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
@@ -410,7 +413,7 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
     domain_id = do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
-
+    
     output_dict = sort_output_dict(output_dict, domain_meta_dict, domain)
 
     if (domain == domain_id or domain_id is None):
@@ -460,6 +463,7 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
     output_list = []
     error_fields_set = set()
     logger.info(f"NUM ROOTS {domain} {len(root_element_list)}")
+    print(f"NUM ROOTS {domain} {len(root_element_list)}")
     for root_element in root_element_list:
         (output_dict, element_error_set) = parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set, pk_dict)
         if output_dict is not None:

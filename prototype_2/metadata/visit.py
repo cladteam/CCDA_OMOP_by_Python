@@ -1,12 +1,15 @@
 
 import prototype_2.value_transformations as VT
-
+# converted to encouter from encompassingEncounter. The encompassingEncounter attributes are commented out
 metadata = {
     'Visit': {
     	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'config_type': 'ROOT',
-    	    'element': "./componentOf/encompassingEncounter"
+    	    ## 'element': "./componentOf/encompassingEncounter"
+            'element': ("./component/structuredBody/component/section/"
+    		   "templateId[@root='2.16.840.1.113883.10.20.22.2.22.1']"
+    		   "/../entry/encounter[@moodCode='EVN']")
     	},
     	'visit_occurrence_id': {
             'config_type': 'PRIORITY',
@@ -30,10 +33,16 @@ metadata = {
     	    'attribute': "extension",
             'priority': ['visit_occurrence_id', 3]
     	},
+       	'visit_occurrence_id_catchall_2': {
+    	    'config_type': 'PK',
+    	    'element': 'id',
+    	    'attribute': "root",
+            'priority': ['visit_occurrence_id', 4]
+    	},
         'visit_occurrence_id_na': {
     	    'config_type': 'CONSTANT',
             'constant_value': "0",
-            'priority': ['visit_occurrence_id', 4]
+            'priority': ['visit_occurrence_id', 100]
     	},
 
     	'person_id': {
@@ -44,7 +53,7 @@ metadata = {
 
     	'visit_concept_code': {
     	    'config_type': 'FIELD',
-    	    'element': "code",	 # FIX ToDo is this what I think it is?,
+    	    'element': "code",	 # works for encounters, doesn't look so good for encompassingEncounter
     	    'attribute': "code"
     	},
     	'visit_concept_codeSystem': {
@@ -65,20 +74,38 @@ metadata = {
 
     	# FIX is it consistenly a high/low pair? do we sometimes get just effectiveTime@value ?
     	'visit_start_date': {
+    	    'config_type': 'PRIORITY',
+            'order':4
+    	},
+    	'visit_start_date_low': {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
     	    'element': "effectiveTime/low",
     	    'attribute': "value",
-            'order':4
+            'priority':  ['visit_start_date', 1]
+    	},
+    	'visit_start_date_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATE',
+    	    'element': "effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_start_date', 2]
     	},
         'visit_start_datetime' : {  'config_type': None, 'order': 5 },
-
     	'visit_end_date':  {
+    	    'config_type': 'PRIORITY',
+            'order':6
+    	},
+    	'visit_end_date_high':  {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
     	    'element': "effectiveTime/high",
     	    'attribute': "value",
-            'order':6
+            'priority': ['visit_end_date', 1]
+    	},
+      	'visit_end_date_na':  {
+    	    'config_type': 'NONE',
+            'priority': ['visit_end_date', 1]
     	},
         'visit_end_datetime' : {  'config_type': None, 'order': 7 },
 
@@ -95,7 +122,8 @@ metadata = {
     	},
     	'provider_id_catchall': {
     	    'config_type': 'FIELD',
-    	    'element': "responsibleParty/assignedEntity/id",
+    	    # 'element': "responsibleParty/assignedEntity/id",
+            'element': "performer/assignedEntity/id",
     	    'attribute': "root",
             'priority': ['provider_id', 100]
     	},
@@ -114,7 +142,8 @@ metadata = {
 
     	'care_site_id': {
     	    'config_type': 'FIELD',
-    	    'element': "location/healthCareFacility/id",
+    	    # 'element': "location/healthCareFacility/id",
+            'element': "participant/participantRole/playingEntity", # not payingEntity? FIX 
     	    'attribute': "root",
             'order': 10
     	},
