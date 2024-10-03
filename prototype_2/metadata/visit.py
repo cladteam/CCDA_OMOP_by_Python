@@ -104,8 +104,9 @@ metadata = {
             'priority': ['visit_end_date', 1]
     	},
       	'visit_end_date_na':  {
-    	    'config_type': 'NONE',
-            'priority': ['visit_end_date', 1]
+    	    'config_type': 'CONSTANT',
+            'constant_value': "",
+            'priority': ['visit_end_date', 100]
     	},
         'visit_end_datetime' : {  'config_type': None, 'order': 7 },
 
