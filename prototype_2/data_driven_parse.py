@@ -33,12 +33,13 @@ import ctypes
 import traceback
 from lxml import etree as ET
 from prototype_2.metadata import get_meta_dict
+from lxml.etree import XPathEvalError 
 
 logger = logging.getLogger(__name__)
 
 
 ns = {
-   '': 'urn:hl7-org:v3',  # default namespace
+   # '': 'urn:hl7-org:v3',  # default namespace
    'hl7': 'urn:hl7-org:v3',
    'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
    'sdtc': 'urn:hl7-org:sdtc'
@@ -87,7 +88,13 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         return None
 
     logger.info(f"    FIELD {field_details_dict['element']} for {domain}/{field_tag}")
-    field_element = domain_root_element.find(field_details_dict['element'], ns)
+    #field_element = domain_root_element.find(field_details_dict['element'], ns)
+    field_element = None
+    try:
+        field_element = domain_root_element.xpath(field_details_dict['element'], namespaces=ns)
+    except XPathEvalError as pee:
+        pass # I know
+        #print(f"FAILED on  {field_details_dict['element']}")
     if field_element is None:
         logger.error((f"FIELD could not find field element {field_details_dict['element']}"
                       f" for {domain}/{field_tag} root:{root_path}"))
@@ -100,10 +107,15 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
 
     logger.info((f"       ATTRIBUTE   {field_details_dict['attribute']} "
                  f"for {domain}/{field_tag} {field_details_dict['element']} "))
-    attribute_value = field_element.get(field_details_dict['attribute'])
-    if field_details_dict['attribute'] == "#text":
-        attribute_value = field_element.text
-    if attribute_value is None:
+    attribute_value = None
+    if len(field_element) > 0:
+        attribute_value = field_element[0].get(field_details_dict['attribute'])
+        if field_details_dict['attribute'] == "#text":
+            attribute_value = field_element.text
+        if attribute_value is None:
+            logger.warning((f"no value for field element {field_details_dict['element']} "
+                        f"for {domain}/{field_tag} root:{root_path}"))
+    else:
         logger.warning((f"no value for field element {field_details_dict['element']} "
                         f"for {domain}/{field_tag} root:{root_path}"))
 
@@ -454,7 +466,8 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
     root_path = domain_meta_dict['root']['element']
     logger.info((f"DOMAIN >>  domain:{domain} root:{domain_meta_dict['root']['element']}"
                  f"   ROOT path:{root_path}"))
-    root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
+    #root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
+    root_element_list = tree.xpath(domain_meta_dict['root']['element'], namespaces=ns)
     if root_element_list is None or len(root_element_list) == 0:
         logger.error((f"DOMAIN couldn't find root element for {domain}"
                       f" with {domain_meta_dict['root']['element']}"))

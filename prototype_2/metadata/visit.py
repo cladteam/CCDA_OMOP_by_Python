@@ -6,10 +6,7 @@ metadata = {
     	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'config_type': 'ROOT',
-    	    ## 'element': "./componentOf/encompassingEncounter"
-            'element': ("./component/structuredBody/component/section/"
-    		   "templateId[@root='2.16.840.1.113883.10.20.22.2.22.1']"
-    		   "/../entry/encounter[@moodCode='EVN']")
+    	    'element': "./hl7:componentOf/hl7:encompassingEncounter"
     	},
     	'visit_occurrence_id': {
             'config_type': 'PRIORITY',
@@ -17,19 +14,19 @@ metadata = {
         },
     	'visit_occurrence_id_170': {   # for the 170.314...file
     	    'config_type': 'PK',
-    	    'element': 'id[@root="1.3.6.1.4.1.42424242.4.99930.4.3.4"]',
+    	    'element': 'hl7:id[@root="1.3.6.1.4.1.42424242.4.99930.4.3.4"]',
     	    'attribute': "extension",
             'priority': ['visit_occurrence_id', 1]
     	},
     	'visit_occurrence_id_other': {
     	    'config_type': 'PK',
-    	    'element': 'id[@root="2.16.840.1.113883.4.6"]',
+    	    'element': 'hl7:id[@root="2.16.840.1.113883.4.6"]',
     	    'attribute': "extension",
             'priority': ['visit_occurrence_id', 2]
     	},
     	'visit_occurrence_id_catchall': {
     	    'config_type': 'PK',
-    	    'element': 'id',
+    	    'element': 'hl7:id',
     	    'attribute': "extension",
             'priority': ['visit_occurrence_id', 3]
     	},
@@ -53,12 +50,12 @@ metadata = {
 
     	'visit_concept_code': {
     	    'config_type': 'FIELD',
-    	    'element': "code",	 # works for encounters, doesn't look so good for encompassingEncounter
+    	    'element': "hl7:code",	 # FIX ToDo is this what I think it is?,
     	    'attribute': "code"
     	},
     	'visit_concept_codeSystem': {
     	    'config_type': 'FIELD',
-    	    'element': "code",
+    	    'element': "hl7:code",
     	    'attribute': "codeSystem"
     	},
     	'visit_concept_id': {
@@ -80,7 +77,7 @@ metadata = {
     	'visit_start_date_low': {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
-    	    'element': "effectiveTime/low",
+    	    'element': "hl7:effectiveTime/hl7:low",
     	    'attribute': "value",
             'priority':  ['visit_start_date', 1]
     	},
@@ -99,7 +96,7 @@ metadata = {
     	'visit_end_date_high':  {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
-    	    'element': "effectiveTime/high",
+    	    'element': "hl7:effectiveTime/hl7:high",
     	    'attribute': "value",
             'priority': ['visit_end_date', 1]
     	},
@@ -123,28 +120,28 @@ metadata = {
     	},
     	'provider_id_catchall': {
     	    'config_type': 'FIELD',
-    	    # 'element': "responsibleParty/assignedEntity/id",
-            'element': "performer/assignedEntity/id",
+            #'element': "performer/assignedEntity/id",
+    	    'element': "hl7:responsibleParty/hl7:assignedEntity/hl7:id",
     	    'attribute': "root",
             'priority': ['provider_id', 100]
     	},
     	'provider_id_ep_170': {
     	    'config_type': 'FIELD',
-    	    'element': 'encounterParticipant/assignedEntity/id[@root="1.3.6.1.4.1.42424242.4.99930.4"]',
+    	    'element': 'hl7:encounterParticipant/hl7:assignedEntity/hl7:id[@root="1.3.6.1.4.1.42424242.4.99930.4"]',
     	    'attribute': "extension",
             'priority': ['provider_id', 1]
     	},
     	'provider_id_ep_npi_170': {
     	    'config_type': 'FIELD',
-    	    'element': 'encounterParticipant/assignedEntity/id[@root="2.16.840.1.113883.4.6"]',
+    	    'element': 'hl7:encounterParticipant/hl7:assignedEntity/hl7:id[@root="2.16.840.1.113883.4.6"]',
     	    'attribute': "extension",
             'priority': ['provider_id', 2]
     	},
 
     	'care_site_id': {
     	    'config_type': 'FIELD',
-    	    # 'element': "location/healthCareFacility/id",
-            'element': "participant/participantRole/playingEntity", # not payingEntity? FIX 
+            #'element': "participant/participantRole/playingEntity", # not payingEntity? FIX 
+    	    'element': "hl7:location/hl7:healthCareFacility/hl7:id",
     	    'attribute': "root",
             'order': 10
     	},

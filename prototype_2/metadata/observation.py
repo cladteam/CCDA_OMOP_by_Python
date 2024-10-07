@@ -6,15 +6,15 @@ metadata = {
     	'root': {
     	    'config_type': 'ROOT',
     	    'element':
-    		  ("./component/structuredBody/component/section/"
-    		   "templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
-    		   "/../entry/organizer/component/observation")
+    		  ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
+    		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
+    		   "/../hl7:entry/hl7:organizer/hl7:component/hl7:observation")
     		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
     		 },
 
     	'observation_id': {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
     	    'config_type': 'FIELD',
-    	    'element': 'id',
+    	    'element': 'hl7:id',
     	    'attribute': 'root',   ### FIX ????
             'order': 1
     	},
@@ -26,12 +26,12 @@ metadata = {
 
     	'observation_concept_code': {
     	    'config_type': 'FIELD',
-    	    'element': "code" ,
+    	    'element': "hl7:code" ,
     	    'attribute': "code"
     	},
     	'observation_concept_codeSystem': {
     	    'config_type': 'FIELD',
-    	    'element': "code",
+    	    'element': "hl7:code",
     	    'attribute': "codeSystem"
     	},
     	'observation_concept_id': {
@@ -57,7 +57,7 @@ metadata = {
     	'observation_date': {
     	    'config_type': 'FIELD',
             'data_type':'DATETIME',
-    	    'element': "effectiveTime",
+    	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'order': 4
     	},
@@ -76,29 +76,29 @@ metadata = {
 
     	'value_type': {
     	    'config_type': 'FIELD',
-    	    'element': "value",
+    	    'element': "hl7:value",
     	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
     	},
     	'value_as_string': {
     	    'config_type': 'FIELD',
-    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
+    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
     	    'attribute': "#text",
             'order': 7
     	},
     	'value_as_number': {
     	    'config_type': 'FIELD',
-    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
+    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
     	    'attribute': "value",
             'order':8
     	},
     	'value_as_code': {
     	    'config_type': 'FIELD',
-    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "code",
         },
     	'value_as_codeSystem': {
     	    'config_type': 'FIELD',
-    	    'element': 'value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
     	    'attribute': "codeSystem",
         },
     	'value_as_concept_id': {
@@ -116,7 +116,7 @@ metadata = {
 
         'value_unit':  {
     	    'config_type': 'FIELD',
-    	    'element': 'value',
+    	    'element': 'hl7:value',
     	    'attribute': 'unit'
     	},
         'unit_concept_id': { 'config_type': None, 'order': 10 },
@@ -126,7 +126,7 @@ metadata = {
 
         'observation_source_value': {
     	    'config_type': 'FIELD',
-    	    'element': "code" ,
+    	    'element': "hl7:code" ,
     	    'attribute': "code",
             'order': 14
         },
