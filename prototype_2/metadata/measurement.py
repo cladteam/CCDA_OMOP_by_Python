@@ -13,10 +13,10 @@ metadata = {
         },
 
     	'measurement_id_basic': {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
-    	    'config_type': 'FIELD',
-    	    'element': 'hl7:id',
-    	    'attribute': 'root',
-           'priority': ('measurement_id', 9999) # rejected, last in priority
+            'config_type': 'FIELD',
+            'element': 'hl7:id',
+            'attribute': 'root',
+            'priority': ('measurement_id', 9999) # rejected, last in priority
     	},
     	'measurement_id_hash': {
     	    'config_type': 'HASH',
@@ -75,9 +75,9 @@ metadata = {
         'measurement_datetime': { 'config_type': None, 'order': 5 },
         'measurement_time': { 'config_type': None, 'order': 6 },
         'measurement_type_concept_id': {
-            'config_type': 'CONSTANT', 
+            'config_type': 'CONSTANT',
             'constant_value' : 32035,
-            'order': 8 
+            'order': 8
         },
         'operator_concept_id': { 'config_type': None, 'order': 8 },
 
@@ -86,35 +86,40 @@ metadata = {
     	    'element': "hl7:value",
     	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
     	},
-    	'value_as_string': {
-    	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
-    	    'attribute': "#text",
-            # field not present in measurement table
-    	},
+
+    	#'value_as_string': {
+    	#    'config_type': 'FIELD',
+    	#    'element': 'hl7:value[@xsi:type="ST"]' ,
+    	#    'attribute': "#text",
+        #    # field not present in measurement table
+    	#},
+
+
     	'value_as_number_pq': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
+    	    'element': 'hl7:value[@xsi:type="PQ"]' ,
     	    'attribute': "value",
             'priority': ['value_as_number', 1]
-    	},
+        },
     	'value_as_number_na': {
     	    'config_type': 'CONSTANT',
     	    'constant_value': "0",
             'priority': ['value_as_number', 100]
-            },
+        },
     	'value_as_number': {
     	    'config_type': 'PRIORITY',
             'order': 9
     	},
+
+
     	'value_as_code_CD': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'element': 'hl7:value[@xsi:type="CD"]' ,
     	    'attribute': "code",
         },
     	'value_as_codeSystem_CD': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'element': 'hl7:value[@xsi:type="CD"]' ,
     	    'attribute': "codeSystem",
         },
     	'value_as_concept_id_CD': {
@@ -129,12 +134,12 @@ metadata = {
     	},
     	'value_as_code_CE': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CE"]' ,
+    	    'element': 'hl7:value[@xsi:type="CE"]' ,
     	    'attribute': "code",
         },
     	'value_as_codeSystem_CE': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CE"]' ,
+    	    'element': 'hl7:value[@xsi:type="CE"]' ,
     	    'attribute': "codeSystem",
         },
     	'value_as_concept_id_CE': {
@@ -156,6 +161,7 @@ metadata = {
     	    'config_type': 'PRIORITY',
             'order':  10
     	},
+
 
     	'unit_concept_id': { 'config_type': None, 'order':  11 },
     	'range_low': { 'config_type': None, 'order':  12 },
@@ -187,19 +193,19 @@ metadata = {
         },
     	'value_source_value_text': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
+    	    'element': 'hl7:value[@xsi:type="ST"]' ,
     	    'attribute': "#text",
             'priority': ['value_source_value', 3],
         },
     	'value_source_value_code': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'element': 'hl7:value[@xsi:type="CD"]' ,
     	    'attribute': "code",
             'priority': ['value_source_value', 2],
         },
     	'value_source_value_value': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
+    	    'element': 'hl7:value[@xsi:type="PQ"]' ,
     	    'attribute': "value",
             'priority': ['value_source_value', 1],
         },

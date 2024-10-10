@@ -64,9 +64,9 @@ metadata = {
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
     	'observation_datetime': { 'config_type': None, 'order': 5 },
     	'observation_type_concept_id': {
-            'config_type': 'CONSTANT', 
+            'config_type': 'CONSTANT',
             'constant_value' : 32035,
-            'order': 8 
+            'order': 8
         },
 
     	'visit_occurrence_id':	{
@@ -79,38 +79,73 @@ metadata = {
     	    'element': "hl7:value",
     	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
     	},
+
+
     	'value_as_string': {
     	    'config_type': 'FIELD',
     	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="ST"]' ,
     	    'attribute': "#text",
             'order': 7
     	},
+
+
     	'value_as_number': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="PQ"]' ,
+    	    'element': 'hl7:value[@xsi:type="PQ"]' ,
     	    'attribute': "value",
             'order':8
     	},
-    	'value_as_code': {
+
+
+    	'value_as_code_CD': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'element': 'hl7:value[@xsi:type="CD"]' ,
     	    'attribute': "code",
         },
-    	'value_as_codeSystem': {
+    	'value_as_codeSystem_CD': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@{http://www.w3.org/2001/XMLSchema-instance}type="CD"]' ,
+    	    'element': 'hl7:value[@xsi:type="CD"]' ,
     	    'attribute': "codeSystem",
         },
-    	'value_as_concept_id': {
+    	'value_as_concept_id_CD': {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	    'argument_names': {
-    		    'concept_code': 'value_as_code',
-    		    'vocabulary_oid': 'value_as_codeSystem',
-                'default': 0
+    		    'concept_code': 'value_as_code_CD',
+    		    'vocabulary_oid': 'value_as_codeSystem_CD',
+                'default': None
             },
-            'order':  9
+            'priority': ['value_as_concept_id', 2]
+    	},
+    	'value_as_code_CE': {
+    	    'config_type': 'FIELD',
+    	    'element': 'hl7:value[@xsi:type="CE"]' ,
+    	    'attribute': "code",
         },
+    	'value_as_codeSystem_CE': {
+    	    'config_type': 'FIELD',
+    	    'element': 'hl7:value[@xsi:type="CE"]' ,
+    	    'attribute': "codeSystem",
+        },
+    	'value_as_concept_id_CE': {
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'argument_names': {
+    		    'concept_code': 'value_as_code_CE',
+    		    'vocabulary_oid': 'value_as_codeSystem_CE',
+                'default': None
+            },
+            'priority': ['value_as_concept_id', 1]
+    	},
+        'value_as_concept_id_na': {
+            'config_type': 'CONSTANT',
+            'constant_value' : 0,
+            'priority': ['value_as_concept_id', 100]
+        },
+    	'value_as_concept_id': {
+    	    'config_type': 'PRIORITY',
+            'order':  9
+    	},
 
 
 

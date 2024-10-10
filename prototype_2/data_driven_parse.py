@@ -97,7 +97,7 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         #print(f"FAILED on  {field_details_dict['element']}")
     if field_element is None:
         logger.error((f"FIELD could not find field element {field_details_dict['element']}"
-                      f" for {domain}/{field_tag} root:{root_path}"))
+                      f" for {domain}/{field_tag} root:{root_path} {field_details_dict} "))
         return None
 
     if 'attribute' not in field_details_dict:
@@ -111,7 +111,13 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
     if len(field_element) > 0:
         attribute_value = field_element[0].get(field_details_dict['attribute'])
         if field_details_dict['attribute'] == "#text":
-            attribute_value = field_element.text
+            try:
+                attribute_value = field_element.text
+            except Exception as e:
+                print((f"ERROR: no text elemeent for field element {field_element} "
+                        f"for {domain}/{field_tag} root:{root_path}"))
+                logger.error((f"no text elemeent for field element {field_element} "
+                        f"for {domain}/{field_tag} root:{root_path}"))
         if attribute_value is None:
             logger.warning((f"no value for field element {field_details_dict['element']} "
                         f"for {domain}/{field_tag} root:{root_path}"))
@@ -372,7 +378,7 @@ def get_extract_order_fn(dict):
             logger.info(f"{field_key} {dict[field_key]['order']}")
             return int(dict[field_key]['order'])
         else:
-            logger.warning(f"extract_order_fn, no order in {field_key}")
+            logger.info(f"extract_order_fn, no order in {field_key}")
             return int(sys.maxsize)
 
     return get_order_from_dict
@@ -413,9 +419,6 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
     output_dict = {}
     domain_id = None
     logger.info((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
-                 f" attributes:{root_element.attrib}"))
-    if domain == 'Observation':
-        print((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
                  f" attributes:{root_element.attrib}"))
 
     do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
@@ -476,7 +479,6 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
     output_list = []
     error_fields_set = set()
     logger.info(f"NUM ROOTS {domain} {len(root_element_list)}")
-    print(f"NUM ROOTS {domain} {len(root_element_list)}")
     for root_element in root_element_list:
         (output_dict, element_error_set) = parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set, pk_dict)
         if output_dict is not None:
