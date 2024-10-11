@@ -49,6 +49,17 @@ ns = {
 #concept_xwalk = Dataset.get("concept_xwalk")
 #concept_xwalk_files = concept_xwalk.files().download()
 
+def create_8_byte_hash(input_string):
+    """ creates a hash from the string and then converts it
+        to an integer for use int bigint (64-bit) fields
+        suitable for bigint fields in databases
+    """
+    hash_value = hashlib.md5(input_string.encode('utf-8'))
+    #int_hash_value = int(hash_value.hexdigest()[0:15], 16)
+    int_hash_value = int(hash_value.hexdigest(), 16)
+    bigint_hash_value = ctypes.c_int64(int_hash_value % 2**64).value
+
+    return bigint_hash_value
 
 
 def cast_to_date(string_value):
@@ -130,20 +141,19 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         if attribute_value is not None:
             if field_details_dict['data_type'] == 'DATE':
                 attribute_value = cast_to_date(attribute_value)
-            if field_details_dict['data_type'] == 'DATETIME':
+            elif field_details_dict['data_type'] == 'DATETIME':
                 attribute_value = cast_to_datetime(attribute_value)
-            if field_details_dict['data_type'] == 'INTEGER':
-                    attribute_value = int(attribute_value)
-            if field_details_dict['data_type'] == '32BINTEGER':
-                    attribute_value = ctypes.c_int32(int(attribute_value)).value
-            if field_details_dict['data_type'] == 'INTEGERHASH':
-                # for DuckDB (RDB int type), we need a 32-bit  signed integer from almost anything. This may not be as unique as we need TODO FIX
-                # attribute_value = ctypes.c_int32(hash(attribute_value)).value # NOT STABLE!
-                hash_value = hashlib.sha256(attribute_value.encode('utf-8')).hexdigest()
-                #attribute_value = int(hash_value, 16) % 10**8 # 8 digiti decimal
-                attribute_value = int(hash_value, 16) % 2**31 # signed 4 byte int
-            if field_details_dict['data_type'] == 'FLOAT':
+            elif field_details_dict['data_type'] == 'INTEGER':
+                attribute_value = int(attribute_value)
+            elif field_details_dict['data_type'] == '32BINTEGER':
+                attribute_value = ctypes.c_int32(int(attribute_value)).value
+            elif field_details_dict['data_type'] == 'BIGINTHASH':
+                attribute_value = create_8_byte_hash(attribute_value)
+            elif field_details_dict['data_type'] == 'FLOAT':
                 attribute_value = float(attribute_value)
+            else:
+                print(f"ERROR UNKNOWN DATA TYPE: {field_details_dict['data_type']}")
+                logger.error(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {domain} {field_tag}")
             return attribute_value
         else:
             return None
@@ -307,7 +317,7 @@ def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_
     return domain_id
 
 
-def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
     """ These are basically derived, but the argument is a lsit of field names, instead of
         a fixed number of individually named fields.
         Dubiously useful in an environment where IDs are  32 bit integers.
@@ -316,12 +326,12 @@ def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_di
     """
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'HASH':
-            hash_input =  "-".join(field_details_dict['fields'])
-            hash_value = hashlib.sha256(hash_input.encode('utf-8')).hexdigest()
-            #hash_value = int(hash_value, 16) % 10**9 # ( digit decimal
-            hash_value = int(hash_value, 16) % 2**31 # ( signed 4 byte int )
+            hash_input =  "|".join(field_details_dict['fields'])
+            hash_value = create_8_byte_hash(hash_input)
             output_dict[field_tag] = (hash_value, 'HASH')
-            logger.info((f"     HASH {hash_value} for "
+            # treat as PK and include in that dictionary
+            pk_dict[field_tag] = hash_value
+            logger.info((f"     HASH (PK) {hash_value} for "
                          f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
 
 
@@ -426,7 +436,7 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
     do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
     do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
     domain_id = do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-    do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
+    do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
     priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
     
     output_dict = sort_output_dict(output_dict, domain_meta_dict, domain)

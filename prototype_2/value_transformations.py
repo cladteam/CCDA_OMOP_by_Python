@@ -45,7 +45,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
 
         if len(concept_id_df) > 1:
            logger.warning(f"more than one  concept for \"{vocabulary_oid}\" \"{concept_code}\", chose the first")
-        
+
         if concept_id_df is None:
             return default
 
@@ -58,9 +58,9 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
 def map_hl7_to_omop_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
     """
-    id_value = _map_to_omop_concept_row(args_dict['vocabulary_oid'], 
+    id_value = _map_to_omop_concept_row(args_dict['vocabulary_oid'],
                                         args_dict['concept_code'],
-                                        args_dict['default'], 
+                                        args_dict['default'],
                                         'concept_id')
     if id_value is not None:
         return int(id_value)
@@ -70,7 +70,7 @@ def map_hl7_to_omop_concept_id(args_dict):
 def map_hl7_to_omop_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
     """
-    return _map_to_omop_concept_row(args_dict['vocabulary_oid'], 
+    return _map_to_omop_concept_row(args_dict['vocabulary_oid'],
                                     args_dict['concept_code'],
                                     args_dict['default'],
                                     'domain_id')
@@ -78,15 +78,21 @@ def map_hl7_to_omop_domain_id(args_dict):
 def extract_day_of_birth(args_dict):
     # assumes input is ISO-8601 "YYYY-MM-DD"
     date_string = args_dict['date_string']
-    return date_string[8:10]
+    if date_string is not None:
+        return date_string[8:10]
+    return None
 
 def extract_month_of_birth(args_dict):
     # assumes input is ISO-8601 "YYYY-MM-DD"
     date_string = args_dict['date_string']
-    return date_string[5:7]
+    if date_string is not None:
+        return date_string[5:7]
+    return None
 
 def extract_year_of_birth(args_dict):
     # assumes input is ISO-8601 "YYYY-MM-DD"
     date_string = args_dict['date_string']
-    return date_string[0:4]
+    if date_string is not None:
+        return date_string[0:4]
+    return None
 

@@ -13,69 +13,81 @@ metadata = {
         # Often it's not clear these are legitimate or public  OIDs. I haven't found a definition for them.
         # TODO keep an eye on uniqueness and consider if our OMOP patient ID should be a concatination of
         # TODO (cont) root and extension...like if the extension is only unique within a system identified by the root.
-    	'person_id_anna_flux': {
-    	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
-    	    'element': 'hl7:id[@root="2.16.840.1.113883.3.651.2.1"]',
-    	    'attribute': "extension",
-            'priority': ('person_id', 1)
-    	},
+#    	'person_id': {
+#    	    'config_type': 'FIELD',
+#            'data_type' : 'BIGINTHASH',
+#    	    'element': 'hl7:id',
+#    	    'attribute': "root",
+#            'order': 1
+#    	},
+
+###
+# TODO: does the data_type not work when it's a priority field?
+# I added it there, but  need to look at data_driven_parse.py to see if
+# teh datatypes get applied to priority feilds
+# OR put datatype on the fields....
+###
+    	'person_id': { # down here to bait trouble with sorting
+            'config_type': 'PRIORITY',
+            #'data_type' : 'BIGINTHASH',
+            'order': 1
+        },
     	'person_id_patient_170': {
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id[@root="2.16.840.1.113883.3.6132"]',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "extension",
             'priority': ('person_id', 2)
     	},
     	'person_id_patient_502': {
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id[@root="2.16.840.1.113883.19.5.99999.2"]',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "extension",
             'priority': ('person_id', 3)
     	},
     	'person_id_patient_healthconnectak': {
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id[@root="2.16.840.1.113883.3.564.14977"]',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "extension",
             'priority': ('person_id', 4)
     	},
     	'person_id_patient_bennis_shauna': { # same OID as for eHx_Terry
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id[@root="2.16.840.1.113883.3.7732.100"]',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "extension",
             'priority': ('person_id', 5)
     	},
         # more general types of person Ids
     	'person_id_ssn': {
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id[@root="2.16.840.1.113883.4.1"]',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "extension",
             'priority': ('person_id', 103)
     	},
     	'person_id_npi': {
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id[@root="2.16.840.1.113883.4.6"]',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "extension",
             'priority': ('person_id', 104) # (final field name, priority number)
     	},
     	'person_id_extension_catchall': {
             # if others fail b/c they specify roots not used, just grab an extension
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "extension",
             'priority': ('person_id', 105)
     	},
     	'person_id_root_catchall': {
             # if the  extension_catchall fails b/c there is no extension attribute, try just the root
     	    'config_type': 'FIELD',
-            'data_type': 'INTEGERHASH',
     	    'element': 'hl7:id',
+            'data_type' : 'BIGINTHASH',
     	    'attribute': "root",
             'priority': ('person_id', 106)
     	},
@@ -213,11 +225,6 @@ metadata = {
             'order': 8
     	},
 
-    	'person_id': { # down here to bait trouble with sorting
-            'config_type': 'PRIORITY',
-            'data_type': 'INTEGER', # not applied here, go to the priority fields
-            'order': 1
-        },
         'location_id': { 'config_type': None, 'order': 9 },
         'provider_id': { 'config_type': None, 'order': 10 },
         'care_site_id': { 'config_type': None, 'order': 11 },
