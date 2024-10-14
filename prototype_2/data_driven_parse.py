@@ -49,17 +49,20 @@ ns = {
 #concept_xwalk = Dataset.get("concept_xwalk")
 #concept_xwalk_files = concept_xwalk.files().download()
 
-def create_8_byte_hash(input_string):
-    """ creates a hash from the string and then converts it
-        to an integer for use int bigint (64-bit) fields
-        suitable for bigint fields in databases
+#def create_8_byte_hash(input_string):
+#    hash_value = hashlib.md5(input_string.encode('utf-8'))
+#    int_hash_value = int(hash_value.hexdigest(), 16)
+#    bigint_hash_value = ctypes.c_int64(int_hash_value % 2**64).value
+#    return bigint_hash_value
+
+def create_hash(input_string):
+    """ matches common SQL code when that code also truncates to 13 characters
+        SQL: cast(conv(substr(md5(test_string), 1, 15), 16, 10) as bigint) as hashed_value
     """
     hash_value = hashlib.md5(input_string.encode('utf-8'))
-    #int_hash_value = int(hash_value.hexdigest()[0:15], 16)
-    int_hash_value = int(hash_value.hexdigest(), 16)
-    bigint_hash_value = ctypes.c_int64(int_hash_value % 2**64).value
-
-    return bigint_hash_value
+    truncated_hash = hash_value.hexdigest()[0:13]
+    int_trunc_hash_value = int(truncated_hash, 16)
+    return int_trunc_hash_value
 
 
 def cast_to_date(string_value):
@@ -148,7 +151,7 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
             elif field_details_dict['data_type'] == '32BINTEGER':
                 attribute_value = ctypes.c_int32(int(attribute_value)).value
             elif field_details_dict['data_type'] == 'BIGINTHASH':
-                attribute_value = create_8_byte_hash(attribute_value)
+                attribute_value = create_hash(attribute_value)
             elif field_details_dict['data_type'] == 'FLOAT':
                 attribute_value = float(attribute_value)
             else:
@@ -326,8 +329,13 @@ def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_di
     """
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'HASH':
-            hash_input =  "|".join(field_details_dict['fields'])
-            hash_value = create_8_byte_hash(hash_input)
+            value_list = []
+            for field_name in field_details_dict['fields'] :
+                if field_name in output_dict and output_dict[field_name][0] is not None:
+                    value_list.append(output_dict[field_name][0])
+            ## -->> hash_input =  "|".join(str(value_list))
+            hash_input =  "|".join(map(str, value_list))
+            hash_value = create_hash(hash_input)
             output_dict[field_tag] = (hash_value, 'HASH')
             # treat as PK and include in that dictionary
             pk_dict[field_tag] = hash_value
