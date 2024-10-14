@@ -13,23 +13,8 @@ metadata = {
         # Often it's not clear these are legitimate or public  OIDs. I haven't found a definition for them.
         # TODO keep an eye on uniqueness and consider if our OMOP patient ID should be a concatination of
         # TODO (cont) root and extension...like if the extension is only unique within a system identified by the root.
-#    	'person_id': {
-#    	    'config_type': 'FIELD',
-#            'data_type' : 'BIGINTHASH',
-#    	    'element': 'hl7:id',
-#    	    'attribute': "root",
-#            'order': 1
-#    	},
-
-###
-# TODO: does the data_type not work when it's a priority field?
-# I added it there, but  need to look at data_driven_parse.py to see if
-# teh datatypes get applied to priority feilds
-# OR put datatype on the fields....
-###
     	'person_id': { # down here to bait trouble with sorting
             'config_type': 'PRIORITY',
-            #'data_type' : 'BIGINTHASH',
             'order': 1
         },
     	'person_id_patient_170': {
@@ -93,7 +78,7 @@ metadata = {
     	},
     	'person_id_hash': {
     	    'config_type': 'HASH',
-            'fields' : [ 'family_name', 'given_name', 'street_address', 'city', 'country', 'postal_code', 'gender_concept_code', 'race_concept_code', 'ethnicity_concept_code', 'date_of_birth', 'person_id_ssn', 'person_id_other' ],
+            'fields' : [ 'family_name', 'given_name', 'street_address', 'city', 'country', 'postal_code', 'gender_concept_code', 'race_concept_code', 'ethnicity_concept_code', 'birth_datetime', 'person_id_ssn', 'person_id_other' ],
             'priority': ('person_id', 107) # (final field name, priority number)
     	},
 
