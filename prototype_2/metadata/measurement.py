@@ -84,7 +84,8 @@ metadata = {
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
         'measurement_date': {
     	    'config_type': 'FIELD',
-            'data_type':'DATETIME',
+            #'data_type':'DATETIME',
+            'data_type':'DATE',
     	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'order': 4
