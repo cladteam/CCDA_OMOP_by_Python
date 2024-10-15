@@ -9,7 +9,7 @@ def cast_as_string(args_dict):
     string_value = args_dict['input']
     type_value = args_dict['type']
     if type_value == 'ST':
-        return string(string_value)
+        return str(string_value)
     else:
         return None
 
