@@ -27,22 +27,25 @@ metadata = {
     	    'attribute': "extension",
             'priority': ['visit_occurrence_id', 2]
     	},
-    	'visit_occurrence_id_catchall': {
+    	'visit_occurrence_id_root': {
     	    'config_type': 'PK',
     	    'element': 'hl7:id',
     	    'attribute': "extension",
-            'priority': ['visit_occurrence_id', 3]
     	},
-       	'visit_occurrence_id_catchall_2': {
+       	'visit_occurrence_id_extension': {
     	    'config_type': 'PK',
     	    'element': 'id',
     	    'attribute': "root",
-            'priority': ['visit_occurrence_id', 4]
     	},
     	'visit_occurrence_id_hash': {
     	    'config_type': 'HASH',
+            'fields' : [ 'visit_occurrence_id_root', 'visit_occurrence_id_extension'],
+            'priority': ('visit_occurrence_id', 5)
+    	},
+    	'visit_occurrence_id_hash_natural': {
+    	    'config_type': 'HASH',
             'fields' : [ 'person_id', 'provider_id', 'visit_concept_code', 'visit_start_date_low', 'visit_start_date_value' ],
-            'priority': ('measurement_id', 5)
+            'priority': ('visit_occurrence_id', 6)
     	},
         'visit_occurrence_id_na': {
     	    'config_type': 'CONSTANT',
