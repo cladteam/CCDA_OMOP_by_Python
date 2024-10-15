@@ -9,9 +9,9 @@ CREATE TABLE @cdmDatabaseSchema.person (
 			birth_datetime TIMESTAMP NULL,
 			race_concept_id integer NOT NULL,
 			ethnicity_concept_id integer NOT NULL,
-			location_id integer NULL,
-			provider_id integer NULL,
-			care_site_id integer NULL,
+			location_id bigint NULL,
+			provider_id bigint NULL,
+			care_site_id bigint NULL,
 			person_source_value varchar(50) NULL,
 			gender_source_value varchar(50) NULL,
 			gender_source_concept_id integer NULL,
@@ -31,14 +31,14 @@ CREATE TABLE @cdmDatabaseSchema.person (
  );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.observation_period (
-			observation_period_id integer NOT NULL,
+			observation_period_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			observation_period_start_date date NOT NULL,
 			observation_period_end_date date NOT NULL,
 			period_type_concept_id integer NOT NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.visit_occurrence (
-			visit_occurrence_id integer PRIMARY KEY, -- NOT NULL,
+			visit_occurrence_id bigint PRIMARY KEY, -- NOT NULL,
 			person_id bigint NOT NULL,
 			visit_concept_id integer NOT NULL,
 			visit_start_date date NOT NULL,
@@ -46,15 +46,15 @@ CREATE TABLE @cdmDatabaseSchema.visit_occurrence (
 			visit_end_date date NOT NULL,
 			visit_end_datetime TIMESTAMP NULL,
 			visit_type_concept_id Integer NOT NULL,
-			provider_id integer NULL,
-			care_site_id integer NULL,
+			provider_id bigint NULL,
+			care_site_id bigint NULL,
 			visit_source_value varchar(50) NULL,
 			visit_source_concept_id integer NULL,
 			admitting_source_concept_id integer NULL,
 			admitting_source_value varchar(50) NULL,
 			discharge_to_concept_id integer NULL,
 			discharge_to_source_value varchar(50) NULL,
-			preceding_visit_occurrence_id integer NULL,
+			preceding_visit_occurrence_id bigint NULL,
     FOREIGN KEY (person_id) REFERENCES @cdmDatabaseSchema.PERSON (PERSON_ID),
 --    FOREIGN KEY (visit_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
 --    FOREIGN KEY (visit_type_concept_id) REFERENCES @cdmDatabaseSchema.CONCEPT (CONCEPT_ID),
@@ -67,7 +67,7 @@ CREATE TABLE @cdmDatabaseSchema.visit_occurrence (
 );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.visit_detail (
-			visit_detail_id integer NOT NULL,
+			visit_detail_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			visit_detail_concept_id integer NOT NULL,
 			visit_detail_start_date date NOT NULL,
@@ -75,8 +75,8 @@ CREATE TABLE @cdmDatabaseSchema.visit_detail (
 			visit_detail_end_date date NOT NULL,
 			visit_detail_end_datetime TIMESTAMP NULL,
 			visit_detail_type_concept_id integer NOT NULL,
-			provider_id integer NULL,
-			care_site_id integer NULL,
+			provider_id bigint NULL,
+			care_site_id bigint NULL,
 			visit_detail_source_value varchar(50) NULL,
 			visit_detail_source_concept_id Integer NULL,
 			admitting_source_value Varchar(50) NULL,
@@ -84,11 +84,11 @@ CREATE TABLE @cdmDatabaseSchema.visit_detail (
 			discharge_to_source_value Varchar(50) NULL,
 			discharge_to_concept_id integer NULL,
 			preceding_visit_detail_id integer NULL,
-			visit_detail_parent_id integer NULL,
-			visit_occurrence_id integer NOT NULL );
+			visit_detail_parent_id bigint NULL,
+			visit_occurrence_id bigint NOT NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.condition_occurrence (
-			condition_occurrence_id integer NOT NULL,
+			condition_occurrence_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			condition_concept_id integer NOT NULL,
 			condition_start_date date NOT NULL,
@@ -98,15 +98,15 @@ CREATE TABLE @cdmDatabaseSchema.condition_occurrence (
 			condition_type_concept_id integer NOT NULL,
 			condition_status_concept_id integer NULL,
 			stop_reason varchar(20) NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
+			provider_id bigint NULL,
+			visit_occurrence_id bigint NULL,
+			visit_detail_id bigint NULL,
 			condition_source_value varchar(50) NULL,
 			condition_source_concept_id integer NULL,
 			condition_status_source_value varchar(50) NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.drug_exposure (
-			drug_exposure_id integer NOT NULL,
+			drug_exposure_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			drug_concept_id integer NOT NULL,
 			drug_exposure_start_date date NOT NULL,
@@ -122,9 +122,9 @@ CREATE TABLE @cdmDatabaseSchema.drug_exposure (
 			sig TEXT NULL,
 			route_concept_id integer NULL,
 			lot_number varchar(50) NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
+			provider_id bigint NULL,
+			visit_occurrence_id bigint NULL,
+			visit_detail_id bigint NULL,
 			drug_source_value varchar(50) NULL,
 			drug_source_concept_id integer NULL,
 			route_source_value varchar(50) NULL,
@@ -139,15 +139,15 @@ CREATE TABLE @cdmDatabaseSchema.procedure_occurrence (
 			procedure_type_concept_id integer NOT NULL,
 			modifier_concept_id integer NULL,
 			quantity integer NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
+			provider_id bigint NULL,
+			visit_occurrence_id bigint NULL,
+			visit_detail_id bigint NULL,
 			procedure_source_value varchar(50) NULL,
 			procedure_source_concept_id integer NULL,
 			modifier_source_value varchar(50) NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.device_exposure (
-			device_exposure_id integer NOT NULL,
+			device_exposure_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			device_concept_id integer NOT NULL,
 			device_exposure_start_date date NOT NULL,
@@ -157,9 +157,9 @@ CREATE TABLE @cdmDatabaseSchema.device_exposure (
 			device_type_concept_id integer NOT NULL,
 			unique_device_id varchar(50) NULL,
 			quantity integer NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
+			provider_id bigint NULL,
+			visit_occurrence_id bigint NULL,
+			visit_detail_id bigint NULL,
 			device_source_value varchar(50) NULL,
 			device_source_concept_id integer NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
@@ -177,9 +177,9 @@ CREATE TABLE @cdmDatabaseSchema.measurement (
 			unit_concept_id integer NULL,
 			range_low NUMERIC NULL,
 			range_high NUMERIC NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
+			provider_id bigint NULL,
+			visit_occurrence_id bigint NULL,
+			visit_detail_id bigint NULL,
 			measurement_source_value varchar(50) NULL,
 			measurement_source_concept_id integer NULL,
 			unit_source_value varchar(50) NULL,
@@ -197,9 +197,9 @@ CREATE TABLE @cdmDatabaseSchema.measurement (
 );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.observation (
-			observation_id integer PRIMARY KEY,
+			observation_id bigint PRIMARY KEY,
 			person_id bigint NOT NULL,
-			observation_concept_id integer NOT NULL,
+			observation_concept_id bigint NOT NULL,
 			observation_date date NOT NULL,
 			observation_datetime TIMESTAMP NULL,
 			observation_type_concept_id integer NOT NULL,
@@ -208,9 +208,9 @@ CREATE TABLE @cdmDatabaseSchema.observation (
 			value_as_concept_id Integer NULL,
 			qualifier_concept_id integer NULL,
 			unit_concept_id integer NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
+			provider_id bigint NULL,
+			visit_occurrence_id bigint NULL,
+			visit_detail_id bigint NULL,
 			observation_source_value varchar(50) NULL,
 			observation_source_concept_id integer NULL,
 			unit_source_value varchar(50) NULL,
@@ -237,7 +237,7 @@ CREATE TABLE @cdmDatabaseSchema.death (
 			cause_source_concept_id integer NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.note (
-			note_id integer NOT NULL,
+			note_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			note_date date NOT NULL,
 			note_datetime TIMESTAMP NULL,
@@ -247,14 +247,14 @@ CREATE TABLE @cdmDatabaseSchema.note (
 			note_text TEXT NOT NULL,
 			encoding_concept_id integer NOT NULL,
 			language_concept_id integer NOT NULL,
-			provider_id integer NULL,
-			visit_occurrence_id integer NULL,
-			visit_detail_id integer NULL,
+			provider_id bigint NULL,
+			visit_occurrence_id bigint NULL,
+			visit_detail_id bigint NULL,
 			note_source_value varchar(50) NULL );
 --HINT DISTRIBUTE ON RANDOM
 CREATE TABLE @cdmDatabaseSchema.note_nlp (
-			note_nlp_id integer NOT NULL,
-			note_id integer NOT NULL,
+			note_nlp_id bigint NOT NULL,
+			note_id bigint NOT NULL,
 			section_concept_id integer NULL,
 			snippet varchar(250) NULL,
 			"offset" varchar(50) NULL,
@@ -269,7 +269,7 @@ CREATE TABLE @cdmDatabaseSchema.note_nlp (
 			term_modifiers varchar(2000) NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.specimen (
-			specimen_id integer NOT NULL,
+			specimen_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			specimen_concept_id integer NOT NULL,
 			specimen_type_concept_id integer NOT NULL,
@@ -287,13 +287,13 @@ CREATE TABLE @cdmDatabaseSchema.specimen (
 --HINT DISTRIBUTE ON RANDOM
 CREATE TABLE @cdmDatabaseSchema.fact_relationship (
 			domain_concept_id_1 integer NOT NULL,
-			fact_id_1 integer NOT NULL,
+			fact_id_1 bigint NOT NULL,
 			domain_concept_id_2 integer NOT NULL,
-			fact_id_2 integer NOT NULL,
+			fact_id_2 bigint NOT NULL,
 			relationship_concept_id integer NOT NULL );
 --HINT DISTRIBUTE ON RANDOM
 CREATE TABLE @cdmDatabaseSchema.location (
-			location_id integer NOT NULL,
+			location_id bigint NOT NULL,
 			address_1 varchar(50) NULL,
 			address_2 varchar(50) NULL,
 			city varchar(50) NULL,
@@ -303,7 +303,7 @@ CREATE TABLE @cdmDatabaseSchema.location (
 			location_source_value varchar(50) NULL );
 --HINT DISTRIBUTE ON RANDOM
 CREATE TABLE @cdmDatabaseSchema.care_site (
-			care_site_id integer NOT NULL,
+			care_site_id bigint NOT NULL,
 			care_site_name varchar(255) NULL,
 			place_of_service_concept_id integer NULL,
 			location_id integer NULL,
@@ -311,12 +311,12 @@ CREATE TABLE @cdmDatabaseSchema.care_site (
 			place_of_service_source_value varchar(50) NULL );
 --HINT DISTRIBUTE ON RANDOM
 CREATE TABLE @cdmDatabaseSchema.provider (
-			provider_id integer NOT NULL,
+			provider_id bigint NOT NULL,
 			provider_name varchar(255) NULL,
 			npi varchar(20) NULL,
 			dea varchar(20) NULL,
 			specialty_concept_id integer NULL,
-			care_site_id integer NULL,
+			care_site_id bigint NULL,
 			year_of_birth integer NULL,
 			gender_concept_id integer NULL,
 			provider_source_value varchar(50) NULL,
@@ -326,7 +326,7 @@ CREATE TABLE @cdmDatabaseSchema.provider (
 			gender_source_concept_id integer NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.payer_plan_period (
-			payer_plan_period_id integer NOT NULL,
+			payer_plan_period_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			payer_plan_period_start_date date NOT NULL,
 			payer_plan_period_end_date date NOT NULL,
@@ -345,8 +345,8 @@ CREATE TABLE @cdmDatabaseSchema.payer_plan_period (
 			stop_reason_source_concept_id integer NULL );
 --HINT DISTRIBUTE ON RANDOM
 CREATE TABLE @cdmDatabaseSchema.cost (
-			cost_id integer NOT NULL,
-			cost_event_id integer NOT NULL,
+			cost_id bigint NOT NULL,
+			cost_event_id bigint NOT NULL,
 			cost_domain_id varchar(20) NOT NULL,
 			cost_type_concept_id integer NOT NULL,
 			currency_concept_id integer NULL,
@@ -369,7 +369,7 @@ CREATE TABLE @cdmDatabaseSchema.cost (
 			drg_source_value varchar(3) NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.drug_era (
-			drug_era_id integer NOT NULL,
+			drug_era_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			drug_concept_id integer NOT NULL,
 			drug_era_start_date date NOT NULL,
@@ -378,7 +378,7 @@ CREATE TABLE @cdmDatabaseSchema.drug_era (
 			gap_days integer NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.dose_era (
-			dose_era_id integer NOT NULL,
+			dose_era_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			drug_concept_id integer NOT NULL,
 			unit_concept_id integer NOT NULL,
@@ -387,7 +387,7 @@ CREATE TABLE @cdmDatabaseSchema.dose_era (
 			dose_era_end_date date NOT NULL );
 --HINT DISTRIBUTE ON KEY (person_id)
 CREATE TABLE @cdmDatabaseSchema.condition_era (
-			condition_era_id integer NOT NULL,
+			condition_era_id bigint NOT NULL,
 			person_id bigint NOT NULL,
 			condition_concept_id integer NOT NULL,
 			condition_era_start_date date NOT NULL,
