@@ -23,15 +23,16 @@
 # mamba install -y -q lxml
 
 import argparse
+import ctypes
 import datetime
+import hashlib
 import logging
 import os
+import pandas as pd
 import re
 import sys
-import hashlib
-import zlib
-import ctypes
 import traceback
+import zlib
 from lxml import etree as ET
 from prototype_2.metadata import get_meta_dict
 from lxml.etree import XPathEvalError
@@ -90,7 +91,7 @@ def cast_to_datetime(string_value):
         return cast_to_date(string_value)
 
 
-def create_base_tracing_dict(config_root_path, root_xpath, domain, field_tag, field_details_dict):
+def create_base_tracing_dict(config_root_path, root_xpath, domain, omop_field_tag, field_details_dict):
     # creates a tracing dictionary with most elements populated
 
     # dig out templateId
@@ -105,9 +106,8 @@ def create_base_tracing_dict(config_root_path, root_xpath, domain, field_tag, fi
     tracing_dict = {
         'root_xpath': root_xpath,
         'domain': domain,
-        'field_tag': field_tag,
+        'omop_field_tag': omop_field_tag,
         'config_type': field_details_dict['config_type'],
-        'config_root_path' : config_root_path,
         'template_id' : template_id
     }
     return tracing_dict
@@ -115,8 +115,8 @@ def create_base_tracing_dict(config_root_path, root_xpath, domain, field_tag, fi
 
 def print_tracing_dict(tracing_dict):
     for key in tracing_dict:
-        print(f"TRACE {tracing_dict['domain']} {tracing_dict['field_tag']} {key} {tracing_dict[key]}")
-        print("TRACE ============ ")
+        print(f"TRACE {tracing_dict['domain']} {tracing_dict['omop_field_tag']} {key} {tracing_dict[key]}")
+    print("TRACE----- ==== -----")
 
 def parse_field_from_dict(field_details_dict, domain_root_element, domain, field_tag, root_xpath, tree, config_root_path):
     """ Retrieves a value for the field descrbied in field_details_dict that lies below
@@ -127,27 +127,26 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
 
     if 'element' not in field_details_dict:
         logger.error(("FIELD could find key 'element' in the field_details_dict:"
-                     f" {field_details_dict} root:{root_xpath}"))
+                     f" {field_details_dict} root:{root_xpath} This could be a mis-configuration. Check the metadata py files."))
         return (None, tracing_dict)
 
     logger.info(f"    FIELD {field_details_dict['element']} for {domain}/{field_tag}")
-# TODO FIX
-    #field_element = domain_root_element.find(field_details_dict['element'], ns)
     field_element = None
 
+    field_element_list = None
     try:
-        field_element = domain_root_element.xpath(field_details_dict['element'], namespaces=ns)
+        field_element_list = domain_root_element.xpath(field_details_dict['element'], namespaces=ns)
     except XPathEvalError as e:
-        pass # I know
-        #print(f"FAILED on  {field_details_dict['element']}")
-    if field_element is None:
+        logger.error(f"FAILED on  {field_details_dict['element']}")
+    if field_element_list is None:
         logger.error((f"FIELD could not find field element {field_details_dict['element']}"
-                      f" for {domain}/{field_tag} root:{root_xpath} {field_details_dict} "))
+                      f" for {domain}/{field_tag} root:{root_xpath} {field_details_dict} ...in the XML doc. "))
         return (None, tracing_dict)
 
     if 'attribute' not in field_details_dict:
         logger.error((f"FIELD could not find key 'attribute' in the field_details_dict:"
-                     f" {field_details_dict} root:{root_xpath}"))
+                     f" {field_details_dict} root:{root_xpath}"
+                     " This could be a mis-configuration. Check the metadata py files."))
         return (None, tracing_dict)
 
     logger.info((f"       ATTRIBUTE   {field_details_dict['attribute']} "
@@ -155,13 +154,15 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
 
     attribute_value = None
 ## FIX: should this LOOP???!!!!! TODO
-    if len(field_element) > 1:
+    if len(field_element_list) > 1:
         print(f"parse_field_from_dict SHOULD LOOP!!! there is more than just one!!! {domain} {field_tag}")
-    if len(field_element) > 0:
+    if len(field_element_list) > 0:
 
+
+        field_element = field_element_list[0]
 
         # Parse for value
-        attribute_value = field_element[0].get(field_details_dict['attribute'])
+        attribute_value = field_element.get(field_details_dict['attribute'])
         if field_details_dict['attribute'] == "#text":
             try:
                 attribute_value = field_element.text
@@ -176,8 +177,10 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
 
 
         # assemble tracing_dict
-        tracing_dict['attribute_value'] =  attribute_value
-        tracing_dict['element_xpath'] = re.sub(r'{.*?}', '', tree.getelementpath(field_element[0]))
+        #tracing_dict['attribute_value'] =  attribute_value
+        tracing_dict['attribute_value'] =  field_element.attrib
+        tracing_dict['root_xpath'] = re.sub(r'{.*?}', '', tree.getelementpath(field_element))
+        tracing_dict['element_tag'] = re.sub(r'{.*?}', '', (field_element.tag))
     else:
         logger.warning((f"no value for field element {field_details_dict['element']} "
                         f"for {domain}/{field_tag} root:{root_xpath}"))
@@ -240,7 +243,6 @@ def do_basic_fields(output_dict, root_element, root_xpath, domain,  domain_meta_
         if config_type_tag == 'FIELD':
             value_dict_pair = parse_field_from_dict(field_details_dict, root_element,
                                                     domain, field_tag, root_xpath, tree, config_root_path)
-            print(f"FML1 FIELD {value_dict_pair[0]}")
             output_dict[field_tag] = value_dict_pair
             logger.info(f"     FIELD for {domain}/{field_tag} {value_dict_pair}")
 
@@ -249,7 +251,6 @@ def do_basic_fields(output_dict, root_element, root_xpath, domain,  domain_meta_
             value_dict_pair = parse_field_from_dict(field_details_dict, root_element,
                                                     domain, field_tag, root_xpath, tree, config_root_path)
             output_dict[field_tag] = value_dict_pair
-            print(f"FML2 PK {field_tag} {value_dict_pair[0]}")
             pk_dict[field_tag] = value_dict_pair
 
         elif config_type_tag == 'FK':
@@ -258,9 +259,6 @@ def do_basic_fields(output_dict, root_element, root_xpath, domain,  domain_meta_
             if field_tag in pk_dict:
 # TODO link trace of source?
                 tracing_dict['attribute_value'] = pk_dict[field_tag][0]
-                print(f"FML3all {field_tag} {pk_dict[field_tag]} ")
-                print(f"FML3just0 {field_tag} {pk_dict[field_tag][0]} ")
-                print("")
                 output_dict[field_tag] = (pk_dict[field_tag][0], tracing_dict)
             else:
                 logger.error(f"FK could not find {field_tag}  in pk_dict for {domain}/{field_tag}")
@@ -284,7 +282,7 @@ def do_derived_fields(output_dict, root_element, root_xpath, domain,  domain_met
 
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'DERIVED':
-            tracing_dict = create_base_tracing_dict(config_root_path, root_xpath, domain, field_tag, field_details_dict)
+            tracing_dict = create_base_tracing_dict(config_root_path, root_xpath,  domain, field_tag, field_details_dict)
             logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
             # NB Using an explicit dict here instead of kwargs because this code here
             # doesn't know what the keywords are at 'compile' time.
@@ -332,7 +330,6 @@ def do_derived_fields(output_dict, root_element, root_xpath, domain,  domain_met
                               f"string: {type(field_details_dict['FUNCTION'])}"))
                 # TODO  a better trace_dict
                 output_dict[field_tag] = (None, tracing_dict)
-                print(f"DER3: {output_dict[field_tag]}")
 
 
 def do_domain_fields(output_dict, root_element, root_xpath, domain,  domain_meta_dict, error_fields_set, config_root_path):
@@ -431,7 +428,6 @@ def do_priority_fields(output_dict, root_element, root_xpath, domain,  domain_me
         domain_meta_dict (where it isn't used) ...and not clobber it. It's an issue over in the
         sorting/ordering.
     """
-
     # Create Ref Data
     # for each new field, create a list of source fields and their priority:
     # Ex. [('person_id_other', 2), ('person_id_ssn', 1)]
@@ -459,14 +455,9 @@ def do_priority_fields(output_dict, root_element, root_xpath, domain,  domain_me
                 tracing_dict['attribute_value'] = output_dict[value_field_pair[0]]
                 output_dict[priority_name] = output_dict[value_field_pair[0]]
 #  TODO TRACING
-                print(f"XXXXX priority is returning pr_name:{priority_name} field_name:{value_field_pair[0]} value:{output_dict[value_field_pair[0]][0]}")
                 pk_dict[priority_name] = (output_dict[value_field_pair[0]][0], 'PRIORITY')
                 break
 
-    if sorted_contents:
-        print(f"XXXXXXXXX PRIORITY DID NOT FIND ONE {domain} {sorted_contents}")
-    else:
-        print(f"XXXXXXXXX PRIORITY DID NOT FIND ONE {domain}")
     return priority_fields
 
 
@@ -654,8 +645,34 @@ def print_omop_structure(omop, meta_data):
                         n = n+1
                     print(f"\n\nDOMAIN: {domain} {n}\n\n")
 
+def print_trace(omop):
+    for domain, domain_list in omop.items():
+        if domain_list is None:
+            logger.warning(f"no data for domain {domain}")
+        else:
+            for domain_data_dict in domain_list:
+                if domain_data_dict is not None:
+                    for field_key in domain_data_dict:
+                        #print(domain_data_dict[field_key][1])
+                        print_tracing_dict(domain_data_dict[field_key][1])
+
+def collect_trace(omop, filename):
+    trace_list = []
+    for domain, domain_list in omop.items():
+        if domain_list is None:
+            logger.warning(f"no data for domain {domain}")
+        else:
+            for domain_data_dict in domain_list:
+                if domain_data_dict is not None: 
+                    for field_key in domain_data_dict:
+                        #print(domain_data_dict[field_key][1])
+                        trace_dict = domain_data_dict[field_key][1]
+                        trace_dict['filename'] = filename
+                        trace_list.append(trace_dict)
+    return trace_list
 
 def process_file(filepath):
+    all_trace_list = []
     print(f"PROCESSING {filepath} ")
     logger.info(f"PROCESSING {filepath} ")
     base_name = os.path.basename(filepath)
@@ -674,8 +691,13 @@ def process_file(filepath):
     omop_data = parse_doc(filepath, meta_data)
     if omop_data is not None or len(omop_data) < 1:
         print_omop_structure(omop_data, meta_data)
+        print_trace(omop_data)
+        file_trace_list = collect_trace(omop_data, filepath)
+        all_trace_list.extend(file_trace_list)
     else:
         logger.error(f"FILE no data from {filepath}")
+
+    return all_trace_list
 
 
 def main() :
@@ -689,7 +711,17 @@ def main() :
     args = parser.parse_args()
 
     if args.filename is not None:
-        process_file(args.filename)
+        all_trace_list = process_file(args.filename)
+        #,root_xpath,domain, config_type,config_root_path,
+        # field_tag, template_id, attribute_value, element_xpath, filename
+        # from create_base_tracing_dict()
+        #  'xpath': xpath,
+        #  'domain': domain,
+        #  'omop_field_tag': omop_field_tag,
+        #  'config_type': field_details_dict['config_type'],
+        #  'template_id' : template_id
+        df = pd.DataFrame(all_trace_list, columns=['filename', 'template_id','root_xpath',   'element_tag', 'config_type', 'domain', 'omop_field_tag', 'attribute_value'])
+        df.to_csv("trace.csv")
     elif args.directory is not None:
         only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
         for file in (only_files):
