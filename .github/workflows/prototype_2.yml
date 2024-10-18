@@ -54,5 +54,5 @@ jobs:
             run: |
                 python3 -m omop.setup_omop
           - name: Grep Logs
-            run: | 
+            run: |
                 bin/grep_logs.sh
