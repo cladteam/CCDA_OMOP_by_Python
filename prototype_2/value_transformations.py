@@ -33,7 +33,8 @@ def cast_as_concept_id(args_dict):  # TBD FIX CHRIS
 
 
 def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name):
-    """
+    """ maps from vocabulary_oid and concept_code to a row in the concept_map 
+        returns the named column, or the supplied default value if not present or error
     """
     try:
         concept_id_df = concept_df[(concept_df['oid'] == vocabulary_oid) &
@@ -70,10 +71,11 @@ def map_hl7_to_omop_concept_id(args_dict):
 def map_hl7_to_omop_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
     """
-    return _map_to_omop_concept_row(args_dict['vocabulary_oid'],
+    id_value = _map_to_omop_concept_row(args_dict['vocabulary_oid'], 
                                     args_dict['concept_code'],
                                     args_dict['default'],
                                     'domain_id')
+    return id_value
 
 def extract_day_of_birth(args_dict):
     # assumes input is ISO-8601 "YYYY-MM-DD"
