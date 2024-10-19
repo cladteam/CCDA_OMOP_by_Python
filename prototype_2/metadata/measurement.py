@@ -12,15 +12,32 @@ metadata = {
     		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
         },
 
-    	'measurement_id_basic': {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
+    	'measurement_id_root': {
             'config_type': 'FIELD',
             'element': 'hl7:id',
             'attribute': 'root',
-            'priority': ('measurement_id', 9999) # rejected, last in priority
+            'order': 1001
+    	},
+    	'measurement_id_extension': {
+            'config_type': 'FIELD',
+            'element': 'hl7:id',
+            'attribute': 'extension',
+            'order': 1002
     	},
     	'measurement_id_hash': {
     	    'config_type': 'HASH',
-            'fields' : ['person_id', 'visit_occurrence_id', 'measurement_concept_id', 'measurement_time', 'value_as_string'],
+            'fields' : [ 'measurement_id_extension', 'measurement_id_root' ],
+            'priority': ('measurement_id', 1)
+    	},
+    	'measurement_id_constant': {
+            'config_type': 'CONSTANT',
+            'constant_value' : 999,
+            'priority': ('measurement_id', 2)
+        },
+    	'measurement_id_field_hash': {
+    	    'config_type': 'HASH',
+            'fields' : ['person_id', 'visit_occurrence_id', 'measurement_concept_id', 'measurement_time',
+                    'value_as_string', 'value_as_nmber', 'value_as_concept_id'],
             'priority': ('measurement_id', 100)
     	},
         'measurement_id': {
@@ -67,7 +84,8 @@ metadata = {
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
         'measurement_date': {
     	    'config_type': 'FIELD',
-            'data_type':'DATETIME',
+            #'data_type':'DATETIME',
+            'data_type':'DATE',
     	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'order': 4
@@ -191,12 +209,12 @@ metadata = {
             'constant_value': 'n/a',
             'priority': ['value_source_value', 4],
         },
-    	'value_source_value_text': {
-    	    'config_type': 'FIELD',
-    	    'element': 'hl7:value[@xsi:type="ST"]' ,
-    	    'attribute': "#text",
-            'priority': ['value_source_value', 3],
-        },
+    	#'value_source_value_text': {
+    	#    'config_type': 'FIELD',
+    	#    'element': 'hl7:value[@xsi:type="ST"]' ,
+    	#    'attribute': "#text",
+        #    'priority': ['value_source_value', 3],
+        #},
     	'value_source_value_code': {
     	    'config_type': 'FIELD',
     	    'element': 'hl7:value[@xsi:type="CD"]' ,

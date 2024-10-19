@@ -89,7 +89,7 @@ def process_file(filepath):
     else:
         logger.error(f"no data from {filepath}")
     write_csvs_from_dataframe_dict(dataframe_dict, base_name, "output")
-    
+
     return dataframe_dict
 
 def dict_summary(my_dict):

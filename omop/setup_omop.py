@@ -165,7 +165,9 @@ def check_PK(domain):
 def main():
     print("\nDDL")
     #_apply_ddl("OMOPCDM_duckdb_5.3_ddl.sql")
-    _apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints.sql")
+    #_apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints.sql")
+    #_apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints_and_string_PK.sql")
+    _apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints_and_bigint_PK.sql")
 
     print("\nPERSON")
     _import_CSVs('Person')

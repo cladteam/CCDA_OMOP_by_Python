@@ -1,4 +1,3 @@
-
 import prototype_2.value_transformations as VT
 # converted to encouter from encompassingEncounter. The encompassingEncounter attributes are commented out
 metadata = {
@@ -6,7 +5,11 @@ metadata = {
     	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'config_type': 'ROOT',
-    	    'element': "./hl7:componentOf/hl7:encompassingEncounter"
+    	    #'element': "./hl7:componentOf/hl7:encompassingEncounter"
+    	    'element':
+    		 ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
+    		  "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.22.1']"  # Encounters
+    		  "/../hl7:entry/hl7:encounter")
     	},
     	'visit_occurrence_id': {
             'config_type': 'PRIORITY',
@@ -24,17 +27,25 @@ metadata = {
     	    'attribute': "extension",
             'priority': ['visit_occurrence_id', 2]
     	},
-    	'visit_occurrence_id_catchall': {
+    	'visit_occurrence_id_root': {
     	    'config_type': 'PK',
     	    'element': 'hl7:id',
     	    'attribute': "extension",
-            'priority': ['visit_occurrence_id', 3]
     	},
-       	'visit_occurrence_id_catchall_2': {
+       	'visit_occurrence_id_extension': {
     	    'config_type': 'PK',
     	    'element': 'id',
     	    'attribute': "root",
-            'priority': ['visit_occurrence_id', 4]
+    	},
+    	'visit_occurrence_id_hash': {
+    	    'config_type': 'HASH',
+            'fields' : [ 'visit_occurrence_id_root', 'visit_occurrence_id_extension'],
+            'priority': ('visit_occurrence_id', 5)
+    	},
+    	'visit_occurrence_id_hash_natural': {
+    	    'config_type': 'HASH',
+            'fields' : [ 'person_id', 'provider_id', 'visit_concept_code', 'visit_start_date_low', 'visit_start_date_value' ],
+            'priority': ('visit_occurrence_id', 6)
     	},
         'visit_occurrence_id_na': {
     	    'config_type': 'CONSTANT',
@@ -84,11 +95,15 @@ metadata = {
     	'visit_start_date_value': {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
-    	    'element': "effectiveTime",
+    	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'priority':  ['visit_start_date', 2]
     	},
+
         'visit_start_datetime' : {  'config_type': None, 'order': 5 },
+
+
+
     	'visit_end_date':  {
     	    'config_type': 'PRIORITY',
             'order':6
@@ -100,23 +115,49 @@ metadata = {
     	    'attribute': "value",
             'priority': ['visit_end_date', 1]
     	},
-      	'visit_end_date_na':  {
-    	    'config_type': 'CONSTANT',
-            'constant_value': "",
-            'priority': ['visit_end_date', 100]
+    	'visit_end_date_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATE',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_end_date', 2]
     	},
+    	'visit_end_date_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATE',
+    	    'element': "hl7:effectiveTime/hl7:low",
+    	    'attribute': "value",
+            'priority':  ['visit_end_date', 3]
+    	},
+
+
         'visit_end_datetime' : {  'config_type': None, 'order': 7 },
 
-        'visit_type_concept_id' : {  
-            'config_type': 'CONSTANT', 
+        'visit_type_concept_id' : {
+            'config_type': 'CONSTANT',
             'constant_value' : 32035,
-            'order': 8 
+            'order': 8
         },
 
     	# FIX TODO sometimes a document will have more than one encounterParticipant. The way this is configured, they will be awkwardly merged.
     	'provider_id': {
     	    'config_type': 'PRIORITY',
             'order': 9
+    	},
+    	'provider_id_performer_root': {
+    	    'config_type': 'FIELD',
+    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id",
+    	    'attribute': "root",
+    	},
+    	'provider_id_perform_extension': {
+    	    'config_type': 'FIELD',
+    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id",
+    	    'attribute': "extension",
+    	},
+    	'provider_id_performer': {
+    	    'config_type': 'HASH',
+            'fields' : ['provider_id_performer_root', 'provider_id_performer_extension'],
+            'priority': ['provider_id', 3]
     	},
     	'provider_id_catchall': {
     	    'config_type': 'FIELD',
@@ -139,8 +180,9 @@ metadata = {
     	},
 
     	'care_site_id': {
+            # NO ID's here always  FIX TODO
     	    'config_type': 'FIELD',
-            #'element': "participant/participantRole/playingEntity", # not payingEntity? FIX 
+            #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", # not payingEntity? FIX 
     	    'element': "hl7:location/hl7:healthCareFacility/hl7:id",
     	    'attribute': "root",
             'order': 10

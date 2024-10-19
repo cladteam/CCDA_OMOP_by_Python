@@ -12,12 +12,40 @@ metadata = {
     		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
     		 },
 
-    	'observation_id': {  # FIX, these IDs come up the same for all 3 observations in the CCD Ambulatory doc.
-    	    'config_type': 'FIELD',
-    	    'element': 'hl7:id',
-    	    'attribute': 'root',   ### FIX ????
-            'order': 1
+    	'observation_id_root': {
+            'config_type': 'FIELD',
+            'element': 'hl7:id',
+            'attribute': 'root',
+            'order': 1001
     	},
+    	'observation_id_extension': {
+            'config_type': 'FIELD',
+            'element': 'hl7:id',
+            'attribute': 'extension',
+            'order': 1002
+    	},
+    	'observation_id_hash': {
+    	    'config_type': 'HASH',
+            'fields' : [ 'observation_id_extension', 'observation_id_root' ], 'priority': ('observation_id', 1),
+            'priority': ('observation_id', 1)
+    	},
+    	'observation_id_constant': {
+            'config_type': 'CONSTANT',
+            'constant_value' : 999,
+            'priority': ('observation_id', 2)
+        },
+    	'observation_id_field_hash': {
+    	    'config_type': 'HASH',
+            'fields' : ['person_id', 'visit_occurrence_id', 'observation_concept_id', 'observation_time',
+                    'value_as_string', 'value_as_nmber', 'value_as_concept_id'],
+            'priority': ('observation_id', 100)
+    	},
+        'observation_id': {
+            'config_type': 'PRIORITY',
+            'order': 1
+        },
+
+
     	'person_id': {
     	    'config_type': 'FK',
     	    'FK': 'person_id',
