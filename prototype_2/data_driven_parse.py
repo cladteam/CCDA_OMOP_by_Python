@@ -113,6 +113,7 @@ def create_base_tracing_dict(config_root_path, root_xpath, domain, omop_field_ta
             template_id = template_match.group(1)
 
     tracing_dict = {
+        'config_path': re.sub(r'hl7:', '', config_root_path),
         'root_xpath': root_xpath,
         'domain': domain,
         'omop_field_tag': omop_field_tag,
@@ -731,7 +732,7 @@ def main() :
         #  'omop_field_tag': omop_field_tag,
         #  'config_type': field_details_dict['config_type'],
         #  'template_id' : template_id
-        df = pd.DataFrame(all_trace_list, columns=['filename', 'template_id','root_xpath',   'element_tag', 'config_type', 'domain', 'omop_field_tag', 'attribute_value', 'attributes'])
+        df = pd.DataFrame(all_trace_list, columns=['filename', 'template_id', 'config_path', 'root_xpath',   'element_tag', 'config_type', 'domain', 'omop_field_tag', 'attribute_value', 'attributes'])
         df.to_csv("trace.csv", header=True, index=False)
     elif args.directory is not None:
         all_traces_list=[]
@@ -742,7 +743,7 @@ def main() :
                 trace_list = process_file(os.path.join(args.directory, file))
             all_traces_list.extend(trace_list)
         df = pd.DataFrame(all_traces_list, 
-                          columns=['filename', 'template_id','root_xpath',   'element_tag', 
+                          columns=['filename', 'template_id', 'config_path', 'root_xpath',   'element_tag', 
                                    'config_type', 'domain', 'omop_field_tag', 'attribute_value', 'attributes'])
         df.to_csv("trace.csv", header=True, index=False)
     else:
