@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 
+# TODO
+# The trace is picking up just observations and encounters without fields below them, where from?
+# resources/CCD-Sample.xml,2.16.840.1.113883.10.20.22.2.22.1,component/structuredBody/component[1]/section/entry[2]/encounter,,FIELD,Visit,care_site_id,,
+# config below:
+#       'element': "hl7:location/hl7:healthCareFacility/hl7:id",
+#            'attribute': "root",
+# ---> buggy rules will show a trace without a value, or from a higher level where this is no value, like on encounter. The values are lower.
+# fix by filtering in the coverage report.
+
 """ Table-Driven ElementTree parsing in Python
 
  This version puts the paths into a data structure and explores using
@@ -177,8 +186,9 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
 
 
         # assemble tracing_dict
-        #tracing_dict['attribute_value'] =  attribute_value
-        tracing_dict['attribute_value'] =  field_element.attrib
+        tracing_dict['attribute_value'] =  attribute_value
+        tracing_dict['attributes'] =  field_element.attrib
+        print(f"ZZZ{field_element.attrib}")
         tracing_dict['root_xpath'] = re.sub(r'{.*?}', '', tree.getelementpath(field_element))
         tracing_dict['element_tag'] = re.sub(r'{.*?}', '', (field_element.tag))
     else:
@@ -262,6 +272,7 @@ def do_basic_fields(output_dict, root_element, root_xpath, domain,  domain_meta_
                 output_dict[field_tag] = (pk_dict[field_tag][0], tracing_dict)
             else:
                 logger.error(f"FK could not find {field_tag}  in pk_dict for {domain}/{field_tag}")
+# FIX path is never used here??
                 path = root_xpath + "/"
                 if 'element' in field_details_dict:
                     path = path + field_details_dict['element'] + "/@"
@@ -720,13 +731,20 @@ def main() :
         #  'omop_field_tag': omop_field_tag,
         #  'config_type': field_details_dict['config_type'],
         #  'template_id' : template_id
-        df = pd.DataFrame(all_trace_list, columns=['filename', 'template_id','root_xpath',   'element_tag', 'config_type', 'domain', 'omop_field_tag', 'attribute_value'])
-        df.to_csv("trace.csv")
+        df = pd.DataFrame(all_trace_list, columns=['filename', 'template_id','root_xpath',   'element_tag', 'config_type', 'domain', 'omop_field_tag', 'attribute_value', 'attributes'])
+        df.to_csv("trace.csv", header=True, index=False)
     elif args.directory is not None:
+        all_traces_list=[]
+        trace_list=[]
         only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
         for file in (only_files):
             if file.endswith(".xml"):
-            	process_file(os.path.join(args.directory, file))
+                trace_list = process_file(os.path.join(args.directory, file))
+            all_traces_list.extend(trace_list)
+        df = pd.DataFrame(all_traces_list, 
+                          columns=['filename', 'template_id','root_xpath',   'element_tag', 
+                                   'config_type', 'domain', 'omop_field_tag', 'attribute_value', 'attributes'])
+        df.to_csv("trace.csv", header=True, index=False)
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
