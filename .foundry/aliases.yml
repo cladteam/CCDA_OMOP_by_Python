@@ -1,3 +1,7 @@
+ccda_value_set_mapping_table_dataset:
+  rid: "ri.foundry.main.dataset.5ba1594c-ef36-4eeb-b6c4-d3d005dbd127"
+codemap_xwalk:
+  rid: "ri.foundry.main.dataset.28fe6af8-0b22-4b45-86e2-b394c62dcd09"
 concept_xwalk:
   rid: "ri.foundry.main.dataset.79e9fddb-03d9-4331-b7fa-cb255cd1c549"
 measurement:

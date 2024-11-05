@@ -75,6 +75,13 @@ def map_hl7_to_omop_domain_id(args_dict):
                                     args_dict['default'],
                                     'domain_id')
 
+def map_valuesets_to_omop(args_dicdt):
+    """ expects: vocabulary_oid, concept_code
+    """
+    vocab_oid = args_dict['vocabulary_oid']
+    concept_code = args_dict['concept_code']
+    codemap_xwalk
+
 def extract_day_of_birth(args_dict):
     # assumes input is ISO-8601 "YYYY-MM-DD"
     date_string = args_dict['date_string']
