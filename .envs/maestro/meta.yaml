@@ -5,6 +5,7 @@ source:
   path: ../src
 requirements:
   run:
+  - vim
   - pandas
   - lxml
   - duckdb
@@ -12,3 +13,5 @@ requirements:
   - ipykernel
   - pip
   - foundry-transforms-lib-python
+  pip:
+  - diff
