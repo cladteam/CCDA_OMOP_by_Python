@@ -145,7 +145,9 @@ def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
     except IndexError as e:
         logger.warning(f"no concept for \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
         return default
-
+    except KeyError as e:
+        logger.warning(f"requested field not available \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
+        return default
 
 
 

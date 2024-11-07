@@ -131,10 +131,10 @@ class FieldTypeTest_FIELD(unittest.TestCase):
             tree = ET.parse(file_obj)
             pk_dict = {}
             for domain, domain_meta_dict in self.config_dict.items():
-                print(f"INPUT {domain} {domain_meta_dict}")
+                #print(f"INPUT {domain} {domain_meta_dict}")
                 data_dict_list= parse_domain_from_dict(tree, domain, domain_meta_dict, "test_file", pk_dict)
                 data_dict = data_dict_list[0]
-                print(f"OUTPUT {data_dict}")
+                #print(f"OUTPUT {data_dict}")
                 self.assertEqual(data_dict['attribute_value'][0], "2.16.840.1.113883.4.1")
                 self.assertEqual(data_dict['text_value'][0], "2222 Home Street")
 
