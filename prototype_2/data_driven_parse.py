@@ -126,18 +126,21 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         attribute_value = field_element[0].get(field_details_dict['attribute'])
         if field_details_dict['attribute'] == "#text":
             try:
-                attribute_value = field_element.text
+                attribute_value = ''.join(field_element[0].itertext())
             except Exception as e:
                 print((f"ERROR: no text elemeent for field element {field_element} "
-                        f"for {domain}/{field_tag} root:{root_path}"))
+                       f"for {domain}/{field_tag} root:{root_path} "
+                       f" dict: {field_element[0].attrib} EXCEPTION:{e}"))
                 logger.error((f"no text elemeent for field element {field_element} "
-                        f"for {domain}/{field_tag} root:{root_path}"))
+                        f"for {domain}/{field_tag} root:{root_path} "
+                        f" dict: {field_element[0].attrib} EXCEPTION:{e}"))
         if attribute_value is None:
             logger.warning((f"no value for field element {field_details_dict['element']} "
-                        f"for {domain}/{field_tag} root:{root_path}"))
+                        f"for {domain}/{field_tag} root:{root_path} "
+                        f" dict: {field_element[0].attrib}"))
     else:
-        logger.warning((f"no value for field element {field_details_dict['element']} "
-                        f"for {domain}/{field_tag} root:{root_path}"))
+        logger.warning((f"no element at path {field_details_dict['element']} "
+                        f"for {domain}/{field_tag} root:{root_path} "))
 
     # Do data-type conversions
     if 'data_type' in field_details_dict:
@@ -466,6 +469,15 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
               { field_1: (value, path)}, {field_2: (value, path)} ]
         It's a list of because you might have more than one instance of the root path, like when you
         get many observations.
+        
+        arg: tree, this is the lxml.etree parse of the XML file
+        arg: domain, this is a key into the first level of the metadata, an OMOP domain name
+        arg: domain_meta_dict, this is the value of that key in the dict
+        arg: filename, the name of the XML file, for logging
+        arg: pk_dict, a dictionary for Primary Keys, the keys here are field names and 
+             their values are their values. It's a sort of global space for carrying PKs 
+             to other parts of processing where they will be used as FKs. This is useful
+             for things like the main person_id that is part of the context the document creates.
     """
 
     # log to a file per file/domain
