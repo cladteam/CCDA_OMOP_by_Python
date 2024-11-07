@@ -5,6 +5,7 @@ import prototype_2.metadata.person      as person
 import prototype_2.metadata.visit       as visit
 import prototype_2.metadata.measurement as measurement
 import prototype_2.metadata.observation as observation
+import prototype_2.metadata.location as location
 
 """ The meatadata is 3 nested dictionaries:
     - meta_dict: the dict of all domains
@@ -19,7 +20,7 @@ import prototype_2.metadata.observation as observation
 	root="2.16.840.1.113883.10.20.22.1.1"
 	root="2.16.840.1.113883.10.20.22.1.2"
 """
-meta_dict =  person.metadata | visit.metadata  | measurement.metadata | observation.metadata
+meta_dict =  location.metadata | person.metadata | visit.metadata  | measurement.metadata | observation.metadata
 
 
 def get_meta_dict():

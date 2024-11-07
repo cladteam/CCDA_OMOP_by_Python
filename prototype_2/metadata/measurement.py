@@ -51,6 +51,7 @@ metadata = {
             'order': 2
     	},
 
+        # <code code="8029-1" codeSystem="1232.23.3.34.3..34"> 
     	'measurement_concept_code': {
     	    'config_type': 'FIELD',
     	    'element': "hl7:code" ,

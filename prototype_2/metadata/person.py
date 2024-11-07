@@ -209,8 +209,36 @@ metadata = {
     	    },
             'order': 8
     	},
+        
+        
 
-        'location_id': { 'config_type': None, 'order': 9 },
+        'address_1': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:streetAddressLine',
+            'attribute': "#text",
+        },
+        #'address_2': {
+        'city': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:city',
+            'attribute': "#text",
+        },
+        'state': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:state',
+            'attribute': "#text",
+        },
+        'zip': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:postalCode',
+            'attribute': "#text",
+        },
+        'location_id': { 
+            'config_type': 'HASH',
+            'fields' : [ 'address_1', 'city', 'state', 'zip'  ],
+            'order': 9
+        },
+        # 'location_id': { 'config_type': None, 'order': 9 },
         'provider_id': { 'config_type': None, 'order': 10 },
         'care_site_id': { 'config_type': None, 'order': 11 },
         'person_source_value': { 'config_type': None, 'order': 12 },

@@ -5,7 +5,6 @@ import sys
 from foundry.transforms import Dataset
 
 
-print("***** MAIN INIT ******")
 
 logging.basicConfig(
     stream=sys.stdout,
