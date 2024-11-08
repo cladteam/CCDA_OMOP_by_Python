@@ -138,3 +138,85 @@ class FieldTypeTest_FIELD(unittest.TestCase):
                 self.assertEqual(data_dict['attribute_value'][0], "2.16.840.1.113883.4.1")
                 self.assertEqual(data_dict['text_value'][0], "2222 Home Street")
 
+                
+class FieldTypeTest_HASH(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.xml_text = """
+        <ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:voc="urn:hl7-org:v3/voc" xmlns:sdtc="urn:hl7-org:sdtc">
+            <recordTarget>
+                <patientRole>
+                    <id extension="444222222" root="2.16.840.1.113883.4.1"/>
+                    <code code="742-7" codeSystem="2.16.840.1.113883.6.1"/>
+                    <addr use="HP">
+                        <streetAddressLine>2222 Home Street</streetAddressLine>
+                        <city>Beaverton</city>
+                        <state>MD</state>
+                        <postalCode>21014</postalCode>
+                        <country>US</country>
+                    </addr>
+                </patientRole>
+            </recordTarget>
+        </ClinicalDocument>
+        """
+        self.config_dict = {
+            'Test': {
+                'root': {
+                    'config_type': 'ROOT',
+                    'element': "./hl7:recordTarget/hl7:patientRole"
+                },
+                'concept_codeSystem': {
+                    'config_type': 'FIELD',
+                    'element': 'hl7:code',
+                    'attribute': "codeSystem"
+                },
+                'concept_code': {
+                    'config_type': 'FIELD',
+                    'element': 'hl7:code',
+                    'attribute': "code"
+                },
+                'test_hash_0': { 
+                    'config_type': 'HASH',
+                    'fields' : [ 'concept_codeSystem', 'concept_code' ], 
+                    'order' : 0
+                },
+               	'test_hash_1': { 
+                    'config_type': 'HASH',
+                    'fields' : [ 'concept_code', 'concept_codeSystem' ], 
+                    'order' : 1
+                },
+                'test_hash_2': { 
+                    'config_type': 'HASH',
+                    'fields' : [ 'concept_code', None ], 
+                    'order' : 2
+                },
+                'test_hash_3': { 
+                    'config_type': 'HASH',
+                    'fields' : [ None, 'concept_codeSystem' ], 
+                    'order' : 3
+                },
+                'test_hash_4': { 
+                    'config_type': 'HASH',
+                    'fields' : [ None ], 
+                    'order' : 4
+                }
+            }
+        }
+
+    def test(self):
+        with io.StringIO(self.xml_text) as file_obj:
+            tree = ET.parse(file_obj)
+            pk_dict = {}
+            for domain, domain_meta_dict in self.config_dict.items():
+                data_dict_list= parse_domain_from_dict(tree, domain, domain_meta_dict, "test_file", pk_dict)
+                data_dict = data_dict_list[0]
+                #print(f"OUTPUT {data_dict}")
+                self.assertEqual(data_dict['test_hash_0'][0], 2730455650958355)
+                self.assertEqual(data_dict['test_hash_1'][0], 1347390606787380)
+                self.assertEqual(data_dict['test_hash_2'][0], 1136581816084342)
+                self.assertEqual(data_dict['test_hash_3'][0], 2914246837974734)
+                self.assertEqual(data_dict['test_hash_4'][0], 3731574115332107)
+
+            
+            
+
