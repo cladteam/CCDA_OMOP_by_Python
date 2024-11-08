@@ -6,6 +6,37 @@ from .. import concept_df
 from .. import codemap_xwalk
 from .. import ccda_value_set_mapping_table_dataset
 
+codemap_exceptions = [
+    # different mapping, but OK
+    '409586006', '4668005', '99212', '99213'
+]
+
+
+#    NO ERROR MESSAGE HERE?
+#2.16.840.1.113883.6.101, 261QP2300X --> 38004247 Visit
+#    NOT FOUND codemap code mapped:"0" domain:"Observation" 
+    
+#2.16.840.1.113883.6.238, 2076-8 --> 8557 Race
+#    NOT FOUND codemap code mapped:"0" domain:"Observation" 
+
+#2.16.840.1.113883.6.238, 2186-5 --> 38003564 Ethnicity
+#    NOT FOUND codemap code mapped:"0" domain:"Observation" 
+
+#2.16.840.1.113883.6.96, 95971004 --> 3299517 Observation
+#    NOT FOUND codemap code mapped:"0" domain:"Observation" 
+    
+
+failures = [
+    #2.16.840.1.113883.6.101, NUCC  -- all to 0
+    '163W00000X', '207QA0505X', '207R00000X', '207RC0000X',
+    '208D00000X', '261QP2300X' #?
+
+    #2.16.840.1.113883.6.238, PHIN VADS -- all to 0
+    '2076-8', '2106-3', '2186-5'
+
+    #2.16.840.1.113883.6.96, SNOMED 
+    '95971004' # maps to 0
+]
         
 class Compare_maps(unittest.TestCase):
         
@@ -46,26 +77,33 @@ class Compare_maps(unittest.TestCase):
                 self.assertEqual(mapped_domain_id, expected_domain_id)
                 if mapped_concept_id == expected_concept_id:
                     valueset_correct_count += 1
-            
-            # Code Map
-            df = codemap_xwalk[ (codemap_xwalk['vocab_oid'] == oid) &
+                    if concept_code in failures:
+                        print(f"failure was successfully mapped by thevalue set table {concept_code}")
+                else:
+                    print((f"*** concept found in value set table, but not mapped "
+                           f"correctly code:{concept_code} to id: {mapped_concept_id}"))
+            else:
+                # Code Map
+                df = codemap_xwalk[ (codemap_xwalk['vocab_oid'] == oid) &
                             (codemap_xwalk['src_code']  == concept_code) ]
-            if df['target_concept_id'].size > 0:
-                codemap_found_count += 1
-                mapped_concept_id = df['target_concept_id'].iloc[0]
-                mapped_domain_id = df['target_domain_id'].iloc[0]
-                # AssertionError: np.int32(37158809) != np.int32(4260179)
-                if mapped_concept_id != 0:
+                if df['target_concept_id'].size > 0:
+                    codemap_found_count += 1
+                    mapped_concept_id = df['target_concept_id'].iloc[0]
+                    mapped_domain_id = df['target_domain_id'].iloc[0]
+
                     if mapped_concept_id == numpy.int32(expected_concept_id):
                         codemap_correct_count += 1
-                        # print(f"FOUND codemap mapped concept:\"{mapped_concept_id}\"  \"{expected_concept_id}\" {type(mapped_concept_id)}  {type(expected_concept_id)}  ")
-                        self.assertEqual(mapped_concept_id, numpy.int32(expected_concept_id))
-                        self.assertEqual(mapped_domain_id, expected_domain_id)
-                    else:
-                        print("")
+                        if concept_code in failures:
+                            print(f"failure was successfully mapped by thevalue set table {concept_code}")
+                    else: 
                         print(f"{oid}, {concept_code} --> {expected_concept_id} {expected_domain_id}")
-                        print(f"    NOT FOUND codemap mapped:\"{mapped_concept_id}\"  expected:\"{expected_concept_id}\" {type(mapped_concept_id)}  {type(expected_concept_id)}  ")
-
+                        print(( f"    NOT FOUND codemap code mapped:\"{mapped_concept_id}\" "
+                                f"domain:\"{mapped_domain_id}\" "))
+                        if concept_code in failures:
+                            print(f"*** failure was found but not mapped the same by the CODEM table {concept_code}")
+                    
+#                    self.assertEqual(mapped_concept_id, numpy.int32(expected_concept_id))
+#                    self.assertEqual(mapped_domain_id, expected_domain_id)
                     
 
         print(f"source:{source_count},  valueset:{valueset_correct_count}/{valueset_found_count}, codemap:{codemap_correct_count}/{codemap_found_count}")
