@@ -11,44 +11,24 @@ metadata = {
     		  "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.22.1']"  # Encounters
     		  "/../hl7:entry/hl7:encounter")
     	},
-    	'visit_occurrence_id': {
-            'config_type': 'PRIORITY',
-            'order': 1
-        },
-    	'visit_occurrence_id_170': {   # for the 170.314...file
-    	    'config_type': 'PK',
-    	    'element': 'hl7:id[@root="1.3.6.1.4.1.42424242.4.99930.4.3.4"]',
-    	    'attribute': "extension",
-            'priority': ['visit_occurrence_id', 1]
+        
+        'visit_occurrence_id_root': {
+    	    'config_type': 'FIELD',
+    	    'element': 'hl7:id',
+    	    'attribute': "root",
+            'order': 201
     	},
-    	'visit_occurrence_id_other': {
-    	    'config_type': 'PK',
-    	    'element': 'hl7:id[@root="2.16.840.1.113883.4.6"]',
-    	    'attribute': "extension",
-            'priority': ['visit_occurrence_id', 2]
-    	},
-    	'visit_occurrence_id_catchall': {
-    	    'config_type': 'PK',
+        'visit_occurrence_id_extension': {
+    	    'config_type': 'FIELD',
     	    'element': 'hl7:id',
     	    'attribute': "extension",
-            'priority': ['visit_occurrence_id', 3]
+            'order': 202
     	},
-       	'visit_occurrence_id_catchall_2': {
-    	    'config_type': 'PK',
-    	    'element': 'id',
-    	    'attribute': "root",
-            'priority': ['visit_occurrence_id', 4]
-    	},
-    	'visit_occurrence_id_hash': {
-    	    'config_type': 'HASH',
-            'fields' : [ 'person_id', 'provider_id', 'visit_concept_code', 'visit_start_date_low', 'visit_start_date_value' ],
-            'priority': ('measurement_id', 5)
-    	},
-        'visit_occurrence_id_na': {
-    	    'config_type': 'CONSTANT',
-            'constant_value': "0",
-            'priority': ['visit_occurrence_id', 100]
-    	},
+    	'person_id': { 
+       	    'config_type': 'HASH',
+            'fields' : [ 'visit_occurrence_id_root', 'visit_occurrence_id_extension' ], 
+            'order' : 1
+        },
 
     	'person_id': {
     	    'config_type': 'FK',

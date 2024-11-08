@@ -17,18 +17,41 @@ metadata = {
        'person_id_root': {
     	    'config_type': 'FIELD',
     	    'element': 'hl7:id',
-    	    'attribute': "root"
+    	    'attribute': "root",
+           'order': 201
     	},
         'person_id_extension': {
     	    'config_type': 'FIELD',
     	    'element': 'hl7:id',
-    	    'attribute': "extension"
+    	    'attribute': "extension",
+            'order':202
     	},
     	'person_id': { 
        	    'config_type': 'HASH',
             'fields' : [ 'person_id_root', 'person_id_extension' ], 
             'order' : 1
         },
+        
+        'gender_concept_code': {
+    	    'config_type': 'FIELD',
+    	    'element': "hl7:patient/hl7:administrativeGenderCode",
+    	    'attribute': "code"
+    	},
+    	'gender_concept_codeSystem': {
+    	    'config_type': 'FIELD',
+    	    'element': "hl7:patient/hl7:administrativeGenderCode",
+    	    'attribute': "codeSystem"
+    	},
+    	'gender_concept_id': {
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.valueset_xwalk_concept_id,
+    	    'argument_names': {
+    		    'concept_code': 'gender_concept_code',
+    		    'vocabulary_oid': 'gender_concept_codeSystem',
+                'default': 0
+    	    },
+            'order': 2
+    	},
 
         'year_of_birth': {
             'config_type': 'DERIVED',
@@ -75,7 +98,7 @@ metadata = {
     	},
     	'race_concept_id':{
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id, # VT.valueset_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'race_concept_code',
     		    'vocabulary_oid': 'race_concept_codeSystem',
@@ -96,7 +119,7 @@ metadata = {
     	},
     	'ethnicity_concept_id': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id, # VT.valueset_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'ethnicity_concept_code',
     		    'vocabulary_oid': 'ethnicity_concept_codeSystem',
@@ -136,11 +159,26 @@ metadata = {
         'provider_id': { 'config_type': None, 'order': 10 },
         'care_site_id': { 'config_type': None, 'order': 11 },
         'person_source_value': { 'config_type': None, 'order': 12 },
-        'gender_source_value': { 'config_type': None, 'order': 13 },
+        'gender_source_value': {
+       	    'config_type': 'FIELD',
+    	    'element': "hl7:patient/hl7:administrativeGenderCode",
+    	    'attribute': "code",
+            'order': 13 
+         },
         'gender_source_concept_id': { 'config_type': None, 'order': 14 },
-        'race_source_value': { 'config_type': None, 'order': 15 },
+        'race_source_value': {
+      	    'config_type': 'FIELD',
+    	    'element': "hl7:patient/hl7:raceCode",
+    	    'attribute': "code",
+            'order': 15
+         },
         'race_source_concept_id': { 'config_type': None, 'order': 16 },
-        'ethnicity_source_value': { 'config_type': None, 'order': 17 },
+        'ethnicity_source_value': {
+       	    'config_type': 'FIELD',
+    	    'element': "hl7:patient/hl7:ethnicGroupCode",
+    	    'attribute': "code",
+            'order': 17
+        },
         'ethnicity_source_concept_id': { 'config_type': None, 'order': 18 }
 
     }
