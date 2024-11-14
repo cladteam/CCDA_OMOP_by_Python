@@ -48,7 +48,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'gender_concept_code',
     		    'vocabulary_oid': 'gender_concept_codeSystem',
-                'default': 8551
+                'default': 0
     	    },
             'order': 2
     	},
@@ -102,7 +102,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'race_concept_code',
     		    'vocabulary_oid': 'race_concept_codeSystem',
-                'default': 8552
+                'default': 0
     	    },
             'order': 7
     	},
