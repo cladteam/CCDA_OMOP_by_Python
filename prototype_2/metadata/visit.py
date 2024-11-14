@@ -24,7 +24,7 @@ metadata = {
     	    'attribute': "extension",
             'order': 202
     	},
-    	'person_id': { 
+    	'visit_occurrence_id': { 
        	    'config_type': 'HASH',
             'fields' : [ 'visit_occurrence_id_root', 'visit_occurrence_id_extension' ], 
             'order' : 1
