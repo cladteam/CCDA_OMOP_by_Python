@@ -24,7 +24,7 @@ metadata = {
     	    'attribute': "extension",
             'order': 202
     	},
-    	'person_id': { 
+    	'visit_occurrence_id': { 
        	    'config_type': 'HASH',
             'fields' : [ 'visit_occurrence_id_root', 'visit_occurrence_id_extension' ], 
             'order' : 1
@@ -85,6 +85,7 @@ metadata = {
     	    'config_type': 'PRIORITY',
             'order':6
     	},
+        
     	'visit_end_date_high':  {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
@@ -106,8 +107,6 @@ metadata = {
     	    'attribute': "value",
             'priority':  ['visit_end_date', 3]
     	},
-
-
         'visit_end_datetime' : {  'config_type': None, 'order': 7 },
 
         'visit_type_concept_id' : {
