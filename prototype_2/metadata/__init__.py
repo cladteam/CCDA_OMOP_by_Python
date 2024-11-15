@@ -20,7 +20,7 @@ import prototype_2.metadata.location as location
 	root="2.16.840.1.113883.10.20.22.1.1"
 	root="2.16.840.1.113883.10.20.22.1.2"
 """
-meta_dict =  location.metadata | person.metadata | visit.metadata  | measurement.metadata | observation.metadata
+meta_dict =  location.metadata | person.metadata | visit.metadata  | measurement.metadata | observation.metadata | care_site_ee_hcf.py | care_site_ee_hcf_location.py
 
 
 def get_meta_dict():
