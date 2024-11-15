@@ -3,17 +3,21 @@ import prototype_2.value_transformations as VT
 """
     This is for caresites from encompassingEncounter/.../healthCareFacility
     Note: TODO need to snoop to check assumptions. So far it looks like we get either and id or a location. Will hash all together to form an id.
-    Note: TODO sometimes there are two streetAddressLine attributes. The first is the name. The second is the first line of the address. Remember, sometimes all you get is an ID.
-    Note: TODO are the IDs root-only? or do we sometimes get an extension? Re
+    Note: TODO sometimes there are two streetAddressLine attributes. The first is the name. 
+       The second is the first line of the address. Ex. 170.314b2_AmbulatoryToC.xml
+       I'm calling that an unaccepted violation. The spec. says 0..1.
+    Note: TODO sometimes all  you get is an ID.
+    Note: TODO are the IDs root-only? or do we sometimes get an extension? 
+    Note: TODO sometimes just an address. Ex. 170.314b2_AmbulatoryToC.xml
 
     HealthCareFacility: https://build.fhir.org/ig/HL7/CDA-core-sd/StructureDefinition-HealthCareFacility.html
 """
 metadata = {
-    'Care_Site': {
+        'Care_Site_ee_hcf': {
 
         'root': {
             'config_type': 'ROOT',
-            'element': "./hl7:componentOf/encompassingEncounter/location/healthCareFacility"
+            'element': "./hl7:componentOf/hl7:encompassingEncounter/hl7:location/hl7:healthCareFacility"
         },
 
         'care_site_id': {
@@ -26,12 +30,12 @@ metadata = {
             'attribute': "root",
             'priority' : ['care_site_id', 1]
         },
-        'healthCareFacility_hash_id': { # TODO
-            'config_type': 'HASH',
-            'element': 'hl7:streetAddressLine',
-            'attribute': "#text",
-            'priority' : ['care_site_id', 2]
-        },
+       # 'healthCareFacility_hash_id': { # TODO
+       #     'config_type': 'HASH',
+       #     'element': 'hl7:streetAddressLine',
+       #     'attribute': "#text",
+       #     'priority' : ['care_site_id', 2]
+       #},
 
         'care_site_name': {
             'config_type': 'FIELD',
@@ -55,9 +59,9 @@ metadata = {
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	        'argument_names': {
     		        'concept_code': 'place_of_service_concept_code',
-    		        'vocabulary_oid': 'place_of_service_codeSystem',
+    		        'vocabulary_oid': 'place_of_service_concept_codeSystem',
                     'default': 0
-    	    },
+    	         },
             'order': 3
         },
 
@@ -67,7 +71,7 @@ metadata = {
             'order': 4
         },
         'care_site_source_value': { # TODO concat id and address fileds
-            'config_type': 'FIELD',
+            'config_type': 'None',
             'order': 5
         },
         'place_of_service_source_value': { # TODO concat code and codeSystem?
@@ -79,23 +83,23 @@ metadata = {
 
         'address_1': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/l7:streetAddressLine',
+            'element': 'hl7:location/hl7:addr/hl7:streetAddressLine',
             'attribute': "#text",
         },
         # 'address_2'
         'city': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/hl7:city',
+            'element': 'hl7:location/hl7:addr/hl7:city',
             'attribute': "#text",
         },
         'state': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/hl7:state',
+            'element': 'hl7:location/hl7:addr/hl7:state',
             'attribute': "#text",
         },
         'zip': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/hl7:postalCode',
+            'element': 'hl7:location/hl7:addr/hl7:postalCode',
             'attribute': "#text",
         }
         #'county': {

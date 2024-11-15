@@ -4,11 +4,11 @@ import prototype_2.value_transformations as VT
     This is for caresites from encompassingEncounter/.../healthCareFacility
 """
 metadata = {
-    'Location': {
+    'Location_ee_hcf': {
 
         'root': {
             'config_type': 'ROOT',
-            'element': "./hl7:componentOf/encompassingEncounter/location/healthCareFacility/location"
+            'element': "./hl7:componentOf/hl7:encompassingEncounter/hl7:location/hl7:healthCareFacility/hl7:location"
         },
         # TODO do we care about the use="WP" attribute?
         'location_id': {
@@ -18,7 +18,7 @@ metadata = {
         },
         'address_1': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/l7:streetAddressLine',
+            'element': 'hl7:addr/hl7:streetAddressLine',
             'attribute': "#text",
             'order': 2
         },
