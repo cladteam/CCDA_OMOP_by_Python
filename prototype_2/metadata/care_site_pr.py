@@ -1,24 +1,19 @@
 
 import prototype_2.value_transformations as VT
 """
-    This is for caresites from encompassingEncounter/.../healthCareFacility
-    Note: TODO need to snoop to check assumptions. So far it looks like we get either and id or a location. Will hash all together to form an id.
-    Note: TODO sometimes there are two streetAddressLine attributes. The first is the name. 
-       The second is the first line of the address. Ex. 170.314b2_AmbulatoryToC.xml
-       I'm calling that an unaccepted violation. The spec. says 0..1.
-    Note: TODO sometimes all  you get is an ID.
-    Note: TODO are the IDs root-only? or do we sometimes get an extension? 
-    Note: TODO sometimes just an address. Ex. 170.314b2_AmbulatoryToC.xml
-    NOTE: TODO: consdier the serviceProviderOrganization right next to location in healthCareFacility
+    This is for caresites from Encounter/participant/participantRole
 
     HealthCareFacility: https://build.fhir.org/ig/HL7/CDA-core-sd/StructureDefinition-HealthCareFacility.html
 """
 metadata = {
-        'Care_Site_ee_hcf': {
+        'Care_Site_pr': {
 
         'root': {
             'config_type': 'ROOT',
-            'element': "./hl7:componentOf/hl7:encompassingEncounter/hl7:location/hl7:healthCareFacility"
+            #'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.22"]/../'
+            #            'hl7:entry/hl7:encounter[@moodCode=”EVN"]/hl7:participant/hl7:participantRole[@classCode="SDLOC"]' )
+            'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.22.1"]/../'
+                        'hl7:entry/hl7:encounter/hl7:participant/hl7:participantRole' )
         },
 
         'care_site_id': {
@@ -38,7 +33,7 @@ metadata = {
        #     'priority' : ['care_site_id', 2]
        #},
 
-        'care_site_name': {
+        'care_site_name': {  # TBD
             'config_type': 'FIELD',
             'element': 'hl7:location/hl7:name',
             'attribute': "#text",
@@ -84,23 +79,23 @@ metadata = {
 
         'address_1': {
             'config_type': 'FIELD',
-            'element': 'hl7:location/hl7:addr/hl7:streetAddressLine',
+            'element': 'hl7:addr/hl7:streetAddressLine',
             'attribute': "#text",
         },
         # 'address_2'
         'city': {
             'config_type': 'FIELD',
-            'element': 'hl7:location/hl7:addr/hl7:city',
+            'element': 'hl7:addr/hl7:city',
             'attribute': "#text",
         },
         'state': {
             'config_type': 'FIELD',
-            'element': 'hl7:location/hl7:addr/hl7:state',
+            'element': 'hl7:addr/hl7:state',
             'attribute': "#text",
         },
         'zip': {
             'config_type': 'FIELD',
-            'element': 'hl7:location/hl7:addr/hl7:postalCode',
+            'element': 'hl7:addr/hl7:postalCode',
             'attribute': "#text",
         }
         #'county': {

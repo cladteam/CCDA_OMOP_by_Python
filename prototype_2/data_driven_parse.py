@@ -503,7 +503,12 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
     logger.info((f"DOMAIN >>  domain:{domain} root:{domain_meta_dict['root']['element']}"
                  f"   ROOT path:{root_path}"))
     #root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
-    root_element_list = tree.xpath(domain_meta_dict['root']['element'], namespaces=ns)
+    root_element_list = None
+    try:
+        root_element_list = tree.xpath(domain_meta_dict['root']['element'], namespaces=ns)
+    except Exception as e:
+        logger.error(f" {domain_meta_dict['root']['element']}   {e}")
+        
     if root_element_list is None or len(root_element_list) == 0:
         logger.error((f"DOMAIN couldn't find root element for {domain}"
                       f" with {domain_meta_dict['root']['element']}"))
