@@ -3,7 +3,7 @@ import prototype_2.value_transformations as VT
 """
     This is for caresites from Encounter/participant/participantRole
 
-    HealthCareFacility: https://build.fhir.org/ig/HL7/CDA-core-sd/StructureDefinition-HealthCareFacility.html
+
 """
 metadata = {
         'Care_Site_pr': {

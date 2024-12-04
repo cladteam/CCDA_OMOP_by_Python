@@ -10,7 +10,7 @@ import prototype_2.metadata.care_site_ee_hcf_location as care_site_ee_hcf_locati
 import prototype_2.metadata.care_site_ee_hcf as care_site_ee_hcf
 import prototype_2.metadata.care_site_pr_location as care_site_pr_location
 import prototype_2.metadata.care_site_pr as care_site_pr
-
+import prototype_2.metadata.provider as provider
 """ The meatadata is 3 nested dictionaries:
     - meta_dict: the dict of all domains
     - domain_dict: a dict describing a particular domain
@@ -24,7 +24,7 @@ import prototype_2.metadata.care_site_pr as care_site_pr
 	root="2.16.840.1.113883.10.20.22.1.1"
 	root="2.16.840.1.113883.10.20.22.1.2"
 """
-meta_dict =  location.metadata | person.metadata | visit.metadata  | measurement.metadata | observation.metadata | care_site_ee_hcf.metadata | care_site_ee_hcf_location.metadata |  care_site_pr.metadata | care_site_pr_location.metadata 
+meta_dict =  location.metadata | person.metadata | visit.metadata  | measurement.metadata | observation.metadata | care_site_ee_hcf.metadata | care_site_ee_hcf_location.metadata |  care_site_pr.metadata | care_site_pr_location.metadata |provider.metadata
 
 
 
