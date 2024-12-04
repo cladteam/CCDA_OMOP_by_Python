@@ -11,7 +11,7 @@ metadata = {
         'root': {
             'config_type': 'ROOT',
            
-            'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.22.1"]/../'
+            'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.10"]/../'
                         'hl7:entry/hl7:encounter/hl7:performer/hl7:assignedEntity' )
         },
 
