@@ -336,6 +336,9 @@ def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_di
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'HASH':
             value_list = []
+            if 'fields' not in field_details_dict:
+                print(f"ERROR: HASH field {field_tag} is missing 'fields' attributes in domain:{domain}")
+                logger.error(f"HASH field {field_tag} is missing 'fields' attributes in domain:{domain}")
             for field_name in field_details_dict['fields'] :
                 if field_name in output_dict and output_dict[field_name][0] is not None:
                     value_list.append(output_dict[field_name][0])

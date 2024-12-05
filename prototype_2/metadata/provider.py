@@ -16,18 +16,18 @@ metadata = {
         },
         #   <id extension="444222222" root="2.16.840.1.113883.4.1"/>
         'provider_id_extension': {
-            'config_type': 'HASH',
+            'config_type': 'FIELD',
             'element': 'hl7:id',
             'attribute': "extension",
         },
        'provider_id_root': {
-            'config_type': 'HASH',
+            'config_type': 'FIELD',
             'element': 'hl7:id',
             'attribute': "root",
         },
         'provider_id': {
             'config_type': 'HASH',
-            'fields' : [ 'provider_id_extension', 'provider_id_root']
+            'fields' : [ 'provider_id_extension', 'provider_id_root'],
             'order': 1 ,
         },
         'provider_name': { 

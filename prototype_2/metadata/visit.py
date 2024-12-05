@@ -14,18 +14,18 @@ metadata = {
         
 
         'provider_id_extension': {
-            'config_type': 'HASH',
+            'config_type': 'FIELD',
             'element': 'hl7:performer/hl7:assignedEntity/hl7:id',
             'attribute': "extension",
         },
         'provider_id_root': {
-            'config_type': 'HASH',
+            'config_type': 'FIELD',
             'element': 'hl7:performer/hl7:assignedEntity/hl7:id',
             'attribute': "root",
         },
         'provider_id': {
             'config_type': 'HASH',
-            'fields' : [ 'provider_id_extension', 'provider_id_root']
+            'fields' : [ 'provider_id_extension', 'provider_id_root'],
             'order': 1 ,
         },
         

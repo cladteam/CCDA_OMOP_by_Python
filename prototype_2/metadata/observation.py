@@ -26,7 +26,7 @@ metadata = {
     	},
     	'observation_id_hash': {
     	    'config_type': 'HASH',
-            'fields' : [ 'observation_id_extension', 'observation_id_root' ], 'priority': ('observation_id', 1),
+            'fields' : [ 'observation_id_extension', 'observation_id_root' ], 
             'priority': ('observation_id', 1)
     	},
     	'observation_id_constant': {
