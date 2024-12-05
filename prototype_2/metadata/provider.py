@@ -6,7 +6,7 @@ import prototype_2.value_transformations as VT
 
 """
 metadata = {
-        'Provider': {
+    'Provider': {
 
         'root': {
             'config_type': 'ROOT',
