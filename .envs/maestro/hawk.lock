@@ -2,8 +2,8 @@
 # Changing this file is not recommended and will likely break the build.
 
 [conda]
-_libgcc_mutex=0.1=conda_forge @ 16fe1c80
-_openmp_mutex=4.5=2_gnu @ 16fe1c80
+_libgcc_mutex=0.1=conda_forge @ c37a1747
+_openmp_mutex=4.5=2_gnu @ c37a1747
 asttokens=3.0.0=pyhd8ed1ab_1 @ 931c1ab2
 aws-c-auth=0.8.0=hb88c0a9_10 @ ad241afe
 aws-c-cal=0.8.0=hecf86a2_2 @ ad241afe
@@ -24,10 +24,10 @@ azure-storage-blobs-cpp=12.13.0=h3cf044e_1 @ 989a16c9
 azure-storage-common-cpp=12.8.0=h736e048_1 @ 989a16c9
 azure-storage-files-datalake-cpp=12.12.0=ha633028_1 @ 989a16c9
 brotli-python=1.1.0=py313h46c70d0_2 @ ad241afe
-bzip2=1.0.8=h4bc722e_7 @ e1c11c02
-c-ares=1.34.3=hb9d3cd8_1 @ e1c11c02
-ca-certificates=2024.8.30=hbcca054_0 @ e1c11c02
-certifi=2024.8.30=pyhd8ed1ab_0 @ 30311944
+bzip2=1.0.8=h4bc722e_7 @ 989a16c9
+c-ares=1.34.3=hb9d3cd8_1 @ 989a16c9
+ca-certificates=2024.8.30=hbcca054_0 @ 989a16c9
+certifi=2024.8.30=pyhd8ed1ab_0 @ c7211bb6
 cffi=1.17.1=py313hfab6e84_0 @ ad241afe
 charset-normalizer=3.4.0=pyhd8ed1ab_1 @ 20c61ce0
 comm=0.2.2=pyhd8ed1ab_0 @ c7211bb6
@@ -39,10 +39,10 @@ exceptiongroup=1.2.2=pyhd8ed1ab_1 @ 931c1ab2
 executing=2.1.0=pyhd8ed1ab_0 @ c7211bb6
 foundry-data-sidecar-api=0.745.0=py_0 @ 5a011d5e
 foundry-transforms-lib-python=0.762.0=py_0 @ 5a011d5e
-gettext=0.22.5=he02047a_3 @ e1c11c02
-gettext-tools=0.22.5=he02047a_3 @ e1c11c02
-gflags=2.2.2=h5888daf_1005 @ e1c11c02
-glog=0.7.1=hbabe93e_0 @ e1c11c02
+gettext=0.22.5=he02047a_3 @ 989a16c9
+gettext-tools=0.22.5=he02047a_3 @ 989a16c9
+gflags=2.2.2=h5888daf_1005 @ 989a16c9
+glog=0.7.1=hbabe93e_0 @ 989a16c9
 h2=4.1.0=pyhd8ed1ab_1 @ 81d6167d
 hpack=4.0.0=pyhd8ed1ab_1 @ 81d6167d
 hyperframe=6.0.1=pyhd8ed1ab_1 @ 81d6167d
@@ -51,70 +51,69 @@ importlib-metadata=8.5.0=pyha770c72_1 @ 81d6167d
 ipykernel=6.29.5=pyh3099207_0 @ c7211bb6
 ipython=8.30.0=pyh707e725_0 @ 931c1ab2
 jedi=0.19.2=pyhd8ed1ab_1 @ 931c1ab2
-jupyter_client=8.6.3=pyhd8ed1ab_0 @ c7211bb6
+jupyter_client=8.6.3=pyhd8ed1ab_1 @ 931c1ab2
 jupyter_core=5.7.2=pyh31011fe_1 @ c7211bb6
-keyutils=1.6.1=h166bdaf_0 @ 16fe1c80
-krb5=1.21.3=h659f571_0 @ e1c11c02
-ld_impl_linux-64=2.43=h712a8e2_2 @ e1c11c02
+keyutils=1.6.1=h166bdaf_0 @ c37a1747
+krb5=1.21.3=h659f571_0 @ 989a16c9
+ld_impl_linux-64=2.43=h712a8e2_2 @ 989a16c9
 libabseil=20240722.0=cxx17_h5888daf_1 @ 989a16c9
 libarrow=18.1.0=he15abb1_1_cpu @ ad241afe
 libarrow-acero=18.1.0=h5888daf_1_cpu @ ad241afe
 libarrow-dataset=18.1.0=h5888daf_1_cpu @ ad241afe
 libarrow-substrait=18.1.0=h5c8f2c3_1_cpu @ ad241afe
-libasprintf=0.22.5=he8f35ee_3 @ e1c11c02
-libasprintf-devel=0.22.5=he8f35ee_3 @ e1c11c02
-libblas=3.9.0=25_linux64_openblas @ e1c11c02
-libbrotlicommon=1.1.0=hb9d3cd8_2 @ e1c11c02
-libbrotlidec=1.1.0=hb9d3cd8_2 @ e1c11c02
-libbrotlienc=1.1.0=hb9d3cd8_2 @ e1c11c02
-libcblas=3.9.0=25_linux64_openblas @ e1c11c02
-libcrc32c=1.1.2=h9c3ff4c_0 @ 16fe1c80
+libasprintf=0.22.5=he8f35ee_3 @ 3c4a1d2c
+libasprintf-devel=0.22.5=he8f35ee_3 @ 989a16c9
+libblas=3.9.0=25_linux64_openblas @ 989a16c9
+libbrotlicommon=1.1.0=hb9d3cd8_2 @ 989a16c9
+libbrotlidec=1.1.0=hb9d3cd8_2 @ 989a16c9
+libbrotlienc=1.1.0=hb9d3cd8_2 @ 989a16c9
+libcblas=3.9.0=25_linux64_openblas @ 989a16c9
+libcrc32c=1.1.2=h9c3ff4c_0 @ c37a1747
 libcurl=8.11.0=hbbe4b11_0 @ 3c4a1d2c
 libedit=3.1.20230828=h5eee18b_0 @ 3c4a1d2c
-libev=4.33=hd590300_2 @ e1c11c02
-libevent=2.1.12=hf998b51_1 @ e1c11c02
-libexpat=2.6.4=h5888daf_0 @ e1c11c02
+libev=4.33=hd590300_2 @ 989a16c9
+libevent=2.1.12=hf998b51_1 @ 989a16c9
+libexpat=2.6.4=h5888daf_0 @ 989a16c9
 libffi=3.4.4=h6a678d5_1 @ 3c4a1d2c
-libgcc=14.2.0=h77fa898_1 @ e1c11c02
-libgcc-ng=14.2.0=h69a702a_1 @ e1c11c02
-libgettextpo=0.22.5=he02047a_3 @ e1c11c02
-libgettextpo-devel=0.22.5=he02047a_3 @ e1c11c02
-libgfortran=14.2.0=h69a702a_1 @ e1c11c02
-libgfortran5=14.2.0=hd5240d6_1 @ e1c11c02
-libgomp=14.2.0=h77fa898_1 @ e1c11c02
+libgcc=14.2.0=h77fa898_1 @ 989a16c9
+libgcc-ng=14.2.0=h69a702a_1 @ 989a16c9
+libgettextpo=0.22.5=he02047a_3 @ 3c4a1d2c
+libgettextpo-devel=0.22.5=he02047a_3 @ 989a16c9
+libgfortran=14.2.0=h69a702a_1 @ 989a16c9
+libgfortran5=14.2.0=hd5240d6_1 @ 989a16c9
+libgomp=14.2.0=h77fa898_1 @ 989a16c9
 libgoogle-cloud=2.31.0=h804f50b_0 @ 989a16c9
 libgoogle-cloud-storage=2.31.0=h0121fbd_0 @ 989a16c9
 libgrpc=1.67.1=hc2c308b_0 @ 989a16c9
-libiconv=1.17=hd590300_2 @ e1c11c02
-liblapack=3.9.0=25_linux64_openblas @ e1c11c02
+libiconv=1.17=hd590300_2 @ 989a16c9
+liblapack=3.9.0=25_linux64_openblas @ 989a16c9
 liblzma=5.6.3=hb9d3cd8_1 @ ad241afe
-liblzma-devel=5.6.3=hb9d3cd8_1 @ ad241afe
 libmpdec=4.0.0=h4bc722e_0 @ ad241afe
-libnghttp2=1.64.0=h161d5f1_0 @ 3c4a1d2c
-libopenblas=0.3.28=pthreads_h94d23a6_1 @ e1c11c02
+libnghttp2=1.64.0=h161d5f1_0 @ 989a16c9
+libopenblas=0.3.28=pthreads_h94d23a6_1 @ 989a16c9
 libparquet=18.1.0=h6bd9018_1_cpu @ ad241afe
 libprotobuf=5.28.2=h5b01275_0 @ 989a16c9
 libre2-11=2024.07.02=hbbce691_1 @ 989a16c9
 libsodium=1.0.20=h4ab18f5_0 @ e1c11c02
-libsqlite=3.47.0=hadc24fc_1 @ 3c4a1d2c
-libssh2=1.11.1=hf672d98_0 @ 3c4a1d2c
-libstdcxx=14.2.0=hc0a3c3a_1 @ e1c11c02
-libstdcxx-ng=14.2.0=h4852527_1 @ e1c11c02
+libsqlite=3.47.0=hadc24fc_1 @ 989a16c9
+libssh2=1.11.1=hf672d98_0 @ 989a16c9
+libstdcxx=14.2.0=hc0a3c3a_1 @ 989a16c9
+libstdcxx-ng=14.2.0=h4852527_1 @ 989a16c9
 libthrift=0.21.0=h0e7cc3e_0 @ 989a16c9
-libutf8proc=2.8.0=hf23e847_1 @ 3c4a1d2c
-libuuid=2.38.1=h0b41bf4_0 @ e1c11c02
+libutf8proc=2.8.0=hf23e847_1 @ 989a16c9
+libuuid=2.38.1=h0b41bf4_0 @ 989a16c9
 libxcb=1.17.0=h8a09558_0 @ ad241afe
-libxcrypt=4.4.36=hd590300_1 @ 3c4a1d2c
-libxml2=2.13.5=h064dc61_0 @ 3c4a1d2c
+libxcrypt=4.4.36=hd590300_1 @ 989a16c9
+libxml2=2.13.5=h0d44e9d_1 @ ad241afe
 libxslt=1.1.39=h76b75d6_0 @ ad241afe
-libzlib=1.3.1=hb9d3cd8_2 @ 3c4a1d2c
+libzlib=1.3.1=hb9d3cd8_2 @ 989a16c9
 lxml=5.3.0=py313h6eb7059_2 @ ad241afe
 lz4-c=1.9.4=h6a678d5_1 @ 3c4a1d2c
-matplotlib-inline=0.1.7=pyhd8ed1ab_1 @ da0618b5
-ncurses=6.5=he02047a_1 @ 3c4a1d2c
+matplotlib-inline=0.1.7=pyhd8ed1ab_1 @ 931c1ab2
+ncurses=6.5=he02047a_1 @ 989a16c9
 nest-asyncio=1.6.0=pyhd8ed1ab_1 @ 931c1ab2
 numpy=2.1.3=py313h4bf6692_0 @ ad241afe
-openssl=3.4.0=hb9d3cd8_0 @ e1c11c02
+openssl=3.4.0=hb9d3cd8_0 @ 989a16c9
 orc=2.0.3=he039a57_0 @ 989a16c9
 packaging=24.2=pyhd8ed1ab_2 @ 20c61ce0
 pandas=2.2.3=py313ha87cce1_1 @ ad241afe
@@ -127,7 +126,7 @@ platformdirs=4.3.6=pyhd8ed1ab_1 @ 931c1ab2
 polars=1.16.0=py313ha816797_0 @ ad241afe
 prompt-toolkit=3.0.48=pyha770c72_1 @ 931c1ab2
 psutil=6.1.0=py313h536fd9c_0 @ ad241afe
-pthread-stubs=0.4=hb9d3cd8_1002 @ e1c11c02
+pthread-stubs=0.4=hb9d3cd8_1002 @ 989a16c9
 ptyprocess=0.7.0=pyhd8ed1ab_1 @ 931c1ab2
 pure_eval=0.2.3=pyhd8ed1ab_0 @ c7211bb6
 pyarrow=18.1.0=py313h78bf25f_0 @ ad241afe
@@ -135,25 +134,25 @@ pyarrow-core=18.1.0=py313he5f92c8_0_cpu @ ad241afe
 pycparser=2.22=pyh29332c3_1 @ 20c61ce0
 pygments=2.18.0=pyhd8ed1ab_1 @ 931c1ab2
 pysocks=1.7.1=pyha55dd90_7 @ 20c61ce0
-python=3.13.1=ha99a958_101_cp313 @ ad241afe
+python=3.13.1=ha99a958_102_cp313 @ ad241afe
 python-dateutil=2.9.0.post0=pyhff2d567_1 @ 81d6167d
 python-duckdb=1.1.3=py313h46c70d0_0 @ ad241afe
 python-tzdata=2024.2=pyhd8ed1ab_1 @ 81d6167d
 python_abi=3.13=5_cp313 @ ad241afe
-pytz=2024.1=pyhd8ed1ab_0 @ 30311944
+pytz=2024.1=pyhd8ed1ab_0 @ c7211bb6
 pyzmq=26.2.0=py313h8e95178_3 @ ad241afe
 re2=2024.07.02=h77b4e00_1 @ 989a16c9
-readline=8.2=h8228510_1 @ 3c4a1d2c
+readline=8.2=h8228510_1 @ 989a16c9
 requests=2.32.3=pyhd8ed1ab_1 @ 20c61ce0
 s2n=1.5.9=h0fd0ee4_0 @ ad241afe
 six=1.17.0=pyhd8ed1ab_0 @ 931c1ab2
-snappy=1.2.1=ha2e4443_0 @ e1c11c02
+snappy=1.2.1=ha2e4443_0 @ 989a16c9
 stack_data=0.6.2=pyhd8ed1ab_0 @ c7211bb6
-tk=8.6.13=noxft_h4845f30_101 @ e1c11c02
+tk=8.6.13=noxft_h4845f30_101 @ 989a16c9
 tornado=6.4.2=py313h536fd9c_0 @ ad241afe
 traitlets=5.14.3=pyhd8ed1ab_1 @ 931c1ab2
 typing_extensions=4.12.2=pyha770c72_1 @ 20c61ce0
-tzdata=2024b=hc8b5060_0 @ 30311944
+tzdata=2024b=hc8b5060_0 @ c7211bb6
 urllib3=2.2.3=pyhd8ed1ab_1 @ 20c61ce0
 vim=9.1.0776=py313pl5321h12a5995_0 @ ad241afe
 wcwidth=0.2.13=pyhd8ed1ab_1 @ 931c1ab2
@@ -163,13 +162,10 @@ xorg-libx11=1.8.10=h4f16b4b_1 @ ad241afe
 xorg-libxau=1.0.11=hb9d3cd8_1 @ e1c11c02
 xorg-libxdmcp=1.1.5=hb9d3cd8_0 @ e1c11c02
 xorg-libxt=1.3.1=hb9d3cd8_0 @ ad241afe
-xz=5.6.3=hbcc6ac9_1 @ ad241afe
-xz-gpl-tools=5.6.3=hbcc6ac9_1 @ ad241afe
-xz-tools=5.6.3=hb9d3cd8_1 @ ad241afe
 zeromq=4.3.5=h3b0a872_7 @ e1c11c02
 zipp=3.21.0=pyhd8ed1ab_1 @ 81d6167d
 zstandard=0.23.0=py313h80202fe_1 @ ad241afe
-zstd=1.5.6=ha6fb4c9_0 @ e1c11c02
+zstd=1.5.6=ha6fb4c9_0 @ 989a16c9
 
 [pip]
 attrs==24.2.0
@@ -183,17 +179,15 @@ typing-extensions==4.12.2
 tzdata==2024.2
 
 [conda-metadata]
-16fe1c80 - linux-64 @ tar.bz2 @ ri.artifacts.repository.bundle.jupyter-default-environment
 20c61ce0 - noarch @ conda @ ri.artifacts.repository.python-library.foundry-transforms-lib
-30311944 - noarch @ conda @ ri.foundry-sdk-asset-bundle.main.artifacts.repository
 3c4a1d2c - linux-64 @ conda @ ri.artifacts.repository.python-library.foundry-transforms-lib
 5a011d5e - noarch @ tar.bz2 @ ri.artifacts.repository.python-library.foundry-transforms-lib
 81d6167d - noarch @ conda @ ri.artifacts.repository.python-library.models
 931c1ab2 - noarch @ conda @ ri.artifacts.repository.artifactory.external-conda-forge
 989a16c9 - linux-64 @ conda @ ri.artifacts.repository.python-library.models
 ad241afe - linux-64 @ conda @ ri.artifacts.repository.artifactory.external-conda-forge
+c37a1747 - linux-64 @ tar.bz2 @ ri.artifacts.repository.python-library.models
 c7211bb6 - noarch @ conda @ ri.artifacts.repository.bundle.jupyter-default-environment
-da0618b5 - noarch @ conda @ ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 e1c11c02 - linux-64 @ conda @ ri.artifacts.repository.bundle.jupyter-default-environment
 
 [pip-indices]
