@@ -1,0 +1,3 @@
+visit_occurrence_id,person_id,visit_concept_id,visit_start_date,visit_start_datetime,visit_end_date,visit_end_datetime,visit_type_concept_id,provider_id,care_site_id,visit_source_value,visit_source_concept_id,admitting_source_concept_id,admitting_source_value,discharge_to_concept_id,discharge_to_source_value,preceding_visit_occurrence_id
+1,444222222_1,9202,9/27/2012,13:00,9/27/2012,,32849,333444555,"1007 Health Drive Portland, OR 99123",99213,2414397,,,,,
+2,444222222_2,9201,6/18/2015,11:58,6/25/2015,15:00,32849,5555555555,"123 Anywhere Street VERONA, WI 53593",99221,2514404,,,581476,01,

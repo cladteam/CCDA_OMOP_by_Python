@@ -1,0 +1,3 @@
+person_id,gender_concept_id,year_of_birth,month_of_birth,day_of_birth,birth_datetime,race_concept_id,ethnicity_concept_id,location_id,provider_id,care_site_id,person_source_value,gender_source_value,gender_source_concept_id,race_source_value,race_source_concept_id,ethnicity_source_value,ethnicity_source_concept_id
+444222222_1,8532,1975,5,1,1975,8527,38003564,"2222 Home Street Beaverton, OR 97867",Patricia Patty PRIMARY M.D,"1004 Healthcare Drive Portland, OR 99123",C-CDA_R2-1_CCD.xml,F,8532,2106-3,0,2186-5,0
+444222222_2,8532,1975,5,1,1975,8527,38003564,"2222 Home Street Beaverton, MD 21014",0,0,CCD-Sample.xm,F,8532,2106-3,0,2186-5,0
