@@ -1,8 +1,8 @@
 
 import prototype_2.value_transformations as VT
 """
-    This is for caresites from Encounter/participant/participantRole
-
+    (not) This is for caresites from Encounter/participant/participantRole
+    This is for caresites from Encounter/performer/assignedEntity
 
 """
 metadata = {
@@ -30,6 +30,7 @@ metadata = {
             'fields' : [ 'provider_id_extension', 'provider_id_root'],
             'order': 1 ,
         },
+
         'provider_name': { 
             'config_type': 'None',
             'order': 2
@@ -43,7 +44,7 @@ metadata = {
         },
         'dea': {
             'config_type': 'FIELD',
-            'element': 'hl7:id[@root="2.16.840.1.113883.D.E.A"]',
+            'element': 'hl7:id[@root="2.16.840.1.113883.D.E.A"]', # TODO get the correct OID
             'attribute': "extension",
             'order': 4,
         },
