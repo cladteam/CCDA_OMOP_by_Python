@@ -4,6 +4,28 @@
 [conda]
 _libgcc_mutex=0.1=conda_forge @ c37a1747
 _openmp_mutex=4.5=2_gnu @ c37a1747
+<<<<<<< HEAD
+asttokens=3.0.0=pyhd8ed1ab_0 @ 931c1ab2
+aws-c-auth=0.8.0=hb88c0a9_10 @ f5d61901
+aws-c-cal=0.8.0=hecf86a2_2 @ f5d61901
+aws-c-common=0.10.3=hb9d3cd8_0 @ f5d61901
+aws-c-compression=0.3.0=hf42f96a_2 @ f5d61901
+aws-c-event-stream=0.5.0=h1ffe551_7 @ f5d61901
+aws-c-http=0.9.1=hab05fe4_2 @ f5d61901
+aws-c-io=0.15.2=hdeadb07_2 @ f5d61901
+aws-c-mqtt=0.11.0=h7bd072d_8 @ f5d61901
+aws-c-s3=0.7.3=h3a84f74_0 @ f5d61901
+aws-c-sdkutils=0.2.1=hf42f96a_1 @ f5d61901
+aws-checksums=0.2.2=hf42f96a_1 @ f5d61901
+aws-crt-cpp=0.29.6=hdec8b0f_1 @ f5d61901
+aws-sdk-cpp=1.11.449=h5558e3c_4 @ f5d61901
+azure-core-cpp=1.14.0=h5cfcd09_0 @ 989a16c9
+azure-identity-cpp=1.10.0=h113e628_0 @ 989a16c9
+azure-storage-blobs-cpp=12.13.0=h3cf044e_1 @ 989a16c9
+azure-storage-common-cpp=12.8.0=h736e048_1 @ 989a16c9
+azure-storage-files-datalake-cpp=12.12.0=ha633028_1 @ 989a16c9
+brotli-python=1.1.0=py313h46c70d0_2 @ f5d61901
+=======
 asttokens=3.0.0=pyhd8ed1ab_1 @ 931c1ab2
 aws-c-auth=0.8.0=hb88c0a9_10 @ ad241afe
 aws-c-cal=0.8.0=hecf86a2_2 @ ad241afe
@@ -24,44 +46,81 @@ azure-storage-blobs-cpp=12.13.0=h3cf044e_1 @ 989a16c9
 azure-storage-common-cpp=12.8.0=h736e048_1 @ 989a16c9
 azure-storage-files-datalake-cpp=12.12.0=ha633028_1 @ 989a16c9
 brotli-python=1.1.0=py313h46c70d0_2 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 bzip2=1.0.8=h4bc722e_7 @ 989a16c9
 c-ares=1.34.3=hb9d3cd8_1 @ 989a16c9
 ca-certificates=2024.8.30=hbcca054_0 @ 989a16c9
+<<<<<<< HEAD
+certifi=2024.8.30=pyhd8ed1ab_0 @ 30311944
+cffi=1.17.1=py313hfab6e84_0 @ f5d61901
+charset-normalizer=3.4.0=pyhd8ed1ab_1 @ 931c1ab2
+=======
 certifi=2024.8.30=pyhd8ed1ab_0 @ c7211bb6
 cffi=1.17.1=py313hfab6e84_0 @ ad241afe
 charset-normalizer=3.4.0=pyhd8ed1ab_1 @ 20c61ce0
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 comm=0.2.2=pyhd8ed1ab_0 @ c7211bb6
 conjure-python-client=2.12.0=pyhd8ed1ab_0 @ c7211bb6
+<<<<<<< HEAD
+debugpy=1.8.9=py313h46c70d0_0 @ f5d61901
+decorator=5.1.1=pyhd8ed1ab_1 @ 931c1ab2
+=======
 debugpy=1.8.9=py313h46c70d0_0 @ ad241afe
 decorator=5.1.1=pyhd8ed1ab_1 @ 81d6167d
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 duckdb=1.1.3=hd8ed1ab_0 @ 931c1ab2
 exceptiongroup=1.2.2=pyhd8ed1ab_1 @ 931c1ab2
 executing=2.1.0=pyhd8ed1ab_0 @ c7211bb6
 foundry-data-sidecar-api=0.745.0=py_0 @ 5a011d5e
+<<<<<<< HEAD
+foundry-transforms-lib-python=0.760.0=py_0 @ 5a011d5e
+=======
 foundry-transforms-lib-python=0.762.0=py_0 @ 5a011d5e
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 gettext=0.22.5=he02047a_3 @ 989a16c9
 gettext-tools=0.22.5=he02047a_3 @ 989a16c9
 gflags=2.2.2=h5888daf_1005 @ 989a16c9
 glog=0.7.1=hbabe93e_0 @ 989a16c9
+<<<<<<< HEAD
+h2=4.1.0=pyhd8ed1ab_0 @ 605019c2
+hpack=4.0.0=pyh9f0ad1d_0 @ 605019c2
+hyperframe=6.0.1=pyhd8ed1ab_0 @ 605019c2
+idna=3.10=pyhd8ed1ab_1 @ 931c1ab2
+importlib-metadata=8.5.0=pyha770c72_1 @ 931c1ab2
+=======
 h2=4.1.0=pyhd8ed1ab_1 @ 81d6167d
 hpack=4.0.0=pyhd8ed1ab_1 @ 81d6167d
 hyperframe=6.0.1=pyhd8ed1ab_1 @ 81d6167d
 idna=3.10=pyhd8ed1ab_1 @ 20c61ce0
 importlib-metadata=8.5.0=pyha770c72_1 @ 81d6167d
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 ipykernel=6.29.5=pyh3099207_0 @ c7211bb6
 ipython=8.30.0=pyh707e725_0 @ 931c1ab2
+<<<<<<< HEAD
+jedi=0.19.2=pyhff2d567_0 @ c7211bb6
+jupyter_client=8.6.3=pyhd8ed1ab_0 @ c7211bb6
+=======
 jedi=0.19.2=pyhd8ed1ab_1 @ 931c1ab2
 jupyter_client=8.6.3=pyhd8ed1ab_1 @ 931c1ab2
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 jupyter_core=5.7.2=pyh31011fe_1 @ c7211bb6
 keyutils=1.6.1=h166bdaf_0 @ c37a1747
 krb5=1.21.3=h659f571_0 @ 989a16c9
 ld_impl_linux-64=2.43=h712a8e2_2 @ 989a16c9
 libabseil=20240722.0=cxx17_h5888daf_1 @ 989a16c9
+<<<<<<< HEAD
+libarrow=18.1.0=he15abb1_1_cpu @ f5d61901
+libarrow-acero=18.1.0=h5888daf_1_cpu @ f5d61901
+libarrow-dataset=18.1.0=h5888daf_1_cpu @ f5d61901
+libarrow-substrait=18.1.0=h5c8f2c3_1_cpu @ f5d61901
+libasprintf=0.22.5=he8f35ee_3 @ e1c11c02
+=======
 libarrow=18.1.0=he15abb1_1_cpu @ ad241afe
 libarrow-acero=18.1.0=h5888daf_1_cpu @ ad241afe
 libarrow-dataset=18.1.0=h5888daf_1_cpu @ ad241afe
 libarrow-substrait=18.1.0=h5c8f2c3_1_cpu @ ad241afe
 libasprintf=0.22.5=he8f35ee_3 @ 3c4a1d2c
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 libasprintf-devel=0.22.5=he8f35ee_3 @ 989a16c9
 libblas=3.9.0=25_linux64_openblas @ 989a16c9
 libbrotlicommon=1.1.0=hb9d3cd8_2 @ 989a16c9
@@ -77,7 +136,11 @@ libexpat=2.6.4=h5888daf_0 @ 989a16c9
 libffi=3.4.4=h6a678d5_1 @ 3c4a1d2c
 libgcc=14.2.0=h77fa898_1 @ 989a16c9
 libgcc-ng=14.2.0=h69a702a_1 @ 989a16c9
+<<<<<<< HEAD
+libgettextpo=0.22.5=he02047a_3 @ e1c11c02
+=======
 libgettextpo=0.22.5=he02047a_3 @ 3c4a1d2c
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 libgettextpo-devel=0.22.5=he02047a_3 @ 989a16c9
 libgfortran=14.2.0=h69a702a_1 @ 989a16c9
 libgfortran5=14.2.0=hd5240d6_1 @ 989a16c9
@@ -87,11 +150,18 @@ libgoogle-cloud-storage=2.31.0=h0121fbd_0 @ 989a16c9
 libgrpc=1.67.1=hc2c308b_0 @ 989a16c9
 libiconv=1.17=hd590300_2 @ 989a16c9
 liblapack=3.9.0=25_linux64_openblas @ 989a16c9
+<<<<<<< HEAD
+libmpdec=4.0.0=h4bc722e_0 @ f5d61901
+libnghttp2=1.64.0=h161d5f1_0 @ 989a16c9
+libopenblas=0.3.28=pthreads_h94d23a6_1 @ 989a16c9
+libparquet=18.1.0=h6bd9018_1_cpu @ f5d61901
+=======
 liblzma=5.6.3=hb9d3cd8_1 @ ad241afe
 libmpdec=4.0.0=h4bc722e_0 @ ad241afe
 libnghttp2=1.64.0=h161d5f1_0 @ 989a16c9
 libopenblas=0.3.28=pthreads_h94d23a6_1 @ 989a16c9
 libparquet=18.1.0=h6bd9018_1_cpu @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 libprotobuf=5.28.2=h5b01275_0 @ 989a16c9
 libre2-11=2024.07.02=hbbce691_1 @ 989a16c9
 libsodium=1.0.20=h4ab18f5_0 @ e1c11c02
@@ -102,15 +172,41 @@ libstdcxx-ng=14.2.0=h4852527_1 @ 989a16c9
 libthrift=0.21.0=h0e7cc3e_0 @ 989a16c9
 libutf8proc=2.8.0=hf23e847_1 @ 989a16c9
 libuuid=2.38.1=h0b41bf4_0 @ 989a16c9
-libxcb=1.17.0=h8a09558_0 @ ad241afe
+libxcb=1.17.0=h8a09558_0 @ f5d61901
 libxcrypt=4.4.36=hd590300_1 @ 989a16c9
+<<<<<<< HEAD
+libxml2=2.13.5=h064dc61_0 @ 3c4a1d2c
+libxslt=1.1.39=h76b75d6_0 @ f5d61901
+=======
 libxml2=2.13.5=h0d44e9d_1 @ ad241afe
 libxslt=1.1.39=h76b75d6_0 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 libzlib=1.3.1=hb9d3cd8_2 @ 989a16c9
+<<<<<<< HEAD
+lxml=5.3.0=py313h6eb7059_2 @ f5d61901
+=======
 lxml=5.3.0=py313h6eb7059_2 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 lz4-c=1.9.4=h6a678d5_1 @ 3c4a1d2c
 matplotlib-inline=0.1.7=pyhd8ed1ab_1 @ 931c1ab2
 ncurses=6.5=he02047a_1 @ 989a16c9
+<<<<<<< HEAD
+nest-asyncio=1.6.0=pyhd8ed1ab_0 @ c7211bb6
+numpy=2.1.3=py313h4bf6692_0 @ f5d61901
+openssl=3.4.0=hb9d3cd8_0 @ 989a16c9
+orc=2.0.3=he039a57_0 @ 989a16c9
+packaging=24.2=pyhd8ed1ab_2 @ 931c1ab2
+pandas=2.2.3=py313ha87cce1_1 @ f5d61901
+parso=0.8.4=pyhd8ed1ab_0 @ c7211bb6
+perl=5.32.1=7_hd590300_perl5 @ f5d61901
+pexpect=4.9.0=pyhd8ed1ab_0 @ c7211bb6
+pickleshare=0.7.5=py_1003 @ fe451c34
+pip=24.3.1=pyh145f28c_0 @ 931c1ab2
+platformdirs=4.3.6=pyhd8ed1ab_1 @ 931c1ab2
+polars=1.16.0=py313ha816797_0 @ f5d61901
+prompt-toolkit=3.0.48=pyha770c72_0 @ c7211bb6
+psutil=6.1.0=py313h536fd9c_0 @ f5d61901
+=======
 nest-asyncio=1.6.0=pyhd8ed1ab_1 @ 931c1ab2
 numpy=2.1.3=py313h4bf6692_0 @ ad241afe
 openssl=3.4.0=hb9d3cd8_0 @ 989a16c9
@@ -126,9 +222,24 @@ platformdirs=4.3.6=pyhd8ed1ab_1 @ 931c1ab2
 polars=1.16.0=py313ha816797_0 @ ad241afe
 prompt-toolkit=3.0.48=pyha770c72_1 @ 931c1ab2
 psutil=6.1.0=py313h536fd9c_0 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 pthread-stubs=0.4=hb9d3cd8_1002 @ 989a16c9
 ptyprocess=0.7.0=pyhd8ed1ab_1 @ 931c1ab2
 pure_eval=0.2.3=pyhd8ed1ab_0 @ c7211bb6
+<<<<<<< HEAD
+pyarrow=18.1.0=py313h78bf25f_0 @ f5d61901
+pyarrow-core=18.1.0=py313he5f92c8_0_cpu @ f5d61901
+pycparser=2.22=pyh29332c3_1 @ 931c1ab2
+pygments=2.18.0=pyhd8ed1ab_1 @ 931c1ab2
+pysocks=1.7.1=pyha55dd90_7 @ 931c1ab2
+python=3.13.0=h9ebbce0_101_cp313 @ f5d61901
+python-dateutil=2.9.0.post0=pyhff2d567_1 @ 931c1ab2
+python-duckdb=1.1.3=py313h46c70d0_0 @ f5d61901
+python-tzdata=2024.2=pyhd8ed1ab_1 @ 931c1ab2
+python_abi=3.13=5_cp313 @ f5d61901
+pytz=2024.1=pyhd8ed1ab_0 @ 30311944
+pyzmq=26.2.0=py313h8e95178_3 @ f5d61901
+=======
 pyarrow=18.1.0=py313h78bf25f_0 @ ad241afe
 pyarrow-core=18.1.0=py313he5f92c8_0_cpu @ ad241afe
 pycparser=2.22=pyh29332c3_1 @ 20c61ce0
@@ -141,30 +252,59 @@ python-tzdata=2024.2=pyhd8ed1ab_1 @ 81d6167d
 python_abi=3.13=5_cp313 @ ad241afe
 pytz=2024.1=pyhd8ed1ab_0 @ c7211bb6
 pyzmq=26.2.0=py313h8e95178_3 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 re2=2024.07.02=h77b4e00_1 @ 989a16c9
 readline=8.2=h8228510_1 @ 989a16c9
+<<<<<<< HEAD
+requests=2.32.3=pyhd8ed1ab_1 @ 931c1ab2
+s2n=1.5.9=h0fd0ee4_0 @ f5d61901
+six=1.16.0=pyhd3eb1b0_1 @ 605019c2
+=======
 requests=2.32.3=pyhd8ed1ab_1 @ 20c61ce0
 s2n=1.5.9=h0fd0ee4_0 @ ad241afe
 six=1.17.0=pyhd8ed1ab_0 @ 931c1ab2
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 snappy=1.2.1=ha2e4443_0 @ 989a16c9
 stack_data=0.6.2=pyhd8ed1ab_0 @ c7211bb6
 tk=8.6.13=noxft_h4845f30_101 @ 989a16c9
+<<<<<<< HEAD
+tornado=6.4.2=py313h536fd9c_0 @ f5d61901
+traitlets=5.14.3=pyhd8ed1ab_0 @ c7211bb6
+typing_extensions=4.12.2=pyha770c72_1 @ 931c1ab2
+tzdata=2024b=hc8b5060_0 @ 30311944
+urllib3=2.2.3=pyhd8ed1ab_1 @ 931c1ab2
+vim=9.1.0776=py313pl5321h12a5995_0 @ f5d61901
+=======
 tornado=6.4.2=py313h536fd9c_0 @ ad241afe
 traitlets=5.14.3=pyhd8ed1ab_1 @ 931c1ab2
 typing_extensions=4.12.2=pyha770c72_1 @ 20c61ce0
 tzdata=2024b=hc8b5060_0 @ c7211bb6
 urllib3=2.2.3=pyhd8ed1ab_1 @ 20c61ce0
 vim=9.1.0776=py313pl5321h12a5995_0 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 wcwidth=0.2.13=pyhd8ed1ab_1 @ 931c1ab2
 xorg-libice=1.1.1=hb9d3cd8_1 @ e1c11c02
 xorg-libsm=1.2.4=he73a12e_1 @ e1c11c02
+<<<<<<< HEAD
+xorg-libx11=1.8.10=h4f16b4b_0 @ f5d61901
+=======
 xorg-libx11=1.8.10=h4f16b4b_1 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 xorg-libxau=1.0.11=hb9d3cd8_1 @ e1c11c02
 xorg-libxdmcp=1.1.5=hb9d3cd8_0 @ e1c11c02
+<<<<<<< HEAD
+xorg-libxt=1.3.1=hb9d3cd8_0 @ f5d61901
+xorg-xorgproto=2024.1=hb9d3cd8_1 @ f5d61901
+xz=5.4.6=h5eee18b_1 @ 3c4a1d2c
+zeromq=4.3.5=h3b0a872_7 @ e1c11c02
+zipp=3.21.0=pyhd8ed1ab_1 @ 81d6167d
+zstandard=0.23.0=py313h80202fe_1 @ f5d61901
+=======
 xorg-libxt=1.3.1=hb9d3cd8_0 @ ad241afe
 zeromq=4.3.5=h3b0a872_7 @ e1c11c02
 zipp=3.21.0=pyhd8ed1ab_1 @ 81d6167d
 zstandard=0.23.0=py313h80202fe_1 @ ad241afe
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 zstd=1.5.6=ha6fb4c9_0 @ 989a16c9
 
 [pip]
@@ -174,21 +314,27 @@ diff==2023.12.6
 jupyter-client==8.6.3
 jupyter-core==5.7.2
 pure-eval==0.2.3
+six==1.17.0
 stack-data==0.6.2
 typing-extensions==4.12.2
 tzdata==2024.2
 
 [conda-metadata]
-20c61ce0 - noarch @ conda @ ri.artifacts.repository.python-library.foundry-transforms-lib
+30311944 - noarch @ conda @ ri.foundry-sdk-asset-bundle.main.artifacts.repository
 3c4a1d2c - linux-64 @ conda @ ri.artifacts.repository.python-library.foundry-transforms-lib
 5a011d5e - noarch @ tar.bz2 @ ri.artifacts.repository.python-library.foundry-transforms-lib
+605019c2 - noarch @ tar.bz2 @ ri.foundry-sdk-asset-bundle.main.artifacts.repository
 81d6167d - noarch @ conda @ ri.artifacts.repository.python-library.models
 931c1ab2 - noarch @ conda @ ri.artifacts.repository.artifactory.external-conda-forge
 989a16c9 - linux-64 @ conda @ ri.artifacts.repository.python-library.models
-ad241afe - linux-64 @ conda @ ri.artifacts.repository.artifactory.external-conda-forge
 c37a1747 - linux-64 @ tar.bz2 @ ri.artifacts.repository.python-library.models
 c7211bb6 - noarch @ conda @ ri.artifacts.repository.bundle.jupyter-default-environment
 e1c11c02 - linux-64 @ conda @ ri.artifacts.repository.bundle.jupyter-default-environment
+<<<<<<< HEAD
+f5d61901 - linux-64 @ conda @ ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
+fe451c34 - noarch @ tar.bz2 @ ri.artifacts.repository.bundle.jupyter-default-environment
+=======
+>>>>>>> branch 'richard_master' of https://genoa.washington.palantircloud.com/stemma/git/ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 
 [pip-indices]
 ri.artifacts.repository.artifactory.external-python-pypi
