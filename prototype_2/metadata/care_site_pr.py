@@ -16,23 +16,34 @@ metadata = {
                         'hl7:entry/hl7:encounter/hl7:participant/hl7:participantRole' )
         },
 
-        'care_site_id': {
-            'config_type': 'PRIORITY',
-            'order': 1
-        },
-        'healthCareFacility_id': {
+        # If we end up with multiple sources for care_site_id, we would
+        # implement a priority list, but for now there is just one, so
+        # this is commented out. Please delete if we ultimately don't need/use it.
+        # an example of why we might need it is the hash of address fields below.
+        #'care_site_id': {
+        #    'config_type': 'PRIORITY',
+        #   'order': 1
+        #},
+        #'healthCareFacility_id': {
+        #    'config_type': 'FIELD',
+        #    'element': 'hl7:id',
+        #    'attribute': "root",
+        #    'priority' : ['care_site_id', 1]
+        #},
+        # 'healthCareFacility_hash_id': { # TODO
+        #    'config_type': 'HASH',
+        #    'element': 'hl7:streetAddressLine',
+        #    'attribute': "#text",
+        #    'priority' : ['care_site_id', 2]
+        #},
+            
+        'care_site_id': { 
             'config_type': 'FIELD',
             'element': 'hl7:id',
             'attribute': "root",
-            'priority' : ['care_site_id', 1]
+            'order': 1
         },
-       # 'healthCareFacility_hash_id': { # TODO
-       #     'config_type': 'HASH',
-       #     'element': 'hl7:streetAddressLine',
-       #     'attribute': "#text",
-       #     'priority' : ['care_site_id', 2]
-       #},
-
+            
         'care_site_name': {  # TBD
             'config_type': 'FIELD',
             'element': 'hl7:location/hl7:name',
@@ -77,6 +88,7 @@ metadata = {
             'order': 6
         },
 
+        # addresses here for use in location_id hash above
         'address_1': {
             'config_type': 'FIELD',
             'element': 'hl7:addr/hl7:streetAddressLine',

@@ -2,6 +2,7 @@
 import prototype_2.value_transformations as VT
 """
     (not) This is for caresites from Encounter/participant/participantRole
+    
     This is for caresites from Encounter/performer/assignedEntity
 
 """
@@ -68,6 +69,11 @@ metadata = {
                     'default': 0
     	         },
             'order': 5
+        },
+        
+        'care_site_id': {
+            'config_type': 'None', # To be fleshed out using "parse twice"
+            'order': 6
         },
     
 
