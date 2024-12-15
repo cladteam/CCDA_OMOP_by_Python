@@ -73,9 +73,9 @@ metadata = {
         
         'care_site_id_root': {
             'config_type': 'FIELD', # To be fleshed out using "parse twice"
-            'elelment': '../../hl7:particpant/hl7:participant[@typeCode="LOC"]/,
+            'element': '../../hl7:particpant/hl7:participant[@typeCode="LOC"]/',
             ## need to collect element name, address if available, telephone if available, and hash m
-            'attribute': 'root'
+            'attribute': "root",
             'order': 6
         },
     
