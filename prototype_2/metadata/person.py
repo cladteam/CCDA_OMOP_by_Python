@@ -98,7 +98,7 @@ metadata = {
     	},
     	'race_concept_id':{
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.codemap_xwalk_concept_id, # VT.valueset_xwalk_concept_id,
+    	    'FUNCTION': VT.valueset_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'race_concept_code',
     		    'vocabulary_oid': 'race_concept_codeSystem',
@@ -119,7 +119,7 @@ metadata = {
     	},
     	'ethnicity_concept_id': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.codemap_xwalk_concept_id, # VT.valueset_xwalk_concept_id,
+    	    'FUNCTION': VT.valueset_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'ethnicity_concept_code',
     		    'vocabulary_oid': 'ethnicity_concept_codeSystem',

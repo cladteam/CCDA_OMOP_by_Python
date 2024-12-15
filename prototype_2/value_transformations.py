@@ -103,19 +103,28 @@ def map_hl7_to_omop_domain_id(args_dict):
 
 def map_hl7_to_omop_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
-        returns: concept_id, not necessarily standard
+        returns: concept_id AS INTEGER (because that's what's in the table)
     """
 
 def codemap_xwalk_concept_id(args_dict):
-        return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    """ expects: vocabulary_oid, concept_code
+        returns: concept_id AS INTEGER (because that's what's in the table), not necessarily standard
+    """
+    return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_concept_id', args_dict['default']) 
 
 def codemap_xwalk_domain_id(args_dict):
-        return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    """ expects: vocabulary_oid, concept_code
+        returns: domain_id
+    """
+    return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_domain_id', args_dict['default']) 
 
 def codemap_xwalk_source_concept_id(args_dict):
-        return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    """ expects: vocabulary_oid, concept_code
+        returns: unmapped concept_id AS INTEGER (because that's what's in the table), not necessarily standard
+    """
+    return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'source_concept_id', args_dict['default']) 
 
 def _codemap_xwalk(vocabulary_oid, concept_code, column_name, default):
@@ -140,16 +149,25 @@ def _codemap_xwalk(vocabulary_oid, concept_code, column_name, default):
 
 
 def valueset_xwalk_concept_id(args_dict):
-        return _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
-                'target_concept_id', args_dict['default']) 
+    """ expects: vocabulary_oid, concept_code
+        returns: concept_id AS INTEGER
+    """
+    return int( _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+                'target_concept_id', args_dict['default']) )
 
 def valueset_xwalk_domain_id(args_dict):
-        return _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    """ expects: vocabulary_oid, concept_code
+        returns: domain_id
+    """
+    return _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_domain_id', args_dict['default']) 
 
 def valueset_xwalk_source_concept_id(args_dict):
-        return _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
-                'source_concept_id', args_dict['default']) 
+    """ expects: vocabulary_oid, concept_code
+        returns: unmapped concept_id AS INTEGER not necessarily standard
+    """
+    return int( _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+                'source_concept_id', args_dict['default']) )
 
 def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
     """ expects: vocabulary_oid, concept_code
