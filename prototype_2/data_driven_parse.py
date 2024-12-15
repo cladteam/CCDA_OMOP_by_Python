@@ -195,12 +195,22 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
                      f" {field_details_dict}"))
         type_tag = field_details_dict['config_type']
         if type_tag == 'FIELD':
-            attribute_value = parse_field_from_dict(field_details_dict, root_element,
+            try:
+                attribute_value = parse_field_from_dict(field_details_dict, root_element,
                                                     domain, field_tag, root_path)
-            output_dict[field_tag] = (attribute_value, root_path + "/" +
+                output_dict[field_tag] = (attribute_value, root_path + "/" +
                                       field_details_dict['element'] + "/@" +
                                       field_details_dict['attribute'])
-            logger.info(f"     FIELD for {domain}/{field_tag} \"{attribute_value}\"")
+                logger.info(f"     FIELD for {domain}/{field_tag} \"{attribute_value}\"")
+            except KeyError as ke:
+                print(f"ERROR      key erorr: {ke}")
+                print(f"  {field_details_dict}")
+                print(f"  FIELD for {domain}/{field_tag} \"{attribute_value}\"")
+                logger.error(f"key erorr: {ke}")
+                logger.error(f"  {field_details_dict}")
+                logger.error(f"  FIELD for {domain}/{field_tag} \"{attribute_value}\"")
+                raise
+
         elif type_tag == 'PK':
             logger.info(f"     PK for {domain}/{field_tag}")
             attribute_value = parse_field_from_dict(field_details_dict, root_element,
