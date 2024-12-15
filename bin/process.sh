@@ -18,11 +18,11 @@ rm -f logs/*
 rm -f output/*
 # run unit tests
 
-python3 -m  unittest prototype_2.test.test_value_transformations_concat
+### python3 -m  unittest prototype_2.test.test_value_transformations_concat
 
 # run the main conversion
 python3 -m prototype_2.layer_datasets -d resources # ../CCDA-data/resources
 
 # load into DuckDB for constraint errors
-python3 -m omop.setup_omop
+## python3 -m omop.setup_omop
 
