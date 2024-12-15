@@ -229,8 +229,9 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
 
 
 def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
-    # Do derived values now that their inputs should be available in the output_dict
-    # Except for a special argument named 'default', when the value is what is other wise the field to look up in the output dict.
+    """ Do/compute derived values now that their inputs should be available in the output_dict
+        Except for a special argument named 'default', when the value is what is other wise the field to look up in the output dict.
+    """
     for (field_tag, field_details_dict) in domain_meta_dict.items():
         if field_details_dict['config_type'] == 'DERIVED':
             logger.info(f"     DERIVING {field_tag}, {field_details_dict}")

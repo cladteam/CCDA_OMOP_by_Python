@@ -12,7 +12,7 @@ metadata = {
     		  "/../hl7:entry/hl7:encounter")
     	},
         
-
+# WHAT?
         'provider_id_extension': {
             'config_type': 'FIELD',
             'element': 'hl7:performer/hl7:assignedEntity/hl7:id',
@@ -182,7 +182,19 @@ metadata = {
             'order': 10
     	},
 
-        'visit_source_value': { 'config_type': None, 'order': 11},
+        'visit_source_value': { 
+            'config_type': 'DERIVED', 
+            'FUNCTION': VT.concat_fields,
+    	    'argument_names': {
+                'first_field': 'visit_concept_codeSystem',
+    		    'second_field': 'visit_concept_code',
+                'default': 0
+    	    },
+            
+            'order': 11
+        },
+        
+        
         'visit_source_concept_id': { 'config_type': None, 'order': 12},
         'admitting_source_concept_id': { 'config_type': None, 'order': 13},
         'admitting_source_value': { 'config_type': None, 'order': 14},

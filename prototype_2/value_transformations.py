@@ -4,6 +4,24 @@ from . import concept_df
 from . import codemap_xwalk
 from . import ccda_value_set_mapping_table_dataset
 
+"""
+    Functions for use in DERVIED fields.
+    The configuration for this type of field is:
+        <new field name>: {
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.<function_name>
+    	    'argument_names': {
+    		    <arg_name_1>: <field_name_1>
+                ...
+       		    <arg_name_n>: <field_name_n>
+                'default': <default_value>
+    	    }
+        }
+    The config links argument names to functions defined here to field names
+    for the values. The code that calls these functions does the value lookup,
+    so they operate on values, not field names or keys.
+"""    
+
 logger = logging.getLogger(__name__)
 
 
@@ -40,6 +58,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
     """
     """
     try:
+        # codemap_xwalk
         concept_id_df = concept_df[(concept_df['oid'] == vocabulary_oid) &
                                 (concept_df['concept_code'] == concept_code)]
 
@@ -59,8 +78,9 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
         return default
 
 
-def map_hl7_to_omop_concept_id(args_dict):
+def map_hl7_to_omop_concept_id(args_dict):  
     """ expects: vocabulary_oid, concept_code
+        returns: standard concept_id 
     """
     id_value = _map_to_omop_concept_row(args_dict['vocabulary_oid'],
                                         args_dict['concept_code'],
@@ -74,12 +94,17 @@ def map_hl7_to_omop_concept_id(args_dict):
 
 def map_hl7_to_omop_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
+        returns: domain_id
     """
     return _map_to_omop_concept_row(args_dict['vocabulary_oid'],
                                     args_dict['concept_code'],
                                     args_dict['default'],
                                     'domain_id')
 
+def map_hl7_to_omop_source_concept_id(args_dict):
+    """ expects: vocabulary_oid, concept_code
+        returns: concept_id, not necessarily standard
+    """
 
 def codemap_xwalk_concept_id(args_dict):
         return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
@@ -181,4 +206,27 @@ def extract_year_of_birth(args_dict):
     if date_string is not None:
         return date_string[0:4]
     return None
+
+def concat_fields(args_dict):
+    """
+      input key "delimiter" is a character to use to separate the fields
+      following items in dict are the names of keys in the values to concat
+      
+      returns one string, the concatenation of values corresponding to args 2-n, using arg 1 as a delimieter
+    """
+    delimiter = '|'
+
+        
+    if (args_dict['first_field'] is None) & (args_dict['second_field'] is None):
+        return None
+    
+    elif (args_dict['first_field'] is None) & (args_dict['second_field'] is not None):
+        return args_dict['second_field']
+    
+    elif (args_dict['first_field'] is not None) & (args_dict['second_field'] is None):
+        return args_dict['first_field']
+    else :
+        values_to_concat = [ args_dict['first_field'], args_dict['second_field'] ]
+        return delimiter.join(values_to_concat)
+    
 

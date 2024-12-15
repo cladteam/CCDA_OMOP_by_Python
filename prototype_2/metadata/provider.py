@@ -28,7 +28,7 @@ metadata = {
         },
         'provider_id': {
             'config_type': 'HASH',
-            'fields' : [ 'provider_id_extension', 'provider_id_root'],
+          'fields' : [ 'provider_id_extension', 'provider_id_root'],
             'order': 1 ,
         },
 
@@ -71,8 +71,11 @@ metadata = {
             'order': 5
         },
         
-        'care_site_id': {
-            'config_type': 'None', # To be fleshed out using "parse twice"
+        'care_site_id_root': {
+            'config_type': 'FIELD', # To be fleshed out using "parse twice"
+            'elelment': '../../hl7:particpant/hl7:participant[@typeCode="LOC"]/,
+            ## need to collect element name, address if available, telephone if available, and hash m
+            'attribute': 'root'
             'order': 6
         },
     

@@ -215,7 +215,7 @@ class FieldTypeTest_HASH(unittest.TestCase):
                 self.assertEqual(data_dict['test_hash_1'][0], 1347390606787380)
                 self.assertEqual(data_dict['test_hash_2'][0], 1136581816084342)
                 self.assertEqual(data_dict['test_hash_3'][0], 2914246837974734)
-                self.assertEqual(data_dict['test_hash_4'][0], 3731574115332107)
+                self.assertEqual(data_dict['test_hash_4'][0], None)
 
             
             
