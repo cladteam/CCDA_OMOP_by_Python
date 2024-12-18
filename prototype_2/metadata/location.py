@@ -20,27 +20,36 @@ metadata = {
             'attribute': "#text",
             'order': 2
         },
-        # 'address_2'
+        'address_2': {
+            'config_type': None,
+            'order': 3
+        },
         'city': {
             'config_type': 'FIELD',
             'element': 'hl7:city',
             'attribute': "#text",
-            'order': 3
+            'order': 4
         },
         'state': {
             'config_type': 'FIELD',
             'element': 'hl7:state',
             'attribute': "#text",
-            'order': 4
+            'order': 5
         },
         'zip': {
             'config_type': 'FIELD',
             'element': 'hl7:postalCode',
             'attribute': "#text",
-            'order': 5
+            'order': 6
         }
-        #'county': {
-        #'location_source_value': { TODO: concatentation of fields f"{address_1}|{address_2}|{city} "
+        'county': {
+            'config_type': None,
+            'order': 7
+        },   
+        'location_source_value': { 
+            'config_type': None,
+            'order': 8
+        },
 
     }
 }

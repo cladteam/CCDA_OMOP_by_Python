@@ -8,39 +8,19 @@ metadata = {
     	    #'element': "./hl7:componentOf/hl7:encompassingEncounter"
     	    'element':
     		 ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
-    		  "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.22.1']"  # Encounters
-    		  "/../hl7:entry/hl7:encounter")
+    		  "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.22.1']" 
+    		  "/../hl7:entry/hl7:encounter[@moodCode="EVN"]")
     	},
-        
-# WHAT?
-        'provider_id_extension': {
-            'config_type': 'FIELD',
-            'element': 'hl7:performer/hl7:assignedEntity/hl7:id',
-            'attribute': "extension",
-        },
-        'provider_id_root': {
-            'config_type': 'FIELD',
-            'element': 'hl7:performer/hl7:assignedEntity/hl7:id',
-            'attribute': "root",
-        },
-        'provider_id': {
-            'config_type': 'HASH',
-            'fields' : [ 'provider_id_extension', 'provider_id_root'],
-            'order': 1 ,
-        },
-        
         
         'visit_occurrence_id_root': {
     	    'config_type': 'FIELD',
     	    'element': 'hl7:id',
-    	    'attribute': "root",
-            'order': 201
+    	    'attribute': "root"
     	},
         'visit_occurrence_id_extension': {
     	    'config_type': 'FIELD',
     	    'element': 'hl7:id',
-    	    'attribute': "extension",
-            'order': 202
+    	    'attribute': "extension"
     	},
     	'visit_occurrence_id': { 
        	    'config_type': 'HASH',
@@ -75,7 +55,6 @@ metadata = {
             'order': 3
     	},
 
-    	# FIX is it consistenly a high/low pair? do we sometimes get just effectiveTime@value ?
     	'visit_start_date': {
     	    'config_type': 'PRIORITY',
             'order':4
@@ -133,11 +112,16 @@ metadata = {
             'order': 8
         },
 
-    	# FIX TODO sometimes a document will have more than one encounterParticipant. The way this is configured, they will be awkwardly merged.
+    	# FIX TODO sometimes a document will have more than one encounterParticipant. 
+        # The way this is configured, they will be awkwardly merged.
+        # (missing Ex. documents) This might be mitigated by the addition of SDLOC on care_site which
+        # is where this is used. The providers are performers, not participants.
+        
     	'provider_id': {
     	    'config_type': 'PRIORITY',
             'order': 9
     	},
+        
     	'provider_id_performer_root': {
     	    'config_type': 'FIELD',
     	    'element': "hl7:performer/hl7:assignedEntity/hl7:id",
@@ -151,33 +135,53 @@ metadata = {
     	'provider_id_performer': {
     	    'config_type': 'HASH',
             'fields' : ['provider_id_performer_root', 'provider_id_performer_extension'],
-            'priority': ['provider_id', 3]
-    	},
-    	'provider_id_catchall': {
-    	    'config_type': 'FIELD',
-            #'element': "performer/assignedEntity/id",
-    	    'element': "hl7:responsibleParty/hl7:assignedEntity/hl7:id",
-    	    'attribute': "root",
-            'priority': ['provider_id', 100]
-    	},
-    	'provider_id_ep_170': {
-    	    'config_type': 'FIELD',
-    	    'element': 'hl7:encounterParticipant/hl7:assignedEntity/hl7:id[@root="1.3.6.1.4.1.42424242.4.99930.4"]',
-    	    'attribute': "extension",
             'priority': ['provider_id', 1]
     	},
-    	'provider_id_ep_npi_170': {
-    	    'config_type': 'FIELD',
-    	    'element': 'hl7:encounterParticipant/hl7:assignedEntity/hl7:id[@root="2.16.840.1.113883.4.6"]',
-    	    'attribute': "extension",
-            'priority': ['provider_id', 2]
-    	},
+        
+        'provider_id_street': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:streetAddressLine',
+            'attribute': "#text"
+        },
+        'provider_id_city': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:city',
+            'attribute': "#text"
+        },
+        'provider_id_state': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:state',
+            'attribute': "#text"
+        },
+        'provider_id_zip': {
+            'config_type': 'FIELD',
+            'element': 'hl7:addr/hl7:postalCode',
+            'attribute': "#text"
+        },
+        'provider_id_given': {
+            'config_type': 'FIELD',
+            'element': 'hl7:assignedPerson/hl7:name/hl7:given',
+            'attribute': "#text"
+        },
+        'provider_id_family': {
+            'config_type': 'FIELD',
+            'element': 'hl7:assignedPerson/hl7:name/hl7:family',
+            'attribute': "#text"
+        },
+        'provider_id_hash': {
+            'config_type': 'HASH',
+            'fields' : [ 'provider_id_street', 'provider_id_city', 'provider_id_state', 
+                         'provider_id_zip', 'provider_id_given', 'provider_id_family'],
+            'priority' : ['provider_id', 2]
+        },
 
+
+        
     	'care_site_id': {
-            # NO ID's here always  FIX TODO
     	    'config_type': 'FIELD',
-            #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", # not payingEntity? FIX 
-    	    'element': "hl7:location/hl7:healthCareFacility/hl7:id",
+            'element': "participant/participantRole[@classCode="SDLOC"]/id", 
+            #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", 
+    	    #'element': "hl7:location/hl7:healthCareFacility/hl7:id",
     	    'attribute': "root",
             'order': 10
     	},
@@ -190,7 +194,6 @@ metadata = {
     		    'second_field': 'visit_concept_code',
                 'default': 0
     	    },
-            
             'order': 11
         },
         
