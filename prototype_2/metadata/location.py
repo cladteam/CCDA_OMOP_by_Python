@@ -41,7 +41,7 @@ metadata = {
             'element': 'hl7:postalCode',
             'attribute': "#text",
             'order': 6
-        }
+        },
         'county': {
             'config_type': None,
             'order': 7

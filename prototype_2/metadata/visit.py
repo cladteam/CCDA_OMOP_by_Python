@@ -6,10 +6,9 @@ metadata = {
     	'root': {
     	    'config_type': 'ROOT',
     	    #'element': "./hl7:componentOf/hl7:encompassingEncounter"
-    	    'element':
-    		 ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
-    		  "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.22.1']" 
-    		  "/../hl7:entry/hl7:encounter[@moodCode="EVN"]")
+    	    'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
+                        'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.22.1"]'
+                        '/../hl7:entry/hl7:encounter[@moodCode="EVN"]')
     	},
         
         'visit_occurrence_id_root': {
@@ -179,7 +178,7 @@ metadata = {
         
     	'care_site_id': {
     	    'config_type': 'FIELD',
-            'element': "participant/participantRole[@classCode="SDLOC"]/id", 
+            'element': 'participant/participantRole[@classCode="SDLOC"]/id', 
             #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", 
     	    #'element': "hl7:location/hl7:healthCareFacility/hl7:id",
     	    'attribute': "root",
