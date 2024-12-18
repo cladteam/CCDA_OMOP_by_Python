@@ -4,7 +4,7 @@ import prototype_2.value_transformations as VT
     This is for caresites from Encounter/participant/participantRoly
 """
 metadata = {
-    'Location_pr': {
+    'Location': {
 
         'root': {
             'config_type': 'ROOT',

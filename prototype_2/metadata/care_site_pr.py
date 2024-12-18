@@ -6,7 +6,7 @@ import prototype_2.value_transformations as VT
 
 """
 metadata = {
-    'Care_Site_pr': {
+    'Care_Site': {
 
         'root': {
             'config_type': 'ROOT',

@@ -4,7 +4,7 @@ import prototype_2.value_transformations as VT
     This is for caresites from encompassingEncounter/.../healthCareFacility
 """
 metadata = {
-    'Location_ee_hcf': {
+    'Location': {
 
         'root': {
             'config_type': 'ROOT',

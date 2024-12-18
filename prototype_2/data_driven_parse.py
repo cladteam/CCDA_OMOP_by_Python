@@ -555,7 +555,10 @@ def parse_doc(file_path, metadata):
     base_name = os.path.basename(file_path)
     for domain, domain_meta_dict in metadata.items():
         domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict, base_name, pk_dict)
-        omop_dict[domain] = domain_data_dict
+        if domain in omop_dict:
+            omop_dict[domain] = omop_dict[domain] | domain_data_dict
+        else:
+            omop_dict[domain] = domain_data_dict
     return omop_dict
 
 
