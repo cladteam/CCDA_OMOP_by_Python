@@ -2,15 +2,22 @@
 import prototype_2.value_transformations as VT
 
 metadata = {
-    'Measurement': {
+    'Measurement_results': {
     	'root': {
     	    'config_type': 'ROOT',
+            'expected_domain_id': 'Measurement',
     	    'element':
     		  ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
     		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
     		   "/../hl7:entry/hl7:organizer/hl7:component/hl7:observation")
     		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
         },
+        
+        'source_section': {
+            'config_type': 'CONSTANT',
+            'constant_value': 'RESULTS',
+            'order': 9999
+    	},
 
     	'measurement_id_root': {
             'config_type': 'FIELD',
@@ -26,7 +33,7 @@ metadata = {
     	},
     	'measurement_id_hash': {
     	    'config_type': 'HASH',
-            'fields' : [ 'measurement_id_extension', 'measurement_id_root' ],
+            'fields' : [ 'measurement_id_root', 'measurement_id_extension' ],
             'priority': ('measurement_id', 1)
     	},
     	'measurement_id_constant': {

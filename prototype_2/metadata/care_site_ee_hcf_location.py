@@ -4,10 +4,11 @@ import prototype_2.value_transformations as VT
     This is for caresites from encompassingEncounter/.../healthCareFacility
 """
 metadata = {
-    'Location': {
+    'Location_ee': {
 
         'root': {
             'config_type': 'ROOT',
+            'expected_domain_id': 'Location',
             'element': "./hl7:componentOf/hl7:encompassingEncounter/hl7:location/hl7:healthCareFacility/hl7:location"
         },
         # TODO do we care about the use="WP" attribute?

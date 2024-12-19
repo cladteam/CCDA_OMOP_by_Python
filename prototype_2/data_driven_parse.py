@@ -13,10 +13,7 @@
 
  Chris Roeder
 
-2024-07-31: visit_concept_id is incorrect, It's picking up pnemonia a Condition
-               when we want a Visit domain_id
-"           need to run on multiple files, need to bring over the test script and correct_files,
-"           test script needs sophistication to correlate input with expected output
+
 """
 
 # import pandas as pd
@@ -469,9 +466,11 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
     
     output_dict = sort_output_dict(output_dict, domain_meta_dict, domain)
 
-    if (domain == domain_id or domain_id is None):
+    expected_domain_id = domain_meta_dict['root']['expected_domain_id']
+    if (expected_domain_id == domain_id or domain_id is None):
         return (output_dict, error_fields_set)
     else:
+        # reject this data if the datum is intended for a different domain
         return (None, None)
 
 

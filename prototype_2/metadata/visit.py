@@ -5,6 +5,7 @@ metadata = {
     	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'config_type': 'ROOT',
+            'expected_domain_id': 'Visit',
     	    #'element': "./hl7:componentOf/hl7:encompassingEncounter"
     	    'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
                         'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.22.1"]'

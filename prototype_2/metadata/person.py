@@ -6,6 +6,7 @@ metadata = {
     	# person nor patientRole have templateIDs
     	'root': {
     	    'config_type': 'ROOT',
+            'expected_domain_id': 'Person',
     	    'element': "./hl7:recordTarget/hl7:patientRole"
     	},
 

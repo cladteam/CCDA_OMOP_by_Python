@@ -14,10 +14,11 @@ import prototype_2.value_transformations as VT
     HealthCareFacility: https://build.fhir.org/ig/HL7/CDA-core-sd/StructureDefinition-HealthCareFacility.html
 """
 metadata = {
-        'Care_Site': {
+        'Care_Site_ee': {
 
         'root': {
             'config_type': 'ROOT',
+            'expected_domain_id': 'Care_Site',
             'element': "./hl7:componentOf/hl7:encompassingEncounter/hl7:location/hl7:healthCareFacility"
         },
 

@@ -1,10 +1,11 @@
 
 import prototype_2.value_transformations as VT
-
+# VITAL SIGNS
 metadata = {
-    'Measurement': {
+    'Measurement_vital_signs': {
     	'root': {
     	    'config_type': 'ROOT',
+            'expected_domain_id': 'Measurement',
     	    'element':
     		  ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
     		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.4']"
@@ -12,29 +13,29 @@ metadata = {
     		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
         },
 
+        'source_section': {
+            'config_type': 'CONSTANT',
+            'constant_value': 'VITAL SIGNS',
+            'order': 9999
+    	},
+        
     	'measurement_id_root': {
             'config_type': 'FIELD',
             'element': 'hl7:id',
             'attribute': 'root',
-            'order': 1001
     	},
     	'measurement_id_extension': {
             'config_type': 'FIELD',
             'element': 'hl7:id',
             'attribute': 'extension',
-            'order': 1002
     	},
     	'measurement_id_hash': {
     	    'config_type': 'HASH',
-            'fields' : [ 'measurement_id_extension', 'measurement_id_root' ],
+            'fields' : [ 'measurement_id_root', 'measurement_id_extension' ],
             'priority': ('measurement_id', 1)
     	},
-    	'measurement_id_constant': {
-            'config_type': 'CONSTANT',
-            'constant_value' : 999,
-            'priority': ('measurement_id', 2)
-        },
-    	'measurement_id_field_hash': {
+
+        'measurement_id_field_hash': {
     	    'config_type': 'HASH',
             'fields' : ['person_id', 'visit_occurrence_id', 'measurement_concept_id', 'measurement_time',
                     'value_as_string', 'value_as_nmber', 'value_as_concept_id'],
@@ -51,7 +52,6 @@ metadata = {
             'order': 2
     	},
 
-        # <code code="8029-1" codeSystem="1232.23.3.34.3..34"> 
     	'measurement_concept_code': {
     	    'config_type': 'FIELD',
     	    'element': "hl7:code" ,
@@ -82,10 +82,9 @@ metadata = {
                 'default': 0
     	    }
     	},
-    	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?
+
         'measurement_date': {
     	    'config_type': 'FIELD',
-            #'data_type':'DATETIME',
             'data_type':'DATE',
     	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
@@ -105,14 +104,6 @@ metadata = {
     	    'element': "hl7:value",
     	    'attribute': "{http://www.w3.org/2001/XMLSchema-instance}type",
     	},
-
-    	#'value_as_string': {
-    	#    'config_type': 'FIELD',
-    	#    'element': 'hl7:value[@xsi:type="ST"]' ,
-    	#    'attribute': "#text",
-        #    # field not present in measurement table
-    	#},
-
 
     	'value_as_number_pq': {
     	    'config_type': 'FIELD',
