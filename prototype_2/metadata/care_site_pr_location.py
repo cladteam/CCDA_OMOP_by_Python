@@ -11,7 +11,7 @@ metadata = {
             'expected_domain_id': 'Location',
             'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
                         'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.22"]/../'
-                        'hl7:entry/hl7:encounter[@moodCode=”EVN"]/hl7:participant/hl7:participantRole[@classCode="SDLOC"]' )
+                        'hl7:entry/hl7:encounter[@moodCode="EVN"]/hl7:participant/hl7:participantRole[@classCode="SDLOC"]' )
         },
         # TODO do we care about the use="WP" attribute?
         'location_id': {
