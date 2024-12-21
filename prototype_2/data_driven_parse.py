@@ -13,6 +13,43 @@
 
  Chris Roeder
 
+    Call Graph:
+    - main
+      - process_file
+        - parse_doc
+          -  parse_configuration_from_file
+            - parse_config_from_single_root
+              - do_none_fields
+              - do_constant_fields
+              - do_basic_fields
+              - do_derived_fields
+              - do_domain_fields
+              - do_hash_fields
+              - do_priority_fields
+
+    Config dictionary structure: 
+    metadata = {
+        config_dict = {
+            field_details_dict = {
+               attribute: value 
+            }
+        }
+    }
+    So there are many config_dicts, each roughly for a domain. You may
+    have more than one per domain when there are more than a single
+    location for a domain.
+    Each config_dict is made up of many fields for the OMOP table it 
+    creates. There are non-output fields used as input to derived 
+    fields, like the vocabulary and code used to find the concept_id.
+    Each field_spec. has multiple attributes driving that field's
+    retrieval or derivation.
+
+    XML terms used specifically:
+    - element is a thing in a document inside angle brackets like <code code="1234-5" codeSystem="LOINC"/
+    - attributes are code and codeSystem in the above example
+    - text is when there are both start and end parts to the element like <text>foobar</text>. "foobar" is
+       the text in an element that has a tag = 'text'
+    - tag see above
 
 """
 
@@ -90,9 +127,9 @@ def cast_to_datetime(string_value):
 
 
 
-def parse_field_from_dict(field_details_dict, domain_root_element, domain, field_tag, root_path):
+def parse_field_from_dict(field_details_dict, root_element, config_name, field_tag, root_path):
     """ Retrieves a value for the field descrbied in field_details_dict that lies below
-        the domain_root_element.
+        the root_element.
         Domain and field_tag are here for error messages.
     """
 
@@ -101,17 +138,16 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
                      f" {field_details_dict} root:{root_path}"))
         return None
 
-    logger.info(f"    FIELD {field_details_dict['element']} for {domain}/{field_tag}")
-    #field_element = domain_root_element.find(field_details_dict['element'], ns)
+    logger.info(f"    FIELD {field_details_dict['element']} for {config_name}/{field_tag}")
     field_element = None
     try:
-        field_element = domain_root_element.xpath(field_details_dict['element'], namespaces=ns)
+        field_element = root_element.xpath(field_details_dict['element'], namespaces=ns)
     except XPathEvalError as pee:
-        pass # I know
+        pass # I know TODO
         #print(f"FAILED on  {field_details_dict['element']}")
     if field_element is None:
         logger.error((f"FIELD could not find field element {field_details_dict['element']}"
-                      f" for {domain}/{field_tag} root:{root_path} {field_details_dict} "))
+                      f" for {config_name}/{field_tag} root:{root_path} {field_details_dict} "))
         return None
 
     if 'attribute' not in field_details_dict:
@@ -120,7 +156,7 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         return None
 
     logger.info((f"       ATTRIBUTE   {field_details_dict['attribute']} "
-                 f"for {domain}/{field_tag} {field_details_dict['element']} "))
+                 f"for {config_name}/{field_tag} {field_details_dict['element']} "))
     attribute_value = None
     if len(field_element) > 0:
         attribute_value = field_element[0].get(field_details_dict['attribute'])
@@ -129,18 +165,18 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
                 attribute_value = ''.join(field_element[0].itertext())
             except Exception as e:
                 print((f"ERROR: no text elemeent for field element {field_element} "
-                       f"for {domain}/{field_tag} root:{root_path} "
+                       f"for {config_name}/{field_tag} root:{root_path} "
                        f" dict: {field_element[0].attrib} EXCEPTION:{e}"))
                 logger.error((f"no text elemeent for field element {field_element} "
-                        f"for {domain}/{field_tag} root:{root_path} "
+                        f"for {config_name}/{field_tag} root:{root_path} "
                         f" dict: {field_element[0].attrib} EXCEPTION:{e}"))
         if attribute_value is None:
             logger.warning((f"no value for field element {field_details_dict['element']} "
-                        f"for {domain}/{field_tag} root:{root_path} "
+                        f"for {config_name}/{field_tag} root:{root_path} "
                         f" dict: {field_element[0].attrib}"))
     else:
         logger.warning((f"no element at path {field_details_dict['element']} "
-                        f"for {domain}/{field_tag} root:{root_path} "))
+                        f"for {config_name}/{field_tag} root:{root_path} "))
 
     # Do data-type conversions
     if 'data_type' in field_details_dict:
@@ -159,7 +195,7 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
                 attribute_value = float(attribute_value)
             else:
                 print(f"ERROR UNKNOWN DATA TYPE: {field_details_dict['data_type']}")
-                logger.error(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {domain} {field_tag}")
+                logger.error(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {config_name} {field_tag}")
             return attribute_value
         else:
             return None
@@ -167,18 +203,18 @@ def parse_field_from_dict(field_details_dict, domain_root_element, domain, field
         return attribute_value
 
 
-def do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
-    for (field_tag, field_details_dict) in domain_meta_dict.items():
-        logger.info((f"     NONE FIELD domain:'{domain}' field_tag:'{field_tag}'"
+def do_none_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set):
+    for (field_tag, field_details_dict) in config_dict.items():
+        logger.info((f"     NONE FIELD config:'{config_name}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
         config_type_tag = field_details_dict['config_type']
         if config_type_tag is None:
             output_dict[field_tag] = (None, '(None type)')
 
 
-def do_constant_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
-    for (field_tag, field_details_dict) in domain_meta_dict.items():
-        logger.info((f"     CONSTANT FIELD domain:'{domain}' field_tag:'{field_tag}'"
+def do_constant_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set):
+    for (field_tag, field_details_dict) in config_dict.items():
+        logger.info((f"     CONSTANT FIELD config:'{config_name}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
         config_type_tag = field_details_dict['config_type']
         if config_type_tag == 'CONSTANT':
@@ -186,42 +222,42 @@ def do_constant_fields(output_dict, root_element, root_path, domain,  domain_met
             output_dict[field_tag] = (constant_value, '(None type)')
 
 
-def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
-    for (field_tag, field_details_dict) in domain_meta_dict.items():
-        logger.info((f"     FIELD domain:'{domain}' field_tag:'{field_tag}'"
+def do_basic_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict):
+    for (field_tag, field_details_dict) in config_dict.items():
+        logger.info((f"     FIELD config:'{config_name}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
         type_tag = field_details_dict['config_type']
         if type_tag == 'FIELD':
             try:
                 attribute_value = parse_field_from_dict(field_details_dict, root_element,
-                                                    domain, field_tag, root_path)
+                                                    config_name, field_tag, root_path)
                 output_dict[field_tag] = (attribute_value, root_path + "/" +
                                       field_details_dict['element'] + "/@" +
                                       field_details_dict['attribute'])
-                logger.info(f"     FIELD for {domain}/{field_tag} \"{attribute_value}\"")
+                logger.info(f"     FIELD for {config_name}/{field_tag} \"{attribute_value}\"")
             except KeyError as ke:
                 print(f"ERROR      key erorr: {ke}")
                 print(f"  {field_details_dict}")
-                print(f"  FIELD for {domain}/{field_tag} \"{attribute_value}\"")
+                print(f"  FIELD for {config_name}/{field_tag} \"{attribute_value}\"")
                 logger.error(f"key erorr: {ke}")
                 logger.error(f"  {field_details_dict}")
-                logger.error(f"  FIELD for {domain}/{field_tag} \"{attribute_value}\"")
+                logger.error(f"  FIELD for {config_name}/{field_tag} \"{attribute_value}\"")
                 raise
 
         elif type_tag == 'PK':
-            logger.info(f"     PK for {domain}/{field_tag}")
+            logger.info(f"     PK for {config_name}/{field_tag}")
             attribute_value = parse_field_from_dict(field_details_dict, root_element,
-                                                    domain, field_tag, root_path)
+                                                    config_name, field_tag, root_path)
             output_dict[field_tag] = (attribute_value, root_path + "/" +
                                       field_details_dict['element'] + "/@" +
                                       field_details_dict['attribute'])
             pk_dict[field_tag] = attribute_value
         elif type_tag == 'FK':
-            logger.info(f"     FK for {domain}/{field_tag}")
+            logger.info(f"     FK for {config_name}/{field_tag}")
             if field_tag in pk_dict:
                 output_dict[field_tag] = (pk_dict[field_tag], 'FK')
             else:
-                logger.error(f"FK could not find {field_tag}  in pk_dict for {domain}/{field_tag}")
+                logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
                 path = root_path + "/"
                 if 'element' in field_details_dict:
                     path = path + field_details_dict['element'] + "/@"
@@ -235,11 +271,11 @@ def do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_d
                 error_fields_set.add(field_tag)
 
 
-def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+def do_derived_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set):
     """ Do/compute derived values now that their inputs should be available in the output_dict
         Except for a special argument named 'default', when the value is what is other wise the field to look up in the output dict.
     """
-    for (field_tag, field_details_dict) in domain_meta_dict.items():
+    for (field_tag, field_details_dict) in config_dict.items():
         if field_details_dict['config_type'] == 'DERIVED':
             logger.info(f"     DERIVING {field_tag}, {field_details_dict}")
             # NB Using an explicit dict here instead of kwargs because this code here
@@ -252,7 +288,7 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                     logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
                     if field_name not in output_dict:
                         error_fields_set.add(field_tag)
-                        logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
+                        logger.error((f"DERIVED config:{config_name} field:{field_tag} could not "
                                       f"find {field_name} in {output_dict}"))
                     try:
                         args_dict[arg_name] = output_dict[field_name][0]
@@ -286,10 +322,10 @@ def do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta
                 output_dict[field_tag] = (None, field_details_dict['config_type'])
 
 
-def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set):
+def do_domain_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set):
     # nearly the same as derived above, but returns the domain for later filtering
     domain_id = None
-    for (field_tag, field_details_dict) in domain_meta_dict.items():
+    for (field_tag, field_details_dict) in config_dict.items():
         if field_details_dict['config_type'] == 'DOMAIN':
             logger.info(f"     Deriving DOMAIN {field_tag}, {field_details_dict}")
 
@@ -302,7 +338,7 @@ def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_
                     logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
                     if field_name not in output_dict:
                         error_fields_set.add(field_tag)
-                        logger.error((f"DERIVED domain:{domain} field:{field_tag} could not "
+                        logger.error((f"DERIVED config:{config_dict} field:{field_tag} could not "
                                       f"find {field_name} in {output_dict}"))
                     try:
                         args_dict[arg_name] = output_dict[field_name][0]
@@ -330,23 +366,22 @@ def do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_
                               f"string: {type(field_details_dict['FUNCTION'])}"))
                 output_dict[field_tag] = (None, field_details_dict['config_type'])
 
-            #print(f"     DOMAIN-2  {field_tag} {domain} {domain_id} {len(domain_meta_dict.items())} ")
     return domain_id
 
 
-def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
+def do_hash_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict):
     """ These are basically derived, but the argument is a lsit of field names, instead of
         a fixed number of individually named fields.
         Dubiously useful in an environment where IDs are  32 bit integers.
         See the code above for converting according to the data_type attribute
         where a different kind of hash is beat into an integer.
     """
-    for (field_tag, field_details_dict) in domain_meta_dict.items():
+    for (field_tag, field_details_dict) in config_dict.items():
         if field_details_dict['config_type'] == 'HASH':
             value_list = []
             if 'fields' not in field_details_dict:
-                print(f"ERROR: HASH field {field_tag} is missing 'fields' attributes in domain:{domain}")
-                logger.error(f"HASH field {field_tag} is missing 'fields' attributes in domain:{domain}")
+                print(f"ERROR: HASH field {field_tag} is missing 'fields' attributes in config:{config_name}")
+                logger.error(f"HASH field {field_tag} is missing 'fields' attributes in config:{config_name}")
             for field_name in field_details_dict['fields'] :
                 if field_name in output_dict and output_dict[field_name][0] is not None:
                     value_list.append(output_dict[field_name][0])
@@ -360,12 +395,13 @@ def do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_di
                          f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
 
 
-def do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict):
+def do_priority_fields(output_dict, root_element, root_path, config,  config_dict, error_fields_set, pk_dict):
     """
         Returns the list of  priority_names so the chosen one (first non-null) can be 
         added to output fields Also, adds this field to the PK list?
+        This is basically what SQL calls a coalesce.
 
-        Within the domain_meta_dict, find all fields tagged with priority and group
+        Within the config_dict, find all fields tagged with priority and group
         them by their priority names in a dictionary keyed by that name
         Ex. { 'person_id': [ ('person_id_ssn', 1), ('person_id_unknown', 2) ]
         Sort them, choose the first one that is not None.
@@ -375,7 +411,7 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
         attributes to create a field person_id, but then also another field, just plain person_id.
         The point of it is to have a unique place to put that field's order attribute. The code
         here (and in the ordering code later) must be aware of a  that field in the
-        domain_meta_dict (where it isn't used) ...and not clobber it. It's an issue over in the
+        config_dict (where it isn't used) ...and not clobber it. It's an issue over in the
         sorting/ordering.
     """
 
@@ -383,7 +419,7 @@ def do_priority_fields(output_dict, root_element, root_path, domain,  domain_met
     # for each new field, create a list of source fields and their priority:
     # Ex. [('person_id_other', 2), ('person_id_ssn', 1)]
     priority_fields = {}
-    for field_key, config_parts in domain_meta_dict.items():
+    for field_key, config_parts in config_dict.items():
         if  'priority' in config_parts:
             new_field_name = config_parts['priority'][0]
             priority_number = config_parts['priority'][1]
@@ -423,17 +459,17 @@ def get_filter_fn(dict):
         return 'order' in dict[key] and dict[key]['order'] is not None
     return has_order_attribute
 
-def sort_output_dict(output_dict, domain_meta_dict, domain):
+def sort_output_dict(output_dict, config_dict, config_name):
     """ Sorts the ouput_dict by the value of the 'order' fields in the associated
-        domain_meta_dict. Fields without a value, or without an entry used to 
+        config_dict. Fields without a value, or without an entry used to 
         come last, now are omitted.
     """
     ordered_output_dict = {}
 
-    sort_function = get_extract_order_fn(domain_meta_dict) # curry in the domain arg.
-    ordered_keys = sorted(domain_meta_dict.keys(), key=sort_function)
+    sort_function = get_extract_order_fn(config_dict) # curry in the config_dict arg.
+    ordered_keys = sorted(config_dict.keys(), key=sort_function)
 
-    filter_function = get_filter_fn(domain_meta_dict)
+    filter_function = get_filter_fn(config_dict)
     filtered_ordered_keys = filter(filter_function, ordered_keys)
 
     for key in filtered_ordered_keys:
@@ -443,30 +479,30 @@ def sort_output_dict(output_dict, domain_meta_dict, domain):
     return ordered_output_dict
 
 
-def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set, pk_dict):
-    """  Parses for each field in the metadata for a domain out of the root_element passed in.
+def parse_config_for_single_root(root_element, root_path, config_name, config_dict, error_fields_set, pk_dict):
+    """  Parses for each field in the metadata for a config out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
 
         If the configuration includes a field of config_type DOMAIN, the value it generates
-        will be compared to the domain passed in. If they are different, null is returned.
+        will be compared to the domain specified in the config in. If they are different, null is returned.
         This is how  OMOP "domain routing" is implemented here.
     """
     output_dict = {}
     domain_id = None
-    logger.info((f"  ROOT for domain:{domain}, we have tag:{root_element.tag}"
+    logger.info((f"  ROOT for config:{config_name}, we have tag:{root_element.tag}"
                  f" attributes:{root_element.attrib}"))
 
-    do_none_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-    do_constant_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-    do_basic_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
-    do_derived_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-    domain_id = do_domain_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set)
-    do_hash_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
-    priority_field_names = do_priority_fields(output_dict, root_element, root_path, domain,  domain_meta_dict, error_fields_set, pk_dict)
+    do_none_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
+    do_constant_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
+    do_basic_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict)
+    do_derived_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
+    domain_id = do_domain_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
+    do_hash_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict)
+    priority_field_names = do_priority_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict)
     
-    output_dict = sort_output_dict(output_dict, domain_meta_dict, domain)
+    output_dict = sort_output_dict(output_dict, config_dict, config_name)
 
-    expected_domain_id = domain_meta_dict['root']['expected_domain_id']
+    expected_domain_id = config_dict['root']['expected_domain_id']
     if (expected_domain_id == domain_id or domain_id is None):
         return (output_dict, error_fields_set)
     else:
@@ -474,11 +510,12 @@ def parse_domain_for_single_root(root_element, root_path, domain, domain_meta_di
         return (None, None)
 
 
-def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
+def parse_config_from_file(tree, config_name, config_dict, filename, pk_dict):
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
         (ClinicalDocument, not just file),
-        parse the different domains out of it, linking PK and FKs between them.
+        parse the different domains out of it (1 config each), linking PK and FKs between them.
+
         Returns a list, output_list, of dictionaries, output_dict, keyed by field name,
         containing a list of the value and the path to it:
             [ { field_1 : (value, path), field_2: (value, path)},
@@ -487,8 +524,8 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
         get many observations.
         
         arg: tree, this is the lxml.etree parse of the XML file
-        arg: domain, this is a key into the first level of the metadata, an OMOP domain name
-        arg: domain_meta_dict, this is the value of that key in the dict
+        arg: config_name, this is a key into the first level of the metadata, an often a OMOP domain name
+        arg: config_dict, this is the value of that key in the dict
         arg: filename, the name of the XML file, for logging
         arg: pk_dict, a dictionary for Primary Keys, the keys here are field names and 
              their values are their values. It's a sort of global space for carrying PKs 
@@ -496,42 +533,42 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
              for things like the main person_id that is part of the context the document creates.
     """
 
-    # log to a file per file/domain
+    # log to a file per file/config
     base_name = os.path.basename(filename)
     logging.basicConfig(
         format='%(levelname)s: %(message)s',
-        filename=f"logs/log_domain_{base_name}_{domain}.log",
+        filename=f"logs/log_config_{base_name}_{config_name}.log",
         force=True, level=logging.WARNING)
 
     # Find root
-    if 'root' not in domain_meta_dict:
-        logger.error(f"DOMAIN {domain} lacks a root element.")
+    if 'root' not in config_dict:
+        logger.error(f"CONFIG {config_dict} lacks a root element.")
         return None
 
-    if 'element' not in domain_meta_dict['root']:
-        logger.error(f"DOMAIN {domain} root lacks an 'element' key.")
+    if 'element' not in config_dict['root']:
+        logger.error(f"CONFIG {config_dict} root lacks an 'element' key.")
         return None
 
-    root_path = domain_meta_dict['root']['element']
-    logger.info((f"DOMAIN >>  domain:{domain} root:{domain_meta_dict['root']['element']}"
+    root_path = config_dict['root']['element']
+    logger.info((f"CONFIG >>  config:{config_name} root:{config_dict['root']['element']}"
                  f"   ROOT path:{root_path}"))
-    #root_element_list = tree.findall(domain_meta_dict['root']['element'], ns)
+    #root_element_list = tree.findall(config_dict['root']['element'], ns)
     root_element_list = None
     try:
-        root_element_list = tree.xpath(domain_meta_dict['root']['element'], namespaces=ns)
+        root_element_list = tree.xpath(config_dict['root']['element'], namespaces=ns)
     except Exception as e:
-        logger.error(f" {domain_meta_dict['root']['element']}   {e}")
+        logger.error(f" {config_dict['root']['element']}   {e}")
         
     if root_element_list is None or len(root_element_list) == 0:
-        logger.error((f"DOMAIN couldn't find root element for {domain}"
-                      f" with {domain_meta_dict['root']['element']}"))
+        logger.error((f"CONFIG couldn't find root element for {config_name}"
+                      f" with {config_dict['root']['element']}"))
         return None
 
     output_list = []
     error_fields_set = set()
-    logger.info(f"NUM ROOTS {domain} {len(root_element_list)}")
+    logger.info(f"NUM ROOTS {config_name} {len(root_element_list)}")
     for root_element in root_element_list:
-        (output_dict, element_error_set) = parse_domain_for_single_root(root_element, root_path, domain, domain_meta_dict, error_fields_set, pk_dict)
+        (output_dict, element_error_set) = parse_config_for_single_root(root_element, root_path, config_name, config_dict, error_fields_set, pk_dict)
         if output_dict is not None:
             output_list.append(output_dict)
         if element_error_set is not None:
@@ -539,25 +576,26 @@ def parse_domain_from_dict(tree, domain, domain_meta_dict, filename, pk_dict):
 
     # report fields with errors
     if len(error_fields_set) > 0:
-        logger.error(f"DOMAIN Fields with errors in domain {domain} {error_fields_set}")
+        logger.error(f"DOMAIN Fields with errors in config {config_name} {error_fields_set}")
 
     return output_list
 
 
 def parse_doc(file_path, metadata):
-    """ Parses many domains from a single file, collects them
-        into a dict to return.
+    """ Parses many meta configs from a single file, collects them in omop_dict.
+        Returns omop_dict, a  dict keyed by configuration names, 
+          each a list of record/row dictionaries.
     """
     omop_dict = {}
     pk_dict = {}
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
-    for domain, domain_meta_dict in metadata.items():
-        domain_data_dict = parse_domain_from_dict(tree, domain, domain_meta_dict, base_name, pk_dict)
-        if domain in omop_dict:
-            omop_dict[domain] = omop_dict[domain] | domain_data_dict
+    for config_name, config_dict in metadata.items():
+        data_dict_list = parse_config_from_file(tree, config_name, config_dict, base_name, pk_dict)
+        if config_name in omop_dict: # CHRIS
+            omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)
         else:
-            omop_dict[domain] = domain_data_dict
+            omop_dict[config_name] = data_dict_list
     return omop_dict
 
 
@@ -585,6 +623,10 @@ def print_omop_structure(omop, meta_data):
 
 
 def process_file(filepath):
+    """ Process each configuration in the metadata for one file.
+        Returns nothing.
+        Prints the omop_data. See better functions in layer_datasets.puy
+    """
     print(f"PROCESSING {filepath} ")
     logger.info(f"PROCESSING {filepath} ")
     base_name = os.path.basename(filepath)
