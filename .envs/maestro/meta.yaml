@@ -5,6 +5,7 @@ source:
   path: ../src
 requirements:
   run:
+  - typeguard
   - vim
   - pandas
   - lxml

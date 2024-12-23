@@ -25,7 +25,7 @@ import prototype_2.metadata.provider as provider
 	root="2.16.840.1.113883.10.20.22.1.1"
 	root="2.16.840.1.113883.10.20.22.1.2"
 """
-meta_dict =  location.metadata | person.metadata | visit.metadata  | measurement.metadata | measurement_vs.metadata | observation.metadata | care_site_ee_hcf.metadata | care_site_ee_hcf_location.metadata |  care_site_pr.metadata | care_site_pr_location.metadata |provider.metadata
+meta_dict =  location.metadata | person.metadata | visit.metadata  | measurement.metadata | measurement_vs.metadata | observation.metadata  | care_site_ee_hcf.metadata | care_site_ee_hcf_location.metadata |  care_site_pr.metadata | care_site_pr_location.metadata |provider.metadata
 
 
 
