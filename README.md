@@ -1,3 +1,4 @@
+
 # CCDA_OMOP_by_Python
 
 This is a project to convert CCDA documents to OMOP CDM format in Python.
@@ -21,3 +22,5 @@ https://github.com/chrisroederucdenver/CCDA_OMOP_Private
 Code here, prototype_2/value_transformations.py  loads the concept map from a file map_to_standard.csv from the local top leve.
 It is not included in this repo however. It is in CCDA-tools.  Running locally, for the moment, requires the file to be copied over (or linked).
 (now owned by cladteam)
+
+
