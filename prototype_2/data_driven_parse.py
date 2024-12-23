@@ -581,7 +581,7 @@ def parse_config_from_file(tree, config_name, config_dict, filename, pk_dict):
     return output_list
 
 
-def parse_doc(file_path, metadata):
+def parse_doc(file_path, metadata Dict[Str:Dict]):
     """ Parses many meta configs from a single file, collects them in omop_dict.
         Returns omop_dict, a  dict keyed by configuration names, 
           each a list of record/row dictionaries.
