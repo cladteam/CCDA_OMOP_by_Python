@@ -9,7 +9,7 @@ class ValueTransformTest_valueset(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.vocab_oid = '2.16.840.1.113883.5.1'
         self.concept_code = 'F'
-        self.expected_concept_id = '8532'  # should be an int? TODO
+        self.expected_concept_id = 8532
         self.expected_source_concept_id = 0
         self.expected_domain_id = 'Gender' 
 

@@ -74,6 +74,8 @@ import hashlib
 import zlib
 import ctypes
 import traceback
+from collections import defaultdict
+
 from lxml import etree as ET
 from lxml.etree import XPathEvalError
 ###from typing import dict, List, Tuple
@@ -253,7 +255,7 @@ def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
                     error_fields_set :set[str], 
-                    pk_dict :dict[str, any] ):
+                    pk_dict :dict[str, list[any]] ):
     for (field_tag, field_details_dict) in config_dict.items():
         logger.info((f"     FIELD config:'{config_name}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
@@ -282,13 +284,16 @@ def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] 
             output_dict[field_tag] = (attribute_value, root_path + "/" +
                                       field_details_dict['element'] + "/@" +
                                       field_details_dict['attribute'])
-            pk_dict[field_tag] = attribute_value
+            pk_dict[field_tag].append(attribute_value)
         elif type_tag == 'FK':
             logger.info(f"     FK for {config_name}/{field_tag}")
-            if field_tag in pk_dict:
-                output_dict[field_tag] = (pk_dict[field_tag], 'FK')
+            if field_tag in pk_dict and  len(pk_dict[field_tag]) > 0:
+                output_dict[field_tag] = ( pk_dict[field_tag][0] , 'FK')
+
+                if len(pk_dict[field_tag]) > 1:
+                    print(f"FK has more than one value {field_tag} {pk_dict[field_tag]}, using first for FK")
+                    logger.info(f"FK has more than one value {field_tag} {pk_dict[field_tag]}, using first for FK")
             else:
-                logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
                 path = root_path + "/"
                 if 'element' in field_details_dict:
                     path = path + field_details_dict['element'] + "/@"
@@ -298,6 +303,11 @@ def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] 
                     path = path + field_details_dict['attribute']
                 else:
                     path = path + "no attribute/"
+
+                if field_tag in pk_dict and len(pk_dict[field_tag]) == 0:
+                    logger.error(f"FK no value for {field_tag}  in pk_dict for {config_name}/{field_tag}")
+                else:
+                    logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
                 output_dict[field_tag] = (None, path)
                 error_fields_set.add(field_tag)
 
@@ -413,7 +423,7 @@ def do_hash_fields(output_dict :dict[str, tuple[ None | str | float | int , str]
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str], 
-                   pk_dict :dict[str, any]):
+                   pk_dict :dict[str, list[any]]):
     """ These are basically derived, but the argument is a lsit of field names, instead of
         a fixed number of individually named fields.
         Dubiously useful in an environment where IDs are  32 bit integers.
@@ -434,7 +444,7 @@ def do_hash_fields(output_dict :dict[str, tuple[ None | str | float | int , str]
             hash_value = create_hash(hash_input)
             output_dict[field_tag] = (hash_value, 'HASH')
             # treat as PK and include in that dictionary
-            pk_dict[field_tag] = hash_value
+            pk_dict[field_tag].append(hash_value)
             logger.info((f"     HASH (PK) {hash_value} for "
                          f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
 
@@ -444,7 +454,7 @@ def do_priority_fields(output_dict :dict[str, tuple[None | str | float | int, st
                        root_element, root_path, config,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str], 
-                       pk_dict :dict[str, any]) -> dict[str, list]:
+                       pk_dict :dict[str, list[any]]) -> dict[str, list]:
     """
         Returns the list of  priority_names so the chosen one (first non-null) can be 
         added to output fields Also, adds this field to the PK list?
@@ -485,7 +495,7 @@ def do_priority_fields(output_dict :dict[str, tuple[None | str | float | int, st
         for value_field_pair in sorted_contents:
             if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]][0] is not None:
                 output_dict[priority_name] = output_dict[value_field_pair[0]]
-                pk_dict[priority_name] = output_dict[value_field_pair[0]][0]
+                pk_dict[priority_name].append(output_dict[value_field_pair[0]][0])
                 break
 
     return priority_fields
@@ -537,7 +547,7 @@ def sort_output_dict(output_dict :dict[str, tuple[any, str]],
 def parse_config_for_single_root(root_element, root_path, config_name, 
                                  config_dict :dict[str, dict[str, str | None]], 
                                  error_fields_set : set[str], 
-                                 pk_dict :dict[str, any]) -> tuple[dict[str, tuple[ None | str | float | int, str]] | None, 
+                                 pk_dict :dict[str, list[any]]) -> tuple[dict[str, tuple[ None | str | float | int, str]] | None, 
                                                                    set[str] | None]:
 
     """  Parses for each field in the metadata for a config out of the root_element passed in.
@@ -577,7 +587,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
 @typechecked
 def parse_config_from_file(tree, config_name, 
                            config_dict :dict[str, dict[str, str | None]], filename, 
-                           pk_dict :dict[str, any]) -> list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None:
+                           pk_dict :dict[str, list[any]]) -> list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None:
                                                                    
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
@@ -663,7 +673,7 @@ def parse_doc(file_path,
           each a list of record/row dictionaries.
     """
     omop_dict = {}
-    pk_dict = {}
+    pk_dict = defaultdict(list)
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():

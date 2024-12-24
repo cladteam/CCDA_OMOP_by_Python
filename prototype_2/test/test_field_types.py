@@ -1,8 +1,9 @@
 import unittest
 import io
-import prototype_2.value_transformations as VT
 from lxml import etree as ET
-from prototype_2.data_driven_parse import parse_domain_from_dict
+from collections import defaultdict
+import prototype_2.value_transformations as VT
+from prototype_2.data_driven_parse import parse_config_from_file
 
 class FieldTypeTest_DERIVED(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -29,6 +30,7 @@ class FieldTypeTest_DERIVED(unittest.TestCase):
             'Test': {
                 'root': {
                     'config_type': 'ROOT',
+                    'expected_domain_id' : 'Test',
                     'element': "./hl7:recordTarget/hl7:patientRole"
                 },
                 'concept_codeSystem': {
@@ -75,7 +77,7 @@ class FieldTypeTest_DERIVED(unittest.TestCase):
             pk_dict = {}
             for domain, domain_meta_dict in self.config_dict.items():
                 # print(f"INPUT {domain} {domain_meta_dict}")
-                data_dict_list= parse_domain_from_dict(tree, domain, domain_meta_dict, "test_file", pk_dict)
+                data_dict_list= parse_config_from_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
                 data_dict = data_dict_list[0]
                 # print(f"OUTPUT {data_dict}")
                 self.assertEqual(data_dict['concept_codeSystem'][0], "2.16.840.1.113883.6.1")
@@ -109,6 +111,7 @@ class FieldTypeTest_FIELD(unittest.TestCase):
             'Test': {
                 'root': {
                     'config_type': 'ROOT',
+                    'expected_domain_id' : 'Test',
                     'element': "./hl7:recordTarget/hl7:patientRole"
                 },
                 'attribute_value': {
@@ -132,7 +135,7 @@ class FieldTypeTest_FIELD(unittest.TestCase):
             pk_dict = {}
             for domain, domain_meta_dict in self.config_dict.items():
                 #print(f"INPUT {domain} {domain_meta_dict}")
-                data_dict_list= parse_domain_from_dict(tree, domain, domain_meta_dict, "test_file", pk_dict)
+                data_dict_list= parse_config_from_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
                 data_dict = data_dict_list[0]
                 #print(f"OUTPUT {data_dict}")
                 self.assertEqual(data_dict['attribute_value'][0], "2.16.840.1.113883.4.1")
@@ -163,6 +166,7 @@ class FieldTypeTest_HASH(unittest.TestCase):
             'Test': {
                 'root': {
                     'config_type': 'ROOT',
+                    'expected_domain_id' : 'Test',
                     'element': "./hl7:recordTarget/hl7:patientRole"
                 },
                 'concept_codeSystem': {
@@ -206,9 +210,9 @@ class FieldTypeTest_HASH(unittest.TestCase):
     def test(self):
         with io.StringIO(self.xml_text) as file_obj:
             tree = ET.parse(file_obj)
-            pk_dict = {}
+            pk_dict = defaultdict(list)
             for domain, domain_meta_dict in self.config_dict.items():
-                data_dict_list= parse_domain_from_dict(tree, domain, domain_meta_dict, "test_file", pk_dict)
+                data_dict_list= parse_config_from_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
                 data_dict = data_dict_list[0]
                 #print(f"OUTPUT {data_dict}")
                 self.assertEqual(data_dict['test_hash_0'][0], 2730455650958355)
