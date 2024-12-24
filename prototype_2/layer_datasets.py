@@ -4,10 +4,13 @@ import argparse
 import os
 import pandas as pd
 import logging
+from typeguard import typechecked
+from foundry.transforms import Dataset
+
 import prototype_2.data_driven_parse as DDP
 from prototype_2.metadata import get_meta_dict
 import lxml
-from foundry.transforms import Dataset
+
 
 """ layer_datasets.py
     This is a layer over data_driven_parse.py that takes the 
@@ -22,11 +25,15 @@ from foundry.transforms import Dataset
 logger = logging.getLogger(__name__)
 
 
+@typechecked
 def show_column_dict(column_dict):
     for key,val in column_dict.items():
         print(f" key:{key} length(val):{len(val)}")
 
-def create_omop_domain_dataframes(omop_data, filepath):
+
+@typechecked
+def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None],
+                                  filepath) ->  dict[str, pd.DataFrame]:
     """ transposes the rows into columns,
         creates a Pandas dataframe
     """
@@ -61,7 +68,8 @@ def create_omop_domain_dataframes(omop_data, filepath):
     return df_dict
 
 
-def write_csvs_from_dataframe_dict(df_dict, file_name, folder):
+@typechecked
+def write_csvs_from_dataframe_dict(df_dict :dict[str, pd.DataFrame], file_name, folder):
     """ writes a CSV file for each dataframe
         uses the key of the dict as filename
     """
@@ -70,7 +78,8 @@ def write_csvs_from_dataframe_dict(df_dict, file_name, folder):
                                 sep=",", header=True, index=False)
 
 
-def process_file(filepath):
+@typechecked
+def process_file(filepath) -> dict[str, pd.DataFrame]:
     """ processes file, creates dataset and writes csv
         returns dataset
     """
@@ -97,11 +106,15 @@ def process_file(filepath):
 
     return dataframe_dict
 
+
+@typechecked
 def dict_summary(my_dict):
     for key in my_dict:
         logger.info(f"Summary {key} {len(mh_dict[key])}")
-        
-def build_file_to_domain_dict(meta_config_dict):
+
+
+@typechecked
+def build_file_to_domain_dict(meta_config_dict :dict[str, dict[str, dict[str, str]]]) -> dict[str, str]:
     """ The meta_config_dict is a dictionary keyed by domain filenames that
         has the data that drives the conversion. Included is a 'root' element
         that has an attribute 'expected_domain_id' that we're after to identify
@@ -119,6 +132,7 @@ def build_file_to_domain_dict(meta_config_dict):
     for file_domain in meta_config_dict:
         file_domain_map[file_domain] = meta_config_dict[file_domain]['root']['expected_domain_id']
     return file_domain_map
+
 
 def main():
 
@@ -189,27 +203,6 @@ def main():
             print(f"  ERROR {e}")
             print("")
     
-    # EXPORT
-    foobar  = """    
-    export_person = omop_data_dict['Person']
-    from foundry.transforms import Dataset
-    # person = Dataset.get("person")
-    person = Dataset.get("person_second_try")
-    person.write_table(export_person)
-
-
-    export_observation = omop_data_dict['Observation']
-    observation = Dataset.get("observation")
-    observation.write_table(export_observation)
-
-    export_measurement = omop_data_dict['Measurement']
-    measurement = Dataset.get("measurement")
-    measurement.write_table(export_measurement)
-    
-    export_visit = omop_data_dict['Visit']
-    visit = Dataset.get("visit")
-    visit.write_table(export_visit)
-    """
     
 if __name__ == '__main__':
     main()

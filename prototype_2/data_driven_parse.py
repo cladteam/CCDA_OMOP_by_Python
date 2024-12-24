@@ -103,7 +103,8 @@ ns = {
 #    bigint_hash_value = ctypes.c_int64(int_hash_value % 2**64).value
 #    return bigint_hash_value
 
-def create_hash(input_string):
+@typechecked
+def create_hash(input_string) -> int | None:
     """ matches common SQL code when that code also truncates to 13 characters
         SQL: cast(conv(substr(md5(test_string), 1, 15), 16, 10) as bigint) as hashed_value
     """
@@ -116,7 +117,8 @@ def create_hash(input_string):
     return int_trunc_hash_value
 
 
-def cast_to_date(string_value):
+@typechecked
+def cast_to_date(string_value) -> str:
     # TODO does CCDA always do dates as YYYYMMDD ?
     # TODO  when  is it date and when datetime
 
@@ -141,7 +143,8 @@ def cast_to_datetime(string_value):
 
 
 @typechecked
-def parse_field_from_dict(field_details_dict :dict[str, str], root_element, config_name, field_tag, root_path):
+def parse_field_from_dict(field_details_dict :dict[str, str], root_element, 
+        config_name, field_tag, root_path) ->  None | str | float | int :
     """ Retrieves a value for the field descrbied in field_details_dict that lies below
         the root_element.
         Domain and field_tag are here for error messages.
@@ -218,8 +221,10 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element, conf
 
 
 @typechecked
-def do_none_fields(output_dict :dict[str, tuple[any, str]], root_element, root_path, config_name,  
-                   config_dict :dict[str, dict[str, str | None]], error_fields_set):
+def do_none_fields(output_dict :dict[str, tuple[None, str]], 
+                   root_element, root_path, config_name,  
+                   config_dict :dict[str, dict[str, str | None]], 
+                   error_fields_set :set[str]):
     for (field_tag, field_details_dict) in config_dict.items():
         logger.info((f"     NONE FIELD config:'{config_name}' field_tag:'{field_tag}'"
                      f" {field_details_dict}"))
@@ -229,8 +234,10 @@ def do_none_fields(output_dict :dict[str, tuple[any, str]], root_element, root_p
 
             
 @typechecked
-def do_constant_fields(output_dict :dict[str, tuple[any, str]], root_element, root_path, config_name,  
-                       config_dict :dict[str, dict[str, str | None]], error_fields_set):
+def do_constant_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+                       root_element, root_path, config_name,  
+                       config_dict :dict[str, dict[str, str | None]], 
+                       error_fields_set :set[str]):
 
     for (field_tag, field_details_dict) in config_dict.items():
         logger.info((f"     CONSTANT FIELD config:'{config_name}' field_tag:'{field_tag}'"
@@ -242,8 +249,10 @@ def do_constant_fields(output_dict :dict[str, tuple[any, str]], root_element, ro
 
             
 @typechecked
-def do_basic_fields(output_dict :dict[str, tuple[any, str] ], root_element, root_path, config_name,  
-                    config_dict :dict[str, dict[str, str | None] ], error_fields_set, 
+def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] ], 
+                    root_element, root_path, config_name,  
+                    config_dict :dict[str, dict[str, str | None] ], 
+                    error_fields_set :set[str], 
                     pk_dict :dict[str, any] ):
     for (field_tag, field_details_dict) in config_dict.items():
         logger.info((f"     FIELD config:'{config_name}' field_tag:'{field_tag}'"
@@ -294,8 +303,10 @@ def do_basic_fields(output_dict :dict[str, tuple[any, str] ], root_element, root
 
                 
 @typechecked
-def do_derived_fields(output_dict :dict[str, tuple[any, str]], root_element, root_path, config_name,  
-                      config_dict :dict[str, dict[str, str | None]], error_fields_set):
+def do_derived_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+                      root_element, root_path, config_name,  
+                      config_dict :dict[str, dict[str, str | None]], 
+                      error_fields_set :set[str]):
     """ Do/compute derived values now that their inputs should be available in the output_dict
         Except for a special argument named 'default', when the value is what is other wise the field to look up in the output dict.
     """
@@ -347,8 +358,10 @@ def do_derived_fields(output_dict :dict[str, tuple[any, str]], root_element, roo
 
                 
 @typechecked
-def do_domain_fields(output_dict :dict[str, tuple[any, str]], root_element, root_path, config_name, 
-                     config_dict :dict[str, dict[str, str | None]], error_fields_set) -> str | None :
+def do_domain_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+                     root_element, root_path, config_name, 
+                     config_dict :dict[str, dict[str, str | None]], 
+                     error_fields_set :set[str]) -> str | None :
     # nearly the same as derived above, but returns the domain for later filtering
     domain_id = None
     for (field_tag, field_details_dict) in config_dict.items():
@@ -396,8 +409,10 @@ def do_domain_fields(output_dict :dict[str, tuple[any, str]], root_element, root
 
 
 @typechecked
-def do_hash_fields(output_dict :dict[str, tuple[any, str]], root_element, root_path, config_name,  
-                   config_dict :dict[str, dict[str, str | None]], error_fields_set, 
+def do_hash_fields(output_dict :dict[str, tuple[ None | str | float | int , str]], 
+                   root_element, root_path, config_name,  
+                   config_dict :dict[str, dict[str, str | None]], 
+                   error_fields_set :set[str], 
                    pk_dict :dict[str, any]):
     """ These are basically derived, but the argument is a lsit of field names, instead of
         a fixed number of individually named fields.
@@ -425,9 +440,11 @@ def do_hash_fields(output_dict :dict[str, tuple[any, str]], root_element, root_p
 
             
 @typechecked
-def do_priority_fields(output_dict :dict[str, tuple[any, str]], root_element, root_path, config,  
-                       config_dict :dict[str, dict[str, str | None]], error_fields_set, 
-                       pk_dict :dict[str, any]):
+def do_priority_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+                       root_element, root_path, config,  
+                       config_dict :dict[str, dict[str, str | None]], 
+                       error_fields_set :set[str], 
+                       pk_dict :dict[str, any]) -> dict[str, list]:
     """
         Returns the list of  priority_names so the chosen one (first non-null) can be 
         added to output fields Also, adds this field to the PK list?
@@ -495,7 +512,8 @@ def get_filter_fn(dict):
 
 
 @typechecked
-def sort_output_dict(output_dict :dict[str, tuple[any, str]], config_dict :dict[str, dict[str, str | None]], config_name):
+def sort_output_dict(output_dict :dict[str, tuple[any, str]], 
+                     config_dict :dict[str, dict[str, str | None]], config_name):
     """ Sorts the ouput_dict by the value of the 'order' fields in the associated
         config_dict. Fields without a value, or without an entry used to 
         come last, now are omitted.
@@ -517,14 +535,20 @@ def sort_output_dict(output_dict :dict[str, tuple[any, str]], config_dict :dict[
 
 @typechecked
 def parse_config_for_single_root(root_element, root_path, config_name, 
-                                 config_dict :dict[str, dict[str, str | None]], error_fields_set, 
-                                 pk_dict :dict[str, any]):
+                                 config_dict :dict[str, dict[str, str | None]], 
+                                 error_fields_set : set[str], 
+                                 pk_dict :dict[str, any]) -> tuple[dict[str, tuple[ None | str | float | int, str]] | None, 
+                                                                   set[str] | None]:
+
     """  Parses for each field in the metadata for a config out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
 
         If the configuration includes a field of config_type DOMAIN, the value it generates
         will be compared to the domain specified in the config in. If they are different, null is returned.
         This is how  OMOP "domain routing" is implemented here.
+
+
+         Returns (output_dict,  error_fields_set)
     """
     output_dict = {} #  :dict[str, tuple]  a record
     domain_id = None
@@ -553,11 +577,14 @@ def parse_config_for_single_root(root_element, root_path, config_name,
 @typechecked
 def parse_config_from_file(tree, config_name, 
                            config_dict :dict[str, dict[str, str | None]], filename, 
-                           pk_dict :dict[str, any]):
+                           pk_dict :dict[str, any]) -> list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None:
+                                                                   
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
         (ClinicalDocument, not just file),
         parse the different domains out of it (1 config each), linking PK and FKs between them.
+        This strips the error_fields set from the tuples returned by parse_config_for_single_root()
+        and reports the separately. They are not included in what is returned from this structure.
 
         Returns a list, output_list, of dictionaries, output_dict, keyed by field name,   :dict[dict, tuple] FIX TODO
         containing a list of the value and the path to it:
@@ -574,6 +601,8 @@ def parse_config_from_file(tree, config_name,
              their values are their values. It's a sort of global space for carrying PKs 
              to other parts of processing where they will be used as FKs. This is useful
              for things like the main person_id that is part of the context the document creates.
+
+
     """
 
     # log to a file per file/config
@@ -611,7 +640,8 @@ def parse_config_from_file(tree, config_name,
     error_fields_set = set()
     logger.info(f"NUM ROOTS {config_name} {len(root_element_list)}")
     for root_element in root_element_list:
-        (output_dict, element_error_set) = parse_config_for_single_root(root_element, root_path, config_name, config_dict, error_fields_set, pk_dict)
+        (output_dict, element_error_set) = parse_config_for_single_root(root_element, root_path, 
+                config_name, config_dict, error_fields_set, pk_dict)
         if output_dict is not None:
             output_list.append(output_dict)
         if element_error_set is not None:
@@ -625,7 +655,9 @@ def parse_config_from_file(tree, config_name,
 
 
 @typechecked
-def parse_doc(file_path, metadata :dict[str, dict[str, dict[str, str]]]):
+def parse_doc(file_path, 
+              metadata :dict[str, dict[str, dict[str, str]]]) -> dict[str, 
+                      list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None]:
     """ Parses many meta configs from a single file, collects them in omop_dict.
         Returns omop_dict, a  dict keyed by configuration names, 
           each a list of record/row dictionaries.
@@ -645,7 +677,7 @@ def parse_doc(file_path, metadata :dict[str, dict[str, dict[str, str]]]):
 
 @typechecked
 def print_omop_structure(omop :dict[str, list[ dict[str, tuple[any, str ] ] ] ], 
-                         meta_data :dict[str, dict[str, dict[str, str ] ] ] ):
+                         metadata :dict[str, dict[str, dict[str, str ] ] ] ):
     
     """ prints a dict of parsed domains as returned from parse_doc()
         or parse_domain_from_dict()
@@ -666,7 +698,7 @@ def print_omop_structure(omop :dict[str, list[ dict[str, tuple[any, str ] ] ] ],
                         print(f"        parts type {type(parts[1])}")
                         print(f"        VALUE:{parts[0]}")
                         print(f"        PATH:{parts[1]}")
-                        print(f"        ORDER: {meta_data[domain][field]['order']}")
+                        print(f"        ORDER: {metadata[domain][field]['order']}")
                         n = n+1
                     print(f"\n\nDOMAIN: {domain} {n}\n\n")
 
@@ -691,10 +723,10 @@ def process_file(filepath):
         # level=logging.DEBUG
     )
 
-    meta_data = get_meta_dict()
-    omop_data = parse_doc(filepath, meta_data)
+    metadata = get_meta_dict()
+    omop_data = parse_doc(filepath, metadata)
     if omop_data is not None or len(omop_data) < 1:
-        print_omop_structure(omop_data, meta_data)
+        print_omop_structure(omop_data, metadata)
     else:
         logger.error(f"FILE no data from {filepath}")
 
