@@ -6,9 +6,10 @@ metadata = {
     	'root': {
     	    'config_type': 'ROOT',
             'expected_domain_id': 'Condition',
+            # Problems Sections
     	    'element':
     		  ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
-    		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.5']"
+    		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.5' or  @root='2.16.840.1.113883.10.20.22.2.5.1' ] "
     		   "/../hl7:entry/hl7:organizer/hl7:component/hl7:observation")
         },
 

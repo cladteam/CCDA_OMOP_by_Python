@@ -6,11 +6,12 @@ metadata = {
     	'root': {
     	    'config_type': 'ROOT',
             'expected_domain_id': 'Measurement',
+            # Results section
     	    'element':
     		  ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
-    		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.3.1']"
+    		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.3.1' or @root='2.16.840.1.113883.10.20.22.2.3']"
     		   "/../hl7:entry/hl7:organizer/hl7:component/hl7:observation")
-    		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2
+    		    # FIX: another template at the observation level here: "2.16.840.1.113883.10.20.22.4.2  Result Observation is an entry, not a section
         },
         
         'source_section': {

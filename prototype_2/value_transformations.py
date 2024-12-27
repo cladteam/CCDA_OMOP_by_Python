@@ -43,7 +43,9 @@ def cast_as_number(args_dict):
         return None
 
 
-def cast_as_concept_id(args_dict):  # TBD FIX CHRIS
+def cast_as_concept_id(args_dict):  # TBD FIX TODO
+    raise Exeption("cast_as_concept not implemented")
+
     string_value = args_dict['input']
     type_value = args_dict['type']
     if type_value == 'CD' or type_value == 'CE':

@@ -7,6 +7,7 @@ metadata = {
         'root': {
             'config_type': 'ROOT',
             'expected_domain_id': 'Location',
+            #  header
             'element': "./hl7:recordTarget/hl7:patientRole/hl7:addr"
         },
 

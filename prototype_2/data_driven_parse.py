@@ -122,6 +122,8 @@ def create_hash(input_string) -> int | None:
 @typechecked
 def cast_to_date(string_value) -> str:
     # TODO does CCDA always do dates as YYYYMMDD ?
+    # https://build.fhir.org/ig/HL7/CDA-ccda/StructureDefinition-USRealmDateTimeInterval-definitions.html
+    # doc says YYYMMDD... examples show ISO-8601. Should use a regex and detect parse failure.
     # TODO  when  is it date and when datetime
 
     # Step 1 : put dashes in  to make ISO-8601 happy, b/c python insists on dashes.
@@ -593,7 +595,7 @@ def parse_config_from_file(tree, config_name,
         (ClinicalDocument, not just file),
         parse the different domains out of it (1 config each), linking PK and FKs between them.
 
-        Returns a list, output_list, of dictionaries, output_dict, keyed by field name,   :dict[dict, tuple] FIX TODO
+        Returns a list, output_list, of dictionaries, output_dict, keyed by field name,
         containing a list of the value and the path to it:
             [ { field_1 : (value, path), field_2: (value, path)},
               { field_1: (value, path)}, {field_2: (value, path)} ]
@@ -675,7 +677,7 @@ def parse_doc(file_path,
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():
         data_dict_list = parse_config_from_file(tree, config_name, config_dict, base_name, pk_dict)
-        if config_name in omop_dict: # CHRIS
+        if config_name in omop_dict: 
             omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)
         else:
             omop_dict[config_name] = data_dict_list
