@@ -547,8 +547,7 @@ def sort_output_dict(output_dict :dict[str, tuple[any, str]],
 def parse_config_for_single_root(root_element, root_path, config_name, 
                                  config_dict :dict[str, dict[str, str | None]], 
                                  error_fields_set : set[str], 
-                                 pk_dict :dict[str, list[any]]) -> tuple[dict[str, tuple[ None | str | float | int, str]] | None, 
-                                                                   set[str] | None]:
+                                 pk_dict :dict[str, list[any]]) -> dict[str, tuple[ None | str | float | int, str]] | None:
 
     """  Parses for each field in the metadata for a config out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
@@ -576,12 +575,12 @@ def parse_config_for_single_root(root_element, root_path, config_name,
     
     output_dict = sort_output_dict(output_dict, config_dict, config_name)
 
+
     expected_domain_id = config_dict['root']['expected_domain_id']
     if (expected_domain_id == domain_id or domain_id is None):
-        return (output_dict, error_fields_set)
+        return output_dict
     else:
-        # reject this data if the datum is intended for a different domain
-        return (None, None)
+        return None
 
 
 @typechecked
@@ -593,8 +592,6 @@ def parse_config_from_file(tree, config_name,
         Given a tree from ElementTree representing a CCDA document
         (ClinicalDocument, not just file),
         parse the different domains out of it (1 config each), linking PK and FKs between them.
-        This strips the error_fields set from the tuples returned by parse_config_for_single_root()
-        and reports the separately. They are not included in what is returned from this structure.
 
         Returns a list, output_list, of dictionaries, output_dict, keyed by field name,   :dict[dict, tuple] FIX TODO
         containing a list of the value and the path to it:
@@ -650,15 +647,15 @@ def parse_config_from_file(tree, config_name,
     error_fields_set = set()
     logger.info(f"NUM ROOTS {config_name} {len(root_element_list)}")
     for root_element in root_element_list:
-        (output_dict, element_error_set) = parse_config_for_single_root(root_element, root_path, 
+        #(output_dict, element_error_set) = parse_config_for_single_root(root_element, root_path, 
+        output_dict = parse_config_for_single_root(root_element, root_path, 
                 config_name, config_dict, error_fields_set, pk_dict)
         if output_dict is not None:
             output_list.append(output_dict)
-        if element_error_set is not None:
-            error_fields_set.union(element_error_set)
 
     # report fields with errors
     if len(error_fields_set) > 0:
+        print(f"DOMAIN Fields with errors in config {config_name} {error_fields_set}")
         logger.error(f"DOMAIN Fields with errors in config {config_name} {error_fields_set}")
 
     return output_list
