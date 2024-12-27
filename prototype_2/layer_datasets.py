@@ -6,10 +6,11 @@ import pandas as pd
 import logging
 from typeguard import typechecked
 from foundry.transforms import Dataset
+from collections import defaultdict
+import lxml
 
 import prototype_2.data_driven_parse as DDP
 from prototype_2.metadata import get_meta_dict
-import lxml
 
 
 """ layer_datasets.py
@@ -42,7 +43,8 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str, tuple[ No
         # Transpose to a dictoinary of named columns.
 
         # Initialize a dictionary of columns from the first row
-        column_dict = {}
+        #column_dict = {}
+        column_dict = defaultdict(list)
         if domain_list is None or len(domain_list) < 1:
             logger.error(f"No data for {domain_name} from {filepath}")
         else:
