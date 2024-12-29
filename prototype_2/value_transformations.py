@@ -65,7 +65,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
                                 (concept_df['concept_code'] == concept_code)]
 
         if len(concept_id_df) < 1:
-           logger.error(f"no concept for \"{vocabulary_oid}\" \"{concept_code}\" ")
+           logger.error(f"no concept for \"{vocabulary_oid}\" \"{concept_code}\", defaulting to \"{default}\" ")
            return default
 
         if len(concept_id_df) > 1:
@@ -76,7 +76,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
 
         return concept_id_df[column_name].iloc[0]
     except IndexError as e:
-        logger.warning(f"no concept for \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
+        logger.warning(f"no concept for \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}, defautling to \"{default}\" ")
         return default
 
 

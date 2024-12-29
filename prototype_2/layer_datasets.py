@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 @typechecked
 def show_column_dict(column_dict):
     for key,val in column_dict.items():
-        print(f" key:{key} length(val):{len(val)}")
+        print(f"   key:{key} length(val):{len(val)}")
 
 
 @typechecked
@@ -40,20 +40,22 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str, tuple[ No
     """
     df_dict = {}
     for domain_name, domain_list in omop_data.items():
-        # Transpose to a dictoinary of named columns.
+
+        # Transpose to a dictionary of named columns.
 
         # Initialize a dictionary of columns from the first row
-        #column_dict = {}
         column_dict = defaultdict(list)
         if domain_list is None or len(domain_list) < 1:
-            logger.error(f"No data for {domain_name} from {filepath}")
+            logger.error(f"No data to create dataframe for {domain_name} from {filepath}")
+            print(f"ERROR No data to create dataframe for {domain_name} from {filepath}")
         else:
             for field, parts in domain_list[0].items():
                 column_dict[field] = []
 
         # Add the data from all the rows
         if domain_list is None or len(domain_list) < 1:
-            logger.error(f"No data for {domain_name} from {filepath}")
+            logger.error(f"No data when creating datafame for {domain_name} from {filepath}")
+            print(f"No data when creating datafame for {domain_name} from {filepath}")
         else:
             for domain_data_dict in domain_list:
                 for field, parts in domain_data_dict.items():
@@ -62,10 +64,13 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str, tuple[ No
         # create a Pandas dataframe from the data_dict
         try:
             domain_df = pd.DataFrame(column_dict)
+            df_dict[domain_name] = domain_df
         except ValueError as ve:
-            logger.error(f"ERROR {ve}")
+            logger.error(f"ERROR when creating dataframe for {domain_name} \"{ve}\"")
+            print(f"ERROR when creating dataframe for {domain_name} \"{ve}\"")
             show_column_dict(column_dict)
-        df_dict[domain_name] = domain_df
+            df_dict[domain_name] = None
+
 
     return df_dict
 
@@ -76,8 +81,11 @@ def write_csvs_from_dataframe_dict(df_dict :dict[str, pd.DataFrame], file_name, 
         uses the key of the dict as filename
     """
     for domain_name, domain_dataframe in df_dict.items():
-        domain_dataframe.to_csv(f"{folder}/{file_name}__{domain_name}.csv",
-                                sep=",", header=True, index=False)
+        filepath = f"{folder}/{file_name}__{domain_name}.csv"
+        if domain_dataframe is not None:
+            domain_dataframe.to_csv(filepath, sep=",", header=True, index=False)
+        else:
+            print(f"ERROR: NOT WRITING domain {domain_name} to file {filepath}, no dataframe")
 
 
 @typechecked
@@ -85,7 +93,6 @@ def process_file(filepath) -> dict[str, pd.DataFrame]:
     """ processes file, creates dataset and writes csv
         returns dataset
     """
-    logger.info(f"PROCESSING {filepath} ")
     base_name = os.path.basename(filepath)
 
     logging.basicConfig(
@@ -137,10 +144,9 @@ def build_file_to_domain_dict(meta_config_dict :dict[str, dict[str, dict[str, st
 
 
 def main():
-
     parser = argparse.ArgumentParser(
-        prog='CCDA - OMOP Code Snooper',
-        description="finds all code elements and shows what concepts the represent",
+        prog='CCDA - OMOP parser with datasets layer layer_datasets.py',
+        description="reads CCDA XML, translate to and writes OMOP CSV files",
         epilog='epilog?')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-d', '--directory', help="directory of files to parse")
@@ -169,7 +175,6 @@ def main():
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
-        
     # COMBINE like datasets
     # We need to collect all files/datasets that have the same expected_domain_id.
     # For example, the Measurement domain, rows for the measurement table can 
@@ -204,7 +209,6 @@ def main():
         except Exception as e:
             print(f"  ERROR {e}")
             print("")
-    
     
 if __name__ == '__main__':
     main()

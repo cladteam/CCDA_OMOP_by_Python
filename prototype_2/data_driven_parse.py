@@ -293,8 +293,8 @@ def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] 
                 output_dict[field_tag] = ( pk_dict[field_tag][0] , 'FK')
 
                 if len(pk_dict[field_tag]) > 1:
-                    print(f"FK has more than one value {field_tag} {pk_dict[field_tag]}, using first for FK")
-                    logger.info(f"FK has more than one value {field_tag} {pk_dict[field_tag]}, using first for FK")
+                    print(f"WARNING FK has more than one value {field_tag}, using first for FK")
+                    logger.info(f"WARNING FK has more than one value {field_tag}, using first for FK")
             else:
                 path = root_path + "/"
                 if 'element' in field_details_dict:
@@ -439,9 +439,8 @@ def do_hash_fields(output_dict :dict[str, tuple[ None | str | float | int , str]
                 print(f"ERROR: HASH field {field_tag} is missing 'fields' attributes in config:{config_name}")
                 logger.error(f"HASH field {field_tag} is missing 'fields' attributes in config:{config_name}")
             for field_name in field_details_dict['fields'] :
-                if field_name in output_dict and output_dict[field_name][0] is not None:
+                if field_name in output_dict:
                     value_list.append(output_dict[field_name][0])
-            ## -->> hash_input =  "|".join(str(value_list))
             hash_input =  "|".join(map(str, value_list))
             hash_value = create_hash(hash_input)
             output_dict[field_tag] = (hash_value, 'HASH')
