@@ -17,7 +17,7 @@ from prototype_2.metadata import get_meta_dict
     This is a layer over data_driven_parse.py that takes the 
     dictionary of lists of dictionaries, a dictionary of rows
     where the keys are dataset_names. It converts these structures
-    to pandas dataframes and then merges dataframes destined for 
+    to pandas dataframes and then merges dataframes destined for /
     the same domain. Reason being that multiple places in CCDA
     generate data for the same OMOP domain. It then publishes
     the dataframes as datasets into the Spark world in Foundry.
@@ -33,7 +33,7 @@ def show_column_dict(column_dict):
 
 
 @typechecked
-def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None],
+def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | str | float | int] | None  ] | None],
                                   filepath) ->  dict[str, pd.DataFrame]:
     """ transposes the rows into columns,
         creates a Pandas dataframe
@@ -49,7 +49,7 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str, tuple[ No
             logger.error(f"No data to create dataframe for {domain_name} from {filepath}")
             print(f"ERROR No data to create dataframe for {domain_name} from {filepath}")
         else:
-            for field, parts in domain_list[0].items():
+            for field in domain_list[0]:
                 column_dict[field] = []
 
         # Add the data from all the rows
@@ -58,8 +58,8 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str, tuple[ No
             print(f"No data when creating datafame for {domain_name} from {filepath}")
         else:
             for domain_data_dict in domain_list:
-                for field, parts in domain_data_dict.items():
-                    column_dict[field].append(parts[0])
+                for field, value in domain_data_dict.items():
+                    column_dict[field].append(value)
 
         # create a Pandas dataframe from the data_dict
         try:

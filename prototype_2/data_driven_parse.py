@@ -48,8 +48,8 @@
     PK_dict :dict[str, any]
     key is the field_name, any is the value. Value can be a string, int, None or a list of same.
     
-    output_dict :dict[str, tuple[any, str]
-    omop_dict : dict[str, list[tuple[any, str]] for each config you have a list of records
+    output_dict :dict[str, any]
+    omop_dict : dict[str, list[any] for each config you have a list of records
     
 
 
@@ -78,9 +78,7 @@ from collections import defaultdict
 
 from lxml import etree as ET
 from lxml.etree import XPathEvalError
-###from typing import dict, List, Tuple
 from typeguard import typechecked
-#https://typeguard.readthedocs.io/en/latest/userguide.html
 
 from prototype_2.metadata import get_meta_dict
  
@@ -225,7 +223,7 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
 
 
 @typechecked
-def do_none_fields(output_dict :dict[str, tuple[None, str]], 
+def do_none_fields(output_dict :dict[str, None | str | float | int], 
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str]):
@@ -234,11 +232,11 @@ def do_none_fields(output_dict :dict[str, tuple[None, str]],
                      f" {field_details_dict}"))
         config_type_tag = field_details_dict['config_type']
         if config_type_tag is None:
-            output_dict[field_tag] = (None, '(None type)')
+            output_dict[field_tag] = None
 
             
 @typechecked
-def do_constant_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+def do_constant_fields(output_dict :dict[str, None | str | float | int], 
                        root_element, root_path, config_name,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str]):
@@ -249,11 +247,11 @@ def do_constant_fields(output_dict :dict[str, tuple[None | str | float | int, st
         config_type_tag = field_details_dict['config_type']
         if config_type_tag == 'CONSTANT':
             constant_value = field_details_dict['constant_value']
-            output_dict[field_tag] = (constant_value, '(None type)')
+            output_dict[field_tag] = constant_value
 
             
 @typechecked
-def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] ], 
+def do_basic_fields(output_dict :dict[str, None | str | float | int ], 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
                     error_fields_set :set[str], 
@@ -266,9 +264,7 @@ def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] 
             try:
                 attribute_value = parse_field_from_dict(field_details_dict, root_element,
                                                     config_name, field_tag, root_path)
-                output_dict[field_tag] = (attribute_value, root_path + "/" +
-                                      field_details_dict['element'] + "/@" +
-                                      field_details_dict['attribute'])
+                output_dict[field_tag] = attribute_value
                 logger.info(f"     FIELD for {config_name}/{field_tag} \"{attribute_value}\"")
             except KeyError as ke:
                 print(f"ERROR      key erorr: {ke}")
@@ -283,14 +279,12 @@ def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] 
             logger.info(f"     PK for {config_name}/{field_tag}")
             attribute_value = parse_field_from_dict(field_details_dict, root_element,
                                                     config_name, field_tag, root_path)
-            output_dict[field_tag] = (attribute_value, root_path + "/" +
-                                      field_details_dict['element'] + "/@" +
-                                      field_details_dict['attribute'])
+            output_dict[field_tag] = attribute_value
             pk_dict[field_tag].append(attribute_value)
         elif type_tag == 'FK':
             logger.info(f"     FK for {config_name}/{field_tag}")
             if field_tag in pk_dict and  len(pk_dict[field_tag]) > 0:
-                output_dict[field_tag] = ( pk_dict[field_tag][0] , 'FK')
+                output_dict[field_tag] = pk_dict[field_tag][0]  
 
                 if len(pk_dict[field_tag]) > 1:
                     print(f"WARNING FK has more than one value {field_tag}, using first for FK")
@@ -310,12 +304,12 @@ def do_basic_fields(output_dict :dict[str, tuple[None | str | float | int, str] 
                     logger.error(f"FK no value for {field_tag}  in pk_dict for {config_name}/{field_tag}")
                 else:
                     logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
-                output_dict[field_tag] = (None, path)
+                output_dict[field_tag] = None
                 error_fields_set.add(field_tag)
 
                 
 @typechecked
-def do_derived_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+def do_derived_fields(output_dict :dict[str, None | str | float | int], 
                       root_element, root_path, config_name,  
                       config_dict :dict[str, dict[str, str | None]], 
                       error_fields_set :set[str]):
@@ -338,7 +332,7 @@ def do_derived_fields(output_dict :dict[str, tuple[None | str | float | int, str
                         logger.error((f"DERIVED config:{config_name} field:{field_tag} could not "
                                       f"find {field_name} in {output_dict}"))
                     try:
-                        args_dict[arg_name] = output_dict[field_name][0]
+                        args_dict[arg_name] = output_dict[field_name]
                     except Exception as e:
                         print(traceback.format_exc(e))
                         error_fields_set.add(field_tag)
@@ -348,7 +342,7 @@ def do_derived_fields(output_dict :dict[str, tuple[None | str | float | int, str
 
             try:
                 function_value = field_details_dict['FUNCTION'](args_dict)
-                output_dict[field_tag] = (function_value, 'DERIVED')
+                output_dict[field_tag] = function_value
                 logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
             except KeyError as e:
@@ -356,7 +350,7 @@ def do_derived_fields(output_dict :dict[str, tuple[None | str | float | int, str
                 error_fields_set.add(field_tag)
                 logger.error(f"DERIVED exception: {e}")
                 logger.error(f"DERIVED KeyError {field_tag} function can't find key it expects in {args_dict}")
-                output_dict[field_tag] = (None, field_details_dict['config_type'])
+                output_dict[field_tag] = None
             except TypeError as e:
                 print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
@@ -366,11 +360,11 @@ def do_derived_fields(output_dict :dict[str, tuple[None | str | float | int, str
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
-                output_dict[field_tag] = (None, field_details_dict['config_type'])
+                output_dict[field_tag] = None
 
                 
 @typechecked
-def do_domain_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+def do_domain_fields(output_dict :dict[str, None | str | float | int], 
                      root_element, root_path, config_name, 
                      config_dict :dict[str, dict[str, str | None]], 
                      error_fields_set :set[str]) -> str | None :
@@ -392,7 +386,7 @@ def do_domain_fields(output_dict :dict[str, tuple[None | str | float | int, str]
                         logger.error((f"DERIVED config:{config_dict} field:{field_tag} could not "
                                       f"find {field_name} in {output_dict}"))
                     try:
-                        args_dict[arg_name] = output_dict[field_name][0]
+                        args_dict[arg_name] = output_dict[field_name]
                     except Exception:
                         error_fields_set.add(field_tag)
                         logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
@@ -401,7 +395,7 @@ def do_domain_fields(output_dict :dict[str, tuple[None | str | float | int, str]
             try:
                 function_value = field_details_dict['FUNCTION'](args_dict)
                 domain_id = function_value
-                output_dict[field_tag] = (function_value, 'DOMAIN') ##########
+                output_dict[field_tag] = function_value
                 logger.info((f"     DOMAIN captured as {function_value} for "
                                  f"{field_tag}, {field_details_dict}"))
             except KeyError as e:
@@ -415,13 +409,13 @@ def do_domain_fields(output_dict :dict[str, tuple[None | str | float | int, str]
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
-                output_dict[field_tag] = (None, field_details_dict['config_type'])
+                output_dict[field_tag] = None
 
     return domain_id
 
 
 @typechecked
-def do_hash_fields(output_dict :dict[str, tuple[ None | str | float | int , str]], 
+def do_hash_fields(output_dict :dict[str,  None | str | float | int], 
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str], 
@@ -440,10 +434,10 @@ def do_hash_fields(output_dict :dict[str, tuple[ None | str | float | int , str]
                 logger.error(f"HASH field {field_tag} is missing 'fields' attributes in config:{config_name}")
             for field_name in field_details_dict['fields'] :
                 if field_name in output_dict:
-                    value_list.append(output_dict[field_name][0])
+                    value_list.append(output_dict[field_name])
             hash_input =  "|".join(map(str, value_list))
             hash_value = create_hash(hash_input)
-            output_dict[field_tag] = (hash_value, 'HASH')
+            output_dict[field_tag] = hash_value
             # treat as PK and include in that dictionary
             pk_dict[field_tag].append(hash_value)
             logger.info((f"     HASH (PK) {hash_value} for "
@@ -451,7 +445,7 @@ def do_hash_fields(output_dict :dict[str, tuple[ None | str | float | int , str]
 
             
 @typechecked
-def do_priority_fields(output_dict :dict[str, tuple[None | str | float | int, str]], 
+def do_priority_fields(output_dict :dict[str, None | str | float | int], 
                        root_element, root_path, config,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str], 
@@ -493,10 +487,10 @@ def do_priority_fields(output_dict :dict[str, tuple[None | str | float | int, st
         sorted_contents = sorted(priority_contents, key=lambda x: x[1])
         # Ex. [('person_id_ssn', 1), ('person_id_other, 2)]
 
-        for value_field_pair in sorted_contents:
-            if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]][0] is not None:
+        for value_field_pair in sorted_contents: 
+            if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]] is not None:
                 output_dict[priority_name] = output_dict[value_field_pair[0]]
-                pk_dict[priority_name].append(output_dict[value_field_pair[0]][0])
+                pk_dict[priority_name].append(output_dict[value_field_pair[0]])
                 break
 
     return priority_fields
@@ -523,7 +517,7 @@ def get_filter_fn(dict):
 
 
 @typechecked
-def sort_output_dict(output_dict :dict[str, tuple[any, str]], 
+def sort_output_dict(output_dict :dict[str, None | str | float | int], 
                      config_dict :dict[str, dict[str, str | None]], config_name):
     """ Sorts the ouput_dict by the value of the 'order' fields in the associated
         config_dict. Fields without a value, or without an entry used to 
@@ -548,7 +542,7 @@ def sort_output_dict(output_dict :dict[str, tuple[any, str]],
 def parse_config_for_single_root(root_element, root_path, config_name, 
                                  config_dict :dict[str, dict[str, str | None]], 
                                  error_fields_set : set[str], 
-                                 pk_dict :dict[str, list[any]]) -> dict[str, tuple[ None | str | float | int, str]] | None:
+                                 pk_dict :dict[str, list[any]]) -> dict[str,  None | str | float | int] | None:
 
     """  Parses for each field in the metadata for a config out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
@@ -560,7 +554,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
 
          Returns (output_dict,  error_fields_set)
     """
-    output_dict = {} #  :dict[str, tuple]  a record
+    output_dict = {} #  :dict[str, any]  a record
     domain_id = None
     logger.info((f"  ROOT for config:{config_name}, we have tag:{root_element.tag}"
                  f" attributes:{root_element.attrib}"))
@@ -587,7 +581,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
 @typechecked
 def parse_config_from_file(tree, config_name, 
                            config_dict :dict[str, dict[str, str | None]], filename, 
-                           pk_dict :dict[str, list[any]]) -> list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None:
+                           pk_dict :dict[str, list[any]]) -> list[ dict[str,  None | str | float | int] | None  ] | None:
                                                                    
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
@@ -648,7 +642,6 @@ def parse_config_from_file(tree, config_name,
     error_fields_set = set()
     logger.info(f"NUM ROOTS {config_name} {len(root_element_list)}")
     for root_element in root_element_list:
-        #(output_dict, element_error_set) = parse_config_for_single_root(root_element, root_path, 
         output_dict = parse_config_for_single_root(root_element, root_path, 
                 config_name, config_dict, error_fields_set, pk_dict)
         if output_dict is not None:
@@ -665,7 +658,7 @@ def parse_config_from_file(tree, config_name,
 @typechecked
 def parse_doc(file_path, 
               metadata :dict[str, dict[str, dict[str, str]]]) -> dict[str, 
-                      list[ dict[str, tuple[ None | str | float | int, str]] | None  ] | None]:
+                      list[ dict[str,  None | str | float | int] | None  ] | None]:
     """ Parses many meta configs from a single file, collects them in omop_dict.
         Returns omop_dict, a  dict keyed by configuration names, 
           each a list of record/row dictionaries.
@@ -684,7 +677,7 @@ def parse_doc(file_path,
 
 
 @typechecked
-def print_omop_structure(omop :dict[str, list[ dict[str, tuple[any, str ] ] ] ], 
+def print_omop_structure(omop :dict[str, list[ dict[str, None | str | float | int ] ] ], 
                          metadata :dict[str, dict[str, dict[str, str ] ] ] ):
     
     """ prints a dict of parsed domains as returned from parse_doc()
