@@ -59,7 +59,7 @@ metadata = {
             'config_type': 'DERIVED',
     	    'FUNCTION': VT.extract_year_of_birth,
     	    'argument_names': {
-    		    'date_string': 'birth_datetime',
+    		    'date_object': 'birth_datetime',
     	    },
             'order': 3
         },
@@ -67,7 +67,7 @@ metadata = {
             'config_type': 'DERIVED',
     	    'FUNCTION': VT.extract_month_of_birth,
     	    'argument_names': {
-    		    'date_string': 'birth_datetime',
+    		    'date_object': 'birth_datetime',
     	    },
             'order': 4
         },
@@ -75,7 +75,7 @@ metadata = {
             'config_type': 'DERIVED',
     	    'FUNCTION': VT.extract_day_of_birth,
     	    'argument_names': {
-    		    'date_string': 'birth_datetime',
+    		    'date_object': 'birth_datetime',
     	    },
             'order': 5
     	},

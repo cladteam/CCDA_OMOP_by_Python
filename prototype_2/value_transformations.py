@@ -3,6 +3,8 @@ import pandas as pd
 from . import concept_df
 from . import codemap_xwalk
 from . import ccda_value_set_mapping_table_dataset
+from typeguard import typechecked
+import datetime
 
 """
     Functions for use in DERVIED fields.
@@ -103,17 +105,20 @@ def map_hl7_to_omop_domain_id(args_dict):
                                     args_dict['default'],
                                     'domain_id')
 
+
 def map_hl7_to_omop_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: concept_id AS INTEGER (because that's what's in the table)
     """
 
+    
 def codemap_xwalk_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: concept_id AS INTEGER (because that's what's in the table), not necessarily standard
     """
     return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_concept_id', args_dict['default']) 
+
 
 def codemap_xwalk_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
@@ -122,12 +127,14 @@ def codemap_xwalk_domain_id(args_dict):
     return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_domain_id', args_dict['default']) 
 
+
 def codemap_xwalk_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: unmapped concept_id AS INTEGER (because that's what's in the table), not necessarily standard
     """
     return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'source_concept_id', args_dict['default']) 
+
 
 def _codemap_xwalk(vocabulary_oid, concept_code, column_name, default):
     """ expects: vocabulary_oid, concept_code
@@ -157,6 +164,7 @@ def valueset_xwalk_concept_id(args_dict):
     return int( _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_concept_id', args_dict['default']) )
 
+
 def valueset_xwalk_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: domain_id
@@ -164,12 +172,14 @@ def valueset_xwalk_domain_id(args_dict):
     return _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_domain_id', args_dict['default']) 
 
+
 def valueset_xwalk_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: unmapped concept_id AS INTEGER not necessarily standard
     """
     return int( _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'source_concept_id', args_dict['default']) )
+
 
 def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
     """ expects: vocabulary_oid, concept_code
@@ -196,36 +206,40 @@ def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
 
 
 
-def map_valuesets_to_omop(args_dicdt):
+def map_valuesets_to_omop(args_dict):
     """ expects: vocabulary_oid, concept_code
     """
     vocab_oid = args_dict['vocabulary_oid']
     concept_code = args_dict['concept_code']
     codemap_xwalk
 
-
-def extract_day_of_birth(args_dict):
-    # assumes input is ISO-8601 "YYYY-MM-DD"
-    date_string = args_dict['date_string']
-    if date_string is not None:
-        return date_string[8:10]
+    
+@typechecked
+def extract_day_of_birth(args_dict : dict[str, any]) -> int:
+    # assumes input is a datetime
+    date_object = args_dict['date_object']
+    if date_object is not None:
+        return date_object.day
     return None
 
 
-def extract_month_of_birth(args_dict):
-    # assumes input is ISO-8601 "YYYY-MM-DD"
-    date_string = args_dict['date_string']
-    if date_string is not None:
-        return date_string[5:7]
+@typechecked
+def extract_month_of_birth(args_dict : dict[str, any]) -> int:
+    # assumes input is a datetime
+    date_object = args_dict['date_object']
+    if date_object is not None:
+        return date_object.month
     return None
 
 
-def extract_year_of_birth(args_dict):
-    # assumes input is ISO-8601 "YYYY-MM-DD"
-    date_string = args_dict['date_string']
-    if date_string is not None:
-        return date_string[0:4]
+@typechecked
+def extract_year_of_birth(args_dict : dict[str, any]) -> int:
+    # assumes input is a datetime
+    date_object = args_dict['date_object']
+    if date_object is not None:
+        return date_object.year
     return None
+
 
 def concat_fields(args_dict):
     """

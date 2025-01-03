@@ -41,3 +41,10 @@ From the directory above prototype_2:
 
 ## Mapping
 The mapping file is, again for now, metadata.py.
+
+## Apologies
+This code was written by a CCDA neophyte with limited time and resources in hopes of 
+making a timely case for further work. The code makes extensive use of simple dictionaries
+in place of objects, has less unit tests and documentation than the author would prefer.
+Hopefully it has succeeded in furthering the mission. Apologies to future maintainers. 
+Please have patience.

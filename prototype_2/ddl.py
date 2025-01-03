@@ -1,40 +1,104 @@
-""" setup_omop
-    Initiates an in-memory instance of DuckDB, reads in the OMOP DDL,
-    and reads in any data provided.
 
-    For now, it's useful to see issues regarding  PK presence and uniqueness, datatypes..
-
-    TODO: This includes abuse of the OMOP DDL.  Better solutions  include
-    - better metadata so the resulting dataset and CSV look like OMOP
-    - a second stage here that modifies the resulting datasets to look more
-      like OMOP
-    - some compromise means getting a handle on how narrow the CSV can be
-      compared to OMOP. Can you leave out unused nullable fields?
-"""
-
-OMOP_CDM_DIR = "resources/" #  "../CommonDataModel/inst/ddl/5.3/duckdb/"
-OMOP_CSV_DATA_DIR = "output/"
-
-import io
-import os
-import re
-import logging
-import duckdb
-
-conn = duckdb.connect()
-logger = logging.getLogger(__name__)
-logging.basicConfig(
-    format='%(levelname)s: %(message)s',
-    filename=f"logs/load_omop.log",
-    force=True,
-    level=logging.INFO
-    # level=logging.WARNING level=logging.ERROR # level=logging.INFO # level=logging.DEBUG
-)
-
-processing_status = True
+config_to_domain_name_dict = {
+    'Care_Site_ee': 'Care_Site',
+    'Care_Site_pr': 'Care_Site',
+    'Location_ee': 'Location',
+    'Location_pr': 'Location',
+    'Condition': 'Condition',
+    'Location': 'Location',
+    'Observation': 'Observation',
+    'Person': 'Person',
+    'Provider': 'Provider',
+    'Visit': 'Visit',
+    'Measurement': 'Measurement',
+    'Measurement_vital_signs': 'Measurement',
+    'Measurement_results': 'Measurement'
+}
 
 sql_import_dict = {
+    'Observation':{
+        'column_list': [
+            'observation_id',
+            'person_id',
+            'observation_concept_id',
+            'observation_date',
+            'observation_datetime',
+            'observation_type_concept_id',
+            'value_as_number',
+            'value_as_string',
+            'value_as_concept_id',
+            'qualifier_concept_id',
+            'unit_concept_id',
+            'provider_id',
+            'visit_occurrence_id',
+            'visit_detail_id',
+            'observation_source_value',
+            'observation_source_concept_id',
+            'unit_source_value',
+            'qualifier_source_value'
+        ]
+    },
+    'Location':{
+        'column_list': [
+            'location_id', 'address_1', 'address_2', 'city', 'state', 'zip', 'county', 'location_source_value'
+        ]
+    },
+    'Provider':{
+        'column_list': [
+            'provider_id',
+            'provider_name',
+            'npi',
+            'dea',
+            'specialty_concept_id',
+            'care_site_id',
+            'year_of_birth',
+            'gender_concept_id',
+            'provider_source_value',
+            'specialty_source_value',
+            'specialty_source_concept_id',
+            'gender_source_value',
+            'gender_source_concept_id'
+        ]
+    },
+    'Care_Site':{
+        'column_list': [     
+            'care_site_id',
+            'care_site_name',
+            'place_of_service_concept_id',
+            'location_id', 
+            'care_site_source_value',
+            'place_of_service_source_value'
+        ]
+    },
+    'Visit':{
+        'column_list': [
+            'visit_occurrence_id',
+            'person_id INT64',
+            'visit_concept_id INT64',
+            'visit_start_date',
+            'visit_start_datetime',
+            'visit_end_date',
+            'visit_end_datetime',
+            'visit_type_concept_id',
+            'provider_id',
+            'care_site_id',
+            'visit_source_value',
+            'visit_source_concept_id',
+            'admitting_source_concept_id',
+            'admitting_source_value',
+            'discharge_to_concept_id',
+            'discharge_to_source_value',
+            'preceding_visit_occurrence_id'
+        ]
+    },
     'Person': {
+        'column_list': [
+            'person_id', 'gender_concept_id', 'year_of_birth', 'month_of_birth', 'day_of_birth',
+            'birth_datetime', 'race_concept_id', 'ethnicity_concept_id',
+            'location_id', 'provider_id', 'care_site_id', 'person_source_value',
+            'gender_source_value', 'gender_source_concept_id', 'race_source_value',
+            'race_source_concept_id', 'ethnicity_source_value', 'ethnicity_source_concept_id'
+            ],
         'sql': """
                 INSERT INTO TABLENAME SELECT
             person_id, gender_concept_id, year_of_birth, month_of_birth, day_of_birth,
@@ -52,6 +116,19 @@ sql_import_dict = {
                 """
     },
     'Visit': {
+        'column_list': [
+                    'visit_occurrence_id', 
+                    'person_id', 
+                    'visit_concept_id',
+                    'visit_start_date', 'visit_start_datetime', 
+                    'visit_end_date', 'visit_end_datetime', 
+                    'visit_type_concept_id', 
+                    'provider_id', 'care_site_id', 
+                    'visit_source_value', 'visit_source_concept_id', 
+                    'admitting_source_concept_id', 'admitting_source_value', 
+                    'discharge_to_source_concept_id', 'discharge_to_source_value', 
+                    'preceding_visit_occurrence_id'
+                    ],
         'sql': """
                 INSERT INTO TABLENAME SELECT
                     visit_occurrence_id, 
@@ -74,6 +151,17 @@ sql_import_dict = {
                 """
     },
     'Measurement': {
+        'column_list': [
+                    'measurement_id', ' person_id', 'measurement_concept_id',
+                    'measurement_date', 'measurement_datetime', 'measurement_time',
+                    'measurement_type_concept_id', 'operator_concept_id',
+                    'value_as_number', 'value_as_concept_id',
+                    'unit_concept_id', 'range_low', 'range_high',
+                    'provider_id',
+                    'visit_occurrence_id', 'visit_detail_id',
+                    'measurement_source_value', 'measurement_source_concept_id',
+                    'unit_source_value', 'value_source_value'
+                    ],
         'sql': """
                 INSERT INTO TABLENAME SELECT 
                     measurement_id,  person_id, measurement_concept_id,

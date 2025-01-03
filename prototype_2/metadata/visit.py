@@ -37,7 +37,7 @@ metadata = {
 
     	'visit_concept_code': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:code",	 # FIX ToDo is this what I think it is?,
+    	    'element': "hl7:code",	 # FIX ToDo is this what I think it is?, see #72 etc.
     	    'attribute': "code"
     	},
     	'visit_concept_codeSystem': {
@@ -63,7 +63,7 @@ metadata = {
     	'visit_start_date_low': {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
-    	    'element': "hl7:effectiveTime/hl7:low",
+    	    'element': "hl7:effectiveTime/hl7:low[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
             'priority':  ['visit_start_date', 1]
     	},
@@ -87,7 +87,7 @@ metadata = {
     	'visit_end_date_high':  {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
-    	    'element': "hl7:effectiveTime/hl7:high",
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
             'priority': ['visit_end_date', 1]
     	},
@@ -98,6 +98,8 @@ metadata = {
     	    'attribute': "value",
             'priority':  ['visit_end_date', 2]
     	},
+        # too loose! too forgiving? If the high value is UNK, this
+        # will use the low date. See #211 for options.
     	'visit_end_date_low': {
     	    'config_type': 'FIELD',
             'data_type':'DATE',

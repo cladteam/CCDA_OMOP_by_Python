@@ -67,6 +67,7 @@
 
 import argparse
 import datetime
+from dateutil.parser import parse
 import logging
 import os
 import sys
@@ -75,7 +76,6 @@ import zlib
 import ctypes
 import traceback
 from collections import defaultdict
-
 from lxml import etree as ET
 from lxml.etree import XPathEvalError
 from typeguard import typechecked
@@ -92,6 +92,7 @@ ns = {
    'xsi': 'http://www.w3.org/2001/XMLSchema-instance',
    'sdtc': 'urn:hl7-org:sdtc'
 }
+
 
 #from foundry.transforms import Dataset
 #concept_xwalk = Dataset.get("concept_xwalk")
@@ -118,35 +119,31 @@ def create_hash(input_string) -> int | None:
 
 
 @typechecked
-def cast_to_date(string_value) -> str:
+def cast_to_date(string_value) ->  datetime.date:
     # TODO does CCDA always do dates as YYYYMMDD ?
     # https://build.fhir.org/ig/HL7/CDA-ccda/StructureDefinition-USRealmDateTimeInterval-definitions.html
     # doc says YYYMMDD... examples show ISO-8601. Should use a regex and detect parse failure.
     # TODO  when  is it date and when datetime
 
-    # Step 1 : put dashes in  to make ISO-8601 happy, b/c python insists on dashes.
-    iso_8601_string = f"{string_value[0:4]}-{string_value[4:6]}-{string_value[6:8]}"
-    #print(f"DATE iso8601 string {string_value} {iso_8601_string}")
+    try:
+        datetime_val = parse(string_value)
+        return datetime_val.date()
+    except Exception as x:
+        print(f"ERROR couldn't parse {string_value} as date. {e}")
+        return None
 
-    # Step 2: dont' both with fancy date classes that can't help us here.
-
-    return iso_8601_string
-
-
-def cast_to_datetime(string_value):
-    # TODO does CCDA always do dates as YYYYMMDD ? ...without dashes?
-    if len(string_value) > 8:
-        iso_8601_string = f"{string_value[0:4]}-{string_value[4:6]}-{string_value[6:8]} {string_value[8:10]}:{string_value[10:12]}"
-        #print(f"DATETIME iso8601 string {string_value}  {iso_8601_string}")
-        return iso_8601_string
-    else:
-        #print(f"{string_value} too short for DATETIME")
-        return cast_to_date(string_value)
+def cast_to_datetime(string_value) -> datetime.datetime:
+    try:
+        datetime_val = parse(string_value)
+        return datetime_val
+    except Exception as x:
+        print(f"ERROR couldn't parse {string_value} as datetime. {e}")
+        return None
 
 
 @typechecked
 def parse_field_from_dict(field_details_dict :dict[str, str], root_element, 
-        config_name, field_tag, root_path) ->  None | str | float | int :
+        config_name, field_tag, root_path) ->  None | str | float | int | datetime.datetime | datetime.date:
     """ Retrieves a value for the field descrbied in field_details_dict that lies below
         the root_element.
         Domain and field_tag are here for error messages.
@@ -183,9 +180,6 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
             try:
                 attribute_value = ''.join(field_element[0].itertext())
             except Exception as e:
-                print((f"ERROR: no text elemeent for field element {field_element} "
-                       f"for {config_name}/{field_tag} root:{root_path} "
-                       f" dict: {field_element[0].attrib} EXCEPTION:{e}"))
                 logger.error((f"no text elemeent for field element {field_element} "
                         f"for {config_name}/{field_tag} root:{root_path} "
                         f" dict: {field_element[0].attrib} EXCEPTION:{e}"))
@@ -213,7 +207,6 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
             elif field_details_dict['data_type'] == 'FLOAT':
                 attribute_value = float(attribute_value)
             else:
-                print(f"ERROR UNKNOWN DATA TYPE: {field_details_dict['data_type']}")
                 logger.error(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {config_name} {field_tag}")
             return attribute_value
         else:
@@ -223,7 +216,7 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
 
 
 @typechecked
-def do_none_fields(output_dict :dict[str, None | str | float | int], 
+def do_none_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date ],
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str]):
@@ -236,7 +229,7 @@ def do_none_fields(output_dict :dict[str, None | str | float | int],
 
             
 @typechecked
-def do_constant_fields(output_dict :dict[str, None | str | float | int], 
+def do_constant_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
                        root_element, root_path, config_name,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str]):
@@ -251,7 +244,7 @@ def do_constant_fields(output_dict :dict[str, None | str | float | int],
 
             
 @typechecked
-def do_basic_fields(output_dict :dict[str, None | str | float | int ], 
+def do_basic_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
                     error_fields_set :set[str], 
@@ -267,28 +260,71 @@ def do_basic_fields(output_dict :dict[str, None | str | float | int ],
                 output_dict[field_tag] = attribute_value
                 logger.info(f"     FIELD for {config_name}/{field_tag} \"{attribute_value}\"")
             except KeyError as ke:
-                print(f"ERROR      key erorr: {ke}")
-                print(f"  {field_details_dict}")
-                print(f"  FIELD for {config_name}/{field_tag} \"{attribute_value}\"")
                 logger.error(f"key erorr: {ke}")
                 logger.error(f"  {field_details_dict}")
                 logger.error(f"  FIELD for {config_name}/{field_tag} \"{attribute_value}\"")
                 raise
 
         elif type_tag == 'PK':
+            # PK fields are basically regular FIELDs that go into the pk_dict
+            # NB. so do HASH fields.
             logger.info(f"     PK for {config_name}/{field_tag}")
             attribute_value = parse_field_from_dict(field_details_dict, root_element,
                                                     config_name, field_tag, root_path)
             output_dict[field_tag] = attribute_value
             pk_dict[field_tag].append(attribute_value)
-        elif type_tag == 'FK':
+            logger.info("PK {config_name}/{field_tag} {type(attribute_value)} {attribute_value}")
+            
+
+@typechecked 
+def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+                    root_element, root_path, config_name,  
+                    config_dict :dict[str, dict[str, str | None] ], 
+                    error_fields_set :set[str], 
+                    pk_dict :dict[str, list[any]] ):
+    """
+        When a configuration has an FK field, it uses the tag in that configuration
+        to find corresponding values from PK fields.  This mechanism is intended for
+        PKs uniquely identified in a CCDA document header for any places in the sections
+        it would be used as an FK. This is typically true for person_id and visit_occurrence_id, 
+        but there are exceptions. In particular, some documents have multiple encounters, so
+        you can't just naively choose the only visit_id because there are many.
+        
+        Choosing the visit is more complicated, because it requires a join (on date ranges)
+        between the domain table and the encounters table, or portion of the header that
+        has encompassingEncounters in it. This code, the do_foreign_key_fields() function
+        operates in too narrow a context for that join. These functions are scoped down
+        to processing a single config entry for a particular OMOP domain. The output_dict, 
+        parameter is just for that one domain. It wouldn't include the encounters.
+        For example, the measurement_results.py file has a configuration for parsing OMOP 
+        measurement rows out of an XML file. The visit.py would have been previosly processed
+        and it's rows stashed away elsewhere in the parse_doc() function whose scope is large
+        enough to consider all the configurations. So the visit choice/reconcilliation
+        must happen from there.
+        
+        TL;DR not all foreign keys are resolved here. In particular, domain FK references,
+        visit_occurrence_id, in cases where more than a single encounter has previously been
+        parsed, are not, can not, be resolved here. See the parse_doc() function for how
+        it is handled there.
+        
+    """
+    for (field_tag, field_details_dict) in config_dict.items():
+        logger.info((f"     FK config:'{config_name}' field_tag:'{field_tag}'"
+                     f" {field_details_dict}"))
+        type_tag = field_details_dict['config_type']
+        
+        if type_tag == 'FK':
             logger.info(f"     FK for {config_name}/{field_tag}")
             if field_tag in pk_dict and  len(pk_dict[field_tag]) > 0:
-                output_dict[field_tag] = pk_dict[field_tag][0]  
-
-                if len(pk_dict[field_tag]) > 1:
-                    print(f"WARNING FK has more than one value {field_tag}, using first for FK")
-                    logger.info(f"WARNING FK has more than one value {field_tag}, using first for FK")
+                if len(pk_dict[field_tag]) == 1:
+                    output_dict[field_tag] = pk_dict[field_tag][0]
+                else:
+                    # can't really choose the correct value here. Is attempted in reconcile_visit_FK_with_specific_domain() later, below.
+                    print(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK' ")
+                    logger.info(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK'")
+                    # original hack:
+                    output_dict[field_tag] = 'RECONCILE FK'
+                
             else:
                 path = root_path + "/"
                 if 'element' in field_details_dict:
@@ -307,9 +343,8 @@ def do_basic_fields(output_dict :dict[str, None | str | float | int ],
                 output_dict[field_tag] = None
                 error_fields_set.add(field_tag)
 
-                
 @typechecked
-def do_derived_fields(output_dict :dict[str, None | str | float | int], 
+def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
                       root_element, root_path, config_name,  
                       config_dict :dict[str, dict[str, str | None]], 
                       error_fields_set :set[str]):
@@ -364,7 +399,7 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int],
 
                 
 @typechecked
-def do_domain_fields(output_dict :dict[str, None | str | float | int], 
+def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
                      root_element, root_path, config_name, 
                      config_dict :dict[str, dict[str, str | None]], 
                      error_fields_set :set[str]) -> str | None :
@@ -415,7 +450,7 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int],
 
 
 @typechecked
-def do_hash_fields(output_dict :dict[str,  None | str | float | int], 
+def do_hash_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str], 
@@ -430,7 +465,6 @@ def do_hash_fields(output_dict :dict[str,  None | str | float | int],
         if field_details_dict['config_type'] == 'HASH':
             value_list = []
             if 'fields' not in field_details_dict:
-                print(f"ERROR: HASH field {field_tag} is missing 'fields' attributes in config:{config_name}")
                 logger.error(f"HASH field {field_tag} is missing 'fields' attributes in config:{config_name}")
             for field_name in field_details_dict['fields'] :
                 if field_name in output_dict:
@@ -445,7 +479,7 @@ def do_hash_fields(output_dict :dict[str,  None | str | float | int],
 
             
 @typechecked
-def do_priority_fields(output_dict :dict[str, None | str | float | int], 
+def do_priority_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
                        root_element, root_path, config,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str], 
@@ -494,8 +528,8 @@ def do_priority_fields(output_dict :dict[str, None | str | float | int],
                 break
 
     return priority_fields
-
-
+    
+    
 @typechecked
 def get_extract_order_fn(dict):
     def get_order_from_dict(field_key):
@@ -542,7 +576,7 @@ def sort_output_dict(output_dict :dict[str, None | str | float | int],
 def parse_config_for_single_root(root_element, root_path, config_name, 
                                  config_dict :dict[str, dict[str, str | None]], 
                                  error_fields_set : set[str], 
-                                 pk_dict :dict[str, list[any]]) -> dict[str,  None | str | float | int] | None:
+                                 pk_dict :dict[str, list[any]]) -> dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None:
 
     """  Parses for each field in the metadata for a config out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
@@ -567,7 +601,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
     do_hash_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict)
     priority_field_names = do_priority_fields(output_dict, root_element, root_path, config_name,  config_dict,
                                               error_fields_set, pk_dict)
-    
+    do_foreign_key_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict)
     output_dict = sort_output_dict(output_dict, config_dict, config_name)
 
 
@@ -579,9 +613,9 @@ def parse_config_for_single_root(root_element, root_path, config_name,
 
 
 @typechecked
-def parse_config_from_file(tree, config_name, 
+def parse_config_from_xml_file(tree, config_name, 
                            config_dict :dict[str, dict[str, str | None]], filename, 
-                           pk_dict :dict[str, list[any]]) -> list[ dict[str,  None | str | float | int] | None  ] | None:
+                           pk_dict :dict[str, list[any]]) -> list[ dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None  ] | None:
                                                                    
     """ The main logic is here.
         Given a tree from ElementTree representing a CCDA document
@@ -654,7 +688,136 @@ def parse_config_from_file(tree, config_name,
 
     return output_list
 
+                          
+                          
+#                          
+##################################################
+#
+           
+                          
+""" domain_dates tell the FK functionality in do_foreign_keys() how to 
+    choose visits for domain_rows.It is one of the most encumbered parts of the code.
+    
+    Rules:
+    - Encounters must be populated before domains. This is controlled by the
+      order of the metadata files in the metadata/__init__.py file.
+    - This structure must include a mapping from start or start and end to
+      names of the fields for each specific domain to be processed.
+    - These are _config_ names, not domain names. For example, the domain
+      Measurement is fed by configs names Measurement_vital_signs, and 
+      Measurement_results. They are the keys into the output dict where the
+      visit candidates will be found.
+    + This all happens in the do_basic_keys 
+    
+    Background: An xml file is processed in phases, one for each configuration file in 
+    the metadata directory. Since the configuration files are organized by omop table,
+    it's helpful to think of the phases being the OMOP tables too.  Within each config 
+    phase, there is another level of phases: the types of the fields: none, constant, 
+    basic, derived, domain, hash, and foreign key. This means any fields in the current 
+    config phase are available for looking up the value of a foreign key.
+    
+"""
+domain_dates = {
+    'Measurement': {'date': ['measurement_date', 'measurement_datetime'],
+                    'id': 'measurement_id'},
+    'Observation': {'date': ['observation_date', 'observation_datetime'],
+                    'id': 'observation_id'},
+    'Condition'  : {'start': ['condition_start_date', 'condition_start_datetime'], 
+                    'end':   ['condition_end_date', 'condition_end_datetime'],
+                    'id': 'condition_id'}
+}
+        
+@typechecked 
+def reconcile_visit_FK_with_specific_domain(domain: str, 
+                                            domain_dict: list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None , 
+                                            visit_dict:  list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None):
+    if visit_dict is None:
+        print(f"WARNING no visits for {domain} in reconcile_visit_FK_with_specific_domain")
+        return
 
+    if domain_dict is None:
+        print(f"WARNING no data for {domain} in reconcile_visit_FK_with_specific_domain")
+        return
+    
+    if domain not in domain_dates:
+        print(f"ERROR no metadata for domain {domain} in reconcile_visit_FK_with_specific_domain")
+        
+     # Q: does this domain NEED to have it's visit foreign key reconcileed??!!!! TODO
+     # (in this project things are called a domain and passed in here that are not really domains in OMOP, locations, providers, care-sites, etc. )
+
+     # Q: do they have different IDs??? (not in Patient-502.xml)
+     # A: it will get caught in the PK constraints when loaded to duckdb
+
+     # Q: do these strings parse, and so compare as dates??? 
+     # A: All parsing done upstream with datatype constraints on the FIELD configs
+        
+    if 'date' in domain_dates[domain].keys():
+        # just one date
+            for thing in domain_dict:
+
+                date_field_name = domain_dates[domain]['date'][0]
+                datetime_field_name = domain_dates[domain]['date'][1]
+                # Q: what if you have dates in one place and datetimes in the other? TODO
+                # A: work with the most-specific value you have.
+                # TODO: make a test case that has different combinations, check that parsing populates them.
+                date_field_value = thing[date_field_name] 
+                if thing[datetime_field_name] is not None:
+                    date_field_value = thing[datetime_field_name]
+                
+                
+                # TODO: check for a second visit that fits
+                # TODO: the bennis_shauna file has UNK for the end date.
+                
+                if date_field_value is not None :
+                    # compare dates
+                                    
+                    have_visit = False
+                    for visit in visit_dict:
+                        try:
+                            start_visit_date = visit['visit_start_date']
+                            end_visit_date = visit['visit_end_date']
+
+                            if start_visit_date <= date_field_value and date_field_value <= end_visit_date:
+                                print(f"MATCHED visit: v_start:{start_visit_date} d_date:{date_field_value} v_end:{end_visit_date}")
+                                # got one! ....is it the first?
+                                if not have_visit:
+                                    # update the visit_occurrence_id in that domain record
+                                    thing['visit_occurrence_id'] = visit['visit_occurrence_id']
+                                else:
+                                    print("WARNING got a second fitting visit for {domain} {thing[domain_dates['id']]}")
+                        except KeyError as ke:
+                            print(f"WARNING missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
+                        except Exception as e:
+                            print(f"WARNING something wrong in visit reconciliation \"{e}\" {type(e)} ")
+                    if not have_visit:
+                        print(f"WARNING XXXXX wasn't able to reconcile {domain} {thing}")
+                        print("")
+                        
+                else:
+                    # S.O.L.
+                    print(f"ERROR no datea available for visit reconcilliation in domain {domain} for {thing}")
+                
+
+    elif 'start' in domain_dates[domain].keys() and 'end' in domain_dates[domain].keys():
+        print("tbd")
+    else:
+        print("ERROR........")
+        
+
+    
+    
+@typechecked
+def reconcile_visit_foreign_keys(data_dict :dict[str, 
+                                                 list[ dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None  ] | None]) :
+    # data_dict is a dictionary of config_names to a list of record-dicts
+
+    reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_results'], data_dict['Visit'] )
+    reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_vital_signs'], data_dict['Visit'] )
+    reconcile_visit_FK_with_specific_domain('Observation', data_dict['Observation'], data_dict['Visit'] )
+#    reconcile_visit_FK_with_specific_domain('Condition', data_dict['Condition'], data_dict['Visit'] )
+
+                          
+                          
 @typechecked
 def parse_doc(file_path, 
               metadata :dict[str, dict[str, dict[str, str]]]) -> dict[str, 
@@ -668,7 +831,7 @@ def parse_doc(file_path,
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():
-        data_dict_list = parse_config_from_file(tree, config_name, config_dict, base_name, pk_dict)
+        data_dict_list = parse_config_from_xml_file(tree, config_name, config_dict, base_name, pk_dict)
         if config_name in omop_dict: 
             omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)
         else:
@@ -692,7 +855,7 @@ def print_omop_structure(omop :dict[str, list[ dict[str, None | str | float | in
                 if domain_data_dict is None:
                     print(f"\n\nERROR DOMAIN: {domain} is NONE")
                 else:
-                    print(f"\n\nDOMAIN: {domain}")
+                    print(f"\n\nDOMAIN: {domain} {domain_data_dict.keys()} ")
                     for field, parts in domain_data_dict.items():
                         print(f"    FIELD:{field}")
                         print(f"        parts type {type(parts[0])}")
@@ -705,7 +868,7 @@ def print_omop_structure(omop :dict[str, list[ dict[str, None | str | float | in
 
                     
 @typechecked
-def process_file(filepath):
+def process_file(filepath :str, print_output: bool):
     """ Process each configuration in the metadata for one file.
         Returns nothing.
         Prints the omop_data. See better functions in layer_datasets.puy
@@ -726,10 +889,23 @@ def process_file(filepath):
 
     metadata = get_meta_dict()
     omop_data = parse_doc(filepath, metadata)
-    if omop_data is not None or len(omop_data) < 1:
+    reconcile_visit_foreign_keys(omop_data)
+    if print_output and (omop_data is not None or len(omop_data) < 1):
         print_omop_structure(omop_data, metadata)
     else:
-        logger.error(f"FILE no data from {filepath}")
+        logger.error(f"FILE no data from {filepath} (or printing turned off)")
+
+
+# for argparse
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
 def main() :
@@ -740,15 +916,18 @@ def main() :
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-d', '--directory', help="directory of files to parse")
     group.add_argument('-f', '--filename', help="filename to parse")
+    parser.add_argument('-p', '--print_output', 
+            type=str2bool, const=True, default=True,  nargs="?",
+            help="print out the output values, -p False to have it not print")
     args = parser.parse_args()
 
     if args.filename is not None:
-        process_file(args.filename)
+        process_file(args.filename, args.print_output)
     elif args.directory is not None:
         only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
         for file in (only_files):
             if file.endswith(".xml"):
-            	process_file(os.path.join(args.directory, file))
+            	process_file(os.path.join(args.directory, file), args.print_output)
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 

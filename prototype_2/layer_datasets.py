@@ -8,6 +8,8 @@ from typeguard import typechecked
 from foundry.transforms import Dataset
 from collections import defaultdict
 import lxml
+from prototype_2.ddl import sql_import_dict
+from prototype_2.ddl import config_to_domain_name_dict
 
 import prototype_2.data_driven_parse as DDP
 from prototype_2.metadata import get_meta_dict
@@ -27,9 +29,36 @@ logger = logging.getLogger(__name__)
 
 
 @typechecked
-def show_column_dict(column_dict):
+def show_column_dict(config_name, column_dict):
     for key,val in column_dict.items():
-        print(f"   key:{key} length(val):{len(val)}")
+        print(f"   config: {config_name}  key:{key} length(val):{len(val)}")
+
+
+def find_max_columns(config_name :str, domain_list: list[ dict[str, tuple[ None | str | float | int, str]] | None  ]) -> dict[str, any]:
+    """  Give a list of dictionaries, find the maximal set of columns that has the basic OMOP columns. 
+
+         Trying to deal with a list that may have dictionaries that lack certain fields.
+         An option is to go with a completely canonical list, like from the DDL, but we want
+         to remain flexible and be able to easily add columns that are not part of the DDL for 
+         use later in Spark. It is also true that we do load into an RDB here, DuckDB, to 
+         check PKs and FK constraints, but only on the OMOP columns. The load scripts there
+         use the DDL and ignore columns to the right we want to allow here.
+    """
+    domain = config_to_domain_name_dict[config_name]
+    chosen_row =-1
+    num_columns = 0
+    row_num=-1
+    for col_dict in domain_list:
+        # Q1 does  this dict at least have what the ddl expects?
+        good_row = True
+        for key in sql_import_dict[domain]['column_list']:
+            if key not in col_dict:
+                    good_row = False
+        # Q2: does it have the most extra
+        if good_row and len(col_dict.keys()) > num_columns:
+            chosen_row = row_num
+        row_num += 1
+    return domain_list[row_num]
 
 
 @typechecked
@@ -39,38 +68,41 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
         creates a Pandas dataframe
     """
     df_dict = {}
-    for domain_name, domain_list in omop_data.items():
-
+    for config_name, domain_list in omop_data.items():
         # Transpose to a dictionary of named columns.
 
-        # Initialize a dictionary of columns from the first row
-        column_dict = defaultdict(list)
+        # Initialize a dictionary of columns from schema
         if domain_list is None or len(domain_list) < 1:
-            logger.error(f"No data to create dataframe for {domain_name} from {filepath}")
-            print(f"ERROR No data to create dataframe for {domain_name} from {filepath}")
+            logger.error(f"No data to create dataframe for {config_name} from {filepath}")
+            print(f"ERROR No data to create dataframe for {config_name} from {filepath}")
         else:
-            for field in domain_list[0]:
-                column_dict[field] = []
+            column_list = find_max_columns(config_name, domain_list)
+            column_dict =  dict((k, []) for k in column_list) #dict.fromkeys(column_list)
 
-        # Add the data from all the rows
-        if domain_list is None or len(domain_list) < 1:
-            logger.error(f"No data when creating datafame for {domain_name} from {filepath}")
-            print(f"No data when creating datafame for {domain_name} from {filepath}")
-        else:
-            for domain_data_dict in domain_list:
-                for field, value in domain_data_dict.items():
-                    column_dict[field].append(value)
-
-        # create a Pandas dataframe from the data_dict
-        try:
-            domain_df = pd.DataFrame(column_dict)
-            df_dict[domain_name] = domain_df
-        except ValueError as ve:
-            logger.error(f"ERROR when creating dataframe for {domain_name} \"{ve}\"")
-            print(f"ERROR when creating dataframe for {domain_name} \"{ve}\"")
-            show_column_dict(column_dict)
-            df_dict[domain_name] = None
-
+            # Add the data from all the rows
+            if domain_list is None or len(domain_list) < 1:
+                logger.error(f"No data when creating datafame for {config_name} from {filepath}")
+                print(f"No data when creating datafame for {config_name} from {filepath}")
+            else:
+                for domain_data_dict in domain_list:
+                    for field in column_dict.keys():
+                        if field in domain_data_dict:
+                            column_dict[field].append(domain_data_dict[field])
+                        else:
+                            column_dict[field].append(None)
+    
+            print(f"XXX {config_name} {column_dict}")
+            # create a Pandas dataframe from the data_dict
+            try:
+                show_column_dict(config_name, column_dict)
+                domain_df = pd.DataFrame(column_dict)
+                df_dict[config_name] = domain_df
+            except ValueError as ve:
+                logger.error(f"ERROR when creating dataframe for {config_name} \"{ve}\"")
+                print(f"ERROR when creating dataframe for {config_name} \"{ve}\"")
+                show_column_dict(config_name, column_dict)
+                df_dict[config_name] = None
+    
 
     return df_dict
 
@@ -80,12 +112,12 @@ def write_csvs_from_dataframe_dict(df_dict :dict[str, pd.DataFrame], file_name, 
     """ writes a CSV file for each dataframe
         uses the key of the dict as filename
     """
-    for domain_name, domain_dataframe in df_dict.items():
-        filepath = f"{folder}/{file_name}__{domain_name}.csv"
+    for config_name, domain_dataframe in df_dict.items():
+        filepath = f"{folder}/{file_name}__{config_name}.csv"
         if domain_dataframe is not None:
             domain_dataframe.to_csv(filepath, sep=",", header=True, index=False)
         else:
-            print(f"ERROR: NOT WRITING domain {domain_name} to file {filepath}, no dataframe")
+            print(f"ERROR: NOT WRITING domain {config_name} to file {filepath}, no dataframe")
 
 
 @typechecked
@@ -106,6 +138,7 @@ def process_file(filepath) -> dict[str, pd.DataFrame]:
     )
 
     omop_data = DDP.parse_doc(filepath, get_meta_dict())
+    DDP.reconcile_visit_foreign_keys(omop_data)
     # DDP.print_omop_structure(omop_data)
     if omop_data is not None or len(omop_data) < 1:
         dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
@@ -171,7 +204,10 @@ def main():
                             omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
                     else:
                         omop_dataset_dict[key]= new_data_dict[key]
-                    logger.info(f"{file} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
+                    if new_data_dict[key] is not None:
+                        logger.info(f"{file} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
+                    else:
+                        logger.info(f"{file} {key} {len(omop_dataset_dict)} None / no data")
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
