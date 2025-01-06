@@ -1,3 +1,38 @@
+""" setup_omop
+    Initiates an in-memory instance of DuckDB, reads in the OMOP DDL,
+    and reads in any data provided.
+
+    For now, it's useful to see issues regarding  PK presence and uniqueness, datatypes..
+
+    TODO: This includes abuse of the OMOP DDL.  Better solutions  include
+    - better metadata so the resulting dataset and CSV look like OMOP
+    - a second stage here that modifies the resulting datasets to look more
+      like OMOP
+    - some compromise means getting a handle on how narrow the CSV can be
+      compared to OMOP. Can you leave out unused nullable fields?
+"""
+
+OMOP_CDM_DIR = "resources/" #  "../CommonDataModel/inst/ddl/5.3/duckdb/"
+OMOP_CSV_DATA_DIR = "output/"
+
+import io
+import os
+import re
+import logging
+import duckdb
+
+conn = duckdb.connect()
+logger = logging.getLogger(__name__)
+logging.basicConfig(
+    format='%(levelname)s: %(message)s',
+    filename=f"logs/load_omop.log",
+    force=True,
+    level=logging.INFO
+    # level=logging.WARNING level=logging.ERROR # level=logging.INFO # level=logging.DEBUG
+)
+
+processing_status = True
+
 
 config_to_domain_name_dict = {
     'Care_Site_ee': 'Care_Site',
@@ -36,13 +71,32 @@ sql_import_dict = {
             'observation_source_concept_id',
             'unit_source_value',
             'qualifier_source_value'
-        ]
-    },
+        ],
+        'sql': None, 
+        'table_name': "observation",
+        'pk_query': """
+                SELECT count(*) as row_ct, 
+                       count(observation_id) as p_id, 
+                       count(distinct observation_id) as d_p_id
+                FROM observation
+                """
+    },   
     'Location':{
         'column_list': [
-            'location_id', 'address_1', 'address_2', 'city', 'state', 'zip', 'county', 'location_source_value'
-        ]
+            'location_id', 'address_1', 'address_2', 'city', 'state', 'zip', 
+            'county', 'location_source_value'
+        ],
+        'sql': None,
+        'table_name': "location",
+        'pk_query': """
+                SELECT count(*) as row_ct, 
+                       count(location_id) as p_id,
+                       count(distinct location_id) as d_p_id
+                FROM location
+                """
     },
+    
+
     'Provider':{
         'column_list': [
             'provider_id',
@@ -58,7 +112,15 @@ sql_import_dict = {
             'specialty_source_concept_id',
             'gender_source_value',
             'gender_source_concept_id'
-        ]
+        ],
+        'sql': None, 
+        'table_name': "provider",
+        'pk_query': """
+                SELECT count(*) as row_ct, 
+                count(provider_id) as p_id, 
+                count(distinct provider_id) as d_p_id
+                FROM provider
+                """
     },
     'Care_Site':{
         'column_list': [     
@@ -68,7 +130,15 @@ sql_import_dict = {
             'location_id', 
             'care_site_source_value',
             'place_of_service_source_value'
-        ]
+        ],
+        'sql': None,
+        'table_name': "care_site",
+        'pk_query': """
+                SELECT count(*) as row_ct, 
+                       count(care_site_id) as p_id, 
+                       count(distinct care_site_id) as d_p_id
+                FROM care_site
+                """
     },
     'Visit':{
         'column_list': [
@@ -89,7 +159,15 @@ sql_import_dict = {
             'discharge_to_concept_id',
             'discharge_to_source_value',
             'preceding_visit_occurrence_id'
-        ]
+        ],
+        'sql': None,
+        'table_name': "visit_occurrence",
+        'pk_query': """
+                SELECT count(*) as row_ct, 
+                       count(visit_occurrence_id) as p_id, 
+                       count(distinct visit_occurrence_id) as d_p_id
+                FROM visit_occurrence
+                """
     },
     'Person': {
         'column_list': [
@@ -99,19 +177,12 @@ sql_import_dict = {
             'gender_source_value', 'gender_source_concept_id', 'race_source_value',
             'race_source_concept_id', 'ethnicity_source_value', 'ethnicity_source_concept_id'
             ],
-        'sql': """
-                INSERT INTO TABLENAME SELECT
-            person_id, gender_concept_id, year_of_birth, month_of_birth, day_of_birth,
-            birth_datetime, race_concept_id, ethnicity_concept_id,
-            location_id, provider_id, care_site_id, person_source_value,
-            gender_source_value, gender_source_concept_id, race_source_value,
-            race_source_concept_id, ethnicity_source_value, ethnicity_source_concept_id
-                FROM  read_csv('FILENAME', delim=',', header=True)
-               """,
+        'sql': None,
         'table_name': "person",
         'pk_query': """
-                SELECT count(*) as row_ct, count(person_id) as p_id,
-                            count(distinct person_id) as d_p_id
+                SELECT count(*) as row_ct, 
+                       count(person_id) as p_id,
+                       count(distinct person_id) as d_p_id
                 FROM person
                 """
     },
@@ -129,24 +200,12 @@ sql_import_dict = {
                     'discharge_to_source_concept_id', 'discharge_to_source_value', 
                     'preceding_visit_occurrence_id'
                     ],
-        'sql': """
-                INSERT INTO TABLENAME SELECT
-                    visit_occurrence_id, 
-                    person_id, 
-                    visit_concept_id,
-                    visit_start_date, visit_start_datetime, 
-                    visit_end_date, visit_end_datetime, 
-                    visit_type_concept_id, 
-                    provider_id, care_site_id, 
-                    visit_source_value, visit_source_concept_id, 
-                    admitting_source_concept_id, admitting_source_value, 
-                    discharge_to_source_concept_id, discharge_to_source_value, 
-                    preceding_visit_occurrence_id
-                FROM  read_csv('FILENAME', delim=',', header=True)
-               """,
+        'sql': None,
         'table_name': "visit_occurrence",
         'pk_query': """
-                SELECT count(*) as row_ct, count(visit_occurrence_id) as p_id, count(distinct visit_occurrence_id) as d_p_id
+                SELECT count(*) as row_ct, 
+                       count(visit_occurrence_id) as p_id, 
+                       count(distinct visit_occurrence_id) as d_p_id
                 FROM visit_occurrence
                 """
     },
@@ -162,26 +221,25 @@ sql_import_dict = {
                     'measurement_source_value', 'measurement_source_concept_id',
                     'unit_source_value', 'value_source_value'
                     ],
-        'sql': """
-                INSERT INTO TABLENAME SELECT 
-                    measurement_id,  person_id, measurement_concept_id,
-                    measurement_date, measurement_datetime, measurement_time, 
-                    measurement_type_concept_id, operator_concept_id, 
-                    value_as_number, value_as_concept_id,
-                    unit_concept_id, range_low, range_high, 
-                    provider_id, 
-                    visit_occurrence_id, visit_detail_id, 
-                    measurement_source_value, measurement_source_concept_id, 
-                    unit_source_value, value_source_value
-                FROM  read_csv('FILENAME', delim=',', header=True)
-               """,
+        'sql': None,
         'table_name': "measurement",
         'pk_query': """
-                SELECT count(*) as row_ct, count(measurement_id) as p_id, count(distinct measurement_id) as d_p_id
+                SELECT count(*) as row_ct, 
+                       count(measurement_id) as p_id, 
+                       count(distinct measurement_id) as d_p_id
                 FROM measurement
                 """
     }
 }
+
+def init_sql_import_dict():
+    for key in sql_import_dict:
+        sql_import_dict[key]['sql'] = f"""
+                INSERT INTO TABLENAME SELECT
+                {", ".join(sql_import_dict[key]['column_list'])} 
+                FROM  read_csv('FILENAME', delim=',', header=True)
+               """
+    print(sql_import_dict)
 
 
 def _apply_local_ddl():
@@ -258,21 +316,14 @@ def main():
     #_apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints_and_string_PK.sql")
     _apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints_and_bigint_PK.sql")
 
-    print("\nPERSON")
-    _import_CSVs('Person')
-    check_PK('Person')
+    domain_list = ['Person', 'Visit', 'Provider', 'Care_Site', 'Location',
+               'Measurement'  #, 'Observation'
+    ]
 
-    print("\nVISIT")
-    _import_CSVs('Visit')
-    check_PK('Visit')
-
-    print("\nMEASUREMENT")
-    _import_CSVs('Measurement')
-    check_PK('Measurement')
-
-    #print("\nOBSERVATION")
-    #_import_CSVs('Observation')
-    #check_PK('Observation')
+    for domain in domain_list:
+        print(f"\n** {domain} **")
+        _import_CSVs(domain)
+        check_PK(domain)
 
     # not implemented in ALTER TABLE yet in v1.0
     # https://github.com/OHDSI/CommonDataModel/issues/713
@@ -296,5 +347,8 @@ def main():
     exit(processing_status)
 
 if __name__ == '__main__':
+    init_sql_import_dict()
     main()
     
+
+

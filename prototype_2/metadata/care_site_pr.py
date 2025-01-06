@@ -81,7 +81,7 @@ metadata = {
             'order': 4
         },
         'care_site_source_value': { # TODO concat id and address fileds
-            'config_type': 'None',
+            'config_type': None,
             'order': 5
         },
         'place_of_service_source_value': { # TODO concat code and codeSystem?

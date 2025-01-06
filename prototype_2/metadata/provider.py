@@ -77,7 +77,7 @@ metadata = {
         },
 
         'provider_name': { 
-            'config_type': 'None',
+            'config_type': None,
             'order': 2
         },
 
@@ -94,22 +94,22 @@ metadata = {
             'order': 4
         },
         #<code code="207QA0505X" displayName="Adult Medicine Physician" codeSystem="2.16.840.1.113883.6.101" codeSystemName="NUCC" />
-        'specialty_id_code': { 
+        'specialty_concept_id_code': { 
             'config_type': 'FIELD',
             'element': 'hl7:code',
             'attribute': "code"
         },
-        'specialty_id_codeSystem': { 
+        'specialty_concept_id_codeSystem': { 
             'config_type': 'FIELD',
             'element': 'hl7:code',
             'attribute': "codesystem"
         },
-        'specialty_id': {
+        'specialty_concept_id': {
        	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
     	        'argument_names': {
-    		        'concept_code': 'specialty_id_code',
-    		        'vocabulary_oid': 'specialty_id_codeSystem',
+    		        'concept_code': 'specialty_concept_id_code',
+    		        'vocabulary_oid': 'specialty_concept_id_codeSystem',
                     'default': 0
     	         },
             'order': 5
