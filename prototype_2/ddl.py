@@ -140,35 +140,6 @@ sql_import_dict = {
                 FROM care_site
                 """
     },
-    'Visit':{
-        'column_list': [
-            'visit_occurrence_id',
-            'person_id INT64',
-            'visit_concept_id INT64',
-            'visit_start_date',
-            'visit_start_datetime',
-            'visit_end_date',
-            'visit_end_datetime',
-            'visit_type_concept_id',
-            'provider_id',
-            'care_site_id',
-            'visit_source_value',
-            'visit_source_concept_id',
-            'admitting_source_concept_id',
-            'admitting_source_value',
-            'discharge_to_concept_id',
-            'discharge_to_source_value',
-            'preceding_visit_occurrence_id'
-        ],
-        'sql': None,
-        'table_name': "visit_occurrence",
-        'pk_query': """
-                SELECT count(*) as row_ct, 
-                       count(visit_occurrence_id) as p_id, 
-                       count(distinct visit_occurrence_id) as d_p_id
-                FROM visit_occurrence
-                """
-    },
     'Person': {
         'column_list': [
             'person_id', 'gender_concept_id', 'year_of_birth', 'month_of_birth', 'day_of_birth',
