@@ -1,0 +1,205 @@
+
+
+170.314b2_AmbulatoryToC.xml_Observation DENYING have:Measurement domain:Observation 3015632
+-- ok
+170.314b2_AmbulatoryToC.xml_Measurement_results ACCEPTING Measurement 3015632
+
+170.314b2_AmbulatoryToC.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+170.314b2_AmbulatoryToC.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+170.314b2_AmbulatoryToC.xml_Measurement_vital_signs ACCEPTING Measurement 3038553
+170.314b2_AmbulatoryToC.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+170.314b2_AmbulatoryToC.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+
+
+***********
+bennis_shauna_ccda.xml_Measurement_results DENYING have:Procedure expect:Measurement 3049950
+---?
+bennis_shauna_ccda.xml_Observation DENYING have:Procedure domain:Observation 3049950
+***********
+
+
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3034962
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 706163
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3000905
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3020416
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3000963
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3023314
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3023599
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3012030
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3009744
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3019897
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3024929
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3008342
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3037511
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3011948
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3010457
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3013869
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3013650
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3004327
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3033575
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3028615
+bennis_shauna_ccda.xml_Observation DENYING have:Measurement domain:Observation 3013429
+--- above complimented by  below OK
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3034962
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 706163
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3000905
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3020416
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3000963
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3023314
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3023599
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3012030
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3009744
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3019897
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3024929
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3008342
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3037511
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3011948
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3010457
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3013869
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3013650
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3004327
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3033575
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3028615
+bennis_shauna_ccda.xml_Measurement_results ACCEPTING Measurement 3013429
+
+
+CCDA_CCD_b1_Ambulatory_v2.xml_Observation DENYING have:Measurement domain:Observation 3002173
+CCDA_CCD_b1_Ambulatory_v2.xml_Observation DENYING have:Measurement domain:Observation 3028866
+CCDA_CCD_b1_Ambulatory_v2.xml_Observation DENYING have:Measurement domain:Observation 3007461
+--- OK
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_results ACCEPTING Measurement 3002173
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_results ACCEPTING Measurement 3028866
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_results ACCEPTING Measurement 3007461
+
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+CCDA_CCD_b1_Ambulatory_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+
+
+CCDA_CCD_b1_InPatient_v2.xml_Observation DENYING have:Measurement domain:Observation 3002173
+CCDA_CCD_b1_InPatient_v2.xml_Observation DENYING have:Measurement domain:Observation 3028866
+CCDA_CCD_b1_InPatient_v2.xml_Observation DENYING have:Measurement domain:Observation 3007461
+--- OK
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_results ACCEPTING Measurement 3002173
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_results ACCEPTING Measurement 3028866
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_results ACCEPTING Measurement 3007461
+
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+CCDA_CCD_b1_InPatient_v2.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+
+
+C-CDA_R2-1_CCD_modified.xml_Measurement_results DENYING have:Observation expect:Measurement 3299517
+C-CDA_R2-1_CCD_modified.xml_Measurement_results DENYING have:Observation expect:Measurement 3299517
+-- OK
+C-CDA_R2-1_CCD_modified.xml_Observation ACCEPTING Observation 3299517
+C-CDA_R2-1_CCD_modified.xml_Observation ACCEPTING Observation 3299517
+
+C-CDA_R2-1_CCD_modified.xml_Observation DENYING have:Measurement domain:Observation 3000963
+C-CDA_R2-1_CCD_modified.xml_Observation DENYING have:Measurement domain:Observation 3000905
+C-CDA_R2-1_CCD_modified.xml_Observation DENYING have:Measurement domain:Observation 3024929
+C-CDA_R2-1_CCD_modified.xml_Observation DENYING have:Measurement domain:Observation 3023314
+C-CDA_R2-1_CCD_modified.xml_Observation DENYING have:Measurement domain:Observation 3020416
+--- OK
+C-CDA_R2-1_CCD_modified.xml_Measurement_results ACCEPTING Measurement 3000963
+C-CDA_R2-1_CCD_modified.xml_Measurement_results ACCEPTING Measurement 3000905
+C-CDA_R2-1_CCD_modified.xml_Measurement_results ACCEPTING Measurement 3024929
+C-CDA_R2-1_CCD_modified.xml_Measurement_results ACCEPTING Measurement 3023314
+C-CDA_R2-1_CCD_modified.xml_Measurement_results ACCEPTING Measurement 3020416
+
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+C-CDA_R2-1_CCD_modified.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+
+
+C-CDA_R2-1_CCD.xml_Observation DENYING have:Measurement domain:Observation 3000963
+C-CDA_R2-1_CCD.xml_Observation DENYING have:Measurement domain:Observation 3000905
+C-CDA_R2-1_CCD.xml_Observation DENYING have:Measurement domain:Observation 3024929
+C-CDA_R2-1_CCD.xml_Observation DENYING have:Measurement domain:Observation 3023314
+C-CDA_R2-1_CCD.xml_Observation DENYING have:Measurement domain:Observation 3020416
+C-CDA_R2-1_CCD.xml_Observation DENYING have:Measurement domain:Observation 3013682
+---OK
+C-CDA_R2-1_CCD.xml_Measurement_results ACCEPTING Measurement 3000963
+C-CDA_R2-1_CCD.xml_Measurement_results ACCEPTING Measurement 3000905
+C-CDA_R2-1_CCD.xml_Measurement_results ACCEPTING Measurement 3024929
+C-CDA_R2-1_CCD.xml_Measurement_results ACCEPTING Measurement 3023314
+C-CDA_R2-1_CCD.xml_Measurement_results ACCEPTING Measurement 3020416
+C-CDA_R2-1_CCD.xml_Measurement_results ACCEPTING Measurement 3013682
+
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3036277
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3013762
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+C-CDA_R2-1_CCD.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+
+
+CCD-Sample.xml_Observation DENYING have:Measurement domain:Observation 3000963
+CCD-Sample.xml_Observation DENYING have:Measurement domain:Observation 3000905
+CCD-Sample.xml_Observation DENYING have:Measurement domain:Observation 3024929
+CCD-Sample.xml_Observation DENYING have:Measurement domain:Observation 3023314
+CCD-Sample.xml_Observation DENYING have:Measurement domain:Observation 3020416
+CCD-Sample.xml_Observation DENYING have:Measurement domain:Observation 3013682
+-- OK
+CCD-Sample.xml_Measurement_results ACCEPTING Measurement 3000963
+CCD-Sample.xml_Measurement_results ACCEPTING Measurement 3000905
+CCD-Sample.xml_Measurement_results ACCEPTING Measurement 3024929
+CCD-Sample.xml_Measurement_results ACCEPTING Measurement 3023314
+CCD-Sample.xml_Measurement_results ACCEPTING Measurement 3020416
+CCD-Sample.xml_Measurement_results ACCEPTING Measurement 3013682
+
+CCD-Sample.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+CCD-Sample.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+CCD-Sample.xml_Measurement_vital_signs ACCEPTING Measurement 3025315
+
+
+Patient-502.xml_Observation DENYING have:Measurement domain:Observation 3023602
+Patient-502.xml_Observation DENYING have:Measurement domain:Observation 3028437
+Patient-502.xml_Observation DENYING have:Measurement domain:Observation 3027114
+Patient-502.xml_Observation DENYING have:Measurement domain:Observation 3007943
+-- OK
+Patient-502.xml_Measurement_results ACCEPTING Measurement 3023602
+Patient-502.xml_Measurement_results ACCEPTING Measurement 3028437
+Patient-502.xml_Measurement_results ACCEPTING Measurement 3027114
+Patient-502.xml_Measurement_results ACCEPTING Measurement 3007943
+
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3038553
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3038553
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3038553
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3012888
+Patient-502.xml_Measurement_vital_signs ACCEPTING Measurement 3004249
+
+
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Observation DENYING have:Measurement domain:Observation 3009201
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Observation DENYING have:Measurement domain:Observation 3004410
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Observation DENYING have:Measurement domain:Observation 3016723
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Observation DENYING have:Measurement domain:Observation 3022217
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Observation DENYING have:Measurement domain:Observation 3015022
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Observation DENYING have:Measurement domain:Observation 3020064
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Observation DENYING have:Measurement domain:Observation 3004451
+-- OK
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Measurement_results ACCEPTING Measurement 3009201
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Measurement_results ACCEPTING Measurement 3004410
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Measurement_results ACCEPTING Measurement 3016723
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Measurement_results ACCEPTING Measurement 3022217
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Measurement_results ACCEPTING Measurement 3015022
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Measurement_results ACCEPTING Measurement 3020064
+ToC_CCDA_CCD_CompGuideSample_FullXML.xml_Measurement_results ACCEPTING Measurement 3004451
+
