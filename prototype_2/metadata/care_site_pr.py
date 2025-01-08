@@ -49,7 +49,7 @@ metadata = {
             
         'care_site_name': {  # TBD
             'config_type': 'FIELD',
-            'element': 'hl7:location/hl7:name',
+            'element': 'hl7:playingEntity[@classCode="PLC"]/hl7:name',
             'attribute': "#text",
             'order': 2
         },
