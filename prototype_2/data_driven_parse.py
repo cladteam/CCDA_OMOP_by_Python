@@ -609,18 +609,30 @@ def parse_config_for_single_root(root_element, root_path, config_name,
     if (expected_domain_id == domain_id or domain_id is None):
         if expected_domain_id == "Observation":
             logger.warning((f"ACCEPTING {domain_id} "
-                           f"{output_dict['observation_concept_id']}" ) )
+                            f"id:{output_dict['observation_id']} "
+                            f"cpt:{output_dict['observation_concept_id']}" ) )
         elif expected_domain_id == "Measurement":
             logger.warning((f"ACCEPTING {domain_id} "
-                           f"{output_dict['measurement_concept_id']}") )
+                            f"id:{output_dict['measurement_id']} "
+                            f"cpt:{output_dict['measurement_concept_id']}") )
+        elif expected_domain_id == "Procedure":
+            logger.warning((f"ACCEPTING {domain_id} "
+                            f"id:{output_dict['procedure_id']} "
+                            f"cpt:{output_dict['procedure_concept_id']}") )
         return output_dict
     else:
         if expected_domain_id == "Observation":
             logger.warning((f"DENYING have:{domain_id} domain:{expected_domain_id} "
-                            f"{output_dict['observation_concept_id']}" ))
+                            f"id:{output_dict['observation_id']} "
+                            f"cpt:{output_dict['observation_concept_id']}" ))
         elif expected_domain_id == "Measurement":
             logger.warning( ( f"DENYING have:{domain_id} expect:{expected_domain_id} "
-                              f"{output_dict['measurement_concept_id']}") )
+                              f"id:{output_dict['measurement_id']} "
+                              f"cpt:{output_dict['measurement_concept_id']}") )
+        elif expected_domain_id == "Procedure":
+            logger.warning( ( f"DENYING have:{domain_id} expect:{expected_domain_id} "
+                              f"id:{output_dict['procedure_id']} "
+                              f"cpt:{output_dict['procedure_concept_id']}") )
         else:
             logger.warning((f"DENYING have:{domain_id} domain:{expected_domain_id} "))
         return None

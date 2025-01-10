@@ -141,6 +141,9 @@ metadata = {
             'priority': ['provider_id', 1]
     	},
         
+        ## TODO FIX, is this address under the perfomer or here in the encounter? Without an "order" attribute to output this, 
+        # the field could be null when used in the hash and not noticed. 
+        # TODO FIX how to test this without a plethora of extra columns? Have the has function throw errors on null fields?
         'provider_id_street': {
             'config_type': 'FIELD',
             'element': 'hl7:addr/hl7:streetAddressLine',
