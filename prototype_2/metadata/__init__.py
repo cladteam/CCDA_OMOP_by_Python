@@ -28,25 +28,17 @@ import prototype_2.metadata.provider as provider
 #  NB: Order is important here.
 #  PKs like person and visit must come before referencing FK configs, like in measurement
 
-meta_dict =  location.metadata |
-             person.metadata | 
-             -- visit_header.metadata -- encompassingEncounter 
-             visit.metadata  | 
-             measurement.metadata | 
-             measurement_vs.metadata | 
-             observation.metadata  | 
-            -- condition.metadata | 
-             care_site_ee_hcf.metadata | 
-             care_site_ee_hcf_location.metadata |  
-             care_site_pr.metadata | 
-             care_site_pr_location.metadata |
+meta_dict =  location.metadata | \
+             person.metadata | \
+             visit.metadata  | \
+             measurement.metadata | \
+             measurement_vs.metadata | \
+             observation.metadata  | \
+             care_site_ee_hcf.metadata | \
+             care_site_ee_hcf_location.metadata | \
+             care_site_pr.metadata | \
+             care_site_pr_location.metadata | \
              provider.metadata
-                
-                -- encounters/visists
-                --    encompassingEncounter --> pk_dict as PK
-                --    a solo Encounter section --> pk_dict, but do we collided?
-                --    many   Encounter section --> "RECONCILE PK"
-
 
 
 def get_meta_dict():
