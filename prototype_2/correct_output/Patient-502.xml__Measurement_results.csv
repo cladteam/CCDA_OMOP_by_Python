@@ -1,0 +1,5 @@
+measurement_id,person_id,measurement_concept_id,measurement_date,measurement_datetime,measurement_time,measurement_type_concept_id,operator_concept_id,value_as_number,value_as_concept_id,unit_concept_id,range_low,range_high,provider_id,visit_occurrence_id,visit_detail_id,measurement_source_value,measurement_source_concept_id,unit_source_value,value_source_value,measurement_id_root,measurement_id_extension,source_section
+2211261494357866,1412389360241576,3023602,2010-04-14,,,32035,,55,0,,,,,3501573642865181,,14646-4,,,55,107c2dc0-67a5-11db-bd13-0800200c9a66,,RESULTS
+2211261494357866,1412389360241576,3028437,2010-04-14,,,32035,,153,0,,,,,3501573642865181,,2089-1,,,153,107c2dc0-67a5-11db-bd13-0800200c9a66,,RESULTS
+2211261494357866,1412389360241576,3027114,2010-04-14,,,32035,,240,0,,,,,3501573642865181,,2093-3,,,240,107c2dc0-67a5-11db-bd13-0800200c9a66,,RESULTS
+2211261494357866,1412389360241576,3007943,2010-04-14,,,32035,,160,0,,,,,3501573642865181,,12951-0,,,160,107c2dc0-67a5-11db-bd13-0800200c9a66,,RESULTS

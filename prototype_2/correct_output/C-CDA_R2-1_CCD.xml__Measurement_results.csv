@@ -1,0 +1,7 @@
+measurement_id,person_id,measurement_concept_id,measurement_date,measurement_datetime,measurement_time,measurement_type_concept_id,operator_concept_id,value_as_number,value_as_concept_id,unit_concept_id,range_low,range_high,provider_id,visit_occurrence_id,visit_detail_id,measurement_source_value,measurement_source_concept_id,unit_source_value,value_source_value,measurement_id_root,measurement_id_extension,source_section
+2211261494357866,3222207654141651,3000963,2008-03-19,,,32035,,13.2,0,,,,,3501573642865181,,718-7,,,13.2,107c2dc0-67a5-11db-bd13-0800200c9a66,,RESULTS
+946722660856246,3222207654141651,3000905,2008-03-19,,,32035,,6.7,0,,,,,3501573642865181,,6690-2,,,6.7,a69b3d60-2ffd-4440-958b-72b3335ff35f,,RESULTS
+4266497943167538,3222207654141651,3024929,2008-03-19,,,32035,,123,0,,,,,3501573642865181,,777-3,,,123,ef5c1c58-4665-4556-a8e8-6e720d82f572,,RESULTS
+2748544070338045,3222207654141651,3023314,2008-03-19,,,32035,,35.3,0,,,,,3501573642865181,,4544-3,,,35.3,7c0704bb-9c40-41b5-9c7d-26b2d59e234f,,RESULTS
+2799682235560559,3222207654141651,3020416,2008-03-19,,,32035,,4.21,0,,,,,3501573642865181,,789-8,,,4.21,bccd6fc9-0c7f-455e-8616-923ed0d04d09,,RESULTS
+2694922731694038,3222207654141651,3013682,2008-03-20,,,32035,,0,0,,,,,3501573642865181,,3094-0,,,n/a,aed821af-3330-4138-97f0-e84dfe5f3c35,,RESULTS

@@ -44,7 +44,14 @@ def find_max_columns(config_name :str, domain_list: list[ dict[str, tuple[ None 
          check PKs and FK constraints, but only on the OMOP columns. The load scripts there
          use the DDL and ignore columns to the right we want to allow here.
     """
-    domain = config_to_domain_name_dict[config_name]
+    domain = None
+    try:
+        domain = config_to_domain_name_dict[config_name]
+    except Exception as e:
+        print(f"ERROR no domain for {config_name} in {config_to_domain_name_dict.keys()}")
+        print("The config_to_domain_name_dict in ddl.py probably needs this to be added to it.")
+        raise e
+
     chosen_row =-1
     num_columns = 0
     row_num=-1

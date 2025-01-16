@@ -148,7 +148,6 @@ model.ckpt*
 # Data outputs
 data/
 *.bmp
-*.csv
 *.dat
 *.db
 *.dbf

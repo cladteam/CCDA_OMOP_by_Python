@@ -1,9 +1,7 @@
 
 import prototype_2.value_transformations as VT
 """
-    (not) This is for caresites from Encounter/participant/participantRole
-    
-    This is for caresites from Encounter/performer/assignedEntity
+    This is for providers from Encounter/performer/assignedEntity
 
 """
 metadata = {
@@ -77,7 +75,13 @@ metadata = {
         },
 
         'provider_name': { 
-            'config_type': None,
+            'config_type': 'DERIVED',
+            'FUNCTION': VT.concat_fields,
+            'argument_names':{
+                'first_field': 'provider_id_given',
+                'second_field': 'provider_id_family',
+                'default' : 'n/a'
+            },
             'order': 2
         },
 
