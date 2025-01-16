@@ -1,8 +1,0 @@
-measurement_id,person_id,measurement_concept_id,measurement_date,measurement_datetime,measurement_time,measurement_type_concept_id,operator_concept_id,value_as_number,value_as_concept_id,unit_concept_id,range_low,range_high,provider_id,visit_occurrence_id,visit_detail_id,measurement_source_value,measurement_source_concept_id,unit_source_value,value_source_value,measurement_id_root,measurement_id_extension,source_section
-1243363203187028,54229747541477,3009201,2012-11-26,,,32035,,6,0,,,,,,,3016-3,,,6,1331eea1-3efe-497e-96bc-de56796a253d,,RESULTS
-1597761804655378,54229747541477,3004410,2012-11-26,,,32035,,8,0,,,,,,,4548-4,,,8,dc16a671-c8f7-4125-a3f6-c8787606f576,,RESULTS
-1223813929072195,54229747541477,3016723,2012-11-26,,,32035,,1.5,0,,,,,,,2160-0,,,1.5,9cd43fa7-db31-4c29-ab30-83f92fdcaa20,,RESULTS
-3225913530052319,54229747541477,3022217,2012-11-26,,,32035,,1.5,0,,,,,,,6301-6,,,1.5,78df60b1-daf7-4838-b509-ec3a3f4116c1,,RESULTS
-1303835240560543,54229747541477,3015022,2012-11-26,,,32035,,55,0,,,,,,,18041-4,,,55,aaa00f9e-0154-4eaa-be85-aeb34169f06a,,RESULTS
-1310540677335864,54229747541477,3020064,2012-11-26,,,32035,,1.5,0,,,,,,,18089-3,,,1.5,347f958c-9b6b-4eeb-848d-624567117cb7,,RESULTS
-4241224084295457,54229747541477,3004451,2012-11-26,,,32035,,0,0,,,,,,,18844-1,,,n/a,ba4f85fa-586c-4898-9aad-b592d4c2c383,,RESULTS

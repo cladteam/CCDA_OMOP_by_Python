@@ -1,2 +1,0 @@
-visit_occurrence_id,person_id,visit_concept_id,visit_start_date,visit_start_datetime,visit_end_date,visit_end_datetime,visit_type_concept_id,provider_id,care_site_id,visit_source_value,visit_source_concept_id,admitting_source_concept_id,admitting_source_value,discharge_to_source_concept_id,discharge_to_source_value,preceding_visit_occurrence_id,visit_occurrence_id_root,visit_occurrence_id_extension
-3349633794306504,3222207654141651,2414397,2012-09-27,,2012-09-27,,32035,4114564900612114,,2.16.840.1.113883.6.12|99213,,,,,,,2a620155-9d11-439e-92b3-5d9815ff4de8,

@@ -1,2 +1,0 @@
-visit_occurrence_id,person_id,visit_concept_id,visit_start_date,visit_start_datetime,visit_end_date,visit_end_datetime,visit_type_concept_id,care_site_id,visit_source_value,visit_source_concept_id,admitting_source_concept_id,admitting_source_value,discharge_to_source_concept_id,discharge_to_source_value,preceding_visit_occurrence_id,visit_occurrence_id_root,visit_occurrence_id_extension
-1896467922004962,3222207654141651,2514404,2015-06-18,,2015-06-25,,32035,,2.16.840.1.113883.6.12|99221,,,,,,,1.2.840.114350.1.13.6289.1.7.3.698084.8,31528
