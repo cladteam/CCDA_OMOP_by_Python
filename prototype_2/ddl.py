@@ -201,6 +201,28 @@ sql_import_dict = {
                        count(distinct measurement_id) as d_p_id
                 FROM measurement
                 """
+    },
+    'Condition': {
+        'column_list': [
+                    'condition_occurrence_id', ' person_id', 'condition_concept_id',
+                    'condition_start_date', 'condition_start_datetime', 
+                    'condition_end_date', 'condition_end_datetime'
+                    'condition_type_concept_id', 
+                    'condition_status_concept_id',
+                    'stop_reason', 
+                    'provider_id',
+                    'visit_occurrence_id', 'visit_detail_id',
+                    'condition_source_value', 'condition_source_concept_id',
+                    'condition_status_source_concept_id', 'condition_status_source_value'
+                    ],
+        'sql': None,
+        'table_name': "condition_occurrence",
+        'pk_query': """### TODO
+                SELECT count(*) as row_ct, 
+                       count(condition_occurrence_id) as p_id, 
+                       count(distinct condition_occurrence_id) as d_p_id
+                FROM condition_occurrence
+                """
     }
 }
 

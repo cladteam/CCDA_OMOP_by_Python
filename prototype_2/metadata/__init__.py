@@ -6,6 +6,7 @@ import prototype_2.metadata.visit       as visit
 import prototype_2.metadata.measurement as measurement
 import prototype_2.metadata.measurement_vital_signs as measurement_vs
 import prototype_2.metadata.observation as observation
+import prototype_2.metadata.condition as condition
 import prototype_2.metadata.location as location
 import prototype_2.metadata.care_site_ee_hcf_location as care_site_ee_hcf_location
 import prototype_2.metadata.care_site_ee_hcf as care_site_ee_hcf
@@ -36,6 +37,7 @@ meta_dict =  location.metadata | \
              measurement.metadata | \
              measurement_vs.metadata | \
              observation.metadata  | \
+             condition.metadata | \
              care_site_ee_hcf.metadata | \
              care_site_ee_hcf_location.metadata | \
              care_site_pr.metadata | \
