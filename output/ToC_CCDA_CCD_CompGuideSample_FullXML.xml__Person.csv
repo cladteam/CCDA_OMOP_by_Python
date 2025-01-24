@@ -1,2 +1,0 @@
-person_id,gender_concept_id,year_of_birth,month_of_birth,day_of_birth,birth_datetime,race_concept_id,ethnicity_concept_id,location_id,provider_id,care_site_id,person_source_value,gender_source_value,gender_source_concept_id,race_source_value,race_source_concept_id,ethnicity_source_value,ethnicity_source_concept_id,person_id_root,person_id_extension
-54229747541477,8507,1933,3,16,1933-03-16,8527,38003564,717300958802503,,,,M,,2106-3,,2186-5,,2.16.840.1.113883.4.1,123-456-7890

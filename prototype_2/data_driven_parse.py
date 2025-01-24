@@ -79,6 +79,7 @@ from collections import defaultdict
 from lxml import etree as ET
 from lxml.etree import XPathEvalError
 from typeguard import typechecked
+from prototype_2 import value_transformations as VT
 
 from prototype_2.metadata import get_meta_dict
  
@@ -376,7 +377,14 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime
                         logger.error(f"DERIVED exception {e}")
 
             try:
+                function_reference = field_details_dict['FUNCTION']
                 function_value = field_details_dict['FUNCTION'](args_dict)
+                if function_reference != VT.concat_fields and function_value is None:
+                    logger.error((f"do_derived_fields(): No mapping back for {config_name} {field_tag}"
+                                  f" from {field_details_dict['FUNCTION']}  {args_dict}   {config_dict[field_tag]}  "
+                                  "If this is from a value_as_concept/code field, it may not be an error, but "
+                                  "an artificat of data that doesn't have a value or one that is not "
+                                  "meant as a concept id"))
                 output_dict[field_tag] = function_value
                 logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
@@ -428,7 +436,14 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
             # Derive the value
             try:
+                function_reference = field_details_dict['FUNCTION']
                 function_value = field_details_dict['FUNCTION'](args_dict)
+                if function_reference != VT.concat_fields and function_value is None:
+                    logger.error((f"do_domain_fields(): No mapping back for {config_name} {field_tag} "
+                                  f"from {field_details_dict['FUNCTION']} {args_dict}   {config_dict[field_tag]}"
+                                  "If this is from a value_as_concept/code field, it may not be an error, but "
+                                  "an artificat of data that doesn't have a value or one that is not "
+                                  "meant as a concept id"))
                 domain_id = function_value
                 output_dict[field_tag] = function_value
                 logger.info((f"     DOMAIN captured as {function_value} for "

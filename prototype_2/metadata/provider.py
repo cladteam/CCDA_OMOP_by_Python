@@ -110,7 +110,7 @@ metadata = {
         },
         'specialty_concept_id': {
        	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	        'argument_names': {
     		        'concept_code': 'specialty_concept_id_code',
     		        'vocabulary_oid': 'specialty_concept_id_codeSystem',

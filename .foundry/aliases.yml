@@ -16,3 +16,5 @@ script_output:
   rid: "ri.foundry.main.dataset.feabafaf-7d93-423e-999e-e9fdd9bc7c97"
 visit:
   rid: "ri.foundry.main.dataset.7725d302-84f8-47c6-8c8c-a3b18094113f"
+visit_concept_xwalk_mapping_dataset:
+  rid: "ri.foundry.main.dataset.832f8106-d7ee-4364-9082-d48c49302dd8"

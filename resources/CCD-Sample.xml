@@ -586,7 +586,7 @@ This sample is designed to be used in conjunction with the HL7 CDA® R2 IG: C-CD
                                         <content>Discharged to Home or Self Care</content>
                                     </td>
                                 </tr>
-                            </tbody>
+                            </tbody>0.20.22.2.3.1
                         </table>
                     </text>
                     <!--Section Time Range Entry expresses business logic used to scope the temporal span of the information included in the section.-->

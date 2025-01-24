@@ -58,7 +58,7 @@ metadata = {
         },
         'place_of_service_concept_id': {
        	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	        'argument_names': {
     		        'concept_code': 'place_of_service_concept_code',
     		        'vocabulary_oid': 'place_of_service_concept_codeSystem',

@@ -18,7 +18,7 @@ metadata = {
             'element': 'hl7:id',
             'attribute': 'root',
             'order': 1001
-    	},
+    	},       
     	'observation_id_extension': {
             'config_type': 'FIELD',
             'element': 'hl7:id',
@@ -33,13 +33,13 @@ metadata = {
     	'observation_id_constant': {
             'config_type': 'CONSTANT',
             'constant_value' : 999,
-            'priority': ('observation_id', 2)
+            'priority': ('observation_id', 100)
         },
     	'observation_id_field_hash': {
     	    'config_type': 'HASH',
             'fields' : ['person_id', 'visit_occurrence_id', 'observation_concept_id', 'observation_time',
                     'value_as_string', 'value_as_nmber', 'value_as_concept_id'],
-            'priority': ('observation_id', 100)
+            'priority': ('observation_id', 2)
     	},
         'observation_id': {
             'config_type': 'PRIORITY',
@@ -65,7 +65,7 @@ metadata = {
     	},
     	'observation_concept_id': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'observation_concept_code',
     		    'vocabulary_oid': 'observation_concept_codeSystem',
@@ -73,9 +73,10 @@ metadata = {
     	    },
             'order': 3
     	},
+
     	'observation_concept_domain_id': {
     	    'config_type': 'DOMAIN',
-    	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
+    	    'FUNCTION': VT.codemap_xwalk_domain_id,
     	    'argument_names': {
     		    'concept_code': 'observation_concept_code',
     		    'vocabulary_oid': 'observation_concept_codeSystem',
@@ -95,7 +96,7 @@ metadata = {
     	'observation_type_concept_id': {
             'config_type': 'CONSTANT',
             'constant_value' : 32035,
-            'order': 8
+            'order': 6
         },
 
     	'visit_occurrence_id':	{
@@ -138,7 +139,7 @@ metadata = {
         },
     	'value_as_concept_id_CD': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'value_as_code_CD',
     		    'vocabulary_oid': 'value_as_codeSystem_CD',
@@ -158,7 +159,7 @@ metadata = {
         },
     	'value_as_concept_id_CE': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'value_as_code_CE',
     		    'vocabulary_oid': 'value_as_codeSystem_CE',
@@ -183,23 +184,26 @@ metadata = {
     	    'element': 'hl7:value',
     	    'attribute': 'unit'
     	},
-        'unit_concept_id': { 'config_type': None, 'order': 10 },
-        'provider_id': { 'config_type': None, 'order': 11 },
-        'visit_occurence_id': { 'config_type': None, 'order': 12 },
-        'visit_detail_id': { 'config_type': None, 'order': 13 },
+        'qualifier_concept_id' : { 'config_type': None, 'order': 10 },
+        'unit_concept_id': { 'config_type': None, 'order': 11 },
+        'provider_id': { 'config_type': None, 'order': 12 },
+        'visit_occurence_id': { 'config_type': None, 'order': 13 },
+        'visit_detail_id': { 'config_type': None, 'order': 14 },
 
         'observation_source_value': {
-    	    'config_type': 'FIELD',
-    	    'element': "hl7:code" ,
-    	    'attribute': "code",
-            'order': 14
-        },
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.concat_fields,
+    	    'argument_names': {
+    		    'first_field': 'observation_concept_code',
+    		    'second_field': 'observation_concept_codeSystem',
+                'default': 0
+    	    },
+            'order' : 15
+    	},
 
-        'observation_source_concept_id': { 'config_type': None, 'order': 15 },
-
-
-        'unit_source_value': { 'config_type': None, 'order': 16 },
-        'qualifier_source_value': { 'config_type': None, 'order': 17 }
+        'observation_source_concept_id': { 'config_type': None, 'order': 16 },
+        'unit_source_value': { 'config_type': None, 'order': 17 },
+        'qualifier_source_value': { 'config_type': None, 'order': 18 }
     }
 }
 

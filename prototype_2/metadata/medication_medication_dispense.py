@@ -2,29 +2,30 @@
 import prototype_2.value_transformations as VT
 
 metadata = {
-    'Medication_medication_activity': {
+    'Medication_medication_dispense': {
     	'root': {
     	    'config_type': 'ROOT',
             'expected_domain_id': 'Drug',
-            # Medications section, entry, substanceAdministration, entryRelationship
+            # Medication Dispense
+            # Medications section, entry, substanceAdministration, entryRelationship, supply
     	    'element':
-    		  ("./hl7:component/hl7:structuredBody/hl7:component/hl7:section/"
-    		   "hl7:templateId[@root='2.16.840.1.113883.10.20.22.2.1' or @root='2.16.840.1.113883.10.20.22.2.1.1']/"
-    		   "../hl7:entry/hl7:substanceAdministration[@moodCode='EVN']/"
-               "entryRelationship/supply/"
-               "hl7:templateId[@root='2.16.840.1.113883.10.20.22.4.18']/../"
+     		  ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
+    		   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.1" or @root="2.16.840.1.113883.10.20.22.2.1.1"]/'
+    		   '../hl7:entry/hl7:substanceAdministration[@moodCode="EVN"]/'
+               'hl7:entryRelationship/hl7:supply/'
+               'hl7:templateId[@root="2.16.840.1.113883.10.20.22.4.18"]/..'
               )
         },
 
     	'drug_exposure_id_root': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not (@nullFlavor="UNK")]',
             'attribute': 'root',
             'order': 1001
     	},
     	'drug_exposure_id_extension': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'extension',
             'order': 1002
     	},
@@ -83,7 +84,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'drug_concept_code',
     		    'vocabulary_oid': 'drug_concept_codeSystem',
-                'default': 0
+                'default': 'n/a'
     	    }
     	},
         'drug_exposure_start_date': {

@@ -35,24 +35,72 @@ metadata = {
             'order': 2
     	},
 
-    	'visit_concept_code': {
+    	'visit_concept_code_encounter': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:code",	 # FIX ToDo is this what I think it is?, see #72 etc.
+    	    'element': "hl7:code",	
     	    'attribute': "code"
     	},
-    	'visit_concept_codeSystem': {
+    	'visit_concept_codeSystem_encounter': {
     	    'config_type': 'FIELD',
     	    'element': "hl7:code",
     	    'attribute': "codeSystem"
     	},
-    	'visit_concept_id': {
+    	'visit_concept_id_encounter': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.visit_xwalk_concept_id,
     	    'argument_names': {
-    		    'concept_code': 'visit_concept_code',
-    		    'vocabulary_oid': 'visit_concept_codeSystem',
+    		    'concept_code': 'visit_concept_code_encounter',
+    		    'vocabulary_oid': 'visit_concept_codeSystem_encounter',
                 'default': 0
     	    },
+            'priority':  ['visit_concept_id', 2]
+        },
+        'visit_source_value_encounter': { 
+            'config_type': 'DERIVED', 
+            'FUNCTION': VT.concat_fields,
+    	    'argument_names': {
+                'first_field': 'visit_concept_codeSystem_encounter',
+    		    'second_field': 'visit_concept_code_encounter',
+                'default': 0
+    	    },
+            'priority':  ['visit_source_value', 2]
+        },
+
+
+       	'visit_concept_code_location': {
+    	    'config_type': 'FIELD',
+    	    'element': "hl7:participant/hl7:participantRole/hl7:code",	 
+    	    'attribute': "code"
+    	},
+    	'visit_concept_codeSystem_location': {
+    	    'config_type': 'FIELD',
+    	    'element': "hl7:participant/hl7:participantRole/hl7:code",
+    	    'attribute': "codeSystem"
+    	},
+    	'visit_concept_id_location': {
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.visit_xwalk_concept_id,
+    	    'argument_names': {
+    		    'concept_code': 'visit_concept_code_location',
+    		    'vocabulary_oid': 'visit_concept_codeSystem_location',
+                'default': 0
+    	    },
+            'priority':  ['visit_concept_id', 1]
+        },
+        'visit_source_value_location': { 
+            'config_type': 'DERIVED', 
+            'FUNCTION': VT.concat_fields,
+    	    'argument_names': {
+                'first_field': 'visit_concept_codeSystem_location',
+    		    'second_field': 'visit_concept_code_location',
+                'default': 0
+    	    },
+            'priority':  ['visit_source_value', 1]
+        },
+        
+        
+        'visit_concept_id': {
+            'config_type': 'PRIORITY',
             'order': 3
     	},
 
@@ -193,13 +241,7 @@ metadata = {
     	},
 
         'visit_source_value': { 
-            'config_type': 'DERIVED', 
-            'FUNCTION': VT.concat_fields,
-    	    'argument_names': {
-                'first_field': 'visit_concept_codeSystem',
-    		    'second_field': 'visit_concept_code',
-                'default': 0
-    	    },
+            'config_type': 'PRIORITY', 
             'order': 11
         },
         

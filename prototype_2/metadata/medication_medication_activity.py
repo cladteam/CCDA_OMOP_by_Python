@@ -65,7 +65,7 @@ metadata = {
     	},
     	'drug_concept_id': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,  
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,  
     	    'argument_names': {
     		    'concept_code': 'drug_concept_code',
     		    'vocabulary_oid': 'drug_concept_codeSystem',
@@ -76,7 +76,7 @@ metadata = {
 
     	'drug_concept_domain_id': {
     	    'config_type': 'DOMAIN',
-    	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
+    	    'FUNCTION': VT.codemap_xwalk_domain_id,
     	    'argument_names': {
     		    'concept_code': 'drug_concept_code',
     		    'vocabulary_oid': 'drug_concept_codeSystem',

@@ -8,25 +8,24 @@ The code here is meant to work, but also show and explain the approach. The meat
 
 ## Description
 ### Steps in code evolution: simple to complex
-- Basic Python: parse.py
-- Simple data-driven: simple_data_driven_parse.py
+- Basic Python: tutorial_code/parse.py
+- Simple data-driven: tutorial_code/simple_data_driven_parse.py
 - Data-driven with PK/FK and derived fields: data_driven_parse.py
   - metadata.py
   - value_transformations.py
-- (TBD) Data-driven with vocabulary access and domain_id routing.
 
 #### Create datasets from the generated Python structures coming out of the data-driven parse implementations
+This also publishes to Foundry.
   - layer_datasets.py
 
-#### allow for CSV metadata (WIP)
- - metadata_from_file.py
- - metadata.csv
-
+### Tools
+- code_hunt.py Searches Foundry datasets specified in __init__.py for given concept.
+- ddl.py Includes metadata used elsewhere, but loads the CSV files into duckdb to see if the constraints work.
 
 ## Getting Started (how to run)
 From the directory above prototype_2:
 - #setup a venv (or not)
-- pip install lxml pandas
+- pip install lxml pandas duckdb
 - mkdir output
 - mkdir logs
 - python -m prototype_2.data_driven_parse
@@ -40,7 +39,7 @@ From the directory above prototype_2:
 
 
 ## Mapping
-The mapping file is, again for now, metadata.py.
+- in the metadata directory are python files that are combined into one giant directory by the __init__.py there.
 
 ## Apologies
 This code was written by a CCDA neophyte with limited time and resources in hopes of 

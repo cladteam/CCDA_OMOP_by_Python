@@ -64,7 +64,7 @@ metadata = {
     	},
     	'measurement_concept_id': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'measurement_concept_code',
     		    'vocabulary_oid': 'measurement_concept_codeSystem',
@@ -75,7 +75,7 @@ metadata = {
 
     	'measurement_concept_domain_id': {
     	    'config_type': 'DOMAIN',
-    	    'FUNCTION': VT.map_hl7_to_omop_domain_id,
+    	    'FUNCTION': VT.codemap_xwalk_domain_id,
     	    'argument_names': {
     		    'concept_code': 'measurement_concept_code',
     		    'vocabulary_oid': 'measurement_concept_codeSystem',
@@ -134,7 +134,7 @@ metadata = {
         },
     	'value_as_concept_id_CD': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'value_as_code_CD',
     		    'vocabulary_oid': 'value_as_codeSystem_CD',
@@ -154,7 +154,7 @@ metadata = {
         },
     	'value_as_concept_id_CE': {
     	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.map_hl7_to_omop_concept_id,
+    	    'FUNCTION': VT.codemap_xwalk_concept_id,
     	    'argument_names': {
     		    'concept_code': 'value_as_code_CE',
     		    'vocabulary_oid': 'value_as_codeSystem_CE',

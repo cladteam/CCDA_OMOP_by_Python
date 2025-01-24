@@ -19,5 +19,6 @@ concept_df = pd.read_csv("map_to_standard.csv")
 
 codemap_xwalk = Dataset.get("codemap_xwalk").read_table(format="pandas")
 ccda_value_set_mapping_table_dataset = Dataset.get("ccda_value_set_mapping_table_dataset").read_table(format="pandas")
+visit_concept_xwalk_mapping_dataset = Dataset.get("visit_concept_xwalk_mapping_dataset").read_table(format="pandas")
 
 

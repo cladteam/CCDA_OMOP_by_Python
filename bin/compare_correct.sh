@@ -1,27 +1,34 @@
 #!/usr/bin/env bash
 
+MY_TEMP='compare_correct_tempfile'
 err_count=0
 file_count=0
 missing_count=0
 short_correct_count=0
+date  > $compare_file
 for file in $(ls prototype_2/correct_output/*.csv  | grep -v domain_)
 do
     base_file=$(basename $file)
+    compare_file="logs/compare_${base_file}.log"
     if [[ -f output/$base_file ]]
     then
-        diff prototype_2/correct_output/$base_file output/$base_file 
+	echo "" >> $compare_file
+        diff prototype_2/correct_output/$base_file output/$base_file  > $MY_TEMP
         errval=$?
         if [[ $errval > 0 ]] ; then
             err_count=$(( $err_count + 1 ))
-            echo "CORRECT <--> NEW "
-            echo " prototype_2/correct_output/$base_file output/$base_file "
-            echo "$file produced an error $errval"
-            echo -n "A head: "
-            head -1 $file
-            echo -n "B head: "
-            head -1 prototype_2/correct_output/$base_file
+            echo "CORRECT <--> NEW " >> $compare_file
+            echo " prototype_2/correct_output/$base_file  <-->  output/$base_file " >> $compare_file
+            echo "$file produced an error $errval" >> $compare_file
+            echo -n "A head: " >> $compare_file
+            head -1 $file >> $compare_file
+            echo -n "B head: " >> $compare_file
+            head -1 prototype_2/correct_output/$base_file >> $compare_file
+	    cat $MY_TEMP >> $compare_file
+	    rm $MY_TEMP
+	    echo ""  >> $compare_file
         else
-            echo -n  "OK"
+            echo -n  "OK" 
             wc -l $file
         fi
     else
@@ -29,10 +36,10 @@ do
 	correct_length=$( wc -l prototype_2/correct_output/$base_file | awk '{print $1}')
 	if [[ $correct_length == '1' ]]
 	then
-	    echo "MISSING, but OK $file is length 1 in correct_output"
+		echo "MISSING, but OK (no data expected) $file is length 1 in correct_output"
 	    short_correct_count=$(( $short_correct_count + 1 ))
 	else
-            echo "NO OUTPUT for $file, \"$correct_length\" "
+            echo "NO OUTPUT for $file, \"$correct_length\" " >> $compare_file
 	fi
     fi
     file_count=$(( $file_count + 1))
