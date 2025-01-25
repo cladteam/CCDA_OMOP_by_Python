@@ -19,12 +19,12 @@ metadata = {
       
         'provider_id_extension': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': "extension"
         },
        'provider_id_root': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': "root"
         },
         'provider_id_element': {
@@ -122,7 +122,7 @@ metadata = {
         # hl7:encounter/hl7:participant/hl7:participantRole
         'care_site_id': { 
             'config_type': 'FIELD',
-            'element': '../../hl7:participant/hl7:participantRole/hl7:id',
+            'element': '../../hl7:participant/hl7:participantRole/hl7:id[not(@nullFlavor="UNK")]',
             'attribute': "root",
             'order': 6
         },

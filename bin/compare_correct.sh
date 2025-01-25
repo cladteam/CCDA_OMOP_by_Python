@@ -39,7 +39,7 @@ do
 		echo "MISSING, but OK (no data expected) $file is length 1 in correct_output"
 	    short_correct_count=$(( $short_correct_count + 1 ))
 	else
-            echo "NO OUTPUT for $file, \"$correct_length\" " >> $compare_file
+            echo "NO OUTPUT for $file, \"$correct_length\" "
 	fi
     fi
     file_count=$(( $file_count + 1))

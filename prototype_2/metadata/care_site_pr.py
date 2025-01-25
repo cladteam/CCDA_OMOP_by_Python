@@ -42,7 +42,7 @@ metadata = {
             
         'care_site_id': { 
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': "root",
             'order': 1
         },

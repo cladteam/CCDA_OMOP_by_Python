@@ -15,13 +15,13 @@ metadata = {
 
     	'condition_id_root': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'root',
             'order': 1001
     	},
     	'condition_id_extension': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'extension',
             'order': 1002
     	},

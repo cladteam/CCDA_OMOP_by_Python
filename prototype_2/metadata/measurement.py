@@ -22,13 +22,13 @@ metadata = {
 
     	'measurement_id_root': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'root',
             'order': 1001
     	},
     	'measurement_id_extension': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'extension',
             'order': 1002
     	},
@@ -87,7 +87,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'measurement_concept_code',
     		    'vocabulary_oid': 'measurement_concept_codeSystem',
-                'default': 0
+                'default': 'n/a'
     	    }
     	},
     	# FIX same issue as above. Is it always just a single value, or do we ever get high and low?

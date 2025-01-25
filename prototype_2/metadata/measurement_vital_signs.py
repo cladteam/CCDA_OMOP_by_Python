@@ -21,12 +21,12 @@ metadata = {
         
     	'measurement_id_root': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'root',
     	},
     	'measurement_id_extension': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'extension',
     	},
     	'measurement_id_hash': {
@@ -79,7 +79,7 @@ metadata = {
     	    'argument_names': {
     		    'concept_code': 'measurement_concept_code',
     		    'vocabulary_oid': 'measurement_concept_codeSystem',
-                'default': 0
+                'default': 'n/a'
     	    }
     	},
 

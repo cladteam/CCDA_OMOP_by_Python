@@ -28,7 +28,7 @@ metadata = {
         },
         'healthCareFacility_id': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': "root",
             'priority' : ['care_site_id', 1]
         },

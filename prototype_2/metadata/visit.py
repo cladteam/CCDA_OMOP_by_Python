@@ -15,12 +15,12 @@ metadata = {
         
         'visit_occurrence_id_root': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
     	    'attribute': "root"
     	},
         'visit_occurrence_id_extension': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
     	    'attribute': "extension"
     	},
     	'visit_occurrence_id': { 
@@ -175,12 +175,12 @@ metadata = {
         
     	'provider_id_performer_root': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id",
+    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "root",
     	},
     	'provider_id_perform_extension': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id",
+    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "extension",
     	},
     	'provider_id_performer': {

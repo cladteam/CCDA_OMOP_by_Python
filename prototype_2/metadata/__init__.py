@@ -14,6 +14,8 @@ import prototype_2.metadata.care_site_pr_location as care_site_pr_location
 import prototype_2.metadata.care_site_pr as care_site_pr
 import prototype_2.metadata.provider as provider
 import prototype_2.metadata.provider_header_documentationOf as provider_header_documentationOf
+import prototype_2.metadata.medication_medication_dispense as medication_medication_dispense
+import prototype_2.metadata.medication_medication_activity as medication_medication_activity
 """ The meatadata is 3 nested dictionaries:
     - meta_dict: the dict of all domains
     - domain_dict: a dict describing a particular domain
@@ -23,9 +25,7 @@ import prototype_2.metadata.provider_header_documentationOf as provider_header_d
     An output_dict is created for each domain. The keys are the field names,
     and the values are the values of the attributes from the elements.
 
-    FIX: the document as a whole has a few template IDs:
-	root="2.16.840.1.113883.10.20.22.1.1"
-	root="2.16.840.1.113883.10.20.22.1.2"
+    REMEMBER to update the ddl.py file as well.
 """
 #  NB: Order is important here.
 #  PKs like person and visit must come before referencing FK configs, like in measurement
@@ -37,6 +37,8 @@ meta_dict =  location.metadata | \
              measurement.metadata | \
              measurement_vs.metadata | \
              observation.metadata  | \
+             medication_medication_dispense.metadata | \
+             medication_medication_activity.metadata | \
              condition.metadata | \
              care_site_ee_hcf.metadata | \
              care_site_ee_hcf_location.metadata | \

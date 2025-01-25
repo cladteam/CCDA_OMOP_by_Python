@@ -48,10 +48,48 @@ config_to_domain_name_dict = {
     'Visit': 'Visit',
     'Measurement': 'Measurement',
     'Measurement_vital_signs': 'Measurement',
-    'Measurement_results': 'Measurement'
+    'Measurement_results': 'Measurement',
+    'Medication_medication_activity' : 'Drug',
+    'Medication_medication_dispense' : 'Drug'
+
 }
 
 sql_import_dict = {
+    'Drug':{
+        'column_list': [
+            'drug_exposure_id',
+            'person_id',
+            'drug_concept_id',
+            'drug_exposure_start_date',
+            'drug_exposure_start_datetime',
+            'drug_exposure_end_date',
+            'drug_exposure_end_datetime',
+            'verbatim_end_date',
+            'drug_type_concept_id',
+            'stop_reason',
+            'refills integer',
+            'quantity',
+            'days_supply',
+            'sig',
+            'route_concept_id',
+            'lot_number',
+            'provider_id',
+            'visit_occurrence_id',
+            'visit_detail_id',
+            'drug_source_value',
+            'drug_source_concept_id',
+            'route_source_value',
+            'dose_unit_source_value'
+        ],
+        'sql': None, 
+        'table_name': "drug_exposure",
+        'pk_query': """
+                SELECT count(*) as row_ct, 
+                       count(drug_exposure_id) as p_id, 
+                       count(distinct drug_exposure_id) as d_p_id
+                FROM drug_exposure
+                """
+    },
     'Observation':{
         'column_list': [
             'observation_id',

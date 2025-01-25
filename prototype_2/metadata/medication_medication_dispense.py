@@ -117,7 +117,6 @@ metadata = {
     	},
         'verbatime_end_date': {
     	    'config_type': 'FIELD',
-            'data_type':'TEXT',
     	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'order': 8

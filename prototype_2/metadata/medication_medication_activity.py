@@ -2,7 +2,7 @@
 import prototype_2.value_transformations as VT
 
 metadata = {
-    'Medication_substance_administration': {
+    'Medication_medication_activity': {
     	'root': {
     	    'config_type': 'ROOT',
             'expected_domain_id': 'Drug',
@@ -15,13 +15,13 @@ metadata = {
 
     	'drug_exposure_id_root': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'root',
             'order': 1001
     	},
     	'drug_exposure_id_extension': {
             'config_type': 'FIELD',
-            'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': 'extension',
             'order': 1002
     	},
@@ -83,41 +83,109 @@ metadata = {
                 'default': 0
     	    }
     	},
+
         'drug_exposure_start_date': {
-    	    'config_type': 'FIELD',
-            'data_type':'DATE',
-    	    'element': "hl7:effectiveTime",
-    	    'attribute': "value",
+    	    'config_type': 'PRIORITY',
             'order': 4
-    	},
-       'drug_exposure_start_datetime': {
-    	    'config_type': 'FIELD',
-            'data_type':'DATETIME',
-    	    'element': "hl7:effectiveTime",
-    	    'attribute': "value",
-            'order': 5
-    	},
-        'drug_exposure_end_date': {
+        },
+        'drug_exposure_start_date_value': {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
-    	    'element': "hl7:effectiveTime",
+    	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
-            'order': 6
+            'priority': ('drug_exposure_start_date', 1)
     	},
-        'drug_exposure_end_datetime': {
+        'drug_exposure_start_date_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATE',
+            'element': "hl7:effectiveTime/hl7:low[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('drug_exposure_start_date', 2)
+    	},
+
+       'drug_exposure_start_datetime': {
+    	    'config_type': 'PRIORITY',
+            'order': 5
+        }, 
+       'drug_exposure_start_datetime_value': {
     	    'config_type': 'FIELD',
             'data_type':'DATETIME',
-    	    'element': "hl7:effectiveTime",
+    	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
-            'order': 7
+            'priority': ('drug_exposure_start_datetime', 1)
     	},
-        'verbatime_end_date': {
+       'drug_exposure_start_datetime_low': {
     	    'config_type': 'FIELD',
-            'data_type':'TEXT',
-    	    'element': "hl7:effectiveTime",
+            'data_type':'DATETIME',
+            'element': "hl7:effectiveTime/hl7:low[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
-            'order': 8
+            'priority': ('drug_exposure_start_datetime', 2)
     	},
+
+
+        'drug_exposure_end_date': {
+    	    'config_type': 'PRIORITY',
+            'order': 6
+        },
+        'drug_exposure_end_date_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATE',
+    	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('drug_exposure_end_date', 1)
+    	},
+        'drug_exposure_end_date_high': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATE',
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('drug_exposure_end_date', 2)
+    	},
+        'drug_exposure_end_date_none': {
+    	    'config_type': None,
+            'priority': ('drug_exposure_end_date', 3)
+        },
+
+        'drug_exposure_end_datetime': {
+    	    'config_type': 'PRIORITY',
+            'order': 7
+        },
+        'drug_exposure_end_datetime_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('drug_exposure_end_datetime', 1)
+    	},
+        'drug_exposure_end_datetime_high': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('drug_exposure_end_datetime', 2)
+    	},
+        'drug_exposure_end_datetime_none': {
+    	    'config_type': None,
+            'priority': ('drug_exposure_end_datetime', 3)
+        },
+
+        'verbatime_end_date': {
+    	    'config_type': 'PRIORITY',
+            'order': 8
+        },
+        'verbatime_end_date_value': {
+    	    'config_type': 'FIELD',
+    	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('verbatim_end_date', 1)
+    	},
+        'verbatime_end_date_high': {
+    	    'config_type': 'FIELD',
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('verbatim_end_date', 2)
+    	},
+
         'drug_type_concept_id': {
             'config_type': 'CONSTANT',
             'constant_value' : -1, ################################

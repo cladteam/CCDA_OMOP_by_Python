@@ -413,8 +413,10 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
                      error_fields_set :set[str]) -> str | None :
     # nearly the same as derived above, but returns the domain for later filtering
     domain_id = None
+    have_domain_field = False
     for (field_tag, field_details_dict) in config_dict.items():
         if field_details_dict['config_type'] == 'DOMAIN':
+            have_domain_field = True
             logger.info(f"     Deriving DOMAIN {field_tag}, {field_details_dict}")
 
             # Collect args for the function
@@ -461,7 +463,13 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
                               f"string: {type(field_details_dict['FUNCTION'])}"))
                 output_dict[field_tag] = None
 
-    return domain_id
+    if domain_id == 0: # TODO, we should decide between 0/NMC and None for an unknown domain_id
+        print(f"DEBUG got 0 for a domain_id, returning None in do_domain_fields(). {config_name}")
+        logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
+        print(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
+        return None
+    else:
+        return domain_id
 
 
 @typechecked
@@ -536,11 +544,18 @@ def do_priority_fields(output_dict :dict[str, None | str | float | int | datetim
         sorted_contents = sorted(priority_contents, key=lambda x: x[1])
         # Ex. [('person_id_ssn', 1), ('person_id_other, 2)]
 
+        found=False
         for value_field_pair in sorted_contents: 
             if value_field_pair[0] in output_dict and output_dict[value_field_pair[0]] is not None:
                 output_dict[priority_name] = output_dict[value_field_pair[0]]
                 pk_dict[priority_name].append(output_dict[value_field_pair[0]])
+                found=True
                 break
+
+        if not found:
+            # relent and put a None if we didn't find anything
+            output_dict[priority_name] = None
+            pk_dict[priority_name].append(None)
 
     return priority_fields
     
@@ -637,19 +652,27 @@ def parse_config_for_single_root(root_element, root_path, config_name,
         return output_dict
     else:
         if expected_domain_id == "Observation":
-            logger.warning((f"DENYING have:{domain_id} domain:{expected_domain_id} "
+            logger.warning((f"DENYING/REJECTING have:{domain_id} domain:{expected_domain_id} "
                             f"id:{output_dict['observation_id']} "
                             f"cpt:{output_dict['observation_concept_id']}" ))
         elif expected_domain_id == "Measurement":
-            logger.warning( ( f"DENYING have:{domain_id} expect:{expected_domain_id} "
+            logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
                               f"id:{output_dict['measurement_id']} "
                               f"cpt:{output_dict['measurement_concept_id']}") )
         elif expected_domain_id == "Procedure":
-            logger.warning( ( f"DENYING have:{domain_id} expect:{expected_domain_id} "
+            logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
                               f"id:{output_dict['procedure_id']} "
                               f"cpt:{output_dict['procedure_concept_id']}") )
+        elif expected_domain_id == "Drug":
+            logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
+                              f"id:{output_dict['drug_exposure_id']} "
+                              f"cpt:{output_dict['drug_concept_id']}") )
+        elif expected_domain_id == "Condition":
+            logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
+                              f"id:{output_dict['condition_occurrencd_id']} "
+                              f"cpt:{output_dict['condition_concept_id']}") )
         else:
-            logger.warning((f"DENYING have:{domain_id} domain:{expected_domain_id} "))
+            logger.warning((f"DENYING/REJECTING have:{domain_id} domain:{expected_domain_id} "))
         return None
 
 
@@ -831,7 +854,7 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                         except Exception as e:
                             print(f"WARNING something wrong in visit reconciliation \"{e}\" {type(e)} ")
                     if not have_visit:
-                        print(f"WARNING XXXXX wasn't able to reconcile {domain} {thing}")
+                        print(f"WARNING wasn't able to reconcile {domain} {thing}")
                         print("")
                         
                 else:

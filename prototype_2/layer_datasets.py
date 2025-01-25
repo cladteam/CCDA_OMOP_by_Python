@@ -98,10 +98,9 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
                         else:
                             column_dict[field].append(None)
     
-            print(f"XXX {config_name} {column_dict}")
             # create a Pandas dataframe from the data_dict
             try:
-                show_column_dict(config_name, column_dict)
+                ##show_column_dict(config_name, column_dict)
                 domain_df = pd.DataFrame(column_dict)
                 df_dict[config_name] = domain_df
             except ValueError as ve:

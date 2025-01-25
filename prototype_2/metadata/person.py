@@ -18,13 +18,13 @@ metadata = {
         
        'person_id_root': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
     	    'attribute': "root",
            'order': 201
     	},
         'person_id_extension': {
     	    'config_type': 'FIELD',
-    	    'element': 'hl7:id',
+            'element': 'hl7:id[not(@nullFlavor="UNK")]',
     	    'attribute': "extension",
             'order':202
     	},
