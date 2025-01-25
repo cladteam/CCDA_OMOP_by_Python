@@ -5,9 +5,12 @@ import os
 import pandas as pd
 import logging
 from typeguard import typechecked
-from foundry.transforms import Dataset
+try:
+    from foundry.transforms import Dataset
+except:
+    print("no foundry imported")
 from collections import defaultdict
-import lxml
+##import lxml
 from prototype_2.ddl import sql_import_dict
 from prototype_2.ddl import config_to_domain_name_dict
 
@@ -191,6 +194,7 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-d', '--directory', help="directory of files to parse")
     group.add_argument('-f', '--filename', help="filename to parse")
+    group.add_argument('-l', '--load-foundry', help="load datasets into foundry")
     args = parser.parse_args()
 
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
@@ -243,15 +247,16 @@ def main():
         domain_dataset_dict[domain_id].to_csv(f"output/domain_{domain_id}.csv")
 
     # export the datasets to Spark/Foundry
-    for domain_id in domain_dataset_dict:
-        dataset_name = domain_id.lower()
-        print(f"Exporting dataframe \"{domain_id}\" to Foundry dataset \"{dataset_name}\"")
-        try:
-            export_dataset = Dataset.get(dataset_name)
-            export_dataset.write_table(domain_dataset_dict[domain_id])
-        except Exception as e:
-            print(f"  ERROR {e}")
-            print("")
+    if args.load-founcry:
+        for domain_id in domain_dataset_dict:
+            dataset_name = domain_id.lower()
+            print(f"Exporting dataframe \"{domain_id}\" to Foundry dataset \"{dataset_name}\"")
+            try:
+                export_dataset = Dataset.get(dataset_name)
+                export_dataset.write_table(domain_dataset_dict[domain_id])
+            except Exception as e:
+                print(f"  ERROR {e}")
+                print("")
     
 if __name__ == '__main__':
     main()

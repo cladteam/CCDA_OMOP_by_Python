@@ -884,10 +884,12 @@ def print_omop_structure(omop :dict[str, list[ dict[str, None | str | float | in
                     print(f"\n\nDOMAIN: {domain} {domain_data_dict.keys()} ")
                     for field, parts in domain_data_dict.items():
                         print(f"    FIELD:{field}")
-                        print(f"        parts type {type(parts[0])}")
-                        print(f"        parts type {type(parts[1])}")
-                        print(f"        VALUE:{parts[0]}")
-                        print(f"        PATH:{parts[1]}")
+                            #print(f"        parts type {type(parts[0])}")
+                            #print(f"        parts type {type(parts[1])}")
+                            #print(f"        VALUE:{parts[0]}")
+                            #print(f"        PATH:{parts[1]}")
+                        print(f"        parts type {type(parts)}")
+                        print(f"        VALUE:{parts}")
                         print(f"        ORDER: {metadata[domain][field]['order']}")
                         n = n+1
                     print(f"\n\nDOMAIN: {domain} {n}\n\n")

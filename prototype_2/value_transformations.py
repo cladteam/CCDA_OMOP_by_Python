@@ -161,8 +161,12 @@ def valueset_xwalk_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: concept_id AS INTEGER
     """
-    return int( _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
-                'target_concept_id', args_dict['default']) )
+    concept_id_val =  _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+                'target_concept_id', args_dict['default']) 
+    if concept_id_val:
+        return int(  concept_id_val )
+    else:
+        return None
 
 
 def valueset_xwalk_domain_id(args_dict):
@@ -203,6 +207,12 @@ def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
     except KeyError as e:
         logger.warning(f"requested field not available \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
         return default
+    except Exception as e:
+        logger.error(f"something unexcpected happened, maybe we don't have foundry and didn't load the mapping tables: {e}")
+        return None
+    except Error as e:
+        logger.error(f"something unexcpected happened, maybe we don't have foundry and didn't load the mapping tables: {e}")
+        return None
 
 
 
