@@ -3,14 +3,25 @@ import re
 import prototype_2.metadata
 
 """
-field types:  none, constant,,,,derived, hash, priority
+This script aims to link the various field types from XML source
+to OMOP table/field destination. In some cases it's direct
+XML to OMOP. In others there are intervening steps of calculation
+or mapping. The different field types are processed in an order
+that is reflected here.
+field types:  None, CONSTANT, FIELD, DERIVED, HASH, PRIORITY.
+
+This a near-panic weekend hack. It could be prettier, "DRYer",
+and much more elegant. It also reflects the quickly evolving
+data_driven_parse and it's tech debt.
 
 TODO:
-- hash and priority
+- hash, then priority
 - domain
 - track and filter 'order' attribute, recall it does both
   indicate that a field is part of the output, and tell
   what column it should be.
+
+# any hashes that use hashes? YES *** To Do **** might even be a bug in data_driven_parse.py !!!
 """
 
 
@@ -77,7 +88,7 @@ def get_derived_fields(metadata):
         for field_key in metadata[config_key]:
             if metadata[config_key][field_key]['config_type'] == 'DERIVED':
                 derived_field_dict[config_key][field_key] = {}
-                derived_field_dict[config_key][field_key]['function'] = getattr(metadata[config_key][field_key]['FUNCTION'], "__name__")
+                derived_field_dict[config_key][field_key]['function'] = getattr(metadata[config_key][field_key]['FUNCTION'], "__name__") +"()"
 
                 arg_keys= [ key for key in metadata[config_key][field_key]['argument_names'].keys() if key != 'default']
                 #args = map(lambda key: metadata[config_key][field_key]['argument_names'][key], arg_keys)
@@ -100,36 +111,146 @@ def link_derived_to_base(derived_field_dict, base_field_dict):
             func = derived_field_dict[der_config_key][der_field_key]['function']
             linked_field_dict[der_config_key][der_field_key]['function'] = func
 
-            print(f"OMOP path: {der_config_key} field:{der_field_key}")
-            print(f"   func:{func}") 
+            #print(f"OMOP path: {der_config_key} field:{der_field_key}")
+            #print(f"   func:{func}") 
             linked_field_dict[der_config_key][der_field_key]['args'] = []
             for arg in derived_field_dict[der_config_key][der_field_key]['args']:
                xml_path = base_field_dict[der_config_key][arg]
                linked_field_dict[der_config_key][der_field_key]['args'].append(xml_path)
-               print(f"   arg:{arg} {xml_path}") 
-            print("")
+               #print(f"   arg:{arg} {xml_path}") 
+            #print("")
 
     return linked_field_dict
 
+
+def find_hash_fields(metadata):
+    """
+
+    	'measurement_id_hash': {
+    	    'config_type': 'HASH',
+            'fields' : [ 'measurement_id_root', 'measurement_id_extension' ],
+    """
+    hash_field_dict = {}
+        
+    for config_key in metadata:
+        hash_field_dict[config_key] = {}
+        for field_key in metadata[config_key]:
+            if metadata[config_key][field_key]['config_type'] == 'HASH':
+                hash_field_dict[config_key][field_key] = {}
+
+                fields = metadata[config_key][field_key]['fields']
+                # 'args' in the metadata, called 'fields' here to be more 
+                # uniform with DERIVED functions TODO
+                hash_field_dict[config_key][field_key]['args'] = fields
+
+    return hash_field_dict
+
+
+
+def link_hash_to_base(hash_field_dict, base_field_dict):
+    # Assumes args, base fields,  for a derived field are in the same
+    # config as the derived field.
+    linked_field_dict = {}
+    for hash_config_key in hash_field_dict:
+        linked_field_dict[hash_config_key] = {}
+        for hash_field_key in hash_field_dict[hash_config_key]:
+            linked_field_dict[hash_config_key][hash_field_key] = {}
+
+            linked_field_dict[hash_config_key][hash_field_key]['function'] = 'hash()'
+            linked_field_dict[hash_config_key][hash_field_key]['args'] = []
+            for field in hash_field_dict[hash_config_key][hash_field_key]['args']:
+                if field in base_field_dict[hash_config_key]:
+                    xml_path = base_field_dict[hash_config_key][field] ####
+                    linked_field_dict[hash_config_key][hash_field_key]['args'].append(xml_path)
+                else:
+                    print(f"link_hash_to_base() ERRROR config:{hash_config_key} field:{hash_field_key} arg:{field} (not a base FIELD?)")
+
+    return linked_field_dict
+
+
+def print_data_hash(data_hash):
+    for config_key in sorted(data_hash):
+        for field_key in sorted(data_hash[config_key]):
+            if isinstance(data_hash[config_key][field_key], dict):
+                for thing_key in data_hash[config_key][field_key]: # 175 error suggestes data_hash[config_key] is an integer
+                    if isinstance(data_hash[config_key][field_key], list):
+                        for x in data_hash[config_key][field_key]:
+                           print(f"{config_key}/{field_key} {thing_key} {x}")
+                    elif isinstance(data_hash[config_key][field_key], dict):
+                        my_object = data_hash[config_key][field_key][thing_key]
+                        if isinstance(my_object, list):
+                           for sub_object in my_object:
+                               print(f"{config_key}/{field_key} {thing_key} {sub_object}")
+                        else:
+                            print(f"{config_key}/{field_key} {thing_key} {my_object}")
+                    else:       
+                        print(f"print()?  {config_key}/{field_key} {thing_key}")
+            elif isinstance(data_hash[config_key], list):
+                for x in data_hash[config_key]:
+                    print(f"X {config_key} {x}")
+            else:
+                print(f"{config_key}/{field_key} {data_hash[config_key][field_key]}")
+
+        print("")
+
+
+def merge_second_level_dict(dest_dict, additional_dict):    
+    for key in additional_dict:
+        if key in dest_dict:
+            dest_dict[key] = dest_dict[key] | additional_dict[key]
+        else:
+            dest_dict[key] = additional_dict[key]
+    
+
 def main():
     metadata = prototype_2.metadata.get_meta_dict()
-    # config_key --> field_key --> dict
+    # config_key --> field_key --> dict (described in data_driven_parse.py)
 
+
+    # FIELD, PK
     base_field_dict = get_base_elements(metadata)
     # config_key --> field_key --> XML Path
-    
-    derived_field_dict = get_derived_fields(metadata) 
-    # config_key --> field_key --> function -> function name
-    # config_key --> field_key --> args -> [ field name ]
 
+   
+    # DERIVED 
+    derived_field_dict = get_derived_fields(metadata) 
+    # config_key --> field_key --> {'function': function name,
+    #                               'args' : [ field names ] }
+
+    # LINK DERIVED
     derived_linked_to_base = link_derived_to_base(derived_field_dict, base_field_dict)
-    # config_key --> derived_field_key --> function 
-    # config_key --> derived_field_key --> [ base_field_key --> XML Path ]
-    for config_key in derived_linked_to_base:
-        for field_key in derived_linked_to_base[config_key]:
-            for thing_key in derived_linked_to_base[config_key][field_key]:
-                print(f"{config_key} {field_key} {thing_key} {derived_linked_to_base[config_key][field_key][thing_key]}")
-        print("")
+    # config_key --> derived_field_key --> { 'function': function_name,
+    #                                         'args' : [ XML Paths ] }
+
+    # HASH
+    hash_field_dict = find_hash_fields(metadata)
+    # config_key --> field_key --> { 'function' : 'hash()',
+    #                                'args' : [ field names ] }
+    
+    # LINK HASHED to BASE
+    hash_linked_to_base = link_hash_to_base(hash_field_dict, base_field_dict)
+
+    # LINK HASHED to DERIVED
+    # any hashes that use derived?
+    # any hashes that use hashes? YES *** To Do **** might even be a bug in data_driven_parse.py !!!
+
+
+    # SHOW ALL
+    if False:
+        print("\n\nBASE")
+        print_data_hash(base_field_dict)
+        print("\n\nDERIVED")
+        print_data_hash(derived_linked_to_base)
+        print("\n\nHASH")
+        print_data_hash(hash_linked_to_base)
+    else:
+        merged_dict = {}
+        merge_second_level_dict(merged_dict, base_field_dict)
+        merge_second_level_dict(merged_dict, derived_linked_to_base)
+        merge_second_level_dict(merged_dict, hash_linked_to_base)
+        print_data_hash(merged_dict)
+
+
 
 if __name__ == '__main__':
     main()        
