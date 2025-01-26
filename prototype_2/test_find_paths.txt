@@ -1,0 +1,14 @@
+no foundry transforms imported
+no mapping tables from foundry for codemap_xwalk and ccda_valueset
+{'Test': {'simple_hash': {'function': 'hash()'}, 'hash_of_derived': {'function': 'hash()'}}}
+
+Test/constant_code path 2076-8
+Test/constant_oid path 2.16.840.1.113883.6.238
+Test/hash_of_derived function hash()
+Test/hash_of_derived args this isn't right
+Test/simple_hash function hash()
+Test/simple_hash args constant 1
+Test/test_derived function map_hl7_to_omop_concept_id()
+Test/test_derived args 2076-8
+Test/test_derived args 2.16.840.1.113883.6.238
+

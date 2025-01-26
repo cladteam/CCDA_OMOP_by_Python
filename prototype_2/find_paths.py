@@ -26,6 +26,7 @@ TODO:
 """
 
 print_order_flag = False
+print_derived_to_base = False
 
 def strip_detail(input_string):
     interim =  re.sub(r'hl7:', '', input_string)
@@ -167,8 +168,17 @@ def find_hash_fields(metadata):
 
 
 def link_hash_to_base(hash_field_dict, base_field_dict, metadata):
-    # Assumes args, base fields,  for a derived field are in the same
-    # config as the derived field.
+    """
+    Assumes args, base fields,  for a derived field are in the same
+    config as the derived field.
+
+    INPUT: base_field_dict
+    # config_key --> field_key --> { 'path': XML Path, 'order' : int }
+
+    UPDATE: hash_field_dict
+    # config_key --> field_key --> { 'function' : 'hash()', 'args' : [ field names ], 'order' : int }
+
+    """
     linked_field_dict = {}
     for hash_config_key in hash_field_dict:
         linked_field_dict[hash_config_key] = {}
@@ -182,13 +192,14 @@ def link_hash_to_base(hash_field_dict, base_field_dict, metadata):
             for field in hash_field_dict[hash_config_key][hash_field_key]['args']:
                 if field in base_field_dict[hash_config_key]:
                     if 'path' not in base_field_dict[hash_config_key][field]:
-                        print((f"link_hash_to_base() INFO {hash_config_key}/{field} has no 'path', "
-                               f"{metadata[hash_config_key][field]['config_type']} probably a "
-                               "derived field used by a hash, not a base field"))
+                        if print_derived_to_base:
+                            print((f"link_hash_to_base() INFO {hash_config_key}/{field} has no 'path', "
+                                   f"{metadata[hash_config_key][field]['config_type']} probably a "
+                                   "derived field used by a hash, not a base field"))
                     else:
                         xml_path = base_field_dict[hash_config_key][field]['path']  
                     linked_field_dict[hash_config_key][hash_field_key]['args'].append(xml_path)
-                else:
+                elif print_derived_to_base:
                     print((f"link_hash_to_base() INFO {hash_config_key}/{field} "
                            f"field:{hash_field_key} arg:{field} (not a base FIELD?) "
                            f"{metadata[hash_config_key][hash_field_key]['config_type']}"))
@@ -196,31 +207,80 @@ def link_hash_to_base(hash_field_dict, base_field_dict, metadata):
     return linked_field_dict
 
 
+def link_hash_to_derived(hash_field_dict, derived_field_dict, metadata):
+    """
+        if a hash refers to a derived field, this links them.
+        In the real data, I haven't seen this.
+
+    INPUT: hash_field_dict
+    # config_key --> field_key --> { 'function' : 'hash()', 'args' : [ field names ], 'order' : int }
+
+    INPUT: derived_field_dict
+    # config_key --> field_key --> {'function': f. name, 'args' : [ field names ], 'order' : int }
+
+    UPDATE: hash_field_dict
+    # config_key --> field_key --> { 'function': 'hash()',
+    #                                 'args' : [ args ], ##  these are DERIVED entries, dictionaries
+    #                                    [   { 'function': function_name, 'args' : [ XML Paths ]}  ]
+    #                                 'order' : int }
+    """
+    linked_field_dict = {}
+    for hash_config_key in hash_field_dict:
+        linked_field_dict[hash_config_key] = {}
+        for hash_field_key in hash_field_dict[hash_config_key]:
+            linked_field_dict[hash_config_key][hash_field_key] = {}
+
+            linked_field_dict[hash_config_key][hash_field_key]['function'] = 'hash()'
+            if hash_field_key in derived_field_dict[hash_config_key]:
+                print(f"GGGG {hash_config_key}/{hash_field_key} {derived_field_dict[hash_config_key]}")
+                if 'order' in derived_field_dict[hash_config_key][hash_field_key]:
+                    linked_field_dict[hash_config_key][hash_field_key]['order'] = \
+                        derived_field_dict[hash_config_key][hash_field_key]['order']
+
+                linked_field_dict[hash_config_key][hash_field_key]['args'] = \
+                    derived_field_dict[hash_config_key][hash_field_key]['args']
+
+#            linked_field_dict[hash_config_key][hash_field_key]['args'] = []
+#            for field in hash_field_dict[hash_config_key][hash_field_key]['args']:
+#                if field in derived_field_dict[hash_config_key]:
+#                    print(f"MMMMM {hash_cnofig_key} {field} {derived_field_dict[hash_config_key][field]}")
+#                    if 'path' not in derived_field_dict[hash_config_key][field]:
+#                        print((f"link_hash_to_derived() INFO {hash_config_key}/{field} has no 'path', "
+#                               f"{metadata[hash_config_key][field]['config_type']} probably a "
+#                               "derived field used by a hash, not a base field"))
+#                    else:
+#                        derived_configs = derived_field_dict[hash_config_key][field]    #####
+#                        print(f"XXXXXX {derived_configs}")
+#                        linked_field_dict[hash_config_key][hash_field_key]['args'].append(derived_configs)
+#                else:
+#                    print((f"link_hash_to_derived() INFO {hash_config_key}/{field} "
+#                           f"field:{hash_field_key} arg:{field} (not a base FIELD?) "
+#                           f"{metadata[hash_config_key][hash_field_key]['config_type']}"))
+#            print(f"ZZZZ {linked_field_dict[hash_config_key][hash_field_key]}")
+
+    return linked_field_dict
+
+
+
 def print_data_hash(data_hash):
     for config_key in sorted(data_hash):
         for field_key in sorted(data_hash[config_key]):
             if 'order' in data_hash[config_key][field_key] and data_hash[config_key][field_key]['order']:         
-                if isinstance(data_hash[config_key][field_key], dict):
-                    for thing_key in data_hash[config_key][field_key]: # 175 error suggestes data_hash[config_key] is an integer
-                        if isinstance(data_hash[config_key][field_key], list):
-                            for x in data_hash[config_key][field_key]:
-                               print(f"DDDD{config_key}/{field_key} {thing_key} {x}")
-                        elif isinstance(data_hash[config_key][field_key], dict):
-                            my_object = data_hash[config_key][field_key][thing_key]
-                            if isinstance(my_object, list):
-                               for sub_object in my_object:
-                                   print(f"{config_key}/{field_key} {thing_key} {sub_object}")
-                            elif thing_key != 'order':
-                                print(f"{config_key}/{field_key} {thing_key} {my_object}")
-                            elif print_order_flag:
-                                print(f"{config_key}/{field_key} {thing_key} {my_object}")
-                        else:       
-                            print(f"XXX  print()?  {config_key}/{field_key} {thing_key}")
-                elif isinstance(data_hash[config_key], list):
-                    for x in data_hash[config_key]:
-                        print(f"XYYY {config_key} {x}")
-                else:
-                    print(f"AAAAA{config_key}/{field_key} {data_hash[config_key][field_key]}")
+                for thing_key in data_hash[config_key][field_key]:
+                    if isinstance(data_hash[config_key][field_key], list):
+                        for x in data_hash[config_key][field_key]:
+                           print(f"{config_key}/{field_key} {thing_key} {x}")
+                    elif isinstance(data_hash[config_key][field_key], dict):
+                        my_object = data_hash[config_key][field_key][thing_key]
+                        if isinstance(my_object, list):
+                           for sub_object in my_object:
+                               print(f"{config_key}/{field_key} {thing_key} {sub_object}")
+                        elif thing_key != 'order':
+                            print(f"{config_key}/{field_key} {thing_key} {my_object}")
+                        elif print_order_flag:
+                            print(f"{config_key}/{field_key} {thing_key} {my_object}")
+                    else:       
+                        print(f"XXX  print()?  {config_key}/{field_key} {thing_key}")
             else:
                 if 'order' in data_hash[config_key][field_key]:
                     if print_order_flag: 
@@ -274,21 +334,28 @@ def main():
     
     # LINK HASHED to BASE
     hash_linked_to_base = link_hash_to_base(hash_field_dict, base_field_dict, metadata)
+    # config_key --> field_key --> { 'function': 'hash()',
+    #                                 'args' : [ args ], ## these are path strngs
+    #                                 'order' : int }
+
 
     # LINK HASHED to DERIVED
-    # any hashes that use derived?
+    hash_linked_to_derived = link_hash_to_derived(hash_field_dict, derived_field_dict, metadata)
+    # config_key --> field_key --> { 'function': 'hash()',
+    #                                 'args' : [ args ], ##  these are DERIVED entries, dictionaries
+    #                                    [   { 'function': function_name, 'args' : [ XML Paths ]}  ]
+    #                                 'order' : int }
+    print(hash_linked_to_derived)
+    print_data_hash(hash_linked_to_derived)
+  
+
+
+    # LINK HASHED to HASHED????????
     # any hashes that use hashes? YES *** To Do **** might even be a bug in data_driven_parse.py !!!
 
 
     # SHOW ALL
-    if False:
-        print("\n\nBASE")
-        print_data_hash(base_field_dict)
-        print("\n\nDERIVED")
-        print_data_hash(derived_linked_to_base)
-        print("\n\nHASH")
-        print_data_hash(hash_linked_to_base)
-    else:
+    if True:
         merged_dict = {}
         merge_second_level_dict(merged_dict, base_field_dict)
         merge_second_level_dict(merged_dict, derived_linked_to_base)

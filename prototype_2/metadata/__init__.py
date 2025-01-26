@@ -1,6 +1,7 @@
 
 import prototype_2.value_transformations as VT
 
+import prototype_2.metadata.test        as test
 import prototype_2.metadata.person      as person
 import prototype_2.metadata.visit       as visit
 import prototype_2.metadata.measurement as measurement
@@ -29,19 +30,28 @@ import prototype_2.metadata.provider_header_documentationOf as provider_header_d
 #  NB: Order is important here.
 #  PKs like person and visit must come before referencing FK configs, like in measurement
 
-meta_dict =  location.metadata | \
-             provider_header_documentationOf.metadata | \
-             person.metadata | \
-             visit.metadata  | \
-             measurement.metadata | \
-             measurement_vs.metadata | \
-             observation.metadata  | \
-             care_site_ee_hcf.metadata | \
-             care_site_ee_hcf_location.metadata | \
-             care_site_pr.metadata | \
-             care_site_pr_location.metadata | \
-             provider.metadata
+#meta_dict =  location.metadata | \
+#             provider_header_documentationOf.metadata | \
+#             person.metadata | \
+#             visit.metadata  | \
+#             measurement.metadata | \
+#             measurement_vs.metadata | \
+#             observation.metadata  | \
+#             care_site_ee_hcf.metadata | \
+#             care_site_ee_hcf_location.metadata | \
+#             care_site_pr.metadata | \
+#             care_site_pr_location.metadata | \
+#             provider.metadata
 
+#meta_dict =  location.metadata | \
+#             person.metadata | \
+#             visit.metadata  | \
+#             measurement.metadata | \
+#             care_site_pr.metadata | \
+#             care_site_pr_location.metadata | \
+#             provider.metadata 
+
+meta_dict =  test.metadata
 
 
 def get_meta_dict():
