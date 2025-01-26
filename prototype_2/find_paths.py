@@ -9,6 +9,12 @@ or mapping. The different field types are processed in an order
 that is reflected here.
 field types:  None, CONSTANT, FIELD, DERIVED, HASH, PRIORITY.
 
+Key to this whole world is a hierarchy of config_types and what they can use:
+- CONSTANT, FIELD, PK are at the bottom and don't/can't depend on anything
+- DERIVED and DOMAIN (latter ignored here) can use as input either of the previous three
+- HASH can use either of the previous two categories
+- PRIORITY can use eithe of the previous three categories (TBC here)
+
 RESET: clearer  data_dict
 
     direct fields like PK,  FIELD, CONSTANT:
