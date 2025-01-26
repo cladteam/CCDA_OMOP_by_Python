@@ -17,6 +17,7 @@ data_driven_parse and it's tech debt.
 TODO:
 - hash, then priority
 - domain
+- track PK paths and pick them up from FK in the code for 'base'
 - track and filter 'order' attribute, recall it does both
   indicate that a field is part of the output, and tell
   what column it should be.
@@ -24,6 +25,7 @@ TODO:
 # any hashes that use hashes? YES *** To Do **** might even be a bug in data_driven_parse.py !!!
 """
 
+print_order_flag = False
 
 def strip_detail(input_string):
     interim =  re.sub(r'hl7:', '', input_string)
@@ -35,6 +37,10 @@ def get_base_elements(metadata):
     Fetches keys of elements that are fetched from XML.
     The types of these keys are FIELD, PK.
     The keys are returned as config, field pairs.
+
+    # (old) config_key --> field_key --> XML Path
+    # (new) config_key --> field_key --> { 'path': XML Path,
+    #                                      'order' : int }
     """
 
     base_field_dict = {}
@@ -42,24 +48,27 @@ def get_base_elements(metadata):
         base_field_dict[config_key] = {}
         root_path = metadata[config_key]['root']['element']
         root_path = strip_detail(root_path)
-        #print(f"    root:{root_path}")
-        #print("")
         for field_key in metadata[config_key]:
-            #print(f"    OMOP path {config_key}/{field_key}")
+            base_field_dict[config_key][field_key] = {}
             if metadata[config_key][field_key]['config_type'] is None:
-                base_field_dict[config_key][field_key] = 'None'
-                #print(f"    XML Path:'None'")
+                base_field_dict[config_key][field_key]['path'] = 'None'
+
             if metadata[config_key][field_key]['config_type'] == 'CONSTANT':
-                base_field_dict[config_key][field_key] = metadata[config_key][field_key]['constant_value']
-                #print(f"    XML Path:{metadata[config_key][field_key]['constant_value']}")
+                base_field_dict[config_key][field_key]['path'] = metadata[config_key][field_key]['constant_value']
+
+            if metadata[config_key][field_key]['config_type'] == 'FK': #TODO might be able to build a PKDIct that would show the path here
+                base_field_dict[config_key][field_key]['path'] = 'FK' 
+
             if metadata[config_key][field_key]['config_type'] in ('FIELD', 'PK'):
                 path=(f"{root_path}/"
                       f"{strip_detail(metadata[config_key][field_key]['element'])}"
                       f"@{strip_detail(metadata[config_key][field_key]['attribute'])}")
-                base_field_dict[config_key][field_key] = path
-                #print(f"    XML Path:{path}/")
-                #print("")
-        #print("\n\n")
+                base_field_dict[config_key][field_key]['path'] = path
+            if 'order' in metadata[config_key][field_key]:
+                base_field_dict[config_key][field_key]['order'] = metadata[config_key][field_key]['order']
+            else:
+                base_field_dict[config_key][field_key]['order'] = None
+          
 
     return base_field_dict
 
@@ -80,6 +89,10 @@ def get_derived_fields(metadata):
     		    'vocabulary_oid': 'measurement_concept_codeSystem',
                 'default': 0
     	    },
+
+    # config_key --> field_key --> {'function': function name,
+    #                               'args' : [ field names ],
+    #                               'order' : int }
     """
     derived_field_dict = {}
         
@@ -96,6 +109,10 @@ def get_derived_fields(metadata):
                 for arg_key in arg_keys:
                    args.append(metadata[config_key][field_key]['argument_names'][arg_key])
                 derived_field_dict[config_key][field_key]['args'] = args
+                if 'order' in metadata[config_key][field_key]:
+                    derived_field_dict[config_key][field_key]['order'] = metadata[config_key][field_key]['order']
+                else:
+                    derived_field_dict[config_key][field_key]['order'] = None
 
     return derived_field_dict
 
@@ -108,17 +125,15 @@ def link_derived_to_base(derived_field_dict, base_field_dict):
         linked_field_dict[der_config_key] = {}
         for der_field_key in derived_field_dict[der_config_key]:
             linked_field_dict[der_config_key][der_field_key] = {}
-            func = derived_field_dict[der_config_key][der_field_key]['function']
-            linked_field_dict[der_config_key][der_field_key]['function'] = func
+            linked_field_dict[der_config_key][der_field_key]['function'] = \
+                derived_field_dict[der_config_key][der_field_key]['function']
+            linked_field_dict[der_config_key][der_field_key]['order'] = \
+                derived_field_dict[der_config_key][der_field_key]['order']
 
-            #print(f"OMOP path: {der_config_key} field:{der_field_key}")
-            #print(f"   func:{func}") 
             linked_field_dict[der_config_key][der_field_key]['args'] = []
             for arg in derived_field_dict[der_config_key][der_field_key]['args']:
-               xml_path = base_field_dict[der_config_key][arg]
+               xml_path = base_field_dict[der_config_key][arg]['path']
                linked_field_dict[der_config_key][der_field_key]['args'].append(xml_path)
-               #print(f"   arg:{arg} {xml_path}") 
-            #print("")
 
     return linked_field_dict
 
@@ -143,11 +158,15 @@ def find_hash_fields(metadata):
                 # uniform with DERIVED functions TODO
                 hash_field_dict[config_key][field_key]['args'] = fields
 
+                if 'order' in metadata[config_key][field_key]:
+                    hash_field_dict[config_key][field_key]['order'] = metadata[config_key][field_key]['order']
+                else:
+                    hash_field_dict[config_key][field_key]['order'] = None
     return hash_field_dict
 
 
 
-def link_hash_to_base(hash_field_dict, base_field_dict):
+def link_hash_to_base(hash_field_dict, base_field_dict, metadata):
     # Assumes args, base fields,  for a derived field are in the same
     # config as the derived field.
     linked_field_dict = {}
@@ -157,13 +176,22 @@ def link_hash_to_base(hash_field_dict, base_field_dict):
             linked_field_dict[hash_config_key][hash_field_key] = {}
 
             linked_field_dict[hash_config_key][hash_field_key]['function'] = 'hash()'
+            linked_field_dict[hash_config_key][hash_field_key]['order'] = \
+                hash_field_dict[hash_config_key][hash_field_key]['order']
             linked_field_dict[hash_config_key][hash_field_key]['args'] = []
             for field in hash_field_dict[hash_config_key][hash_field_key]['args']:
                 if field in base_field_dict[hash_config_key]:
-                    xml_path = base_field_dict[hash_config_key][field] ####
+                    if 'path' not in base_field_dict[hash_config_key][field]:
+                        print((f"link_hash_to_base() INFO {hash_config_key}/{field} has no 'path', "
+                               f"{metadata[hash_config_key][field]['config_type']} probably a "
+                               "derived field used by a hash, not a base field"))
+                    else:
+                        xml_path = base_field_dict[hash_config_key][field]['path']  
                     linked_field_dict[hash_config_key][hash_field_key]['args'].append(xml_path)
                 else:
-                    print(f"link_hash_to_base() ERRROR config:{hash_config_key} field:{hash_field_key} arg:{field} (not a base FIELD?)")
+                    print((f"link_hash_to_base() INFO {hash_config_key}/{field} "
+                           f"field:{hash_field_key} arg:{field} (not a base FIELD?) "
+                           f"{metadata[hash_config_key][hash_field_key]['config_type']}"))
 
     return linked_field_dict
 
@@ -171,25 +199,37 @@ def link_hash_to_base(hash_field_dict, base_field_dict):
 def print_data_hash(data_hash):
     for config_key in sorted(data_hash):
         for field_key in sorted(data_hash[config_key]):
-            if isinstance(data_hash[config_key][field_key], dict):
-                for thing_key in data_hash[config_key][field_key]: # 175 error suggestes data_hash[config_key] is an integer
-                    if isinstance(data_hash[config_key][field_key], list):
-                        for x in data_hash[config_key][field_key]:
-                           print(f"{config_key}/{field_key} {thing_key} {x}")
-                    elif isinstance(data_hash[config_key][field_key], dict):
-                        my_object = data_hash[config_key][field_key][thing_key]
-                        if isinstance(my_object, list):
-                           for sub_object in my_object:
-                               print(f"{config_key}/{field_key} {thing_key} {sub_object}")
-                        else:
-                            print(f"{config_key}/{field_key} {thing_key} {my_object}")
-                    else:       
-                        print(f"print()?  {config_key}/{field_key} {thing_key}")
-            elif isinstance(data_hash[config_key], list):
-                for x in data_hash[config_key]:
-                    print(f"X {config_key} {x}")
+            if 'order' in data_hash[config_key][field_key] and data_hash[config_key][field_key]['order']:         
+                if isinstance(data_hash[config_key][field_key], dict):
+                    for thing_key in data_hash[config_key][field_key]: # 175 error suggestes data_hash[config_key] is an integer
+                        if isinstance(data_hash[config_key][field_key], list):
+                            for x in data_hash[config_key][field_key]:
+                               print(f"DDDD{config_key}/{field_key} {thing_key} {x}")
+                        elif isinstance(data_hash[config_key][field_key], dict):
+                            my_object = data_hash[config_key][field_key][thing_key]
+                            if isinstance(my_object, list):
+                               for sub_object in my_object:
+                                   print(f"{config_key}/{field_key} {thing_key} {sub_object}")
+                            elif thing_key != 'order':
+                                print(f"{config_key}/{field_key} {thing_key} {my_object}")
+                            elif print_order_flag:
+                                print(f"{config_key}/{field_key} {thing_key} {my_object}")
+                        else:       
+                            print(f"XXX  print()?  {config_key}/{field_key} {thing_key}")
+                elif isinstance(data_hash[config_key], list):
+                    for x in data_hash[config_key]:
+                        print(f"XYYY {config_key} {x}")
+                else:
+                    print(f"AAAAA{config_key}/{field_key} {data_hash[config_key][field_key]}")
             else:
-                print(f"{config_key}/{field_key} {data_hash[config_key][field_key]}")
+                if 'order' in data_hash[config_key][field_key]:
+                    if print_order_flag: 
+                        # can only be None here
+                        print(f"  Not output: {config_key} {field_key} {data_hash[config_key][field_key]}")         
+                else :
+                    if print_order_flag: 
+                        print(f"  No order: {config_key} {field_key} {data_hash[config_key][field_key]}")         
+    
 
         print("")
 
@@ -209,26 +249,31 @@ def main():
 
     # FIELD, PK
     base_field_dict = get_base_elements(metadata)
-    # config_key --> field_key --> XML Path
+    # (old) config_key --> field_key --> XML Path
+    # (new) config_key --> field_key --> { 'path': XML Path,
+    #                                      'order' : int }
 
    
     # DERIVED 
     derived_field_dict = get_derived_fields(metadata) 
     # config_key --> field_key --> {'function': function name,
-    #                               'args' : [ field names ] }
+    #                               'args' : [ field names ],
+    #                               'order' : int }
 
     # LINK DERIVED
     derived_linked_to_base = link_derived_to_base(derived_field_dict, base_field_dict)
     # config_key --> derived_field_key --> { 'function': function_name,
-    #                                         'args' : [ XML Paths ] }
+    #                                         'args' : [ XML Paths ], 
+    #                                         'order' : int }
 
     # HASH
     hash_field_dict = find_hash_fields(metadata)
     # config_key --> field_key --> { 'function' : 'hash()',
-    #                                'args' : [ field names ] }
+    #                                'args' : [ field names ],
+    #                                'order' : int }
     
     # LINK HASHED to BASE
-    hash_linked_to_base = link_hash_to_base(hash_field_dict, base_field_dict)
+    hash_linked_to_base = link_hash_to_base(hash_field_dict, base_field_dict, metadata)
 
     # LINK HASHED to DERIVED
     # any hashes that use derived?
