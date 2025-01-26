@@ -14,6 +14,7 @@ Test/field_oid type:constant order:2
   arg: "fake/doc/path/id@codeSystem"
 Test/hash_of_derived_constant type:hash order:8
   arg:test_derived_constant value: map_hl7_to_omop_concept_id() ['2076-8', '2.16.840.1.113883.6.238', 0] 
+  arg:test_derived_field value: map_hl7_to_omop_concept_id() ['fake/doc/path/id/@code', 'fake/doc/path/id/@codeSystem', 0] 
 Test/hash_of_derived_field type:hash order:9
   arg:test_derived_field value: map_hl7_to_omop_concept_id() ['fake/doc/path/id/@code', 'fake/doc/path/id/@codeSystem', 0] 
 Test/root type:constant order:None

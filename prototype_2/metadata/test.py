@@ -88,7 +88,7 @@ metadata = {
 
         'hash_of_derived_constant': {
             'config_type': 'HASH',
-            'fields' : [ 'test_derived_constant' ],
+            'fields' : [ 'test_derived_constant', 'test_derived_field' ],
             'order': 8
         },
         'hash_of_derived_field': {
