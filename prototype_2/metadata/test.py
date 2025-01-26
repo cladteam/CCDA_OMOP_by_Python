@@ -49,9 +49,14 @@ metadata = {
             'order': 3
     	},
 
-        'simple_hash': {
+        'simple_hash_constant': {
             'config_type': 'HASH',
-            'fields' : [ 'constant_field' ],
+            'fields' : [ 'constant_field', 'constant_field_2' ],
+            'order': 4 
+        },
+        'simple_hash_field': {
+            'config_type': 'HASH',
+            'fields' : [ 'field_oid', 'field_code' ],
             'order': 4 
         },
 
