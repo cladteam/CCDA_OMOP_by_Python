@@ -1,4 +1,3 @@
-
 import re
 import prototype_2.metadata
 
@@ -26,7 +25,7 @@ TODO:
 """
 
 print_order_flag = False
-print_derived_to_base = False
+print_derived_to_base = True
 
 def strip_detail(input_string):
     interim =  re.sub(r'hl7:', '', input_string)
@@ -102,18 +101,24 @@ def get_derived_fields(metadata):
         for field_key in metadata[config_key]:
             if metadata[config_key][field_key]['config_type'] == 'DERIVED':
                 derived_field_dict[config_key][field_key] = {}
+
+                # Function
                 derived_field_dict[config_key][field_key]['function'] = getattr(metadata[config_key][field_key]['FUNCTION'], "__name__") +"()"
 
-                arg_keys= [ key for key in metadata[config_key][field_key]['argument_names'].keys() if key != 'default']
-                #args = map(lambda key: metadata[config_key][field_key]['argument_names'][key], arg_keys)
-                args=[]
-                for arg_key in arg_keys:
-                   args.append(metadata[config_key][field_key]['argument_names'][arg_key])
-                derived_field_dict[config_key][field_key]['args'] = args
+                # Order/Output
                 if 'order' in metadata[config_key][field_key]:
                     derived_field_dict[config_key][field_key]['order'] = metadata[config_key][field_key]['order']
                 else:
                     derived_field_dict[config_key][field_key]['order'] = None
+
+                # Args / Path??
+                #args = map(lambda key: metadata[config_key][field_key]['argument_names'][key], arg_keys)
+                arg_keys= [ key for key in metadata[config_key][field_key]['argument_names'].keys() if key != 'default']
+                args=[]
+                for arg_key in arg_keys:
+                   args.append(metadata[config_key][field_key]['argument_names'][arg_key])
+                derived_field_dict[config_key][field_key]['args'] = args
+                derived_field_dict[config_key][field_key]['path'] = args
 
     return derived_field_dict
 
@@ -185,23 +190,34 @@ def link_hash_to_base(hash_field_dict, base_field_dict, metadata):
         for hash_field_key in hash_field_dict[hash_config_key]:
             linked_field_dict[hash_config_key][hash_field_key] = {}
 
+            # Function
             linked_field_dict[hash_config_key][hash_field_key]['function'] = 'hash()'
+
+            # Order/Output
             linked_field_dict[hash_config_key][hash_field_key]['order'] = \
                 hash_field_dict[hash_config_key][hash_field_key]['order']
+
+            # Args
             linked_field_dict[hash_config_key][hash_field_key]['args'] = []
-            for field in hash_field_dict[hash_config_key][hash_field_key]['args']:
-                if field in base_field_dict[hash_config_key]:
-                    if 'path' not in base_field_dict[hash_config_key][field]:
+            for arg in hash_field_dict[hash_config_key][hash_field_key]['args']:
+                if arg in base_field_dict[hash_config_key]:
+                    xml_path = 'n/a'
+                    if 'path' not in base_field_dict[hash_config_key][arg]:
                         if print_derived_to_base:
-                            print((f"link_hash_to_base() INFO {hash_config_key}/{field} has no 'path', "
-                                   f"{metadata[hash_config_key][field]['config_type']} probably a "
+                            print((f"link_hash_to_base() INFO field: {hash_config_key}/{hash_field_key} {arg} has NO 'path', "
+                                   f"arg:{metadata[hash_config_key][arg]} probably a "
                                    "derived field used by a hash, not a base field"))
                     else:
-                        xml_path = base_field_dict[hash_config_key][field]['path']  
-                    linked_field_dict[hash_config_key][hash_field_key]['args'].append(xml_path)
+                        #xml_path = base_field_dict[hash_config_key][hash_field_key]['path']  
+                        xml_path = base_field_dict[hash_config_key][arg]['path']  
+                        print((f"link_hash_to_base() INFO {hash_config_key}/{hash_field_key} {arg} has 'path', "
+                               f"field: {metadata[hash_config_key][hash_field_key]['config_type']} "
+                               f"arg: {metadata[hash_config_key][arg]['config_type']} "))
+                        # only add an entry when we get here, not above
+                        linked_field_dict[hash_config_key][hash_field_key]['args'].append(xml_path)
                 elif print_derived_to_base:
-                    print((f"link_hash_to_base() INFO {hash_config_key}/{field} "
-                           f"field:{hash_field_key} arg:{field} (not a base FIELD?) "
+                    print((f"link_hash_to_base() INFO {hash_config_key}/{hash_field_key} "
+                           f"arg:{arg} (not a base FIELD?) "
                            f"{metadata[hash_config_key][hash_field_key]['config_type']}"))
 
     return linked_field_dict
@@ -230,33 +246,22 @@ def link_hash_to_derived(hash_field_dict, derived_field_dict, metadata):
         for hash_field_key in hash_field_dict[hash_config_key]:
             linked_field_dict[hash_config_key][hash_field_key] = {}
 
+            # Function
             linked_field_dict[hash_config_key][hash_field_key]['function'] = 'hash()'
+
+            # Order/Output
+            linked_field_dict[hash_config_key][hash_field_key]['order'] = \
+                hash_field_dict[hash_config_key][hash_field_key]['order']
+            # Path 
+            for arg in hash_field_dict[hash_config_key][hash_field_key]['args']:
+                if arg in derived_field_dict[hash_config_key]:
+                    linked_field_dict[hash_config_key][hash_field_key]['path'] = derived_field_dict[hash_config_key]
+
             if hash_field_key in derived_field_dict[hash_config_key]:
-                print(f"GGGG {hash_config_key}/{hash_field_key} {derived_field_dict[hash_config_key]}")
                 if 'order' in derived_field_dict[hash_config_key][hash_field_key]:
                     linked_field_dict[hash_config_key][hash_field_key]['order'] = \
                         derived_field_dict[hash_config_key][hash_field_key]['order']
-
-                linked_field_dict[hash_config_key][hash_field_key]['args'] = \
-                    derived_field_dict[hash_config_key][hash_field_key]['args']
-
-#            linked_field_dict[hash_config_key][hash_field_key]['args'] = []
-#            for field in hash_field_dict[hash_config_key][hash_field_key]['args']:
-#                if field in derived_field_dict[hash_config_key]:
-#                    print(f"MMMMM {hash_cnofig_key} {field} {derived_field_dict[hash_config_key][field]}")
-#                    if 'path' not in derived_field_dict[hash_config_key][field]:
-#                        print((f"link_hash_to_derived() INFO {hash_config_key}/{field} has no 'path', "
-#                               f"{metadata[hash_config_key][field]['config_type']} probably a "
-#                               "derived field used by a hash, not a base field"))
-#                    else:
-#                        derived_configs = derived_field_dict[hash_config_key][field]    #####
-#                        print(f"XXXXXX {derived_configs}")
-#                        linked_field_dict[hash_config_key][hash_field_key]['args'].append(derived_configs)
-#                else:
-#                    print((f"link_hash_to_derived() INFO {hash_config_key}/{field} "
-#                           f"field:{hash_field_key} arg:{field} (not a base FIELD?) "
-#                           f"{metadata[hash_config_key][hash_field_key]['config_type']}"))
-#            print(f"ZZZZ {linked_field_dict[hash_config_key][hash_field_key]}")
+            print(f"OUT {hash_config_key}/{hash_field_key} {linked_field_dict[hash_config_key][hash_field_key]}\n")
 
     return linked_field_dict
 
@@ -266,6 +271,7 @@ def print_data_hash(data_hash):
     for config_key in sorted(data_hash):
         for field_key in sorted(data_hash[config_key]):
             if 'order' in data_hash[config_key][field_key] and data_hash[config_key][field_key]['order']:         
+                print("")
                 for thing_key in data_hash[config_key][field_key]:
                     if isinstance(data_hash[config_key][field_key], list):
                         for x in data_hash[config_key][field_key]:
@@ -289,6 +295,8 @@ def print_data_hash(data_hash):
                 else :
                     if print_order_flag: 
                         print(f"  No order: {config_key} {field_key} {data_hash[config_key][field_key]}")         
+            print(f"    data_hash: {config_key}/{field_key}  {data_hash[config_key][field_key]}")
+            print("    ------------------------------")
     
 
         print("")
@@ -304,49 +312,47 @@ def merge_second_level_dict(dest_dict, additional_dict):
 
 def main():
     metadata = prototype_2.metadata.get_meta_dict()
-    # config_key --> field_key --> dict (described in data_driven_parse.py)
+      # config_key --> field_key --> dict (described in data_driven_parse.py)
 
 
     # FIELD, PK
     base_field_dict = get_base_elements(metadata)
-    # (old) config_key --> field_key --> XML Path
-    # (new) config_key --> field_key --> { 'path': XML Path,
-    #                                      'order' : int }
+      # (old) config_key --> field_key --> XML Path
+      # (new) config_key --> field_key --> { 'path': XML Path,
+      #                                      'order' : int }
 
    
     # DERIVED 
     derived_field_dict = get_derived_fields(metadata) 
-    # config_key --> field_key --> {'function': function name,
-    #                               'args' : [ field names ],
-    #                               'order' : int }
+      # config_key --> field_key --> {'function': function name,
+      #                               'args' : [ field names ],
+      #                               'order' : int }
 
     # LINK DERIVED
     derived_linked_to_base = link_derived_to_base(derived_field_dict, base_field_dict)
-    # config_key --> derived_field_key --> { 'function': function_name,
-    #                                         'args' : [ XML Paths ], 
-    #                                         'order' : int }
+      # config_key --> derived_field_key --> { 'function': function_name,
+      #                                         'args' : [ XML Paths ], 
+      #                                         'order' : int }
 
     # HASH
     hash_field_dict = find_hash_fields(metadata)
-    # config_key --> field_key --> { 'function' : 'hash()',
-    #                                'args' : [ field names ],
-    #                                'order' : int }
+      # config_key --> field_key --> { 'function' : 'hash()',
+      #                                'args' : [ field names ],
+      #                                'order' : int }
     
     # LINK HASHED to BASE
     hash_linked_to_base = link_hash_to_base(hash_field_dict, base_field_dict, metadata)
-    # config_key --> field_key --> { 'function': 'hash()',
-    #                                 'args' : [ args ], ## these are path strngs
-    #                                 'order' : int }
+      # config_key --> field_key --> { 'function': 'hash()',
+      #                                 'args' : [ args ], ## these are path strngs
+      #                                 'order' : int }
 
 
     # LINK HASHED to DERIVED
     hash_linked_to_derived = link_hash_to_derived(hash_field_dict, derived_field_dict, metadata)
-    # config_key --> field_key --> { 'function': 'hash()',
-    #                                 'args' : [ args ], ##  these are DERIVED entries, dictionaries
-    #                                    [   { 'function': function_name, 'args' : [ XML Paths ]}  ]
-    #                                 'order' : int }
-    print(hash_linked_to_derived)
-    print_data_hash(hash_linked_to_derived)
+      # config_key --> field_key --> { 'function': 'hash()',
+      #                                 'args' : [ args ], ##  these are DERIVED entries, dictionaries
+      #                                    [   { 'function': function_name, 'args' : [ XML Paths ]}  ]
+      #                                 'order' : int }
   
 
 
@@ -360,6 +366,7 @@ def main():
         merge_second_level_dict(merged_dict, base_field_dict)
         merge_second_level_dict(merged_dict, derived_linked_to_base)
         merge_second_level_dict(merged_dict, hash_linked_to_base)
+        merge_second_level_dict(merged_dict, hash_linked_to_derived)
         print_data_hash(merged_dict)
 
 
