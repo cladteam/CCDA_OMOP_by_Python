@@ -428,19 +428,19 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
                     logger.info(f"     -- {field_tag}, arg_name:{arg_name} field_name:{field_name}")
                     if field_name not in output_dict:
                         error_fields_set.add(field_tag)
-                        logger.error((f"DERIVED config:{config_dict} field:{field_tag} could not "
+                        logger.error((f"DOMAIN config:{config_dict} field:{field_tag} could not "
                                       f"find {field_name} in {output_dict}"))
                     try:
                         args_dict[arg_name] = output_dict[field_name]
                     except Exception:
                         error_fields_set.add(field_tag)
-                        logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
+                        logger.error((f"DOMAIN {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
             # Derive the value
             try:
                 function_reference = field_details_dict['FUNCTION']
                 function_value = field_details_dict['FUNCTION'](args_dict)
-                if function_reference != VT.concat_fields and function_value is None:
+                if function_reference != VT.concat_fields and (function_value is None or function_value == 0): 
                     logger.error((f"do_domain_fields(): No mapping back for {config_name} {field_tag} "
                                   f"from {field_details_dict['FUNCTION']} {args_dict}   {config_dict[field_tag]}"
                                   "If this is from a value_as_concept/code field, it may not be an error, but "
@@ -465,7 +465,7 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
 
     if domain_id == 0: # TODO, we should decide between 0/NMC and None for an unknown domain_id
         print(f"DEBUG got 0 for a domain_id, returning None in do_domain_fields(). {config_name}")
-        logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
+        logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}, check if the concept maps have this concept.")
         print(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
         return None
     else:

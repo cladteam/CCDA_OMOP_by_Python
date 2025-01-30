@@ -1,0 +1,7 @@
+drug_exposure_id,person_id,drug_concept_id,drug_exposure_start_date,drug_exposure_start_datetime,drug_exposure_end_date,drug_exposure_end_datetime,verbatim_end_date,drug_type_concept_id,stop_reason,refills,quantity,days_supply,sig,route_concept_id,lot_number,provider_id,visit_occurrence_id,visit_detail_id,drug_source_value,drug_source_concept_id,route_source_value,dose_unit_source_value,drug_exposure_id_root,drug_exposure_id_extension
+3720983147285715,2741246120939590,19019073,,,,,,32825,,,,,,,,RECONCILE FK,RECONCILE FK,,53746046501|2.16.840.1.113883.6.69,44900413,,,,
+3720983147285715,2741246120939590,19073187,,,,,,32825,,,,,,,,RECONCILE FK,RECONCILE FK,,65862001705|2.16.840.1.113883.6.69,44939102,,,,
+3720983147285715,2741246120939590,40167021,,,,,,32825,,,,,,,,RECONCILE FK,RECONCILE FK,,65597070118|2.16.840.1.113883.6.69,45125972,,,,
+3720983147285715,2741246120939590,40180031,,,,,,32825,,,,,,,,RECONCILE FK,RECONCILE FK,,17856060805|2.16.840.1.113883.6.69,45083242,,,,
+3720983147285715,2741246120939590,19073187,,,,,,32825,,,,,,,,RECONCILE FK,RECONCILE FK,,00093310905|2.16.840.1.113883.6.69,45111521,,,,
+3720983147285715,2741246120939590,19134047,,,,,,32825,,,,,,,,RECONCILE FK,RECONCILE FK,,76439013650|2.16.840.1.113883.6.69,45093399,,,,

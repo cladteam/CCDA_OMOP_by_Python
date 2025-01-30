@@ -8,13 +8,15 @@ metadata = {
             'expected_domain_id': 'Drug',
             # Medication Dispense
             # Medications section, entry, substanceAdministration, entryRelationship, supply
+            #supply/@moodCode="EVN" represents medications are dispensed to the patient.
     	    'element':
      		  ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
     		   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.1" or @root="2.16.840.1.113883.10.20.22.2.1.1"]/'
-    		   '../hl7:entry/hl7:substanceAdministration[@moodCode="EVN"]/'
-               'hl7:entryRelationship/hl7:supply/'
-               'hl7:templateId[@root="2.16.840.1.113883.10.20.22.4.18"]/..'
+               '../hl7:entry/hl7:substanceAdministration[@moodCode="EVN"]/'
+               'hl7:entryRelationship/hl7:supply/hl7:statusCode[@code="active" or @code="completed"]/'
+               '../hl7:templateId[@root="2.16.840.1.113883.10.20.22.4.18"]/..'
               )
+           
         },
 
     	'drug_exposure_id_root': {
@@ -34,17 +36,13 @@ metadata = {
             'fields' : [ 'drug_exposure_id_root', 'drug_exposure_id_extension' ],
             'priority': ('drug_exposure_id', 1)
     	},
-    	'drug_exposure_id_constant': {
-            'config_type': 'CONSTANT',
-            'constant_value' : 999,
+
+    	'drug_exposure_id_field_hash': {
+    	    'config_type': 'HASH',
+            'fields' : ['person_id', 'visit_occurrence_id', 'drug_concept_id', 'drug_exposure_time',
+                    'value_as_string', 'value_as_nmber', 'value_as_concept_id'],
             'priority': ('drug_exposure_id', 2)
-        },
-    	#'drug_exposure_id_field_hash': {
-    	#    'config_type': 'HASH',
-        #    'fields' : ['person_id', 'visit_occurrence_id', 'drug_concept_id', 'drug_exposure_time',
-        #            'value_as_string', 'value_as_nmber', 'value_as_concept_id'],
-        #    'priority': ('drug_exposure_id', 100)
-    	#},
+    	},
         'drug_exposure_id': {
             'config_type': 'PRIORITY',
             'order': 1
@@ -101,42 +99,73 @@ metadata = {
     	    'attribute': "value",
             'order': 5
     	},
-        'drug_exposure_end_date': {  ##### same as start?
+        
+        # Drug exposure end date: CCDA Medication Dispense does not provide 
+        # an explicit end date (e.g., effectiveTime/high) or sufficient data 
+        # (e.g., days_supply, daily dose) to calculate it.
+        # Since the end date is required, the end date might be set equal to the start date.
+        'drug_exposure_end_date': {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
     	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'order': 6
     	},
-        'drug_exposure_end_datetime': { ##### same as start
+        'drug_exposure_end_datetime': {
     	    'config_type': 'FIELD',
             'data_type':'DATETIME',
     	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'order': 7
     	},
-        'verbatime_end_date': {
+        'verbatim_end_date': {
     	    'config_type': 'FIELD',
     	    'element': "hl7:effectiveTime",
     	    'attribute': "value",
             'order': 8
     	},
+
         'drug_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : -1, ################################
+            'constant_value' : 32825, # OMOP concept ID for 'EHR dispensing record'
             'order': 9
         },
-        'stop_reason': { 'config_type': None, 'order': 10 },
         
+        'stop_reason': { 'config_type': None, 'order': 10 },
         'refills': { 'config_type': None, 'order': 11},
-        'quantity': { 'config_type': None, 'order': 12 },
+
+        # This approach applies primarily to pre-coordinated consumables, 
+        # such as clinical drugs with fixed-dose forms (e.g., tablets, capsules).
+        # Example: If the "metoprolol 25mg tablet" is dispensed as 30 tablets,
+        #  the extracted quantity will be 30.
+        # Needs additional approaches to handle liquid formulations, clinical 
+        # drugs with divisible dose forms (e.g., injections), and other quantified 
+        # clinical drugs
+        'quantity': {
+            'config_type': 'FIELD',
+            'element': "hl7:quantity",
+            'attribute': "value",
+            'data_type': 'FLOAT',
+            'order': 12
+        },
+        
         'days_supply': { 'config_type': None, 'order': 13 },
         'sig': { 'config_type': None, 'order': 14 },
         'route_concept_id': { 'config_type': None, 'order': 15 },
-        
         'lot_number': { 'config_type': None, 'order': 16},
-        'provider_id': { 'config_type': None, 'order': 17 },
-        'visit_occurrence_id': { 'config_type': None, 'order': 18 }, ##################
+                
+        'provider_id': { 
+    	    'config_type': 'FK',
+    	    'FK': 'provider_id',
+            'order': 17
+    	},
+
+        'visit_occurrence_id': { 
+    	    'config_type': 'FK',
+    	    'FK': 'visit_occurrence_id',
+            'order':  18
+    	},
+        
         'visit_detail_id': { 'config_type': None, 'order': 19 },
         'drug_source_value': {
        	    'config_type': 'DERIVED',
@@ -148,10 +177,25 @@ metadata = {
     	    },
             'order': 20
         },
+
+        'drug_source_concept_id': {
+            'config_type': 'DERIVED',
+            'FUNCTION': VT.codemap_xwalk_source_concept_id,  
+            'argument_names': {
+                'concept_code': 'drug_concept_code',
+                'vocabulary_oid': 'drug_concept_codeSystem',
+                'default': 0
+            },
+            'order': 21 },
         
-        'drug_source_concept_id': { 'config_type': None, 'order': 21 },
         'route_source_value': { 'config_type': None, 'order': 22 },
-        'route_source_concept_id': { 'config_type': None, 'order': 23 },
+
+        'dose_unit_source_value': { 
+       	    'config_type': 'FIELD',
+            'element': "hl7:doseQuantity",
+            'attribute': "unit",
+            'order': 23
+        },
 
     }
 }
