@@ -177,6 +177,7 @@ executing==2.2.0
 jupyter-client==8.6.3
 jupyter-core==5.7.2
 pure-eval==0.2.3
+pyzmq==26.2.1
 stack-data==0.6.3
 tzdata==2024.2
 
