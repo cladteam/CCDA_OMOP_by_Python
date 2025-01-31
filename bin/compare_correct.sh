@@ -5,11 +5,11 @@ err_count=0
 file_count=0
 missing_count=0
 short_correct_count=0
-date  > $compare_file
 for file in $(ls prototype_2/correct_output/*.csv  | grep -v domain_)
 do
     base_file=$(basename $file)
     compare_file="logs/compare_${base_file}.log"
+    date  > $compare_file
     if [[ -f output/$base_file ]]
     then
 	echo "" >> $compare_file
@@ -25,12 +25,12 @@ do
             echo -n "B head: " >> $compare_file
             head -1 prototype_2/correct_output/$base_file >> $compare_file
 	    cat $MY_TEMP >> $compare_file
-	    rm $MY_TEMP
 	    echo ""  >> $compare_file
         else
             echo -n  "OK" 
             wc -l $file
         fi
+	rm $MY_TEMP
     else
         missing_count=$(( $missing_count + 1))
 	correct_length=$( wc -l prototype_2/correct_output/$base_file | awk '{print $1}')

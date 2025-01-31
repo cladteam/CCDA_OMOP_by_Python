@@ -1,23 +1,23 @@
 import prototype_2.value_transformations as VT
 # converted to encouter from encompassingEncounter. The encompassingEncounter attributes are commented out
 metadata = {
-    'Visit': {
+    'Visit_encompassingEncounter': {
+    	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'config_type': 'ROOT',
             'expected_domain_id': 'Visit',
-    	    'element': ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
-                        'hl7:templateId[ @root="2.16.840.1.113883.10.20.22.2.22" or @root="2.16.840.1.113883.10.20.22.2.22.1" ]'
-                        '/../hl7:entry/hl7:encounter[@moodCode="EVN"]')
+            # Encounters section
+    	    'element': './hl7:componentOf/hl7:encompassingEncounter'
     	},
         
         'visit_occurrence_id_root': {
     	    'config_type': 'FIELD',
-            'element': 'hl7:id[not(@nullFlavor="UNK")]',
+    	    'element': 'hl7:id',
     	    'attribute': "root"
     	},
         'visit_occurrence_id_extension': {
     	    'config_type': 'FIELD',
-            'element': 'hl7:id[not(@nullFlavor="UNK")]',
+    	    'element': 'hl7:id',
     	    'attribute': "extension"
     	},
     	'visit_occurrence_id': { 
@@ -32,72 +32,24 @@ metadata = {
             'order': 2
     	},
 
-    	'visit_concept_code_encounter': {
+    	'visit_concept_code': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:code",	
+    	    'element': "hl7:code",	 # FIX ToDo is this what I think it is?, see #72 etc.
     	    'attribute': "code"
     	},
-    	'visit_concept_codeSystem_encounter': {
+    	'visit_concept_codeSystem': {
     	    'config_type': 'FIELD',
     	    'element': "hl7:code",
     	    'attribute': "codeSystem"
     	},
-    	'visit_concept_id_encounter': {
+    	'visit_concept_id': {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.visit_xwalk_concept_id,
     	    'argument_names': {
-    		    'concept_code': 'visit_concept_code_encounter',
-    		    'vocabulary_oid': 'visit_concept_codeSystem_encounter',
+    		    'concept_code': 'visit_concept_code',
+    		    'vocabulary_oid': 'visit_concept_codeSystem',
                 'default': 0
     	    },
-            'priority':  ['visit_concept_id', 2]
-        },
-        'visit_source_value_encounter': { 
-            'config_type': 'DERIVED', 
-            'FUNCTION': VT.concat_fields,
-    	    'argument_names': {
-                'first_field': 'visit_concept_codeSystem_encounter',
-    		    'second_field': 'visit_concept_code_encounter',
-                'default': 0
-    	    },
-            'priority':  ['visit_source_value', 2]
-        },
-
-
-       	'visit_concept_code_location': {
-    	    'config_type': 'FIELD',
-    	    'element': "hl7:participant/hl7:participantRole/hl7:code",	 
-    	    'attribute': "code"
-    	},
-    	'visit_concept_codeSystem_location': {
-    	    'config_type': 'FIELD',
-    	    'element': "hl7:participant/hl7:participantRole/hl7:code",
-    	    'attribute': "codeSystem"
-    	},
-    	'visit_concept_id_location': {
-    	    'config_type': 'DERIVED',
-    	    'FUNCTION': VT.visit_xwalk_concept_id,
-    	    'argument_names': {
-    		    'concept_code': 'visit_concept_code_location',
-    		    'vocabulary_oid': 'visit_concept_codeSystem_location',
-                'default': 0
-    	    },
-            'priority':  ['visit_concept_id', 1]
-        },
-        'visit_source_value_location': { 
-            'config_type': 'DERIVED', 
-            'FUNCTION': VT.concat_fields,
-    	    'argument_names': {
-                'first_field': 'visit_concept_codeSystem_location',
-    		    'second_field': 'visit_concept_code_location',
-                'default': 0
-    	    },
-            'priority':  ['visit_source_value', 1]
-        },
-        
-        
-        'visit_concept_id': {
-            'config_type': 'PRIORITY',
             'order': 3
     	},
 
@@ -172,12 +124,12 @@ metadata = {
         
     	'provider_id_performer_root': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id[not(@nullFlavor=\"UNK\")]",
+    	    'element':'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:id', 
     	    'attribute': "root",
     	},
     	'provider_id_perform_extension': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:performer/hl7:assignedEntity/hl7:id[not(@nullFlavor=\"UNK\")]",
+    	    'element':'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:id', 
     	    'attribute': "extension",
     	},
     	'provider_id_performer': {
@@ -191,32 +143,33 @@ metadata = {
         # TODO FIX how to test this without a plethora of extra columns? Have the has function throw errors on null fields?
         'provider_id_street': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/hl7:streetAddressLine',
+            'element': 'hl7:encounterParticipant/hl7:assignedEntity/hl7:addr/hl7:streetAddressLine',  # noqa: E501
             'attribute': "#text"
         },
         'provider_id_city': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/hl7:city',
+            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:city',  # noqa: E501
             'attribute': "#text"
         },
         'provider_id_state': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/hl7:state',
+            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:state',
             'attribute': "#text"
         },
         'provider_id_zip': {
             'config_type': 'FIELD',
-            'element': 'hl7:addr/hl7:postalCode',
+            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:postalCode',
             'attribute': "#text"
         },
         'provider_id_given': {
             'config_type': 'FIELD',
-            'element': 'hl7:assignedPerson/hl7:name/hl7:given',
+            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:given',  # noqa: E501
             'attribute': "#text"
-        },
+        }, 
+
         'provider_id_family': {
             'config_type': 'FIELD',
-            'element': 'hl7:assignedPerson/hl7:name/hl7:family',
+            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:family',  # noqa: E501
             'attribute': "#text"
         },
         'provider_id_hash': {
@@ -230,7 +183,7 @@ metadata = {
         
     	'care_site_id': {
     	    'config_type': 'FIELD',
-            'element': 'participant/participantRole[@classCode="SDLOC"]/id', 
+            'element': 'hl7:location/hl7:healthCareFacility/hl7:location/hl7:addr', 
             #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", 
     	    #'element': "hl7:location/hl7:healthCareFacility/hl7:id",
     	    'attribute': "root",
@@ -238,12 +191,25 @@ metadata = {
     	},
 
         'visit_source_value': { 
-            'config_type': 'PRIORITY', 
+            'config_type': 'DERIVED', 
+            'FUNCTION': VT.concat_fields,
+    	    'argument_names': {
+                'first_field': 'visit_concept_codeSystem',
+    		    'second_field': 'visit_concept_code',
+                'default': 0
+    	    },
             'order': 11
         },
         
-        
-        'visit_source_concept_id': { 'config_type': None, 'order': 12},
+        'visit_concept_id': {
+    	    'config_type': 'DERIVED',
+    	    'FUNCTION': VT.visit_xwalk_source_concept_id,
+    	    'argument_names': {
+    		    'concept_code': 'visit_concept_code',
+    		    'vocabulary_oid': 'visit_concept_codeSystem',
+                'default': 0
+    	    },
+            'order': 12 },
         'admitting_source_concept_id': { 'config_type': None, 'order': 13},
         'admitting_source_value': { 'config_type': None, 'order': 14},
         'discharge_to_source_concept_id': { 'config_type': None, 'order': 15},

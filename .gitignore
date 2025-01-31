@@ -248,7 +248,10 @@ data-tmp/
 *.whl
 *.wmv
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
 *
 =======
 >>>>>>> a8087b23f44c158ba16e29648e59711328e2fc62
+>>>>>>> 4b27cd8f3aae8dea46b000fa2c3a43eda84f5ea9
 *.csv

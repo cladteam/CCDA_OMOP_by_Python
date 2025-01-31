@@ -2,6 +2,7 @@
 import prototype_2.value_transformations as VT
 
 import prototype_2.metadata.person      as person
+import prototype_2.metadata.visit_encompassingEncounter as visit_encompassingEncounter
 import prototype_2.metadata.visit       as visit
 import prototype_2.metadata.measurement as measurement
 import prototype_2.metadata.measurement_vital_signs as measurement_vs
@@ -13,6 +14,7 @@ import prototype_2.metadata.care_site_ee_hcf as care_site_ee_hcf
 import prototype_2.metadata.care_site_pr_location as care_site_pr_location
 import prototype_2.metadata.care_site_pr as care_site_pr
 import prototype_2.metadata.provider as provider
+from prototype_2.metadata import visit_encompassingEncounter
 import prototype_2.metadata.provider_header_documentationOf as provider_header_documentationOf
 import prototype_2.metadata.medication_medication_dispense as medication_medication_dispense
 import prototype_2.metadata.medication_medication_activity as medication_medication_activity
@@ -33,6 +35,7 @@ import prototype_2.metadata.medication_medication_activity as medication_medicat
 meta_dict =  location.metadata | \
              provider_header_documentationOf.metadata | \
              person.metadata | \
+             visit_encompassingEncounter.metadata  | \
              visit.metadata  | \
              measurement.metadata | \
              measurement_vs.metadata | \
@@ -45,6 +48,7 @@ meta_dict =  location.metadata | \
              care_site_pr.metadata | \
              care_site_pr_location.metadata | \
              provider.metadata
+
 
 
 

@@ -45,6 +45,7 @@ config_to_domain_name_dict = {
     'Person': 'Person',
     'Provider': 'Provider',
     'Provider_header_documentationOf': 'Provider',
+    'Visit_encompassingEncounter': 'Visit',
     'Visit': 'Visit',
     'Measurement': 'Measurement',
     'Measurement_vital_signs': 'Measurement',
