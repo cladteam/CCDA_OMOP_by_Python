@@ -14,6 +14,7 @@ import prototype_2.metadata.care_site_ee_hcf as care_site_ee_hcf
 import prototype_2.metadata.care_site_pr_location as care_site_pr_location
 import prototype_2.metadata.care_site_pr as care_site_pr
 import prototype_2.metadata.provider as provider
+import prototype_2.metadata.test as test
 from prototype_2.metadata import visit_encompassingEncounter
 import prototype_2.metadata.provider_header_documentationOf as provider_header_documentationOf
 import prototype_2.metadata.medication_medication_dispense as medication_medication_dispense
@@ -31,6 +32,7 @@ import prototype_2.metadata.medication_medication_activity as medication_medicat
 """
 #  NB: Order is important here.
 #  PKs like person and visit must come before referencing FK configs, like in measurement
+
 
 meta_dict =  location.metadata | \
              provider_header_documentationOf.metadata | \
