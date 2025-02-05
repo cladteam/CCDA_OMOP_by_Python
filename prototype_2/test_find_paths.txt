@@ -1,0 +1,35 @@
+no foundry transforms imported
+no mapping tables from foundry for codemap_xwalk and ccda_valueset
+Test/constant_code type:constant order:3
+  arg: "2076-8"
+Test/constant_field type:constant order:-1
+  arg: "constant 1"
+Test/constant_field_2 type:constant order:1
+  arg: "constant 2"
+Test/constant_oid type:constant order:2
+  arg: "2.16.840.1.113883.6.238"
+Test/field_code type:constant order:3
+  arg: "fake/doc/path/id@code"
+Test/field_oid type:constant order:2
+  arg: "fake/doc/path/id@codeSystem"
+Test/hash_of_derived_constant type:hash order:8
+  arg:test_derived_constant value: map_hl7_to_omop_concept_id() ['2076-8', '2.16.840.1.113883.6.238', 0] 
+  arg:test_derived_field value: map_hl7_to_omop_concept_id() ['fake/doc/path/id/@code', 'fake/doc/path/id/@codeSystem', 0] 
+Test/hash_of_derived_field type:hash order:9
+  arg:test_derived_field value: map_hl7_to_omop_concept_id() ['fake/doc/path/id/@code', 'fake/doc/path/id/@codeSystem', 0] 
+Test/root type:constant order:None
+Test/simple_hash_constant type:hash order:4
+  arg:constant_field value:constant 1
+  arg:constant_field_2 value:constant 2
+Test/simple_hash_field type:hash order:4
+  arg:field_oid value:fake/doc/path/id/@codeSystem
+  arg:field_code value:fake/doc/path/id/@code
+Test/simple_priority type:constant order:7
+Test/test_derived_constant type:map_hl7_to_omop_concept_id() order:5
+  arg:concept_code name:constant_code value:2076-8
+  arg:vocabulary_oid name:constant_oid value:2.16.840.1.113883.6.238
+  arg:default name:(constant default) value:0
+Test/test_derived_field type:map_hl7_to_omop_concept_id() order:6
+  arg:concept_code name:field_code value:fake/doc/path/id/@code
+  arg:vocabulary_oid name:field_oid value:fake/doc/path/id/@codeSystem
+  arg:default name:(constant default) value:0
