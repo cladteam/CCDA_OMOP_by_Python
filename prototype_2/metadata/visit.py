@@ -243,34 +243,12 @@ metadata = {
         },
         
         
-        'visit_source_concept_id': { 'config_type': None, 'order': 12},
+        'visit_source_concept_id': { 'config_type': None, 'order': 12}, # TODO
         'admitting_source_concept_id': { 'config_type': None, 'order': 13},
         'admitting_source_value': { 'config_type': None, 'order': 14},
         'discharge_to_source_concept_id': { 'config_type': None, 'order': 15},
         'discharge_to_source_value': { 'config_type': None, 'order': 16},
         'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17}
         
-        # 'custodian_id' : {
-        #     'config_type': 'PRIORITY',
-        #     'orider': 18
-        # }
-        #,'custodian_id_constant' : {
-        #    'config_type': 'CONSTANT_PK', # new type
-        #    'constant_value': "unknown", # place holder
-        #    'priority' : ['custodian_id', 100]
-        #}
-        #, 'custodian_id_field_ext' : {
-        #    'config_type': 'FIELD',
-        #    'element_no_root': "./custodian/id",  # new attribute, conditional on lack of just 'element'
-        #    'attribute' : 'extension',
-        #    'priority' : ['custodian_id', 1]  
-        #  }
-        #, 'custodian_id_field_root' : {
-        #    'config_type': 'FIELD',
-        #    'element_no_root': "./custodian/id", 
-        #    'attribute' : 'extension',
-        #    'priority' : ['custodian_id' 2]
-        #  }
-        # TODO: add custodian_id to person, and as a FK to the domains
     }
 }
