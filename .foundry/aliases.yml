@@ -1,20 +1,42 @@
+care_site:
+  rid: "ri.foundry.main.dataset.6f1d09e8-c4c7-4d9d-bfae-e8da147458b7"
 ccda_value_set_mapping_table_dataset:
   rid: "ri.foundry.main.dataset.5ba1594c-ef36-4eeb-b6c4-d3d005dbd127"
 codemap_xwalk:
   rid: "ri.foundry.main.dataset.28fe6af8-0b22-4b45-86e2-b394c62dcd09"
 concept_xwalk:
   rid: "ri.foundry.main.dataset.79e9fddb-03d9-4331-b7fa-cb255cd1c549"
+condition:
+  rid: "ri.foundry.main.dataset.2d90ccfb-50f1-4c82-bb53-d503e9ba5119"
+death:
+  rid: "ri.foundry.main.dataset.787d7b7f-69c4-4047-8294-c6df6b47353d"
+device_exposure:
+  rid: "ri.foundry.main.dataset.ac9f7685-820a-4592-8eb5-c8c674771d02"
+drug:
+  rid: "ri.foundry.main.dataset.e84c7f21-a35b-40b5-98c9-37ded2f52c0d"
+location:
+  rid: "ri.foundry.main.dataset.ff8a2c79-cdba-4db4-8b34-4c5b5825688e"
 measurement:
   rid: "ri.foundry.main.dataset.7850e50b-05bb-4e1a-99bb-19eda8e6c26d"
 observation:
   rid: "ri.foundry.main.dataset.8577aabe-d4e0-442d-943e-71c4467a3dc4"
+observation_period:
+  rid: "ri.foundry.main.dataset.67596b43-2034-4b7c-a31e-451a7022eb46"
 person:
   rid: "ri.foundry.main.dataset.d78e1f99-e6f5-47ce-b635-8bcc85af8816"
 person_second_try:
   rid: "ri.foundry.main.dataset.de4de72d-75bb-4c76-9cb8-43c2abdb086e"
+procedure_occurrence:
+  rid: "ri.foundry.main.dataset.6f4d7216-01b5-4f87-9937-2cfab9e9b9f9"
+provider:
+  rid: "ri.foundry.main.dataset.3810427e-926e-42de-818d-6bc3c2350939"
 script_output:
   rid: "ri.foundry.main.dataset.feabafaf-7d93-423e-999e-e9fdd9bc7c97"
+specimen:
+  rid: "ri.foundry.main.dataset.5376a069-19d7-4fed-910e-cb533c60c9a7"
 visit:
   rid: "ri.foundry.main.dataset.7725d302-84f8-47c6-8c8c-a3b18094113f"
 visit_concept_xwalk_mapping_dataset:
   rid: "ri.foundry.main.dataset.832f8106-d7ee-4364-9082-d48c49302dd8"
+visit_detail:
+  rid: "ri.foundry.main.dataset.9a44f84e-d384-4610-ad03-41b7dbf2b65a"

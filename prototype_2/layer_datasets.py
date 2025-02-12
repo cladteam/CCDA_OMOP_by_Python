@@ -184,6 +184,29 @@ def build_file_to_domain_dict(meta_config_dict :dict[str, dict[str, dict[str, st
         file_domain_map[file_domain] = meta_config_dict[file_domain]['root']['expected_domain_id']
     return file_domain_map
 
+@typechecked
+def export_to_foundry(dataset_name, df, max_retries=5):
+    try:
+        for attempt in range(1, max_retries + 1):  # Allow up to 5 attempts
+            try:
+                export_dataset = Dataset.get(dataset_name)
+                export_dataset.write_table(df)
+                print(f"Successfully exported dataset '{dataset_name}'")
+                return
+            except Exception as e:
+                print(f"    ERROR: {e}")
+                error_message = str(e)
+                # Detect column name dynamically
+                if "Conversion failed for column" in error_message or "RECONCILE FK" in error_message:
+                    col_name = error_message.split("column ")[1].split(" with type")[0].strip("'")
+                    print(f"    Converting '{dataset_name}' '{col_name}' to string...")
+                    # Convert the affected column to string
+                    df[col_name] = df[col_name].astype(str)
+                    print(f"    RETRY '{attempt}':' Exporting {dataset_name}")
+    except Exception as e:
+        print(f"    FAILED: to export dataset '{dataset_name}' after {max_retries} attempts.")
+        print(f"    ERROR: {e}")
+        print("")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -239,7 +262,7 @@ def main():
             domain_dataset_dict[domain_id] = pd.concat([ domain_dataset_dict[domain_id], omop_dataset_dict[filename] ])
         else:
             domain_dataset_dict[domain_id] = omop_dataset_dict[filename]
-
+            
     # write the combined CSV files
     for domain_id in domain_dataset_dict:
         print(f" domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
@@ -247,15 +270,11 @@ def main():
 
     if args.export:
         # export the datasets to Spark/Foundry
+        print("EXPORT enabled")
         for domain_id in domain_dataset_dict:
             dataset_name = domain_id.lower()
-            print(f"Exporting dataframe \"{domain_id}\" to Foundry dataset \"{dataset_name}\"")
-            try:
-                export_dataset = Dataset.get(dataset_name)
-                export_dataset.write_table(domain_dataset_dict[domain_id])
-            except Exception as e:
-                print(f"  ERROR {e}")
-                print("")
-    
+            print(f"EXPORTING: {dataset_name}")
+            export_to_foundry(dataset_name,domain_dataset_dict[domain_id])
+            
 if __name__ == '__main__':
     main()
