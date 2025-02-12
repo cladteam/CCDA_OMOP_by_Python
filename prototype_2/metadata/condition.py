@@ -104,7 +104,7 @@ metadata = {
     	},
         'condition_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32849, 
+            'constant_value' : 32840, 
             'order': 8
         },
         'condition_status_concept_id': {
