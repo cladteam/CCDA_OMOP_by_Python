@@ -1,7 +1,7 @@
 import prototype_2.value_transformations as VT
 # converted to encouter from encompassingEncounter. The encompassingEncounter attributes are commented out
 metadata = {
-    'Visit_encompassingEncounter': {
+    'Visit_encompassingEncounter_responsibleParty': {
     	# FIX: there's a code for what might be admitting diagnosis here
     	'root': {
     	    'config_type': 'ROOT',
@@ -124,12 +124,12 @@ metadata = {
         
     	'provider_id_performer_root': {
     	    'config_type': 'FIELD',
-    	    'element':'hl7:encounterParticipant[@typeCode="ATND"]/hl7:assignedEntity/hl7:id', 
+    	    'element':'hl7:responsibleParty/hl7:assignedEntity/hl7:id', 
     	    'attribute': "root",
     	},
     	'provider_id_performer_extension': {
     	    'config_type': 'FIELD',
-    	    'element':'hl7:encounterParticipant[@typeCode="ATND"]/hl7:assignedEntity/hl7:id', 
+    	    'element':'hl7:responsibleParty/hl7:assignedEntity/hl7:id', 
     	    'attribute': "extension",
     	},
     	'provider_id_performer': {
@@ -143,33 +143,33 @@ metadata = {
         # TODO FIX how to test this without a plethora of extra columns? Have the has function throw errors on null fields?
         'provider_id_street': {
             'config_type': 'FIELD',
-            'element': 'hl7:encounterParticipant/hl7:assignedEntity/hl7:addr/hl7:streetAddressLine',  # noqa: E501
+            'element': 'hl7:responsibleParty/hl7:assignedEntity/hl7:addr/hl7:streetAddressLine',  # noqa: E501
             'attribute': "#text"
         },
         'provider_id_city': {
             'config_type': 'FIELD',
-            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:city',  # noqa: E501
+            'element': 'hl7:responsibleParty/hl7:assignedEntity/hl7:addr/hl7:city',  # noqa: E501
             'attribute': "#text"
         },
         'provider_id_state': {
             'config_type': 'FIELD',
-            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:state',
+            'element': 'hl7:responsibleParty/hl7:assignedEntity/hl7:addr/hl7:state',
             'attribute': "#text"
         },
         'provider_id_zip': {
             'config_type': 'FIELD',
-            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:postalCode',
+            'element': 'hl7:responsibleParty/hl7:assignedEntity/hl7:addr/hl7:postalCode',
             'attribute': "#text"
         },
         'provider_id_given': {
             'config_type': 'FIELD',
-            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:given',  # noqa: E501
+            'element': 'hl7:responsibleParty/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:given',  # noqa: E501
             'attribute': "#text"
         }, 
 
         'provider_id_family': {
             'config_type': 'FIELD',
-            'element': 'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:family',  # noqa: E501
+            'element': 'hl7:responsibleParty/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:family',  # noqa: E501
             'attribute': "#text"
         },
         'provider_id_hash': {

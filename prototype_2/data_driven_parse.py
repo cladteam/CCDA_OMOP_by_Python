@@ -160,7 +160,7 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
     try:
         field_element = root_element.xpath(field_details_dict['element'], namespaces=ns)
     except XPathEvalError as p:
-        logger.error("ERROR (often inconsequential) {field_details_dict['element']} {p}")
+        logger.error(f"ERROR (often inconsequential) {field_details_dict['element']} {p}")
         print(f"FAILED often inconsequential  {field_details_dict['element']} {p}")
     if field_element is None:
         logger.error((f"FIELD could not find field element {field_details_dict['element']}"
