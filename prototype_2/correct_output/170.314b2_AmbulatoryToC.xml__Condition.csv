@@ -1,0 +1,3 @@
+condition_occurrence_id,person_id,condition_concept_id,condition_start_date,condition_start_datetime,condition_end_date,condition_end_datetime,condition_type_concept_id,condition_status_concept_id,stop_reason,provider_id,visit_occurrence_id,visit_detail_id,condition_source_value,condition_source_concept_id,condition_status_source_value,condition_id_root,condition_id_extension
+59952058456378,912750898820026,4206460,2012-08-15,2012-08-15,,,32840,,,RECONCILE FK,RECONCILE FK,,55607006|2.16.840.1.113883.6.96,,,1.3.6.1.4.1.22812.4.111.0.4.1.2.1,10241104348
+59952058456378,912750898820026,4206460,2011-09-25,2011-09-25,,,32840,,,RECONCILE FK,RECONCILE FK,,55607006|2.16.840.1.113883.6.96,,,1.3.6.1.4.1.22812.4.111.0.4.1.2.1,10241104348

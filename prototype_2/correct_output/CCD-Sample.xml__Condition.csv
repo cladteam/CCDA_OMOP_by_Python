@@ -1,0 +1,2 @@
+condition_occurrence_id,person_id,condition_concept_id,condition_start_date,condition_start_datetime,condition_end_date,condition_end_datetime,condition_type_concept_id,condition_status_concept_id,stop_reason,provider_id,visit_occurrence_id,visit_detail_id,condition_source_value,condition_source_concept_id,condition_status_source_value,condition_id_root,condition_id_extension
+345284283335463,3222207654141651,4206460,2014-09-09,2014-09-09,,,32840,,,RECONCILE FK,1896467922004962,,55607006|2.16.840.1.113883.6.96,,,1.2.840.114350.1.13.6289.1.7.2.768076,68993
