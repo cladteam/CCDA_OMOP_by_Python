@@ -161,7 +161,7 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
         field_element = root_element.xpath(field_details_dict['element'], namespaces=ns)
     except XPathEvalError as p:
         logger.error(f"ERROR (often inconsequential) {field_details_dict['element']} {p}")
-        print(f"FAILED often inconsequential  {field_details_dict['element']} {p}")
+        ###print(f"FAILED often inconsequential  {field_details_dict['element']} {p}")
     if field_element is None:
         logger.error((f"FIELD could not find field element {field_details_dict['element']}"
                       f" for {config_name}/{field_tag} root:{root_path} {field_details_dict} "))
@@ -321,7 +321,7 @@ def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | date
                     output_dict[field_tag] = pk_dict[field_tag][0]
                 else:
                     # can't really choose the correct value here. Is attempted in reconcile_visit_FK_with_specific_domain() later, below.
-                    print(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK' ")
+                    ###print(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK' ")
                     logger.info(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK'")
                     # original hack:
                     output_dict[field_tag] = 'RECONCILE FK'
@@ -464,7 +464,7 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
                 output_dict[field_tag] = None
 
     if domain_id == 0: # TODO, we should decide between 0/NMC and None for an unknown domain_id
-        print(f"DEBUG got 0 for a domain_id, returning None in do_domain_fields(). {config_name}")
+        ###print(f"DEBUG got 0 for a domain_id, returning None in do_domain_fields(). {config_name}")
         logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}, check if the concept maps have this concept.")
         print(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
         return None
@@ -796,11 +796,11 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                                             domain_dict: list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None , 
                                             visit_dict:  list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None):
     if visit_dict is None:
-        print(f"WARNING no visits for {domain} in reconcile_visit_FK_with_specific_domain")
+        ###print(f"WARNING no visits for {domain} in reconcile_visit_FK_with_specific_domain")
         return
 
     if domain_dict is None:
-        print(f"WARNING no data for {domain} in reconcile_visit_FK_with_specific_domain")
+        ###print(f"WARNING no data for {domain} in reconcile_visit_FK_with_specific_domain")
         return
     
     if domain not in domain_dates:
@@ -842,20 +842,20 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                             end_visit_date = visit['visit_end_date']
 
                             if start_visit_date <= date_field_value and date_field_value <= end_visit_date:
-                                print(f"MATCHED visit: v_start:{start_visit_date} d_date:{date_field_value} v_end:{end_visit_date}")
+                                ###print(f"MATCHED visit: v_start:{start_visit_date} d_date:{date_field_value} v_end:{end_visit_date}")
                                 # got one! ....is it the first?
                                 if not have_visit:
                                     # update the visit_occurrence_id in that domain record
                                     thing['visit_occurrence_id'] = visit['visit_occurrence_id']
-                                else:
-                                    print("WARNING got a second fitting visit for {domain} {thing[domain_dates['id']]}")
+                                ###else:
+                                    ###print("WARNING got a second fitting visit for {domain} {thing[domain_dates['id']]}")
                         except KeyError as ke:
-                            print(f"WARNING missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
+                           print(f"ERROR missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
                         except Exception as e:
-                            print(f"WARNING something wrong in visit reconciliation \"{e}\" {type(e)} ")
-                    if not have_visit:
-                        print(f"WARNING wasn't able to reconcile {domain} {thing}")
-                        print("")
+                            print(f"ERROR something wrong in visit reconciliation \"{e}\" {type(e)} ")
+                    ###if not have_visit:
+                        ###print(f"WARNING wasn't able to reconcile {domain} {thing}")
+                        ###print("")
                         
                 else:
                     # S.O.L.

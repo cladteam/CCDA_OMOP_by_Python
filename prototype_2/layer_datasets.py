@@ -26,6 +26,12 @@ from prototype_2.metadata import get_meta_dict
     the same domain. Reason being that multiple places in CCDA
     generate data for the same OMOP domain. It then publishes
     the dataframes as datasets into the Spark world in Foundry.
+    
+    Run 
+        - from dataset named "ccda_documents" with export:
+            bash> python3 -m prototype_2.layer_datasets -ds ccda_documents -x
+        - from directory named "resources" without export:
+            bash> python3 -m prototype_2.layer_datasets -d resources
 """
 
 logger = logging.getLogger(__name__)
@@ -84,7 +90,7 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
         # Initialize a dictionary of columns from schema
         if domain_list is None or len(domain_list) < 1:
             logger.error(f"No data to create dataframe for {config_name} from {filepath}")
-            print(f"ERROR No data to create dataframe for {config_name} from {filepath}")
+            ###print(f"ERROR No data to create dataframe for {config_name} from {filepath}")
         else:
             column_list = find_max_columns(config_name, domain_list)
             column_dict =  dict((k, []) for k in column_list) #dict.fromkeys(column_list)
@@ -92,7 +98,7 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
             # Add the data from all the rows
             if domain_list is None or len(domain_list) < 1:
                 logger.error(f"No data when creating datafame for {config_name} from {filepath}")
-                print(f"No data when creating datafame for {config_name} from {filepath}")
+                ###print(f"No data when creating datafame for {config_name} from {filepath}")
             else:
                 for domain_data_dict in domain_list:
                     for field in column_dict.keys():
@@ -216,6 +222,7 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-d', '--directory', help="directory of files to parse")
     group.add_argument('-f', '--filename', help="filename to parse")
+    group.add_argument('-ds', '--dataset', help="dataset to parse")
     parser.add_argument('-x', '--export', action=argparse.BooleanOptionalAction, help="export to foundry")
     args = parser.parse_args()
 
@@ -241,6 +248,30 @@ def main():
                         logger.info(f"{file} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
                     else:
                         logger.info(f"{file} {key} {len(omop_dataset_dict)} None / no data")
+    # Do a Dataset
+    elif args.dataset is not None:
+        ccda_documents = Dataset.get(args.dataset)
+        print(ccda_documents.files())
+        #ccda_documents_files = ccda_documents.files().download()
+        #for file in ccda_documents_files:
+        ccda_documents_generator = ccda_documents.files()
+        for filegen in ccda_documents_generator:
+            filepath = filegen.download()
+            #print(f"dataset filepath {filepath}")
+            #if filepath.endswith(".xml"):
+            if True:
+                print(f"\n\nPROCESSING {os.path.basename(filepath)}\n")
+                new_data_dict = process_file(filepath)
+                for key in new_data_dict:
+                    if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
+                        if new_data_dict[key] is  not None:
+                            omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
+                    else:
+                        omop_dataset_dict[key]= new_data_dict[key]
+                    if new_data_dict[key] is not None:
+                        logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
+                    else:
+                       logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
@@ -256,7 +287,7 @@ def main():
     file_to_domain_dict = build_file_to_domain_dict(get_meta_dict())
     domain_dataset_dict = {}
     for filename in omop_dataset_dict:
-        print(f"key:{filename} {omop_dataset_dict[filename].shape} ")
+        ###print(f"key:{filename} {omop_dataset_dict[filename].shape} ")
         domain_id = file_to_domain_dict[filename]
         if domain_id in domain_dataset_dict:
             domain_dataset_dict[domain_id] = pd.concat([ domain_dataset_dict[domain_id], omop_dataset_dict[filename] ])
@@ -265,12 +296,11 @@ def main():
             
     # write the combined CSV files
     for domain_id in domain_dataset_dict:
-        print(f" domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
+        #print(f" domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
         domain_dataset_dict[domain_id].to_csv(f"output/domain_{domain_id}.csv")
 
     if args.export:
         # export the datasets to Spark/Foundry
-        print("EXPORT enabled")
         for domain_id in domain_dataset_dict:
             dataset_name = domain_id.lower()
             print(f"EXPORTING: {dataset_name}")

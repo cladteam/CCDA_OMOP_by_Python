@@ -1,5 +1,7 @@
 care_site:
   rid: "ri.foundry.main.dataset.6f1d09e8-c4c7-4d9d-bfae-e8da147458b7"
+ccda_documents:
+  rid: "ri.foundry.main.dataset.877bc6a8-2ec1-4b21-9794-4ad02cc27e30"
 ccda_value_set_mapping_table_dataset:
   rid: "ri.foundry.main.dataset.5ba1594c-ef36-4eeb-b6c4-d3d005dbd127"
 codemap_xwalk:
