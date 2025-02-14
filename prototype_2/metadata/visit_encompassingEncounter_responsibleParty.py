@@ -72,7 +72,24 @@ metadata = {
             'priority':  ['visit_start_date', 2]
     	},
 
-        'visit_start_datetime' : {  'config_type': None, 'order': 5 },
+    	'visit_start_datetime': {
+    	    'config_type': 'PRIORITY',
+            'order': 5
+    	},
+    	'visit_start_datetime_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime/hl7:low[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority':  ['visit_start_datetime', 1]
+    	},
+    	'visit_start_datetime_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_start_datetime', 2]
+    	},
 
 
 
@@ -104,7 +121,34 @@ metadata = {
     	    'attribute': "value",
             'priority':  ['visit_end_date', 3]
     	},
-        'visit_end_datetime' : {  'config_type': None, 'order': 7 },
+        
+    	'visit_end_datetime':  {
+    	    'config_type': 'PRIORITY',
+            'order':7
+    	},
+    	'visit_end_datetime_high':  {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ['visit_end_datetime', 1]
+    	},
+    	'visit_end_datetime_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_endtime_date', 2]
+    	},
+        # too loose! too forgiving? If the high value is UNK, this
+        # will use the low date. See #211 for options.
+    	'visit_end_datetime_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime/hl7:low",
+    	    'attribute': "value",
+            'priority':  ['visit_end_datetime', 3]
+    	},
 
         'visit_type_concept_id' : {
             'config_type': 'CONSTANT',
@@ -201,7 +245,7 @@ metadata = {
             'order': 11
         },
         
-        'visit_concept_id': {
+        'visit_source_concept_id': {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.visit_xwalk_source_concept_id,
     	    'argument_names': {
