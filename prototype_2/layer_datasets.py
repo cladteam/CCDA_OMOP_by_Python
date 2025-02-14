@@ -192,6 +192,7 @@ def build_file_to_domain_dict(meta_config_dict :dict[str, dict[str, dict[str, st
 
 @typechecked
 def export_to_foundry(dataset_name, df, max_retries=5):
+    print(f"EXPORTING: {dataset_name}")
     try:
         for attempt in range(1, max_retries + 1):  # Allow up to 5 attempts
             try:
@@ -213,7 +214,107 @@ def export_to_foundry(dataset_name, df, max_retries=5):
         print(f"    FAILED: to export dataset '{dataset_name}' after {max_retries} attempts.")
         print(f"    ERROR: {e}")
         print("")
+        
+                
+        
+def combine_datasets(omop_dataset_dict):    
+    
+    # COMBINE like datasets
+    # We need to collect all files/datasets that have the same expected_domain_id.
+    # For example, the Measurement domain, rows for the measurement table can 
+    # come from at least two kinds of files:
+    #     <file>__Measurement_results.csv
+    #     <file>__Measurement_vital_signs.csv
+    # Two dictionaries at play here:
+    # 1 is the omop_dataset_dict which is a dictionary of datasets keyed by their domain_keys or config filenames
+    # 2 is the config data that comes from get_meta_dict
+    
+    file_to_domain_dict = build_file_to_domain_dict(get_meta_dict())
+    domain_dataset_dict = {}
+    for filename in omop_dataset_dict:
+        ###print(f"key:{filename} {omop_dataset_dict[filename].shape} ")
+        domain_id = file_to_domain_dict[filename]
+        if domain_id in domain_dataset_dict:
+            domain_dataset_dict[domain_id] = pd.concat([ domain_dataset_dict[domain_id], omop_dataset_dict[filename] ])
+        else:
+            domain_dataset_dict[domain_id] = omop_dataset_dict[filename]      
+            
+    return domain_dataset_dict
 
+
+def do_export_datasets(domain_dataset_dict):
+    # export the datasets to Spark/Foundry
+    for domain_id in domain_dataset_dict:
+        dataset_name = domain_id.lower()
+        export_to_foundry(dataset_name, domain_dataset_dict[domain_id])      
+        
+def do_write_csv_files(domain_dataset_dict):
+    for domain_id in domain_dataset_dict:
+        #print(f" domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
+        domain_dataset_dict[domain_id].to_csv(f"output/domain_{domain_id}.csv")
+ 
+
+        
+# ENTRY POINT
+def process_dataset(dataset_name, export_datasets, write_csv):
+    
+    omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
+    
+    ccda_documents = Dataset.get(dataset_name)
+    print(ccda_documents.files())
+    ccda_documents_generator = ccda_documents.files()
+    for filegen in ccda_documents_generator:
+        filepath = filegen.download()
+        print(f"\n\nPROCESSING {os.path.basename(filepath)}\n")
+        new_data_dict = process_file(filepath)
+        for key in new_data_dict:
+            if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
+                if new_data_dict[key] is  not None:
+                    omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
+            else:
+                omop_dataset_dict[key]= new_data_dict[key]
+            if new_data_dict[key] is not None:
+                logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
+            else:
+               logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
+            
+    domain_dataset_dict = combine_datasets(omop_dataset_dict)
+    if write_csv:
+        do_write_csv_files(domain_dataset_dict)
+
+    if export_datasets:
+        do_export_datasets(domain_dataset_dict)
+    
+    
+    
+# ENTRY POINT
+def process_directory(directory_path, export_datasets, write_csv):
+    omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
+    
+    only_files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+    for file in (only_files):
+        if file.endswith(".xml"):
+            new_data_dict = process_file(os.path.join(directory_path, file))
+            for key in new_data_dict:
+                if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
+                    if new_data_dict[key] is  not None:
+                        omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
+                else:
+                    omop_dataset_dict[key]= new_data_dict[key]
+                if new_data_dict[key] is not None:
+                    logger.info(f"{file} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
+                else:
+                    logger.info(f"{file} {key} {len(omop_dataset_dict)} None / no data")
+                    
+    domain_dataset_dict = combine_datasets(omop_dataset_dict)
+    if write_csv:
+        do_write_csv_files(domain_dataset_dict)
+
+    if export_datasets:
+        do_export_datasets(domain_dataset_dict)
+         
+
+# ENTRY POINT
 def main():
     parser = argparse.ArgumentParser(
         prog='CCDA - OMOP parser with datasets layer layer_datasets.py',
@@ -224,6 +325,7 @@ def main():
     group.add_argument('-f', '--filename', help="filename to parse")
     group.add_argument('-ds', '--dataset', help="dataset to parse")
     parser.add_argument('-x', '--export', action=argparse.BooleanOptionalAction, help="export to foundry")
+    parser.add_argument('-c', '--write_csv', action=argparse.BooleanOptionalAction, help="write CSV files to local")
     args = parser.parse_args()
 
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
@@ -232,79 +334,13 @@ def main():
     if args.filename is not None:
         process_file(args.filename)
         
-    # Do a Directory, process a file and concat it with previous dataset into the omop_dataset_dict
     elif args.directory is not None:
-        only_files = [f for f in os.listdir(args.directory) if os.path.isfile(os.path.join(args.directory, f))]
-        for file in (only_files):
-            if file.endswith(".xml"):
-                new_data_dict = process_file(os.path.join(args.directory, file))
-                for key in new_data_dict:
-                    if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
-                        if new_data_dict[key] is  not None:
-                            omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
-                    else:
-                        omop_dataset_dict[key]= new_data_dict[key]
-                    if new_data_dict[key] is not None:
-                        logger.info(f"{file} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
-                    else:
-                        logger.info(f"{file} {key} {len(omop_dataset_dict)} None / no data")
-    # Do a Dataset
+        domain_dataset_dict = process_directory(args.directory, args.export, args.write_csv)
     elif args.dataset is not None:
-        ccda_documents = Dataset.get(args.dataset)
-        print(ccda_documents.files())
-        #ccda_documents_files = ccda_documents.files().download()
-        #for file in ccda_documents_files:
-        ccda_documents_generator = ccda_documents.files()
-        for filegen in ccda_documents_generator:
-            filepath = filegen.download()
-            #print(f"dataset filepath {filepath}")
-            #if filepath.endswith(".xml"):
-            if True:
-                print(f"\n\nPROCESSING {os.path.basename(filepath)}\n")
-                new_data_dict = process_file(filepath)
-                for key in new_data_dict:
-                    if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
-                        if new_data_dict[key] is  not None:
-                            omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
-                    else:
-                        omop_dataset_dict[key]= new_data_dict[key]
-                    if new_data_dict[key] is not None:
-                        logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
-                    else:
-                       logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
+        domain_dataset_dict = process_dataset(args.dataset, args.export, args.write_csv)
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
-    # COMBINE like datasets
-    # We need to collect all files/datasets that have the same expected_domain_id.
-    # For example, the Measurement domain, rows for the measurement table can 
-    # come from at least two kinds of files:
-    #     <file>__Measurement_results.csv
-    #     <file>__Measurement_vital_signs.csv
-    # Two dictionaries at play here:
-    # 1 is the omop_dataset_dict which is a dictionary of datasets keyed by their domain_keys or config filenames
-    # 2 is the config data that comes from get_meta_dict
-    file_to_domain_dict = build_file_to_domain_dict(get_meta_dict())
-    domain_dataset_dict = {}
-    for filename in omop_dataset_dict:
-        ###print(f"key:{filename} {omop_dataset_dict[filename].shape} ")
-        domain_id = file_to_domain_dict[filename]
-        if domain_id in domain_dataset_dict:
-            domain_dataset_dict[domain_id] = pd.concat([ domain_dataset_dict[domain_id], omop_dataset_dict[filename] ])
-        else:
-            domain_dataset_dict[domain_id] = omop_dataset_dict[filename]
-            
-    # write the combined CSV files
-    for domain_id in domain_dataset_dict:
-        #print(f" domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
-        domain_dataset_dict[domain_id].to_csv(f"output/domain_{domain_id}.csv")
-
-    if args.export:
-        # export the datasets to Spark/Foundry
-        for domain_id in domain_dataset_dict:
-            dataset_name = domain_id.lower()
-            print(f"EXPORTING: {dataset_name}")
-            export_to_foundry(dataset_name,domain_dataset_dict[domain_id])
             
 if __name__ == '__main__':
     main()

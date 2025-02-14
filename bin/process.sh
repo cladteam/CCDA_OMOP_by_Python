@@ -21,7 +21,7 @@ rm -f output/*
 ### python3 -m  unittest prototype_2.test.test_value_transformations_concat
 
 # run the main conversion
-python3 -m prototype_2.layer_datasets -d resources # ../CCDA-data/resources
+python3 -m prototype_2.layer_datasets -d resources -c
 
 # load into DuckDB for constraint errors
 ## python3 -m omop.setup_omop
