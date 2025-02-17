@@ -8,10 +8,8 @@ codemap_xwalk:
   rid: "ri.foundry.main.dataset.28fe6af8-0b22-4b45-86e2-b394c62dcd09"
 concept_xwalk:
   rid: "ri.foundry.main.dataset.79e9fddb-03d9-4331-b7fa-cb255cd1c549"
-<<<<<<< HEAD
 mapped_xml_paths:
   rid: "ri.foundry.main.dataset.610b0e28-bfd0-4203-9155-08115887af49"
-=======
 condition:
   rid: "ri.foundry.main.dataset.2d90ccfb-50f1-4c82-bb53-d503e9ba5119"
 death:
@@ -22,7 +20,6 @@ drug:
   rid: "ri.foundry.main.dataset.e84c7f21-a35b-40b5-98c9-37ded2f52c0d"
 location:
   rid: "ri.foundry.main.dataset.ff8a2c79-cdba-4db4-8b34-4c5b5825688e"
->>>>>>> 1e521fa01ac50e1977b8bfe611169c1e38cd8058
 measurement:
   rid: "ri.foundry.main.dataset.7850e50b-05bb-4e1a-99bb-19eda8e6c26d"
 observation:
@@ -31,15 +28,10 @@ observation_period:
   rid: "ri.foundry.main.dataset.67596b43-2034-4b7c-a31e-451a7022eb46"
 person:
   rid: "ri.foundry.main.dataset.d78e1f99-e6f5-47ce-b635-8bcc85af8816"
-<<<<<<< HEAD
-=======
-person_second_try:
-  rid: "ri.foundry.main.dataset.de4de72d-75bb-4c76-9cb8-43c2abdb086e"
 procedure_occurrence:
   rid: "ri.foundry.main.dataset.6f4d7216-01b5-4f87-9937-2cfab9e9b9f9"
 provider:
   rid: "ri.foundry.main.dataset.3810427e-926e-42de-818d-6bc3c2350939"
->>>>>>> 1e521fa01ac50e1977b8bfe611169c1e38cd8058
 script_output:
   rid: "ri.foundry.main.dataset.feabafaf-7d93-423e-999e-e9fdd9bc7c97"
 specimen:
