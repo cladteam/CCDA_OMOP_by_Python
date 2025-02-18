@@ -42,7 +42,7 @@ metadata = {
         },
         'provider_id_state': {
             'config_type': 'FIELD',
-            'element':('h17:addr/h17:state'),
+            'element':('hl7:addr/hl7:state'),
             'attribute': "#text"
         },
         'provider_id_zip': {
