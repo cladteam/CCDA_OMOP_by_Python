@@ -1,0 +1,30 @@
+inputs:
+- alias: "ccda_documents"
+  properties:
+    type: "dataset"
+    dataset:
+      rid: "ri.foundry.main.dataset.877bc6a8-2ec1-4b21-9794-4ad02cc27e30"
+      assumedMarkings: []
+outputs:
+- alias: "procedure_occurrence"
+  properties:
+    type: "dataset"
+    dataset:
+      rid: "ri.foundry.main.dataset.6f4d7216-01b5-4f87-9937-2cfab9e9b9f9"
+runtime:
+  type: "managedContainer"
+  managedContainer:
+    identifier: "code-workspaces-jupyter-python-3_9-image"
+    command: "/opt/palantir/transforms.d/run-ipynb.sh"
+    filePath: "Convert_CCDA.ipynb"
+    envVars:
+      ENABLE_CODE_BUDDY: "false"
+      ENABLE_MANAGED_CONDA_ENVIRONMENTS: "true"
+      ENABLE_MANAGED_CRAN_ENVIRONMENTS: "false"
+      ENABLE_MANAGED_R_CONDA_ENVIRONMENTS: "false"
+      ENABLE_WRITE_BRANCH_PREFIX: "false"
+      UPLOAD_CODE_CHECKPOINTS: "true"
+resources:
+  cpu: "1"
+  memory: "8G"
+shouldArchiveLogsToOutputs: false
