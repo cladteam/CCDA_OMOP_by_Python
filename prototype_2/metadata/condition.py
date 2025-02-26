@@ -55,12 +55,12 @@ metadata = {
         # <code code="8029-1" codeSystem="1232.23.3.34.3..34"> 
     	'condition_concept_code': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:code" ,
+    	    'element': "hl7:value" ,
     	    'attribute': "code"
     	},
     	'condition_concept_codeSystem': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:code",
+    	    'element': "hl7:value",
     	    'attribute': "codeSystem"
     	},
     	'condition_concept_id': {
