@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import argparse
+import logging
 import os
 import pandas as pd
-import logging
+import re
 from typeguard import typechecked
 try:
     from foundry.transforms import Dataset
@@ -11,9 +12,11 @@ except Exception:
     print("no foundry transforms imported")
 from collections import defaultdict
 import lxml
+import tempfile
+
 from prototype_2.ddl import sql_import_dict
 from prototype_2.ddl import config_to_domain_name_dict
-
+from prototype_2.ddl import domain_name_to_table_name
 import prototype_2.data_driven_parse as DDP
 from prototype_2.metadata import get_meta_dict
 
@@ -191,30 +194,31 @@ def build_file_to_domain_dict(meta_config_dict :dict[str, dict[str, dict[str, st
     return file_domain_map
 
 @typechecked
-def export_to_foundry(dataset_name, df, max_retries=5):
+def export_to_foundry(domain_name, df):
+    """
+    exports domains to datasets in Foundry.
+    """
+    
+    if domain_name not in domain_name_to_table_name:
+        printf("ERROR: not able to map domain:{domain_name} to dataset/table name")
+
+    dataset_name = domain_name_to_table_name[domain_name]
     print(f"EXPORTING: {dataset_name}")
     try:
-        for attempt in range(1, max_retries + 1):  # Allow up to 5 attempts
-            try:
-                export_dataset = Dataset.get(dataset_name)
-                export_dataset.write_table(df)
-                print(f"Successfully exported dataset '{dataset_name}'")
-                return
-            except Exception as e:
-                print(f"    ERROR: {e}")
-                error_message = str(e)
-                # Detect column name dynamically
-                if "Conversion failed for column" in error_message or "RECONCILE FK" in error_message:
-                    col_name = error_message.split("column ")[1].split(" with type")[0].strip("'")
-                    print(f"    Converting '{dataset_name}' '{col_name}' to string...")
-                    # Convert the affected column to string
-                    df[col_name] = df[col_name].astype(str)
-                    print(f"    RETRY '{attempt}':' Exporting {dataset_name}")
+        export_dataset = Dataset.get(dataset_name)
+        export_dataset.write_table(df)
+        print(f"Successfully exported dataset '{dataset_name}'")
     except Exception as e:
-        print(f"    FAILED: to export dataset '{dataset_name}' after {max_retries} attempts.")
         print(f"    ERROR: {e}")
-        print("")
+        error_message = str(e)
         
+        # Detect column name dynamically
+        if "Conversion failed for column" in error_message or "RECONCILE FK" in error_message:
+            col_name = error_message.split("column ")[1].split(" with type")[0].strip("'")
+            print(f"    Converting '{dataset_name}' '{col_name}' to string...")
+            # Convert the affected column to string
+            df[col_name] = df[col_name].astype(str)
+
                 
         
 def combine_datasets(omop_dataset_dict):    
@@ -245,18 +249,18 @@ def combine_datasets(omop_dataset_dict):
 def do_export_datasets(domain_dataset_dict):
     # export the datasets to Spark/Foundry
     for domain_id in domain_dataset_dict:
-        dataset_name = domain_id.lower()
-        export_to_foundry(dataset_name, domain_dataset_dict[domain_id])      
+        print(f"Exporting dataset for domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
+        export_to_foundry(domain_id, domain_dataset_dict[domain_id])      
         
 def do_write_csv_files(domain_dataset_dict):
     for domain_id in domain_dataset_dict:
-        #print(f" domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
+        print(f"Writing CSV for domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
         domain_dataset_dict[domain_id].to_csv(f"output/domain_{domain_id}.csv")
  
 
         
-# ENTRY POINT
-def process_dataset(dataset_name, export_datasets, write_csv):
+# ENTRY POINT for dataset of files
+def process_dataset_of_files(dataset_name, export_datasets, write_csv):
     
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
@@ -265,7 +269,7 @@ def process_dataset(dataset_name, export_datasets, write_csv):
     ccda_documents_generator = ccda_documents.files()
     for filegen in ccda_documents_generator:
         filepath = filegen.download()
-        print(f"\n\nPROCESSING {os.path.basename(filepath)}\n")
+        print(f"\nPROCESSING {os.path.basename(filepath)}   export:{export_datasets} csv:{write_csv} \n")
         new_data_dict = process_file(filepath)
         for key in new_data_dict:
             if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
@@ -276,7 +280,57 @@ def process_dataset(dataset_name, export_datasets, write_csv):
             if new_data_dict[key] is not None:
                 logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
             else:
-               logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
+                logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
+            
+    domain_dataset_dict = combine_datasets(omop_dataset_dict)
+    print(f"\n\nEXPORTING?  export:{export_datasets} csv:{write_csv} \n")
+    if write_csv:
+        print(f"Writing CSV for input dataset: :q{dataset_name}")
+        do_write_csv_files(domain_dataset_dict)
+
+    if export_datasets:
+        print(f"Exporting dataset for {dataset_name}") 
+        do_export_datasets(domain_dataset_dict)
+    
+    
+# ENTRY POINT for dataset of strings
+def process_dataset_of_strings(dataset_name, export_datasets, write_csv):
+    print(f"DATA SET NAME: {dataset_name}")
+    
+    omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
+    ccda_ds = Dataset.get(dataset_name)
+    ccda_df = ccda_ds.read_table(format='pandas')
+    # columns: 'timestamp', 'mspi', 'site', 'status_code', 'response_text',
+    # FOR EACH ROW
+    if True:
+        text=ccda_df.iloc[0,4]
+        print("====")
+        doc_regex = re.compile(r'(<ClinicalDocument.*?</ClinicalDocument>)', re.DOTALL)
+        # (don't close the opening tag because it has attributes)
+        # works: doc_regex = re.compile(r'(<section>.*?</section>)', re.DOTALL)
+        
+        # FOR EACH "DOC" in this row (hopefully just 1)
+        i=0
+        for match in doc_regex.finditer(text):
+            match_tuple = match.groups(0)
+            with tempfile.NamedTemporaryFile() as temp:
+                file_path = temp.name
+                with open(file_path, 'w') as f:
+                    f.write(match_tuple[0]) # .encode())
+                    f.seek(0)
+                    
+                    new_data_dict = process_file(file_path)
+                    for key in new_data_dict:
+                        if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
+                            if new_data_dict[key] is  not None:
+                                omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
+                        else:
+                            omop_dataset_dict[key]= new_data_dict[key]
+                        if new_data_dict[key] is not None:
+                            logger.info((f"{file_path} {key} {len(omop_dataset_dict)} "
+                                          "{omop_dataset_dict[key].shape} {new_data_dict[key].shape}"))
+                        else:
+                            logger.info(f"{file_path} {key} {len(omop_dataset_dict)} None / no data")
             
     domain_dataset_dict = combine_datasets(omop_dataset_dict)
     if write_csv:
@@ -286,8 +340,7 @@ def process_dataset(dataset_name, export_datasets, write_csv):
         do_export_datasets(domain_dataset_dict)
     
     
-    
-# ENTRY POINT
+# ENTRY POINT for directory of files
 def process_directory(directory_path, export_datasets, write_csv):
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     

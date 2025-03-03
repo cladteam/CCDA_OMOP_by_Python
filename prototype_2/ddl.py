@@ -58,6 +58,19 @@ config_to_domain_name_dict = {
 
 }
 
+domain_name_to_table_name = {
+    'Care_Site'  : 'care_site',
+    'Condition'  : 'condition_occurrence',
+    'Drug'       : 'drug_exposure',
+    'Location'   : 'location', 
+    'Measurement': 'measurement',
+    'Observation': 'observation',
+    'Person'     : 'person',
+    'Procedure'  : 'procedure_occurrence',
+    'Provider'   : 'provider',
+    'Visit'      : 'visit_occurrence'
+}
+
 sql_import_dict = {
     'Drug':{
         'column_list': [
