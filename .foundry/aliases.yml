@@ -2,6 +2,8 @@ care_site:
   rid: "ri.foundry.main.dataset.4c563173-2281-4e0c-99e1-f11ea21f8eb6"
 ccda_documents:
   rid: "ri.foundry.main.dataset.877bc6a8-2ec1-4b21-9794-4ad02cc27e30"
+ccda_response_files:
+  rid: "ri.foundry.main.dataset.8c8ff8f9-d429-4396-baed-a3de9c945f49"
 ccda_value_set_mapping_table_dataset:
   rid: "ri.foundry.main.dataset.5ba1594c-ef36-4eeb-b6c4-d3d005dbd127"
 codemap_xwalk:

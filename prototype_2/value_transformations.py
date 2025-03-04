@@ -157,8 +157,9 @@ def _codemap_xwalk(vocabulary_oid, concept_code, column_name, default):
     """ expects: vocabulary_oid, concept_code
     """
     try:
-        df = codemap_xwalk[ (codemap_xwalk['vocab_oid'] == vocabulary_oid) &
-                            (codemap_xwalk['src_code']  == concept_code) ]
+        #df = codemap_xwalk[ (codemap_xwalk['vocab_oid'] == vocabulary_oid) & (codemap_xwalk['src_code']  == concept_code) ]
+        # 2025-03-04 new version of codemap schema:
+        df = codemap_xwalk[ (codemap_xwalk['src_vocab_code_system'] == vocabulary_oid) & (codemap_xwalk['src_code']  == concept_code) ]
         if len(df) < 1:
            logger.error(f"_codemap_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" ")
            return default
