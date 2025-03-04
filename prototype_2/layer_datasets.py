@@ -99,23 +99,19 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
             column_dict =  dict((k, []) for k in column_list) #dict.fromkeys(column_list)
 
             # Add the data from all the rows
-            if domain_list is None or len(domain_list) < 1:
-                logger.error(f"No data when creating datafame for {config_name} from {filepath}")
-                ###print(f"No data when creating datafame for {config_name} from {filepath}")
-            else:
-                for domain_data_dict in domain_list:
-                    for field in column_dict.keys():
-                        if field in domain_data_dict:
-                            if domain_data_dict[field] == 'RECONCILE FK':
-                                logger.error(f"RECONCILE FK for {field} in {config_name}")
-                                column_dict[field].append(None)
-                            elif field == 'visit_concept_id' and type(domain_data_dict[field]) == str:
-                                # hack when visit_type_xwalk returns a string
-                                column_dict[field].append(int(domain_data_dict[field]))
-                            else:
-                                column_dict[field].append(domain_data_dict[field])
-                        else:
+            for domain_data_dict in domain_list:
+                for field in column_dict.keys():
+                    if field in domain_data_dict:
+                        if domain_data_dict[field] == 'RECONCILE FK':
+                            logger.error(f"RECONCILE FK for {field} in {config_name}")
                             column_dict[field].append(None)
+                        elif field == 'visit_concept_id' and type(domain_data_dict[field]) == str:
+                            # hack when visit_type_xwalk returns a string
+                            column_dict[field].append(int(domain_data_dict[field]))
+                        else:
+                            column_dict[field].append(domain_data_dict[field])
+                    else:
+                        column_dict[field].append(None)
     
             # create a Pandas dataframe from the data_dict
             try:
