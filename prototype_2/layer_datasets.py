@@ -106,7 +106,14 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
                 for domain_data_dict in domain_list:
                     for field in column_dict.keys():
                         if field in domain_data_dict:
-                            column_dict[field].append(domain_data_dict[field])
+                            if domain_data_dict[field] == 'RECONCILE FK':
+                                logger.error(f"RECONCILE FK for {field} in {config_name}")
+                                column_dict[field].append(None)
+                            elif field == 'visit_concept_id' and type(domain_data_dict[field]) == str:
+                                # hack when visit_type_xwalk returns a string
+                                column_dict[field].append(int(domain_data_dict[field]))
+                            else:
+                                column_dict[field].append(domain_data_dict[field])
                         else:
                             column_dict[field].append(None)
     
@@ -211,15 +218,7 @@ def export_to_foundry(domain_name, df):
     except Exception as e:
         print(f"    ERROR: {e}")
         error_message = str(e)
-        
-        # Detect column name dynamically
-        if "Conversion failed for column" in error_message or "RECONCILE FK" in error_message:
-            col_name = error_message.split("column ")[1].split(" with type")[0].strip("'")
-            print(f"    Converting '{dataset_name}' '{col_name}' to string...")
-            # Convert the affected column to string
-            df[col_name] = df[col_name].astype(str)
 
-                
         
 def combine_datasets(omop_dataset_dict):    
     
