@@ -796,15 +796,15 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                                             domain_dict: list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None , 
                                             visit_dict:  list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None):
     if visit_dict is None:
-        ###print(f"WARNING no visits for {domain} in reconcile_visit_FK_with_specific_domain")
+        logger.error(f"no visits for {domain} in reconcile_visit_FK_with_specific_domain, reconcilliation")
         return
 
     if domain_dict is None:
-        ###print(f"WARNING no data for {domain} in reconcile_visit_FK_with_specific_domain")
+        logger.error(f"no data for {domain} in reconcile_visit_FK_with_specific_domain, reconcilliation")
         return
     
     if domain not in domain_dates:
-        print(f"ERROR no metadata for domain {domain} in reconcile_visit_FK_with_specific_domain")
+        logger.error(f"no metadata for domain {domain} in reconcile_visit_FK_with_specific_domain, reconcilliation")
         
      # Q: does this domain NEED to have it's visit foreign key reconcileed??!!!! TODO
      # (in this project things are called a domain and passed in here that are not really domains in OMOP, locations, providers, care-sites, etc. )
@@ -850,22 +850,21 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                                 ###else:
                                     ###print("WARNING got a second fitting visit for {domain} {thing[domain_dates['id']]}")
                         except KeyError as ke:
-                           print(f"ERROR missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
+                           logger.error(f"missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
                         except Exception as e:
-                            print(f"ERROR something wrong in visit reconciliation \"{e}\" {type(e)} ")
+                            logger.error(f"something wrong in visit reconciliation \"{e}\" {type(e)} ")
                     ###if not have_visit:
                         ###print(f"WARNING wasn't able to reconcile {domain} {thing}")
                         ###print("")
                         
                 else:
-                    # S.O.L.
-                    print(f"ERROR no datea available for visit reconcilliation in domain {domain} for {thing}")
+                    logger.error(f"no datea available for visit reconcilliation in domain {domain} for {thing}")
                 
 
     elif 'start' in domain_dates[domain].keys() and 'end' in domain_dates[domain].keys():
-        print("tbd")
+        logger.error("??? start and end in domain_dates for reconcilliation")
     else:
-        print("ERROR........")
+        logger.error("??? bust in domain_dates for reconcilliation")
         
 
     
@@ -878,7 +877,9 @@ def reconcile_visit_foreign_keys(data_dict :dict[str,
     reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_results'], data_dict['Visit'] )
     reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_vital_signs'], data_dict['Visit'] )
     reconcile_visit_FK_with_specific_domain('Observation', data_dict['Observation'], data_dict['Visit'] )
-#    reconcile_visit_FK_with_specific_domain('Condition', data_dict['Condition'], data_dict['Visit'] )
+    reconcile_visit_FK_with_specific_domain('Condition', data_dict['Condition'], data_dict['Visit'] )
+#    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['xxxxx'], data_dict['Visit'] )
+#    reconcile_visit_FK_with_specific_domain('Medication', data_dict['xxxx'], data_dict['Visit'] )
 
                           
                           
