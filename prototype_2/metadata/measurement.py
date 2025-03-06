@@ -98,12 +98,18 @@ metadata = {
     	    'attribute': "value",
             'order': 4
     	},
-        'measurement_datetime': { 'config_type': None, 'order': 5 },
+        'measurement_datetime': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'order': 5
+    	},
         'measurement_time': { 'config_type': None, 'order': 6 },
         'measurement_type_concept_id': {
             'config_type': 'CONSTANT',
             'constant_value' : 32035,
-            'order': 8
+            'order': 7
         },
         'operator_concept_id': { 'config_type': None, 'order': 8 },
 

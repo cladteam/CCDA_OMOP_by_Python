@@ -21,6 +21,10 @@ import prototype_2.metadata.provider_encompassingEncounter_responsibleParty
 import prototype_2.metadata.provider_header_documentationOf as provider_header_documentationOf
 import prototype_2.metadata.medication_medication_dispense as medication_medication_dispense
 import prototype_2.metadata.medication_medication_activity as medication_medication_activity
+import prototype_2.metadata.immunization_immunization_activity as immunization_immunization_activity
+import prototype_2.metadata.procedure_activity_procedure as procedure_activity_procedure
+import prototype_2.metadata.procedure_activity_observation as procedure_activity_observation
+import prototype_2.metadata.procedure_activity_act as procedure_activity_act
 """ The meatadata is 3 nested dictionaries:
     - meta_dict: the dict of all domains
     - domain_dict: a dict describing a particular domain
@@ -52,9 +56,12 @@ meta_dict =  location.metadata | \
              care_site_pr.metadata | \
              care_site_pr_location.metadata | \
              provider.metadata | \
+             immunization_immunization_activity.metadata | \
+             procedure_activity_procedure.metadata | \
+             procedure_activity_observation.metadata | \
+             procedure_activity_act.metadata | \
              provider_encompassingEncounter.metadata | \
              provider_encompassingEncounter_responsibleParty.metadata 
-
 
 
 

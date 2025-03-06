@@ -2686,7 +2686,7 @@
 									<reference value="#Proc1"/>
 								</originalText>
 							</code>
-							<statusCode code="aborted"/>
+							<statusCode code="completed"/>
 							<effectiveTime value="20110203"/>
 							<priorityCode code="CR" codeSystem="2.16.840.1.113883.5.7" codeSystemName="ActPriority" displayName="Callback results"/>
 							<value xsi:type="CD"/>

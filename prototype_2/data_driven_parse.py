@@ -120,7 +120,7 @@ def create_hash(input_string) -> int | None:
 
 
 @typechecked
-def cast_to_date(string_value) ->  datetime.date:
+def cast_to_date(string_value) ->  datetime.date | None:
     # TODO does CCDA always do dates as YYYYMMDD ?
     # https://build.fhir.org/ig/HL7/CDA-ccda/StructureDefinition-USRealmDateTimeInterval-definitions.html
     # doc says YYYMMDD... examples show ISO-8601. Should use a regex and detect parse failure.
@@ -130,15 +130,18 @@ def cast_to_date(string_value) ->  datetime.date:
         datetime_val = parse(string_value)
         return datetime_val.date()
     except Exception as x:
-        print(f"ERROR couldn't parse {string_value} as date. {e}")
+        print(f"ERROR couldn't parse {string_value} as date. Exception:{x}")
+        return None
+    except ValueError as ve:
+        print(f"ERROR couldn't parse {string_value} as date. ValueError:{ve}")
         return None
 
-def cast_to_datetime(string_value) -> datetime.datetime:
+def cast_to_datetime(string_value) -> datetime.datetime | None:
     try:
         datetime_val = parse(string_value)
         return datetime_val
     except Exception as x:
-        print(f"ERROR couldn't parse {string_value} as datetime. {e}")
+        print(f"ERROR couldn't parse {string_value} as datetime. {x}")
         return None
 
 
@@ -647,7 +650,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
                             f"cpt:{output_dict['measurement_concept_id']}") )
         elif expected_domain_id == "Procedure":
             logger.warning((f"ACCEPTING {domain_id} "
-                            f"id:{output_dict['procedure_id']} "
+                            f"id:{output_dict['procedure_occurrence_id']} "
                             f"cpt:{output_dict['procedure_concept_id']}") )
         return output_dict
     else:
@@ -661,7 +664,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
                               f"cpt:{output_dict['measurement_concept_id']}") )
         elif expected_domain_id == "Procedure":
             logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
-                              f"id:{output_dict['procedure_id']} "
+                              f"id:{output_dict['procedure_occurrence_id']} "
                               f"cpt:{output_dict['procedure_concept_id']}") )
         elif expected_domain_id == "Drug":
             logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
@@ -788,7 +791,12 @@ domain_dates = {
                     'id': 'observation_id'},
     'Condition'  : {'start': ['condition_start_date', 'condition_start_datetime'], 
                     'end':   ['condition_end_date', 'condition_end_datetime'],
-                    'id': 'condition_id'}
+                    'id': 'condition_id'},
+    'Procedure'  : {'date': ['procedure_date', 'procedure_datetime'],
+                    'id': 'procedure_occurrence_id'},
+    'Drug'       : {'start': ['drug_exposure_start_date', 'drug_exposure_start_datetime'],
+                    'end': ['drug_exposure_end_date', 'drug_exposure_end_datetime'],
+                    'id': 'drug_exposure_id'},
 }
         
 @typechecked 
@@ -839,8 +847,33 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                     for visit in visit_dict:
                         try:
                             start_visit_date = visit['visit_start_date']
+                            if visit['visit_start_datetime'] is not None:
+                                start_visit_date = visit['visit_start_datetime']
+                                
                             end_visit_date = visit['visit_end_date']
+                            if visit['visit_end_datetime'] is not None:
+                                end_visit_date = visit['visit_end_datetime']
+                            
+                            # Normalize all to datetime.date
+                            #if isinstance(start_visit_date, datetime.datetime):
+                            #    start_visit_date = start_visit_date.date()
+                            
+                            #if isinstance(end_visit_date, datetime.datetime):
+                            #    end_visit_date = end_visit_date.date()
+                                
+                            #if isinstance(date_field_value, datetime.datetime):
+                            #    date_field_value = date_field_value.date()
 
+                            # Remove timezone info by converting all to naive datetime
+                            if start_visit_date.tzinfo is not None:
+                                start_visit_date = start_visit_date.replace(tzinfo=None)
+                            
+                            if end_visit_date.tzinfo is not None:
+                                end_visit_date = end_visit_date.replace(tzinfo=None)
+                                
+                            if date_field_value.tzinfo is not None:
+                                date_field_value = date_field_value.replace(tzinfo=None)
+                            
                             if start_visit_date <= date_field_value and date_field_value <= end_visit_date:
                                 ###print(f"MATCHED visit: v_start:{start_visit_date} d_date:{date_field_value} v_end:{end_visit_date}")
                                 # got one! ....is it the first?
@@ -858,11 +891,63 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                         ###print("")
                         
                 else:
-                    logger.error(f"no datea available for visit reconcilliation in domain {domain} for {thing}")
+                    # S.O.L.
+                    print(f"ERROR no date available for visit reconcilliation in domain {domain} for {thing}")
                 
 
     elif 'start' in domain_dates[domain].keys() and 'end' in domain_dates[domain].keys():
-        logger.error("??? start and end in domain_dates for reconcilliation")
+        for thing in domain_dict:
+            start_date_field_name = domain_dates[domain]['start'][0]
+            start_datetime_field_name = domain_dates[domain]['start'][1]
+            end_date_field_name = domain_dates[domain]['end'][0]
+            end_datetime_field_name = domain_dates[domain]['end'][1]
+            
+            start_date_value = thing[start_date_field_name]
+            end_date_value = thing[end_date_field_name]
+            
+            if thing[start_datetime_field_name] is not None:
+                    start_date_value = thing[start_datetime_field_name]
+                    
+            if thing[end_datetime_field_name] is not None:
+                    end_date_value = thing[end_datetime_field_name]
+            
+            if start_date_value is not None and end_date_value is not None:
+                have_visit = False
+                for visit in visit_dict:
+                    try:
+                        start_visit_date = visit['visit_start_date']
+                        if visit['visit_start_datetime'] is not None:
+                            start_visit_date = visit['visit_start_datetime']
+                                
+                        end_visit_date = visit['visit_end_date']
+                        if visit['visit_end_datetime'] is not None:
+                            end_visit_date = visit['visit_end_datetime']
+                        
+                        if start_visit_date and end_visit_date:
+                            # Check if event overlaps with the visit period
+                            if (
+                                (start_visit_date <= start_date_value <= end_visit_date) or
+                                (start_visit_date <= end_date_value <= end_visit_date) or
+                                (start_date_value <= start_visit_date and end_visit_date <= end_date_value)
+                            ):
+                                print(f"MATCHED visit: v_start:{start_visit_date} event_start:{start_date_value} event_end:{end_date_value} v_end:{end_visit_date}")
+                                if not have_visit:
+                                    thing['visit_occurrence_id'] = visit['visit_occurrence_id']
+                                else:
+                                    print(f"WARNING multiple fitting visits for {domain} {thing[domain_dates['id']]}")
+                    except KeyError as ke:
+                        print(f"WARNING missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")   
+                    except Exception as e:
+                        print(f"WARNING something wrong in visit reconciliation: {e}")
+
+                if not have_visit:
+                    print(f"WARNING couldn't reconcile visit for {domain} event: {thing}")
+                    print("")
+            
+            else:
+                    # S.O.L.
+                    print(f"ERROR no date available for visit reconcilliation in domain {domain} for {thing}")
+
     else:
         logger.error("??? bust in domain_dates for reconcilliation")
         
@@ -878,9 +963,12 @@ def reconcile_visit_foreign_keys(data_dict :dict[str,
     reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_vital_signs'], data_dict['Visit'] )
     reconcile_visit_FK_with_specific_domain('Observation', data_dict['Observation'], data_dict['Visit'] )
     reconcile_visit_FK_with_specific_domain('Condition', data_dict['Condition'], data_dict['Visit'] )
-#    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['xxxxx'], data_dict['Visit'] )
-#    reconcile_visit_FK_with_specific_domain('Medication', data_dict['xxxx'], data_dict['Visit'] )
-
+    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['Procedure_activity_procedure'], data_dict['Visit'])
+    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['Procedure_activity_observation'], data_dict['Visit'])
+    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['Procedure_activity_act'], data_dict['Visit'])
+    reconcile_visit_FK_with_specific_domain('Drug', data_dict['Medication_medication_activity'], data_dict['Visit'])
+    reconcile_visit_FK_with_specific_domain('Drug', data_dict['Medication_medication_dispense'], data_dict['Visit'])
+    reconcile_visit_FK_with_specific_domain('Drug', data_dict['Immunization_immunization_activity'], data_dict['Visit'])
                           
                           
 @typechecked
@@ -896,11 +984,16 @@ def parse_doc(file_path,
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():
+        print(f"PARSING {config_name} from {base_name} for {config_dict['root']['expected_domain_id']}")
         data_dict_list = parse_config_from_xml_file(tree, config_name, config_dict, base_name, pk_dict)
         if config_name in omop_dict: 
             omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)
         else:
             omop_dict[config_name] = data_dict_list
+        if data_dict_list is not None:
+            print(f"...PARSED, got {len(data_dict_list)}")
+        else:
+            print(f"...PARSED, got **NOTHING** {data_dict_list} ")
     return omop_dict
 
 
@@ -923,10 +1016,12 @@ def print_omop_structure(omop :dict[str, list[ dict[str, None | str | float | in
                     print(f"\n\nDOMAIN: {domain} {domain_data_dict.keys()} ")
                     for field, parts in domain_data_dict.items():
                         print(f"    FIELD:{field}")
-                        print(f"        parts type {type(parts[0])}")
-                        print(f"        parts type {type(parts[1])}")
-                        print(f"        VALUE:{parts[0]}")
-                        print(f"        PATH:{parts[1]}")
+                        #print(f"        parts type {type(parts[0])}")
+                        #print(f"        parts type {type(parts[1])}")
+                        print(f"        parts type {type(parts)}")
+                        print(f"        VALUE:{parts}")
+                        #print(f"        VALUE:{parts[0]}")
+                        #print(f"        PATH:{parts[1]}")
                         print(f"        ORDER: {metadata[domain][field]['order']}")
                         n = n+1
                     print(f"\n\nDOMAIN: {domain} {n}\n\n")
