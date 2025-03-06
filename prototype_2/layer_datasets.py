@@ -142,7 +142,7 @@ def write_csvs_from_dataframe_dict(df_dict :dict[str, pd.DataFrame], file_name, 
 
 
 @typechecked
-def process_file(filepath) -> dict[str, pd.DataFrame]:
+def process_file(filepath, write_csv_flag) -> dict[str, pd.DataFrame]:
     """ processes file, creates dataset and writes csv
         returns dataset
     """
@@ -165,7 +165,9 @@ def process_file(filepath) -> dict[str, pd.DataFrame]:
         dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
     else:
         logger.error(f"no data from {filepath}")
-    write_csvs_from_dataframe_dict(dataframe_dict, base_name, "output")
+        
+    if write_csv_flag:
+        write_csvs_from_dataframe_dict(dataframe_dict, base_name, "output")
 
     return dataframe_dict
 
@@ -246,6 +248,7 @@ def do_export_datasets(domain_dataset_dict):
     for domain_id in domain_dataset_dict:
         print(f"Exporting dataset for domain:{domain_id} dim:{domain_dataset_dict[domain_id].shape}")
         export_to_foundry(domain_id, domain_dataset_dict[domain_id])      
+
         
 def do_write_csv_files(domain_dataset_dict):
     for domain_id in domain_dataset_dict:
@@ -255,7 +258,7 @@ def do_write_csv_files(domain_dataset_dict):
 
         
 # ENTRY POINT for dataset of files
-def process_dataset_of_files(dataset_name, export_datasets, write_csv):
+def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag):
     
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
@@ -264,8 +267,8 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv):
     ccda_documents_generator = ccda_documents.files()
     for filegen in ccda_documents_generator:
         filepath = filegen.download()
-        print(f"\nPROCESSING {os.path.basename(filepath)}   export:{export_datasets} csv:{write_csv} \n")
-        new_data_dict = process_file(filepath)
+        print(f"\nPROCESSING {os.path.basename(filepath)}   export:{export_datasets} csv:{write_csv_flag} \n")
+        new_data_dict = process_file(filepath, write_csv_flag)
         for key in new_data_dict:
             if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
                 if new_data_dict[key] is  not None:
@@ -278,8 +281,8 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv):
                 logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
             
     domain_dataset_dict = combine_datasets(omop_dataset_dict)
-    print(f"\n\nEXPORTING?  export:{export_datasets} csv:{write_csv} \n")
-    if write_csv:
+    print(f"\n\nEXPORTING?  export:{export_datasets} csv:{write_csv_flag} \n")
+    if write_csv_flag:
         print(f"Writing CSV for input dataset: :q{dataset_name}")
         do_write_csv_files(domain_dataset_dict)
 
@@ -289,7 +292,7 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv):
     
     
 # ENTRY POINT for dataset of strings
-def process_dataset_of_strings(dataset_name, export_datasets, write_csv):
+def process_dataset_of_strings(dataset_name, export_datasets, write_csv_flag):
     print(f"DATA SET NAME: {dataset_name}")
     
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
@@ -314,7 +317,7 @@ def process_dataset_of_strings(dataset_name, export_datasets, write_csv):
                     f.write(match_tuple[0]) # .encode())
                     f.seek(0)
                     
-                    new_data_dict = process_file(file_path)
+                    new_data_dict = process_file(file_path, write_csv_flag)
                     for key in new_data_dict:
                         if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
                             if new_data_dict[key] is  not None:
@@ -328,7 +331,7 @@ def process_dataset_of_strings(dataset_name, export_datasets, write_csv):
                             logger.info(f"{file_path} {key} {len(omop_dataset_dict)} None / no data")
             
     domain_dataset_dict = combine_datasets(omop_dataset_dict)
-    if write_csv:
+    if write_csv_flag:
         do_write_csv_files(domain_dataset_dict)
 
     if export_datasets:
@@ -336,13 +339,13 @@ def process_dataset_of_strings(dataset_name, export_datasets, write_csv):
     
     
 # ENTRY POINT for directory of files
-def process_directory(directory_path, export_datasets, write_csv):
+def process_directory(directory_path, export_datasets, write_csv_flag):
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
     only_files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
     for file in (only_files):
         if file.endswith(".xml"):
-            new_data_dict = process_file(os.path.join(directory_path, file))
+            new_data_dict = process_file(os.path.join(directory_path, file), write_csv_flag)
             for key in new_data_dict:
                 if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
                     if new_data_dict[key] is  not None:
@@ -355,7 +358,7 @@ def process_directory(directory_path, export_datasets, write_csv):
                     logger.info(f"{file} {key} {len(omop_dataset_dict)} None / no data")
                     
     domain_dataset_dict = combine_datasets(omop_dataset_dict)
-    if write_csv:
+    if write_csv_flag:
         do_write_csv_files(domain_dataset_dict)
 
     if export_datasets:
@@ -380,7 +383,7 @@ def main():
     
     # Single File, put the datasets into the omop_dataset_dict
     if args.filename is not None:
-        process_file(args.filename)
+        process_file(args.filename, args.write_csv)
         
     elif args.directory is not None:
         domain_dataset_dict = process_directory(args.directory, args.export, args.write_csv)
