@@ -8,13 +8,17 @@ metadata = {
             'expected_domain_id': 'Drug',
             # Medication Dispense
             # Medications section, entry, substanceAdministration, entryRelationship, supply
+            #substanceAdministration/@moodCode="INT" represents intention of patient to take the  medications ?
             #supply/@moodCode="EVN" represents medications are dispensed to the patient.
     	    'element':
      		  ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
-    		   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.1" or @root="2.16.840.1.113883.10.20.22.2.1.1"]/'
-               '../hl7:entry/hl7:substanceAdministration[@moodCode="EVN"]/'
-               'hl7:entryRelationship/hl7:supply/hl7:statusCode[@code="active" or @code="completed"]/'
-               '../hl7:templateId[@root="2.16.840.1.113883.10.20.22.4.18"]/..'
+    		   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.1" or @root="2.16.840.1.113883.10.20.22.2.1.1"]/../'
+
+                   'hl7:entry/hl7:substanceAdministration[@moodCode="INT" or @moodCode="EVN"]/' 
+
+                   'hl7:entryRelationship/hl7:supply[@moodCode="EVN"]/'
+                   "hl7:statusCode[@code="active" or @code="completed"]/../'
+                   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.4.18"]/..'
               )
            
         },
