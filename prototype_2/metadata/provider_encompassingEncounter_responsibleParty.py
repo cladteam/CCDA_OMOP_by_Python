@@ -151,7 +151,12 @@ metadata = {
         'gender_source_concept_id': {
             'config_type': None,
             'order' :13
-        }
+        },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
     },
     
 }

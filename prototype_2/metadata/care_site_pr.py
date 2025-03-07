@@ -112,9 +112,14 @@ metadata = {
             'config_type': 'FIELD',
             'element': 'hl7:addr/hl7:postalCode',
             'attribute': "#text",
-        }
+        },
         #'county': {
         #'location_source_value': { TODO: concatentation of fields f"{address_1}|{address_2}|{city} "
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
 
     }
 }

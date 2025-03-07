@@ -29,11 +29,6 @@ metadata = {
             'order':202
     	},
 
-		'filename' : {
-			'config_type': 'FILENAME',
-			'order':100
-		}, 
-
     	'person_id': { 
        	    'config_type': 'HASH',
             'fields' : [ 'person_id_root', 'person_id_extension' ], 
@@ -187,7 +182,12 @@ metadata = {
     	    'attribute': "code",
             'order': 17
         },
-        'ethnicity_source_concept_id': { 'config_type': None, 'order': 18 }
+        'ethnicity_source_concept_id': { 'config_type': None, 'order': 18 },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
 
     }
 }

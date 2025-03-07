@@ -228,6 +228,11 @@ metadata = {
         'value_source_value' : {
             'config_type': 'PRIORITY',
             'order':20
-        }
+        },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
     }
 }

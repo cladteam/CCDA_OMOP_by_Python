@@ -46,8 +46,13 @@ metadata = {
             'order': 6
         },
         'county': {'config_type': None, 'order': 7 },
-        'location_source_value':  {'config_type': None, 'order': 8 }
+        'location_source_value':  {'config_type': None, 'order': 8 },
                 #TODO: concatentation of fields f"{address_1}|{address_2}|{city} "
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	}, 
 
     }
 }

@@ -141,5 +141,10 @@ metadata = {
         
         'modifier_source_value': { 'config_type': None, 'order': 14 },
 
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
+
     }
 }

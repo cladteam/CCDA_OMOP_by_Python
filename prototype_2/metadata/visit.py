@@ -289,7 +289,12 @@ metadata = {
         'admitting_source_value': { 'config_type': None, 'order': 14},
         'discharge_to_source_concept_id': { 'config_type': None, 'order': 15},
         'discharge_to_source_value': { 'config_type': None, 'order': 16},
-        'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17}
+        'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17},
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
         
     }
 }

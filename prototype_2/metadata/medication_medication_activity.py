@@ -263,12 +263,14 @@ metadata = {
         },
         'verbatim_end_date_value': {
     	    'config_type': 'FIELD',
+            'data_type': 'DATE',
     	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
             'priority': ('verbatim_end_date', 1)
     	},
         'verbatim_end_date_high': {
     	    'config_type': 'FIELD',
+            'data_type': 'DATE',
             'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
             'priority': ('verbatim_end_date', 2)
@@ -399,6 +401,11 @@ metadata = {
             'attribute': "unit",
             'order': 23
         },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
 
     }
 }

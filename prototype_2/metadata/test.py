@@ -95,7 +95,12 @@ metadata = {
             'config_type': 'HASH',
             'fields' : [ 'test_derived_field' ],
             'order': 9
-        }
+        },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
     }
 }
 

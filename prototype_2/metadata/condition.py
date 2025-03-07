@@ -134,7 +134,12 @@ metadata = {
             'order': 14
         },
         'condition_source_concept_id': { 'config_type': None, 'order': 15 },
-        'condition_status_source_value': { 'config_type': None, 'order': 16 }
+        'condition_status_source_value': { 'config_type': None, 'order': 16 },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	}
 
     }
 }
