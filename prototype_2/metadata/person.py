@@ -28,6 +28,12 @@ metadata = {
     	    'attribute': "extension",
             'order':202
     	},
+
+		'filename' : {
+			'config_type': 'FILENAME',
+			'order':100
+		}, 
+
     	'person_id': { 
        	    'config_type': 'HASH',
             'fields' : [ 'person_id_root', 'person_id_extension' ], 

@@ -248,6 +248,20 @@ def do_constant_fields(output_dict :dict[str, None | str | float | int | datetim
 
             
 @typechecked
+def do_filename_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+                       root_element, root_path, config_name,  
+                       config_dict :dict[str, dict[str, str | None]], 
+                       error_fields_set :set[str],
+                       filename :str):
+    for (field_tag, field_details_dict) in config_dict.items():
+        logger.info((f"     FILENAME FIELD config:'{config_name}' field_tag:'{field_tag}'"
+                     f" {field_details_dict}"))
+        config_type_tag = field_details_dict['config_type']
+        if config_type_tag == 'FILENAME':
+            output_dict[field_tag] = filename
+
+            
+@typechecked
 def do_basic_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
@@ -609,7 +623,8 @@ def sort_output_dict(output_dict :dict[str, None | str | float | int],
 def parse_config_for_single_root(root_element, root_path, config_name, 
                                  config_dict :dict[str, dict[str, str | None]], 
                                  error_fields_set : set[str], 
-                                 pk_dict :dict[str, list[any]]) -> dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None:
+                                 pk_dict :dict[str, list[any]],
+                                 filename :str) -> dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None:
 
     """  Parses for each field in the metadata for a config out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
@@ -628,6 +643,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
 
     do_none_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
     do_constant_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
+    do_filename_fields(output_dict, root_element, root_path, config_name, config_dict, error_fields_set, filename)
     do_basic_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict)
     do_derived_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
     domain_id = do_domain_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
@@ -744,7 +760,7 @@ def parse_config_from_xml_file(tree, config_name,
     logger.info(f"NUM ROOTS {config_name} {len(root_element_list)}")
     for root_element in root_element_list:
         output_dict = parse_config_for_single_root(root_element, root_path, 
-                config_name, config_dict, error_fields_set, pk_dict)
+                config_name, config_dict, error_fields_set, pk_dict, filename)
         if output_dict is not None:
             output_list.append(output_dict)
 
