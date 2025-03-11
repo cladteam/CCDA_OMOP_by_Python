@@ -406,13 +406,13 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime
                 logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
             except KeyError as e:
-                print(traceback.format_exc(e))
+                #print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
                 logger.error(f"DERIVED exception: {e}")
                 logger.error(f"DERIVED KeyError {field_tag} function can't find key it expects in {args_dict}")
                 output_dict[field_tag] = None
             except TypeError as e:
-                print(traceback.format_exc(e))
+                #print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
                 logger.error(f"DERIVED exception: {e}")
                 logger.error((f"DERIVED TypeError {field_tag} possibly calling something that isn't a function"
@@ -482,8 +482,11 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
 
     if domain_id == 0: # TODO, we should decide between 0/NMC and None for an unknown domain_id
         ###print(f"DEBUG got 0 for a domain_id, returning None in do_domain_fields(). {config_name}")
-        logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}, check if the concept maps have this concept.")
-        print(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
+        if not have_domain_field:
+            logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}.")
+            print(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
+        else:
+            logger.error(f"ERROR didn't get a DOMAIN value in config {config_name}, check if the concept maps have this concept.")
         return None
     else:
         return domain_id
@@ -1000,16 +1003,17 @@ def parse_doc(file_path,
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():
-        print(f"PARSING {config_name} from {base_name} for {config_dict['root']['expected_domain_id']}")
+        ###print(f"PARSING {config_name} from {base_name} for {config_dict['root']['expected_domain_id']}")
         data_dict_list = parse_config_from_xml_file(tree, config_name, config_dict, base_name, pk_dict)
         if config_name in omop_dict: 
             omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)
         else:
             omop_dict[config_name] = data_dict_list
-        if data_dict_list is not None:
-            print(f"...PARSED, got {len(data_dict_list)}")
-        else:
-            print(f"...PARSED, got **NOTHING** {data_dict_list} ")
+            
+        #if data_dict_list is not None:
+        #    print(f"...PARSED, got {len(data_dict_list)}")
+        #else:
+        #    print(f"...PARSED, got **NOTHING** {data_dict_list} ")
     return omop_dict
 
 
