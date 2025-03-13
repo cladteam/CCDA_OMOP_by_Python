@@ -1,5 +1,6 @@
 
 import prototype_2.value_transformations as VT
+from numpy import int32
 
 metadata = {
     'Condition': {
@@ -104,7 +105,7 @@ metadata = {
     	},
         'condition_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32840, 
+            'constant_value' : int32(32840), 
             'order': 8
         },
         'condition_status_concept_id': {
@@ -134,7 +135,11 @@ metadata = {
             'order': 14
         },
         'condition_source_concept_id': { 'config_type': None, 'order': 15 },
-        'condition_status_source_value': { 'config_type': None, 'order': 16 },
+        'condition_status_source_value': {
+            'config_type': 'CONSTANT',
+            'constant_value' : '', 
+            'order': 16
+        },
 
 	'filename' : {
 		'config_type': 'FILENAME',

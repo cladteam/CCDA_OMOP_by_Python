@@ -13,12 +13,21 @@ except Exception:
 from collections import defaultdict
 import lxml
 import tempfile
+from numpy import int32
+from numpy import float32
+from numpy import datetime64
+import numpy as np
+import warnings
+
+
+
 
 from prototype_2.ddl import sql_import_dict
 from prototype_2.ddl import config_to_domain_name_dict
 from prototype_2.ddl import domain_name_to_table_name
 import prototype_2.data_driven_parse as DDP
 from prototype_2.metadata import get_meta_dict
+from prototype_2.domain_dataframe_column_types import domain_dataframe_column_types 
 
 
 """ layer_datasets.py
@@ -37,6 +46,12 @@ from prototype_2.metadata import get_meta_dict
             bash> python3 -m prototype_2.layer_datasets -d resources
 """
 
+
+#****************************************************************
+#*                                                              *
+warnings.simplefilter(action='ignore', category=FutureWarning) #*
+#*                                                              * 
+#****************************************************************
 logger = logging.getLogger(__name__)
 
 
@@ -107,16 +122,45 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
                             column_dict[field].append(None)
                         elif field == 'visit_concept_id' and type(domain_data_dict[field]) == str:
                             # hack when visit_type_xwalk returns a string
-                            column_dict[field].append(int(domain_data_dict[field]))
+                            column_dict[field].append(int32(domain_data_dict[field]))
                         else:
                             column_dict[field].append(domain_data_dict[field])
                     else:
                         column_dict[field].append(None)
     
-            # create a Pandas dataframe from the data_dict
+            # use domain_dataframe_colunn_types to cast as directed
+            # Q: this just adds 0 and casts those specifically?
+            # Create a Pandas dataframe from the data_dict
             try:
                 ##show_column_dict(config_name, column_dict)
                 domain_df = pd.DataFrame(column_dict)
+                domain_name = config_to_domain_name_dict[config_name]
+                table_name = domain_name_to_table_name[domain_name]
+                if table_name in domain_dataframe_column_types.keys():
+                    for column_name, column_type in domain_dataframe_column_types[table_name].items():
+                        
+                        
+                        if column_type in ['date', 'datetime', datetime64]:
+                            domain_df[column_name] = pd.to_datetime(domain_df[column_name])
+  
+                            if column_type == 'date':
+                                try:
+                                    domain_df[column_name] = domain_df[column_name].dt.date # datetime still
+                                    #domain_df[column_name] = domain_df[column_name].dt.date.astype('object') -- leaves as integer!
+                                except Exception as e:
+                                    print(f"CAST ERROR (to date)  in layer_datasets.py table:{table_name} column:{column_name} type:{column_type}  ")
+                                    print(f"  exception  {domain_df[column_name]}   {type(domain_df[column_name])}")
+                        else:
+                            try:
+                                domain_df[column_name] = domain_df[column_name].fillna(0).astype(column_type)  # generates downcasting wwarnings and doesn't throw, 
+                                # domain_df[column_name] = domain_df[column_name].fillna(cast(column_type, 0)).astype(column_type)  # throwss
+                                #domain_df[column_name] = domain_df[column_name].astype(column_type).fillna(0) # cast errors on the None
+                            except Exception as e:
+                                print(f"CAST ERROR in layer_datasets.py table:{table_name} column:{column_name} type:{column_type}  ")
+                                print(f"  exception  {domain_df[column_name]}   {type(domain_df[column_name])}")
+                    
+                                                              
+                            
                 df_dict[config_name] = domain_df
             except ValueError as ve:
                 logger.error(f"ERROR when creating dataframe for {config_name} \"{ve}\"")
@@ -152,23 +196,28 @@ def process_file(filepath, write_csv_flag) -> dict[str, pd.DataFrame]:
         format='%(levelname)s: %(message)s',
         filename=f"logs/log_file_{base_name}.log",
         force=True,
-        # level=logging.ERROR
-        level=logging.WARNING
+         level=logging.ERROR
+        #level=logging.WARNING
         # level=logging.INFO
         # level=logging.DEBUG
     )
 
+    print(f"   parsing {filepath}")
     omop_data = DDP.parse_doc(filepath, get_meta_dict())
+    print("   reconciling")
     DDP.reconcile_visit_foreign_keys(omop_data)
     # DDP.print_omop_structure(omop_data)
     if omop_data is not None or len(omop_data) < 1:
+        print("    creating dataframes")
         dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
+        
     else:
         logger.error(f"no data from {filepath}")
         
     if write_csv_flag:
+        print("   writing CSVs")
         write_csvs_from_dataframe_dict(dataframe_dict, base_name, "output")
-
+    print("   done")
     return dataframe_dict
 
 
@@ -197,6 +246,7 @@ def build_file_to_domain_dict(meta_config_dict :dict[str, dict[str, dict[str, st
     for file_domain in meta_config_dict:
         file_domain_map[file_domain] = meta_config_dict[file_domain]['root']['expected_domain_id']
     return file_domain_map
+
 
 @typechecked
 def export_to_foundry(domain_name, df):
@@ -258,27 +308,34 @@ def do_write_csv_files(domain_dataset_dict):
 
         
 # ENTRY POINT for dataset of files
-def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag):
+def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limit=0):
     
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
     ccda_documents = Dataset.get(dataset_name)
     print(ccda_documents.files())
     ccda_documents_generator = ccda_documents.files()
+    file_count=0
     for filegen in ccda_documents_generator:
-        filepath = filegen.download()
-        print(f"\nPROCESSING {os.path.basename(filepath)}   export:{export_datasets} csv:{write_csv_flag} \n")
-        new_data_dict = process_file(filepath, write_csv_flag)
-        for key in new_data_dict:
-            if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
-                if new_data_dict[key] is  not None:
-                    omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
-            else:
-                omop_dataset_dict[key]= new_data_dict[key]
-            if new_data_dict[key] is not None:
-                logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
-            else:
-                logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
+        if limit > 0 and file_count < limit:
+            filepath = filegen.download()
+            
+            print(f"\nPROCESSING {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}\n")
+            new_data_dict = process_file(filepath, write_csv_flag)
+            
+            for key in new_data_dict:
+                if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
+                    if new_data_dict[key] is  not None:
+                        omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
+                else:
+                    omop_dataset_dict[key]= new_data_dict[key]
+                if new_data_dict[key] is not None:
+                    logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
+                else:
+                    logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
+            file_count += 1
+        else:
+            break
             
     domain_dataset_dict = combine_datasets(omop_dataset_dict)
     print(f"\n\nEXPORTING?  export:{export_datasets} csv:{write_csv_flag} \n")
@@ -318,6 +375,7 @@ def process_dataset_of_strings(dataset_name, export_datasets, write_csv_flag):
                     f.seek(0)
                     
                     new_data_dict = process_file(file_path, write_csv_flag)
+                    
                     for key in new_data_dict:
                         if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
                             if new_data_dict[key] is  not None:

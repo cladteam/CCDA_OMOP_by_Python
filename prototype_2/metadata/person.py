@@ -161,7 +161,11 @@ metadata = {
         
         'provider_id': { 'config_type': None, 'order': 10 },
         'care_site_id': { 'config_type': None, 'order': 11 },
-        'person_source_value': { 'config_type': None, 'order': 12 },
+        'person_source_value': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':12
+        },
         'gender_source_value': {
        	    'config_type': 'FIELD',
     	    'element': "hl7:patient/hl7:administrativeGenderCode",

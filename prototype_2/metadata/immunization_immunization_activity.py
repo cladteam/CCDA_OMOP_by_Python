@@ -1,5 +1,6 @@
 
 import prototype_2.value_transformations as VT
+from numpy import int32
 #
 metadata = {
     'Immunization_immunization_activity': {
@@ -163,7 +164,7 @@ metadata = {
         
         'drug_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32818, # OMOP concept ID for 'EHR administration record'
+            'constant_value' : int32(32818), # OMOP concept ID for 'EHR administration record'
             'order': 9
         },
         

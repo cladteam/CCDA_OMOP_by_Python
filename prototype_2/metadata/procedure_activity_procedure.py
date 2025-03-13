@@ -1,4 +1,5 @@
 
+from numpy import int32
 import prototype_2.value_transformations as VT
 #
 metadata = {
@@ -96,7 +97,7 @@ metadata = {
 
         'procedure_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32817, # OMOP concept ID for 'EHR'
+            'constant_value' : int32(32817), # OMOP concept ID for 'EHR'
             'order': 6
         },
         
@@ -139,7 +140,11 @@ metadata = {
             'order': 13
         },
         
-        'modifier_source_value': { 'config_type': None, 'order': 14 },
+        'modifier_source_value': {
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+            'order': 14
+        },
 
 	'filename' : {
 		'config_type': 'FILENAME',

@@ -117,10 +117,19 @@ metadata = {
         },
         
         # hl7:encounter/hl7:participant/hl7:participantRole
-        'care_site_id': { 
+        'care_site_id_root': { 
             'config_type': 'FIELD',
             'element':'../../hl7:location/hl7:healthCareFacility',
             'attribute': "root",
+        },
+        'care_site_id_extension': { 
+            'config_type': 'FIELD',
+            'element':'../../hl7:location/hl7:healthCareFacility',
+            'attribute': "extension",
+        },
+        'care_site_id': { 
+            'config_type': 'HASH',
+            'fields': [ 'care_site_id_root', 'care_site_id_extension'],
             'order': 6
         },
   
@@ -133,20 +142,23 @@ metadata = {
             'order' :8
         },
         'provider_source_value': {
-            'config_type': None,
-            'order' :9
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':9
         },
         'specialty_source_value': {
-            'config_type': None,
-            'order' :10
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':10
         },
         'specialty_source_concept_id': {
             'config_type': None,
             'order' :11
         }, 
         'gender_source_value': {
-            'config_type': None,
-            'order' :12
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':12
         },
         'gender_source_concept_id': {
             'config_type': None,

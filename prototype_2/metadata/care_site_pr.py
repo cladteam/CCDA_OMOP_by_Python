@@ -19,31 +19,21 @@ metadata = {
             
         },
 
-        # If we end up with multiple sources for care_site_id, we would
-        # implement a priority list, but for now there is just one, so
-        # this is commented out. Please delete if we ultimately don't need/use it.
-        # an example of why we might need it is the hash of address fields below.
-        #'care_site_id': {
-        #    'config_type': 'PRIORITY',
-        #   'order': 1
-        #},
-        #'healthCareFacility_id': {
-        #    'config_type': 'FIELD',
-        #    'element': 'hl7:id',
-        #    'attribute': "root",
-        #    'priority' : ['care_site_id', 1]
-        #},
-        # 'healthCareFacility_hash_id': { # TODO
-        #    'config_type': 'HASH',
-        #    'element': 'hl7:streetAddressLine',
-        #    'attribute': "#text",
-        #    'priority' : ['care_site_id', 2]
-        #},
-            
-        'care_site_id': { 
+        'care_site_id_root': {
             'config_type': 'FIELD',
-            'element': 'hl7:id[not(@nullFlavor="UNK")]',
+            'element': 'hl7:id',
+            #    'element': 'hl7:id[not(@nullFlavor="UNK")]',
             'attribute': "root",
+        },
+        'care_site_id_extension': {
+            'config_type': 'FIELD',
+            'element': 'hl7:id',
+            #    'element': 'hl7:id[not(@nullFlavor="UNK")]',
+            'attribute': "extension",
+        },
+        'care_site_id': { 
+            'config_type': 'HASH',
+            'fields': [ 'care_site_id_root', 'care_site_id_extension'],
             'order': 1
         },
             
@@ -80,14 +70,24 @@ metadata = {
             'fields' : [ 'address_1', 'city', 'state', 'zip'  ],
             'order': 4
         },
-        'care_site_source_value': { # TODO concat id and address fileds
-            'config_type': None,
+        'care_site_source_value': {
+            'config_type': 'DERIVED',
+            'FUNCTION': VT.concat_fields,
+            'argument_names':{
+                'first_field': 'care_site_id_root',
+                'second_field': 'care_site_id_extension',
+                'default' : 'error'
+            },
             'order': 5
         },
-        'place_of_service_source_value': { # TODO concat code and codeSystem?
-            'config_type': 'FIELD',
-            'element': 'hl7:code',
-            'attribute': "code",
+        'place_of_service_source_value': {
+            'config_type': 'DERIVED',
+            'FUNCTION': VT.concat_fields,
+            'argument_names':{
+                'first_field': 'place_of_service_concept_code',
+                'second_field': 'place_of_service_concept_codeSystem',
+                'default' : 'error'
+            },
             'order': 6
         },
 

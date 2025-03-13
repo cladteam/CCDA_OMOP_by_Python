@@ -1,3 +1,4 @@
+from numpy import int32
 import prototype_2.value_transformations as VT
 # converted to encouter from encompassingEncounter. The encompassingEncounter attributes are commented out
 metadata = {
@@ -197,7 +198,7 @@ metadata = {
 
         'visit_type_concept_id' : {
             'config_type': 'CONSTANT',
-            'constant_value' : 32827,
+            'constant_value' : int32(32827),
             'order': 8
         },
 
@@ -286,9 +287,17 @@ metadata = {
         
         'visit_source_concept_id': { 'config_type': None, 'order': 12}, # TODO
         'admitting_source_concept_id': { 'config_type': None, 'order': 13},
-        'admitting_source_value': { 'config_type': None, 'order': 14},
-        'discharge_to_source_concept_id': { 'config_type': None, 'order': 15},
-        'discharge_to_source_value': { 'config_type': None, 'order': 16},
+        'admitting_source_value': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':14
+        },
+        'discharge_to_concept_id': { 'config_type': None, 'order': 15},
+        'discharge_to_source_value':  {
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':16
+        },
         'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17},
 
 	'filename' : {

@@ -73,7 +73,9 @@ import os
 import sys
 import hashlib
 import zlib
-import ctypes
+#import ctypes
+from numpy import int32
+from numpy import int64
 import traceback
 from collections import defaultdict
 from lxml import etree as ET
@@ -147,7 +149,7 @@ def cast_to_datetime(string_value) -> datetime.datetime | None:
 
 @typechecked
 def parse_field_from_dict(field_details_dict :dict[str, str], root_element, 
-        config_name, field_tag, root_path) ->  None | str | float | int | datetime.datetime | datetime.date:
+        config_name, field_tag, root_path) ->  None | str | float | int | int32 | datetime.datetime | datetime.date:
     """ Retrieves a value for the field descrbied in field_details_dict that lies below
         the root_element.
         Domain and field_tag are here for error messages.
@@ -199,28 +201,61 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
     if 'data_type' in field_details_dict:
         if attribute_value is not None:
             if field_details_dict['data_type'] == 'DATE':
-                attribute_value = cast_to_date(attribute_value)
+                try:
+                    attribute_value = cast_to_date(attribute_value)
+                except Exception as e:
+                    print(f"cast to date failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to date failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'DATETIME':
-                attribute_value = cast_to_datetime(attribute_value)
+                try:
+                    attribute_value = cast_to_datetime(attribute_value)
+                except Exception as e:
+                    print(f"cast to datetime failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to datetime failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+            elif field_details_dict['data_type'] == 'LONG':
+                try:
+                    attribute_value = int64(attribute_value)
+                except Exception as e:
+                    print(f"cast to int64 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to int64 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'INTEGER':
-                attribute_value = int(attribute_value)
-            elif field_details_dict['data_type'] == '32BINTEGER':
-                attribute_value = ctypes.c_int32(int(attribute_value)).value
+                try:
+                    attribute_value = int32(attribute_value)
+                except Exception as e:
+                    print(f"cast to int32 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to int32 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'BIGINTHASH':
-                attribute_value = create_hash(attribute_value)
+                try:
+                    attribute_value = create_hash(attribute_value)
+                except Exception as e:
+                    print(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+            elif field_details_dict['data_type'] == 'TEXT':
+                try:
+                    attribute_value = str(attribute_value)
+                except Exception as e:
+                    print(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'FLOAT':
-                attribute_value = float(attribute_value)
+                try:
+                    attribute_value = float(attribute_value)
+                except Exception as e:
+                    print(f"cast to float failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to float failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             else:
+                print(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {config_name} {field_tag}")
                 logger.error(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {config_name} {field_tag}")
             return attribute_value
         else:
+        #    print(f" no value: {field_details_dict['data_type']} {config_name} {field_tag}")
+        #   logger.error(f" no value: {field_details_dict['data_type']} {config_name} {field_tag}")
             return None
     else:
         return attribute_value
 
 
 @typechecked
-def do_none_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date ],
+def do_none_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date ],
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str]):
@@ -233,7 +268,7 @@ def do_none_fields(output_dict :dict[str, None | str | float | int | datetime.da
 
             
 @typechecked
-def do_constant_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_constant_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                        root_element, root_path, config_name,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str]):
@@ -248,7 +283,7 @@ def do_constant_fields(output_dict :dict[str, None | str | float | int | datetim
 
             
 @typechecked
-def do_filename_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_filename_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                        root_element, root_path, config_name,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str],
@@ -262,7 +297,7 @@ def do_filename_fields(output_dict :dict[str, None | str | float | int | datetim
 
             
 @typechecked
-def do_basic_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_basic_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
                     error_fields_set :set[str], 
@@ -295,7 +330,7 @@ def do_basic_fields(output_dict :dict[str, None | str | float | int | datetime.d
             
 
 @typechecked 
-def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
                     error_fields_set :set[str], 
@@ -362,7 +397,7 @@ def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | date
                 error_fields_set.add(field_tag)
 
 @typechecked
-def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_derived_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                       root_element, root_path, config_name,  
                       config_dict :dict[str, dict[str, str | None]], 
                       error_fields_set :set[str]):
@@ -424,7 +459,7 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime
 
                 
 @typechecked
-def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_domain_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                      root_element, root_path, config_name, 
                      config_dict :dict[str, dict[str, str | None]], 
                      error_fields_set :set[str]) -> str | None :
@@ -493,7 +528,7 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
 
 
 @typechecked
-def do_hash_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_hash_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str], 
@@ -522,7 +557,7 @@ def do_hash_fields(output_dict :dict[str, None | str | float | int | datetime.da
 
             
 @typechecked
-def do_priority_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_priority_fields(output_dict :dict[str, None | str | float | int | int32 |  datetime.datetime | datetime.date], 
                        root_element, root_path, config,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str], 
@@ -732,7 +767,8 @@ def parse_config_from_xml_file(tree, config_name,
     logging.basicConfig(
         format='%(levelname)s: %(message)s',
         filename=f"logs/log_config_{base_name}_{config_name}.log",
-        force=True, level=logging.WARNING)
+        #force=True, level=logging.WARNING)
+        force=True, level=logging.ERROR)
 
     # Find root
     if 'root' not in config_dict:
@@ -902,16 +938,19 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                                 ###else:
                                     ###print("WARNING got a second fitting visit for {domain} {thing[domain_dates['id']]}")
                         except KeyError as ke:
-                           logger.error(f"missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
+                           logger.error(f"missing field  \"{ke}\", in visit reconcilliation, see warnings for detail")
+                           logger.warning(f"missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
                         except Exception as e:
-                            logger.error(f"something wrong in visit reconciliation \"{e}\" {type(e)} ")
+                            logger.error(f"something wrong in visit reconciliation \"{e}\" see warnings for detail ")
+                            logger.warning(f"something wrong in visit reconciliation \"{e}\" {type(e)} ")
                     ###if not have_visit:
                         ###print(f"WARNING wasn't able to reconcile {domain} {thing}")
                         ###print("")
                         
                 else:
                     # S.O.L.
-                    print(f"ERROR no date available for visit reconcilliation in domain {domain} for {thing}")
+                    ### print(f"ERROR no date available for visit reconcilliation in domain {domain} (detail in logs)")
+                    logger.error(f"no date available for visit reconcilliation in domain {domain} for {thing}")
                 
 
     elif 'start' in domain_dates[domain].keys() and 'end' in domain_dates[domain].keys():
@@ -960,12 +999,14 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                         print(f"WARNING something wrong in visit reconciliation: {e}")
 
                 if not have_visit:
-                    print(f"WARNING couldn't reconcile visit for {domain} event: {thing}")
+                    logger.error(f" couldn't reconcile visit for {domain} event: {thing}")
+                    ##print(f"WARNING couldn't reconcile visit for {domain} event: {thing}")
                     print("")
             
             else:
                     # S.O.L.
-                    print(f"ERROR no date available for visit reconcilliation in domain {domain} for {thing}")
+                    ###print(f"ERROR no date available for visit reconcilliation in domain {domain} (detail in logs)")
+                    logger.error(f" no date available for visit reconcilliation in domain {domain} for {thing}")
 
     else:
         logger.error("??? bust in domain_dates for reconcilliation")
@@ -977,17 +1018,22 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
 def reconcile_visit_foreign_keys(data_dict :dict[str, 
                                                  list[ dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None  ] | None]) :
     # data_dict is a dictionary of config_names to a list of record-dicts
+    metadata = [
+    ('Measurement', 'Measurement_results', 'Visit' ),
+    ('Measurement', 'Measurement_vital_signs', 'Visit' ),
+    ('Observation', 'Observation', 'Visit' ),
+    ('Condition', 'Condition', 'Visit' ),
+    ('Procedure', 'Procedure_activity_procedure', 'Visit'),
+    ('Procedure', 'Procedure_activity_observation', 'Visit'),
+    ('Procedure', 'Procedure_activity_act', 'Visit'),
+    ('Drug', 'Medication_medication_activity', 'Visit'),
+    ('Drug', 'Medication_medication_dispense', 'Visit'),
+    ('Drug', 'Immunization_immunization_activity', 'Visit')
+    ]
 
-    reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_results'], data_dict['Visit'] )
-    reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_vital_signs'], data_dict['Visit'] )
-    reconcile_visit_FK_with_specific_domain('Observation', data_dict['Observation'], data_dict['Visit'] )
-    reconcile_visit_FK_with_specific_domain('Condition', data_dict['Condition'], data_dict['Visit'] )
-    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['Procedure_activity_procedure'], data_dict['Visit'])
-    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['Procedure_activity_observation'], data_dict['Visit'])
-    reconcile_visit_FK_with_specific_domain('Procedure', data_dict['Procedure_activity_act'], data_dict['Visit'])
-    reconcile_visit_FK_with_specific_domain('Drug', data_dict['Medication_medication_activity'], data_dict['Visit'])
-    reconcile_visit_FK_with_specific_domain('Drug', data_dict['Medication_medication_dispense'], data_dict['Visit'])
-    reconcile_visit_FK_with_specific_domain('Drug', data_dict['Immunization_immunization_activity'], data_dict['Visit'])
+    for meta_tuple in metadata:
+        #print(f" reconciling {meta_tuple[1]}")
+        reconcile_visit_FK_with_specific_domain(meta_tuple[0], data_dict[meta_tuple[1]], data_dict[meta_tuple[2]] )
                           
                           
 @typechecked
@@ -1003,7 +1049,7 @@ def parse_doc(file_path,
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():
-        ###print(f"PARSING {config_name} from {base_name} for {config_dict['root']['expected_domain_id']}")
+        print(f" {base_name} {config_name}")
         data_dict_list = parse_config_from_xml_file(tree, config_name, config_dict, base_name, pk_dict)
         if config_name in omop_dict: 
             omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)
@@ -1068,12 +1114,16 @@ def process_file(filepath :str, print_output: bool):
     )
 
     metadata = get_meta_dict()
+    print(f"    {filepath} parse_doc() ")
     omop_data = parse_doc(filepath, metadata)
+    print(f"    {filepath} reconcile_visit()() ")
     reconcile_visit_foreign_keys(omop_data)
     if print_output and (omop_data is not None or len(omop_data) < 1):
         print_omop_structure(omop_data, metadata)
     else:
         logger.error(f"FILE no data from {filepath} (or printing turned off)")
+
+    print(f"done PROCESSING {filepath} ")
 
 
 # for argparse

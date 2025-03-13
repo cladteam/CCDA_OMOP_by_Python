@@ -1,4 +1,6 @@
 
+from numpy import float32
+from numpy import int32
 import prototype_2.value_transformations as VT
 # VITAL SIGNS
 metadata = {
@@ -100,10 +102,14 @@ metadata = {
         'measurement_time': { 'config_type': None, 'order': 6 },
         'measurement_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32035,
+            'constant_value' : int32(32035),
             'order': 7
         },
-        'operator_concept_id': { 'config_type': None, 'order': 8 },
+        'operator_concept_id': {
+    	    'config_type': 'CONSTANT',
+    	    'constant_value': "0",
+            'order': 8 
+        },
 
     	'value_type': {
     	    'config_type': 'FIELD',
@@ -113,13 +119,14 @@ metadata = {
 
     	'value_as_number_pq': {
     	    'config_type': 'FIELD',
+            'data_type': 'FLOAT',
     	    'element': 'hl7:value[@xsi:type="PQ"]' ,
     	    'attribute': "value",
             'priority': ['value_as_number', 1]
         },
     	'value_as_number_na': {
     	    'config_type': 'CONSTANT',
-    	    'constant_value': "0",
+            'constant_value': float32(0),
             'priority': ['value_as_number', 100]
         },
     	'value_as_number': {
@@ -200,7 +207,11 @@ metadata = {
 
     	'measurement_source_concept_id':	{ 'config_type': None, 'order':  18 },
 
-    	'unit_source_value':	{ 'config_type': None, 'order':  19 },
+    	'unit_source_value':	{ 
+    	    'config_type': 'CONSTANT',
+            'constant_value': '',
+            'order':  19 
+        },
 
     	'value_source_value_constant': {
     	    'config_type': 'CONSTANT',

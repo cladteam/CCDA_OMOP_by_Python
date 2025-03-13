@@ -198,5 +198,8 @@ ri.artifacts.repository.artifactory.external-python-pypi
 ri.foundry-sdk-asset-bundle.main.artifacts.repository
 ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 
+[cran-repos]
+ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
+
 [conda lock version]
 v3 - 2f0b53b18869a4c49f1e5730a6095e6b90806360b0c35c654ab01f6e5d207cc8
