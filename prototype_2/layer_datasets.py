@@ -123,10 +123,16 @@ def create_omop_domain_dataframes(omop_data: dict[str, list[ dict[str,  None | s
                         elif field == 'visit_concept_id' and type(domain_data_dict[field]) == str:
                             # hack when visit_type_xwalk returns a string
                             column_dict[field].append(int32(domain_data_dict[field]))
+                        elif field[-8:] == "datetime" and domain_data_dict[field] is not None:
+                            try:
+                                column_dict[field].append(domain_data_dict[field].replace(tzinfo=None))
+                            except Exception as e:
+                                print(f"ERROR  TZ {type(domain_data_dict[field])} {domain_data_dict[field]} {field} {e}")
                         else:
                             column_dict[field].append(domain_data_dict[field])
                     else:
                         column_dict[field].append(None)
+                        
     
             # use domain_dataframe_colunn_types to cast as directed
             # Q: this just adds 0 and casts those specifically?
@@ -320,7 +326,7 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limi
         if limit > 0 and file_count <= limit:
             filepath = filegen.download()
             
-            print(f"PROCESSING {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
+            print(f"PROCESSING {file_count} {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
             new_data_dict = process_file(filepath, write_csv_flag)
             
             for key in new_data_dict:
@@ -334,7 +340,6 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limi
                 else:
                     logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
             file_count += 1
-            print(f"done {file_count} ")
         else:
             break
             
