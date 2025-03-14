@@ -1,4 +1,5 @@
-
+from numpy import int64
+from numpy import int32
 import prototype_2.value_transformations as VT
 
 metadata = {
@@ -82,7 +83,7 @@ metadata = {
     	},
     	'birth_datetime': {
     	    'config_type': 'FIELD',
-            'data_type':'DATE',
+            'data_type':'DATETIME',
     	    'element': "hl7:patient/hl7:birthTime",
     	    'attribute': "value",
             'order': 6
@@ -160,7 +161,11 @@ metadata = {
 
         
         'provider_id': { 'config_type': None, 'order': 10 },
-        'care_site_id': { 'config_type': None, 'order': 11 },
+        'care_site_id': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : int64(0),
+	    'order':11
+        },
         'person_source_value': { 
             'config_type': 'CONSTANT',
             'constant_value' : '',

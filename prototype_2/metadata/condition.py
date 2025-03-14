@@ -112,7 +112,11 @@ metadata = {
             'config_type': None,
             'order': 9
         },
-        'stop_reason': { 'config_type': None, 'order': 10 },
+        'stop_reason': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '', 
+            'order': 10
+        },
         'provider_id': { 
             'config_type': 'FK', 
             'FK': 'provider_id',

@@ -228,6 +228,7 @@ metadata = {
         
     	'care_site_id': {
     	    'config_type': 'FIELD',
+            'data_type': 'LONG',
             'element': 'hl7:location/hl7:healthCareFacility/hl7:location/hl7:addr', 
             #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", 
     	    #'element': "hl7:location/hl7:healthCareFacility/hl7:id",

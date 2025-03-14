@@ -422,7 +422,7 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | int32 | 
                     try:
                         args_dict[arg_name] = output_dict[field_name]
                     except Exception as e:
-                        print(traceback.format_exc(e))
+                        #print(traceback.format_exc(e))
                         error_fields_set.add(field_tag)
                         logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
@@ -988,7 +988,7 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                                 (start_visit_date <= end_date_value <= end_visit_date) or
                                 (start_date_value <= start_visit_date and end_visit_date <= end_date_value)
                             ):
-                                print(f"MATCHED visit: v_start:{start_visit_date} event_start:{start_date_value} event_end:{end_date_value} v_end:{end_visit_date}")
+###                                print(f"MATCHED visit: v_start:{start_visit_date} event_start:{start_date_value} event_end:{end_date_value} v_end:{end_visit_date}")
                                 if not have_visit:
                                     thing['visit_occurrence_id'] = visit['visit_occurrence_id']
                                 else:
@@ -1001,7 +1001,7 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                 if not have_visit:
                     logger.error(f" couldn't reconcile visit for {domain} event: {thing}")
                     ##print(f"WARNING couldn't reconcile visit for {domain} event: {thing}")
-                    print("")
+                    #print("")
             
             else:
                     # S.O.L.
@@ -1049,7 +1049,7 @@ def parse_doc(file_path,
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():
-        print(f" {base_name} {config_name}")
+#        print(f" {base_name} {config_name}")
         data_dict_list = parse_config_from_xml_file(tree, config_name, config_dict, base_name, pk_dict)
         if config_name in omop_dict: 
             omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)

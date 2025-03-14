@@ -202,22 +202,22 @@ def process_file(filepath, write_csv_flag) -> dict[str, pd.DataFrame]:
         # level=logging.DEBUG
     )
 
-    print(f"   parsing {filepath}")
+#    print(f"   parsing {filepath}")
     omop_data = DDP.parse_doc(filepath, get_meta_dict())
-    print("   reconciling")
+#    print("   reconciling")
     DDP.reconcile_visit_foreign_keys(omop_data)
     # DDP.print_omop_structure(omop_data)
     if omop_data is not None or len(omop_data) < 1:
-        print("    creating dataframes")
+#        print("    creating dataframes")
         dataframe_dict = create_omop_domain_dataframes(omop_data, filepath)
         
     else:
         logger.error(f"no data from {filepath}")
         
     if write_csv_flag:
-        print("   writing CSVs")
+ #       print("   writing CSVs")
         write_csvs_from_dataframe_dict(dataframe_dict, base_name, "output")
-    print("   done")
+#    print("   done")
     return dataframe_dict
 
 
@@ -317,10 +317,10 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limi
     ccda_documents_generator = ccda_documents.files()
     file_count=0
     for filegen in ccda_documents_generator:
-        if limit > 0 and file_count < limit:
+        if limit > 0 and file_count <= limit:
             filepath = filegen.download()
             
-            print(f"\nPROCESSING {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}\n")
+            print(f"PROCESSING {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
             new_data_dict = process_file(filepath, write_csv_flag)
             
             for key in new_data_dict:
@@ -334,11 +334,12 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limi
                 else:
                     logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
             file_count += 1
+            print(f"done {file_count} ")
         else:
             break
             
     domain_dataset_dict = combine_datasets(omop_dataset_dict)
-    print(f"\n\nEXPORTING?  export:{export_datasets} csv:{write_csv_flag} \n")
+#    print(f"\n\nEXPORTING?  export:{export_datasets} csv:{write_csv_flag} \n")
     if write_csv_flag:
         print(f"Writing CSV for input dataset: :q{dataset_name}")
         do_write_csv_files(domain_dataset_dict)

@@ -283,7 +283,11 @@ metadata = {
             'order': 9
         },
         
-        'stop_reason': { 'config_type': None, 'order': 10 },
+        'stop_reason': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+            'order':10
+        },
         'refills': { 'config_type': None, 'order': 11},
        
         'quantity': {

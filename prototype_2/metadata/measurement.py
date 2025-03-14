@@ -107,7 +107,11 @@ metadata = {
     	    'attribute': "value",
             'order': 5
     	},
-        'measurement_time': { 'config_type': None, 'order': 6 },
+        'measurement_time': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+            'order': 6 
+        },
         'measurement_type_concept_id': {
             'config_type': 'CONSTANT',
             'constant_value' : int32(32035),
