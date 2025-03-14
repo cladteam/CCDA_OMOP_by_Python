@@ -78,7 +78,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
                                 (concept_df['concept_code'] == concept_code)]
 
         if len(concept_id_df) < 1:
-           logger.error(f"_map_to_omop_concept_row(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\", defaulting to \"{default}\" ")
+##logger.error(f"_map_to_omop_concept_row(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\", defaulting to \"{default}\" ")
            return default
 
         if len(concept_id_df) > 1:
@@ -89,7 +89,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
 
         return concept_id_df[column_name].iloc[0]
     except IndexError as e:
-        logger.warning(f"_map_to_omop_concept_rows(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}, defautling to \"{default}\" ")
+##        logger.warning(f"_map_to_omop_concept_rows(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}, defautling to \"{default}\" ")
         return default
 
 
@@ -181,7 +181,7 @@ def _codemap_xwalk(vocabulary_oid, concept_code, column_name, default):
         # 2025-03-04 new version of codemap schema:
         df = codemap_xwalk[ (codemap_xwalk['src_vocab_code_system'] == vocabulary_oid) & (codemap_xwalk['src_code']  == concept_code) ]
         if len(df) < 1:
-           logger.error(f"_codemap_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" ")
+##           logger.error(f"_codemap_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" ")
            return default
 
         if len(df) > 1:
@@ -248,7 +248,7 @@ def _visit_xwalk(vocabulary_oid, concept_code, column_name, default):
                             (visit_concept_xwalk_mapping_dataset['codeSystem'] == vocabulary_oid) &
                             (visit_concept_xwalk_mapping_dataset['src_cd']  == concept_code) ]
         if len(df) < 1:
-           logger.error(f"_visit_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
+##           logger.error(f"_visit_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
            return default
 
         if len(df) > 1:
@@ -258,7 +258,7 @@ def _visit_xwalk(vocabulary_oid, concept_code, column_name, default):
             return default
         return df[column_name].iloc[0]
     except IndexError as e:
-        logger.warning(f"_visit_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
+##        logger.warning(f"_visit_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
         return default
 
     
@@ -316,7 +316,7 @@ def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
         df = ccda_value_set_mapping_table_dataset[ (ccda_value_set_mapping_table_dataset['codeSystem'] == vocabulary_oid) &
                                                    (ccda_value_set_mapping_table_dataset['src_cd']  == concept_code) ]
         if len(df) < 1:
-           logger.error(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
+##           logger.error(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
            return default
 
         if len(df) > 1:
@@ -326,7 +326,7 @@ def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
             return default
         return df[column_name].iloc[0]
     except IndexError as e:
-        logger.warning(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
+##        logger.warning(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
         return default
     except KeyError as e:
         logger.warning(f"_valueset_xwalk(): requested field (codeSystem or src_cd?)  not available \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")

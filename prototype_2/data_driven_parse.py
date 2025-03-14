@@ -156,8 +156,8 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
     """
 
     if 'element' not in field_details_dict:
-        logger.error(("FIELD could find key 'element' in the field_details_dict:"
-                     f" {field_details_dict} root:{root_path}"))
+#        logger.error(("FIELD could find key 'element' in the field_details_dict:"
+#                     f" {field_details_dict} root:{root_path}"))
         return None
 
     logger.info(f"    FIELD {field_details_dict['element']} for {config_name}/{field_tag}")
@@ -165,16 +165,17 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
     try:
         field_element = root_element.xpath(field_details_dict['element'], namespaces=ns)
     except XPathEvalError as p:
-        logger.error(f"ERROR (often inconsequential) {field_details_dict['element']} {p}")
+        pass
+#        logger.error(f"ERROR (often inconsequential) {field_details_dict['element']} {p}")
         ###print(f"FAILED often inconsequential  {field_details_dict['element']} {p}")
     if field_element is None:
-        logger.error((f"FIELD could not find field element {field_details_dict['element']}"
-                      f" for {config_name}/{field_tag} root:{root_path} {field_details_dict} "))
+##        logger.error((f"FIELD could not find field element {field_details_dict['element']}"
+##                      f" for {config_name}/{field_tag} root:{root_path} {field_details_dict} "))
         return None
 
     if 'attribute' not in field_details_dict:
-        logger.error((f"FIELD could not find key 'attribute' in the field_details_dict:"
-                     f" {field_details_dict} root:{root_path}"))
+##        logger.error((f"FIELD could not find key 'attribute' in the field_details_dict:"
+##                     f" {field_details_dict} root:{root_path}"))
         return None
 
     logger.info((f"       ATTRIBUTE   {field_details_dict['attribute']} "
@@ -389,10 +390,10 @@ def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | int3
                 else:
                     path = path + "no attribute/"
 
-                if field_tag in pk_dict and len(pk_dict[field_tag]) == 0:
-                    logger.error(f"FK no value for {field_tag}  in pk_dict for {config_name}/{field_tag}")
-                else:
-                    logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
+##                if field_tag in pk_dict and len(pk_dict[field_tag]) == 0:
+###                    logger.error(f"FK no value for {field_tag}  in pk_dict for {config_name}/{field_tag}")
+##                else:
+##                    logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
                 output_dict[field_tag] = None
                 error_fields_set.add(field_tag)
 
@@ -431,12 +432,12 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | int32 | 
             try:
                 function_reference = field_details_dict['FUNCTION']
                 function_value = field_details_dict['FUNCTION'](args_dict)
-                if function_reference != VT.concat_fields and function_value is None:
-                    logger.error((f"do_derived_fields(): No mapping back for {config_name} {field_tag}"
-                                  f" from {field_details_dict['FUNCTION']}  {args_dict}   {config_dict[field_tag]}  "
-                                  "If this is from a value_as_concept/code field, it may not be an error, but "
-                                  "an artificat of data that doesn't have a value or one that is not "
-                                  "meant as a concept id"))
+#                if function_reference != VT.concat_fields and function_value is None:
+#                    logger.error((f"do_derived_fields(): No mapping back for {config_name} {field_tag}"
+ #                                 f" from {field_details_dict['FUNCTION']}  {args_dict}   {config_dict[field_tag]}  "
+#                                  "If this is from a value_as_concept/code field, it may not be an error, but "
+ #                                 "an artificat of data that doesn't have a value or one that is not "
+#                                  "meant as a concept id"))
                 output_dict[field_tag] = function_value
                 logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
@@ -790,8 +791,8 @@ def parse_config_from_xml_file(tree, config_name,
         logger.error(f" {config_dict['root']['element']}   {e}")
         
     if root_element_list is None or len(root_element_list) == 0:
-        logger.error((f"CONFIG couldn't find root element for {config_name}"
-                      f" with {config_dict['root']['element']}"))
+#        logger.error((f"CONFIG couldn't find root element for {config_name}"
+#                      f" with {config_dict['root']['element']}"))
         return None
 
     output_list = []
@@ -941,8 +942,9 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                            logger.error(f"missing field  \"{ke}\", in visit reconcilliation, see warnings for detail")
                            logger.warning(f"missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
                         except Exception as e:
-                            logger.error(f"something wrong in visit reconciliation \"{e}\" see warnings for detail ")
-                            logger.warning(f"something wrong in visit reconciliation \"{e}\" {type(e)} ")
+                            pass
+#                            logger.error(f"something wrong in visit reconciliation \"{e}\" see warnings for detail ")
+#                            logger.warning(f"something wrong in visit reconciliation \"{e}\" {type(e)} ")
                     ###if not have_visit:
                         ###print(f"WARNING wasn't able to reconcile {domain} {thing}")
                         ###print("")
