@@ -459,9 +459,10 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | int32 | 
                 output_dict[field_tag] = None
             except Exception as e:
                 logger.error(f"DERIVED exception: {e}")
+                output_dict[field_tag] = None
             except Error as er:
                 logger.error(f"DERIVED error: {e}")
-
+                output_dict[field_tag] = None
                 
 @typechecked
 def do_domain_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
@@ -493,6 +494,13 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | int32 | d
                         error_fields_set.add(field_tag)
                         logger.error((f"DOMAIN {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
+                    except Exception as e:
+                        logger.error(f"DERIVED exception: {e}")
+                        output_dict[field_tag] = None
+                    except Error as er:
+                        logger.error(f"DERIVED error: {e}")
+                        output_dict[field_tag] = None
+                    
             # Derive the value
             try:
                 function_reference = field_details_dict['FUNCTION']
@@ -518,6 +526,12 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | int32 | d
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
+                output_dict[field_tag] = None
+            except Exception as e:
+                logger.error(f"DERIVED exception: {e}")
+                output_dict[field_tag] = None
+            except Error as er:
+                logger.error(f"DERIVED error: {e}")
                 output_dict[field_tag] = None
 
     if domain_id == 0: # TODO, we should decide between 0/NMC and None for an unknown domain_id
