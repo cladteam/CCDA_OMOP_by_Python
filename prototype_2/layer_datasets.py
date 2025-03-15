@@ -314,34 +314,40 @@ def do_write_csv_files(domain_dataset_dict):
 
         
 # ENTRY POINT for dataset of files
-def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limit=0):
+def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limit, skip):
     print("starting dataset:{dataset_name} export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
     ccda_documents = Dataset.get(dataset_name)
     print(ccda_documents.files())
     ccda_documents_generator = ccda_documents.files()
+    skip_count=0
     file_count=0
     for filegen in ccda_documents_generator:
-        if limit == 0 or file_count <= limit:
-            filepath = filegen.download()
-            
-            print(f"PROCESSING {file_count} {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
-            new_data_dict = process_file(filepath, write_csv_flag)
-            
-            for key in new_data_dict:
-                if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
-                    if new_data_dict[key] is  not None:
-                        omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
-                else:
-                    omop_dataset_dict[key]= new_data_dict[key]
-                if new_data_dict[key] is not None:
-                    logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
-                else:
-                    logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
-            file_count += 1
+        if skip>0 and skip_count < skip:
+            skip_count+=1
+            #print(f"skipping {os.path.basename(filegen)} {type(filegen)}")
+            print(f"skipping  {skip_count} {type(filegen)}")
         else:
-            break
+            if limit == 0 or file_count < limit:
+                filepath = filegen.download()
+                
+                print(f"PROCESSING {file_count} {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
+                new_data_dict = process_file(filepath, write_csv_flag)
+                
+                for key in new_data_dict:
+                    if key in omop_dataset_dict and omop_dataset_dict[key] is not None:
+                        if new_data_dict[key] is  not None:
+                            omop_dataset_dict[key] = pd.concat([ omop_dataset_dict[key], new_data_dict[key] ])
+                    else:
+                        omop_dataset_dict[key]= new_data_dict[key]
+                    if new_data_dict[key] is not None:
+                        logger.info(f"{filepath} {key} {len(omop_dataset_dict)} {omop_dataset_dict[key].shape} {new_data_dict[key].shape}")
+                    else:
+                        logger.info(f"{filepath} {key} {len(omop_dataset_dict)} None / no data")
+                file_count += 1
+            else:
+                break
             
     domain_dataset_dict = combine_datasets(omop_dataset_dict)
 #    print(f"\n\nEXPORTING?  export:{export_datasets} csv:{write_csv_flag} \n")
@@ -441,27 +447,27 @@ def main():
     group.add_argument('-ds', '--dataset', help="dataset to parse")
     parser.add_argument('-x', '--export', action=argparse.BooleanOptionalAction, help="export to foundry")
     parser.add_argument('-c', '--write_csv', action=argparse.BooleanOptionalAction, help="write CSV files to local")
-    parser.add_argument('-l', '--limit', action=argparse.BooleanOptionalAction, type=int, help="max files to proces")  #, default=0)
+    #parser.add_argument('-l', '--limit', action=argparse.BooleanOptionalAction, type=int, help="max files to process")  #, default=0)
+    parser.add_argument('-l', '--limit', type=int, help="max files to process", default=0)
+    parser.add_argument('-s', '--skip', type=int, help="files to skip before processing to limit, -s 100 ", default=0) 
     args = parser.parse_args()
-    limit=1000 
-    print("got args:  dataset:{dataset_name} export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
+    print(f"got args:  dataset:{args.dataset} export:{args.export} csv:{args.write_csv} limit:{args.limit}")
     print(args)
-    print(f"Hard-coded limit {limit}")
     
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
-    # Single File, put the datasets into the omop_dataset_dict
-    if args.filename is not None:
-        process_file(args.filename, args.write_csv)
-        
-    elif args.directory is not None:
-        domain_dataset_dict = process_directory(args.directory, args.export, args.write_csv)
-    elif args.dataset is not None:
-        domain_dataset_dict = process_dataset_of_files(args.dataset, args.export, args.write_csv, args.limit)
-    else:
-        logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
+    if True:
+        # Single File, put the datasets into the omop_dataset_dict
+        if args.filename is not None:
+            process_file(args.filename, args.write_csv)
+            
+        elif args.directory is not None:
+            domain_dataset_dict = process_directory(args.directory, args.export, args.write_csv)
+        elif args.dataset is not None:
+            domain_dataset_dict = process_dataset_of_files(args.dataset, args.export, args.write_csv, args.limit, args.skip)
+        else:
+            logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
             
 if __name__ == '__main__':
-    print("ehllo")
     main()
