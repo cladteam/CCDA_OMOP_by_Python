@@ -24,7 +24,7 @@ rm -f output/*
 # base run: 1000 files
 echo "STARTING"
 date
-python3 -m prototype_2.layer_datasets -ds ccda_response_files -l 1000 -s 0 -x 
+python3 -m prototype_2.layer_datasets -ds ccda_response_files -l 100 -s 0 -x 
 date
 
 
