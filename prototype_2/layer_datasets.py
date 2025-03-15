@@ -315,7 +315,7 @@ def do_write_csv_files(domain_dataset_dict):
         
 # ENTRY POINT for dataset of files
 def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limit=0):
-    
+    print("starting dataset:{dataset_name} export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
     ccda_documents = Dataset.get(dataset_name)
@@ -323,7 +323,7 @@ def process_dataset_of_files(dataset_name, export_datasets, write_csv_flag, limi
     ccda_documents_generator = ccda_documents.files()
     file_count=0
     for filegen in ccda_documents_generator:
-        if limit > 0 and file_count <= limit:
+        if limit == 0 or file_count <= limit:
             filepath = filegen.download()
             
             print(f"PROCESSING {file_count} {os.path.basename(filepath)}  {file_count}  export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
@@ -441,8 +441,13 @@ def main():
     group.add_argument('-ds', '--dataset', help="dataset to parse")
     parser.add_argument('-x', '--export', action=argparse.BooleanOptionalAction, help="export to foundry")
     parser.add_argument('-c', '--write_csv', action=argparse.BooleanOptionalAction, help="write CSV files to local")
+    parser.add_argument('-l', '--limit', action=argparse.BooleanOptionalAction, type=int, help="max files to proces")  #, default=0)
     args = parser.parse_args()
-
+    limit=1000 
+    print("got args:  dataset:{dataset_name} export:{export_datasets} csv:{write_csv_flag} limit:{limit}")
+    print(args)
+    print(f"Hard-coded limit {limit}")
+    
     omop_dataset_dict = {} # keyed by dataset_names (legacy domain names)
     
     # Single File, put the datasets into the omop_dataset_dict
@@ -452,10 +457,11 @@ def main():
     elif args.directory is not None:
         domain_dataset_dict = process_directory(args.directory, args.export, args.write_csv)
     elif args.dataset is not None:
-        domain_dataset_dict = process_dataset(args.dataset, args.export, args.write_csv)
+        domain_dataset_dict = process_dataset_of_files(args.dataset, args.export, args.write_csv, args.limit)
     else:
         logger.error("Did args parse let us  down? Have neither a file, nor a directory.")
 
             
 if __name__ == '__main__':
+    print("ehllo")
     main()
