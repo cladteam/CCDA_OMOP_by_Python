@@ -444,19 +444,23 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | int32 | 
             except KeyError as e:
                 #print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
-                logger.error(f"DERIVED exception: {e}")
+                logger.error(f"DERIVED key error on: {e}")
                 logger.error(f"DERIVED KeyError {field_tag} function can't find key it expects in {args_dict}")
                 output_dict[field_tag] = None
             except TypeError as e:
                 #print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
-                logger.error(f"DERIVED exception: {e}")
+                logger.error(f"DERIVED type error exception: {e}")
                 logger.error((f"DERIVED TypeError {field_tag} possibly calling something that isn't a function"
                               " or that function was passed a null value." 
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
                 output_dict[field_tag] = None
+            except Exception as e:
+                logger.error(f"DERIVED exception: {e}")
+            except Error as er:
+                logger.error(f"DERIVED error: {e}")
 
                 
 @typechecked
