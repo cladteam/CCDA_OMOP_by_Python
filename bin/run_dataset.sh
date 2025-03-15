@@ -22,10 +22,11 @@ rm -f output/*
 #python3 -m prototype_2.layer_datasets -ds ccda_response_files -l 3 -s 6 -x
 
 # base run: 1000 files
-echo "STARTING"
-date
-python3 -m prototype_2.layer_datasets -ds ccda_response_files -l 100 -s 0 -x 
-date
+date > batch_1.txt
+git status >> batch_1.txt
+echo "STARTING" >> batch_1.txt
+python3 -m prototype_2.layer_datasets -ds ccda_response_files -l 30 -s 0 -x  >> batch_1.txt
+date >> batch_1.txt
 
 
 
