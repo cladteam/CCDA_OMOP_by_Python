@@ -96,7 +96,7 @@ metadata = {
     	'observation_datetime': { 'config_type': None, 'order': 5 },
     	'observation_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : int32(32035),
+            'constant_value' : int32(32827),
             'order': 6
         },
 

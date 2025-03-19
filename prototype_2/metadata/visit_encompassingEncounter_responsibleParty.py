@@ -153,7 +153,7 @@ metadata = {
 
         'visit_type_concept_id' : {
             'config_type': 'CONSTANT',
-            'constant_value' : int32(32035),
+            'constant_value' : int32(32827),
             'order': 8
         },
 
