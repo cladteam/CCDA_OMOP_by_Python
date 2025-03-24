@@ -1,4 +1,5 @@
 
+from numpy import int32
 import prototype_2.value_transformations as VT
 
 metadata = {
@@ -8,13 +9,17 @@ metadata = {
             'expected_domain_id': 'Drug',
             # Medication Dispense
             # Medications section, entry, substanceAdministration, entryRelationship, supply
+            #substanceAdministration/@moodCode="INT" represents intention of patient to take the  medications ?
             #supply/@moodCode="EVN" represents medications are dispensed to the patient.
     	    'element':
      		  ('./hl7:component/hl7:structuredBody/hl7:component/hl7:section/'
-    		   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.1" or @root="2.16.840.1.113883.10.20.22.2.1.1"]/'
-               '../hl7:entry/hl7:substanceAdministration[@moodCode="EVN"]/'
-               'hl7:entryRelationship/hl7:supply/hl7:statusCode[@code="active" or @code="completed"]/'
-               '../hl7:templateId[@root="2.16.840.1.113883.10.20.22.4.18"]/..'
+    		   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.2.1" or @root="2.16.840.1.113883.10.20.22.2.1.1"]/../'
+
+                   'hl7:entry/hl7:substanceAdministration[@moodCode="INT" or @moodCode="EVN"]/' 
+
+                   'hl7:entryRelationship/hl7:supply[@moodCode="EVN"]/'
+                   'hl7:statusCode[@code="active" or @code="completed"]/../'
+                   'hl7:templateId[@root="2.16.840.1.113883.10.20.22.4.18"]/..'
               )
            
         },
@@ -119,19 +124,35 @@ metadata = {
             'order': 7
     	},
         'verbatim_end_date': {
-    	    'config_type': 'FIELD',
-    	    'element': "hl7:effectiveTime",
-    	    'attribute': "value",
+    	    'config_type': 'PRIORITY',
             'order': 8
+        },
+        'verbatim_end_date_value': {
+    	    'config_type': 'FIELD',
+            'data_type': 'DATE',
+    	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('verbatim_end_date', 1)
+    	},
+        'verbatim_end_date_high': {
+    	    'config_type': 'FIELD',
+            'data_type': 'DATE',
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ('verbatim_end_date', 2)
     	},
 
         'drug_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32825, # OMOP concept ID for 'EHR dispensing record'
+            'constant_value' : int32(32825), # OMOP concept ID for 'EHR dispensing record'
             'order': 9
         },
         
-        'stop_reason': { 'config_type': None, 'order': 10 },
+        'stop_reason': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+            'order':10
+        },
         'refills': { 'config_type': None, 'order': 11},
 
         # This approach applies primarily to pre-coordinated consumables, 
@@ -196,6 +217,11 @@ metadata = {
             'attribute': "unit",
             'order': 23
         },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
 
     }
 }

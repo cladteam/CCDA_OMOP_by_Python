@@ -21,7 +21,9 @@ This also publishes to Foundry.
 ### Tools
 - code_hunt.py Searches Foundry datasets specified in __init__.py for given concept.
 - ddl.py Includes metadata used elsewhere, but loads the CSV files into duckdb to see if the constraints work.
-
+- find_paths.py (experimental) creates a text file where each line describes the connection fom XML paths 
+  from the config files to their destination in OMOP table/field, and includes major steps a long the way.
+  
 ## Getting Started (how to run)
 From the directory above prototype_2:
 - #setup a venv (or not)

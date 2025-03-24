@@ -1,20 +1,34 @@
+care_site:
+  rid: "ri.foundry.main.dataset.4c563173-2281-4e0c-99e1-f11ea21f8eb6"
+ccda_documents:
+  rid: "ri.foundry.main.dataset.877bc6a8-2ec1-4b21-9794-4ad02cc27e30"
+ccda_response_files:
+  rid: "ri.foundry.main.dataset.8c8ff8f9-d429-4396-baed-a3de9c945f49"
 ccda_value_set_mapping_table_dataset:
   rid: "ri.foundry.main.dataset.5ba1594c-ef36-4eeb-b6c4-d3d005dbd127"
 codemap_xwalk:
   rid: "ri.foundry.main.dataset.28fe6af8-0b22-4b45-86e2-b394c62dcd09"
-concept_xwalk:
-  rid: "ri.foundry.main.dataset.79e9fddb-03d9-4331-b7fa-cb255cd1c549"
+condition_occurrence:
+  rid: "ri.foundry.main.dataset.29384810-8dba-4a43-b3e3-2bd8377c0a55"
+drug_exposure:
+  rid: "ri.foundry.main.dataset.d8e162ef-6f18-4712-a568-1f2145cc5f5a"
+ehx_ccda_response_example_copy:
+  rid: "ri.foundry.main.dataset.e2434242-adb8-42ed-b558-7b02011b0d14"
+location:
+  rid: "ri.foundry.main.dataset.da671c94-8923-49e8-878b-e428b3ac4518"
+mapped_xml_paths:
+  rid: "ri.foundry.main.dataset.610b0e28-bfd0-4203-9155-08115887af49"
 measurement:
-  rid: "ri.foundry.main.dataset.7850e50b-05bb-4e1a-99bb-19eda8e6c26d"
+  rid: "ri.foundry.main.dataset.e227087b-66b1-4438-906a-0b4b5c0aebfa"
 observation:
-  rid: "ri.foundry.main.dataset.8577aabe-d4e0-442d-943e-71c4467a3dc4"
+  rid: "ri.foundry.main.dataset.259dbbeb-e648-4cf5-ad00-b49fb77855a9"
 person:
-  rid: "ri.foundry.main.dataset.d78e1f99-e6f5-47ce-b635-8bcc85af8816"
-person_second_try:
-  rid: "ri.foundry.main.dataset.de4de72d-75bb-4c76-9cb8-43c2abdb086e"
-script_output:
-  rid: "ri.foundry.main.dataset.feabafaf-7d93-423e-999e-e9fdd9bc7c97"
-visit:
-  rid: "ri.foundry.main.dataset.7725d302-84f8-47c6-8c8c-a3b18094113f"
+  rid: "ri.foundry.main.dataset.d7940152-ccad-4af8-963c-779c7845fddf"
+procedure_occurrence:
+  rid: "ri.foundry.main.dataset.e2e2c1ed-bef7-49e4-b1c7-bbcde77a97c4"
+provider:
+  rid: "ri.foundry.main.dataset.26ff1178-0fb3-4ec8-bcb4-96ed6e006002"
 visit_concept_xwalk_mapping_dataset:
   rid: "ri.foundry.main.dataset.832f8106-d7ee-4364-9082-d48c49302dd8"
+visit_occurrence:
+  rid: "ri.foundry.main.dataset.1fc47371-d39c-4985-aacd-c0aacf5484b3"

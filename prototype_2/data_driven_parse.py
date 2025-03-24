@@ -73,7 +73,9 @@ import os
 import sys
 import hashlib
 import zlib
-import ctypes
+#import ctypes
+from numpy import int32
+from numpy import int64
 import traceback
 from collections import defaultdict
 from lxml import etree as ET
@@ -120,7 +122,7 @@ def create_hash(input_string) -> int | None:
 
 
 @typechecked
-def cast_to_date(string_value) ->  datetime.date:
+def cast_to_date(string_value) ->  datetime.date | None:
     # TODO does CCDA always do dates as YYYYMMDD ?
     # https://build.fhir.org/ig/HL7/CDA-ccda/StructureDefinition-USRealmDateTimeInterval-definitions.html
     # doc says YYYMMDD... examples show ISO-8601. Should use a regex and detect parse failure.
@@ -130,29 +132,32 @@ def cast_to_date(string_value) ->  datetime.date:
         datetime_val = parse(string_value)
         return datetime_val.date()
     except Exception as x:
-        print(f"ERROR couldn't parse {string_value} as date. {e}")
+        print(f"ERROR couldn't parse {string_value} as date. Exception:{x}")
+        return None
+    except ValueError as ve:
+        print(f"ERROR couldn't parse {string_value} as date. ValueError:{ve}")
         return None
 
-def cast_to_datetime(string_value) -> datetime.datetime:
+def cast_to_datetime(string_value) -> datetime.datetime | None:
     try:
         datetime_val = parse(string_value)
         return datetime_val
     except Exception as x:
-        print(f"ERROR couldn't parse {string_value} as datetime. {e}")
+        print(f"ERROR couldn't parse {string_value} as datetime. {x}")
         return None
 
 
 @typechecked
 def parse_field_from_dict(field_details_dict :dict[str, str], root_element, 
-        config_name, field_tag, root_path) ->  None | str | float | int | datetime.datetime | datetime.date:
+        config_name, field_tag, root_path) ->  None | str | float | int | int32 | datetime.datetime | datetime.date:
     """ Retrieves a value for the field descrbied in field_details_dict that lies below
         the root_element.
         Domain and field_tag are here for error messages.
     """
 
     if 'element' not in field_details_dict:
-        logger.error(("FIELD could find key 'element' in the field_details_dict:"
-                     f" {field_details_dict} root:{root_path}"))
+#        logger.error(("FIELD could find key 'element' in the field_details_dict:"
+#                     f" {field_details_dict} root:{root_path}"))
         return None
 
     logger.info(f"    FIELD {field_details_dict['element']} for {config_name}/{field_tag}")
@@ -160,16 +165,17 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
     try:
         field_element = root_element.xpath(field_details_dict['element'], namespaces=ns)
     except XPathEvalError as p:
-        logger.error("ERROR (often inconsequential) {field_details_dict['element']} {p}")
-        print(f"FAILED often inconsequential  {field_details_dict['element']} {p}")
+        pass
+#        logger.error(f"ERROR (often inconsequential) {field_details_dict['element']} {p}")
+        ###print(f"FAILED often inconsequential  {field_details_dict['element']} {p}")
     if field_element is None:
-        logger.error((f"FIELD could not find field element {field_details_dict['element']}"
-                      f" for {config_name}/{field_tag} root:{root_path} {field_details_dict} "))
+##        logger.error((f"FIELD could not find field element {field_details_dict['element']}"
+##                      f" for {config_name}/{field_tag} root:{root_path} {field_details_dict} "))
         return None
 
     if 'attribute' not in field_details_dict:
-        logger.error((f"FIELD could not find key 'attribute' in the field_details_dict:"
-                     f" {field_details_dict} root:{root_path}"))
+##        logger.error((f"FIELD could not find key 'attribute' in the field_details_dict:"
+##                     f" {field_details_dict} root:{root_path}"))
         return None
 
     logger.info((f"       ATTRIBUTE   {field_details_dict['attribute']} "
@@ -196,28 +202,61 @@ def parse_field_from_dict(field_details_dict :dict[str, str], root_element,
     if 'data_type' in field_details_dict:
         if attribute_value is not None:
             if field_details_dict['data_type'] == 'DATE':
-                attribute_value = cast_to_date(attribute_value)
+                try:
+                    attribute_value = cast_to_date(attribute_value)
+                except Exception as e:
+                    print(f"cast to date failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to date failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'DATETIME':
-                attribute_value = cast_to_datetime(attribute_value)
+                try:
+                    attribute_value = cast_to_datetime(attribute_value)
+                except Exception as e:
+                    print(f"cast to datetime failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to datetime failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+            elif field_details_dict['data_type'] == 'LONG':
+                try:
+                    attribute_value = int64(attribute_value)
+                except Exception as e:
+                    print(f"cast to int64 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to int64 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'INTEGER':
-                attribute_value = int(attribute_value)
-            elif field_details_dict['data_type'] == '32BINTEGER':
-                attribute_value = ctypes.c_int32(int(attribute_value)).value
+                try:
+                    attribute_value = int32(attribute_value)
+                except Exception as e:
+                    print(f"cast to int32 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to int32 failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'BIGINTHASH':
-                attribute_value = create_hash(attribute_value)
+                try:
+                    attribute_value = create_hash(attribute_value)
+                except Exception as e:
+                    print(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+            elif field_details_dict['data_type'] == 'TEXT':
+                try:
+                    attribute_value = str(attribute_value)
+                except Exception as e:
+                    print(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to hash failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             elif field_details_dict['data_type'] == 'FLOAT':
-                attribute_value = float(attribute_value)
+                try:
+                    attribute_value = float(attribute_value)
+                except Exception as e:
+                    print(f"cast to float failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
+                    logger.error(f"cast to float failed for config:{config_name} field:{field_tag} val:{attribute_value}") 
             else:
+                print(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {config_name} {field_tag}")
                 logger.error(f" UNKNOWN DATA TYPE: {field_details_dict['data_type']} {config_name} {field_tag}")
             return attribute_value
         else:
+        #    print(f" no value: {field_details_dict['data_type']} {config_name} {field_tag}")
+        #   logger.error(f" no value: {field_details_dict['data_type']} {config_name} {field_tag}")
             return None
     else:
         return attribute_value
 
 
 @typechecked
-def do_none_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date ],
+def do_none_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date ],
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str]):
@@ -230,7 +269,7 @@ def do_none_fields(output_dict :dict[str, None | str | float | int | datetime.da
 
             
 @typechecked
-def do_constant_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_constant_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                        root_element, root_path, config_name,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str]):
@@ -245,7 +284,21 @@ def do_constant_fields(output_dict :dict[str, None | str | float | int | datetim
 
             
 @typechecked
-def do_basic_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_filename_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
+                       root_element, root_path, config_name,  
+                       config_dict :dict[str, dict[str, str | None]], 
+                       error_fields_set :set[str],
+                       filename :str):
+    for (field_tag, field_details_dict) in config_dict.items():
+        logger.info((f"     FILENAME FIELD config:'{config_name}' field_tag:'{field_tag}'"
+                     f" {field_details_dict}"))
+        config_type_tag = field_details_dict['config_type']
+        if config_type_tag == 'FILENAME':
+            output_dict[field_tag] = filename
+
+            
+@typechecked
+def do_basic_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
                     error_fields_set :set[str], 
@@ -278,7 +331,7 @@ def do_basic_fields(output_dict :dict[str, None | str | float | int | datetime.d
             
 
 @typechecked 
-def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                     root_element, root_path, config_name,  
                     config_dict :dict[str, dict[str, str | None] ], 
                     error_fields_set :set[str], 
@@ -321,7 +374,7 @@ def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | date
                     output_dict[field_tag] = pk_dict[field_tag][0]
                 else:
                     # can't really choose the correct value here. Is attempted in reconcile_visit_FK_with_specific_domain() later, below.
-                    print(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK' ")
+                    ###print(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK' ")
                     logger.info(f"WARNING FK has more than one value {field_tag}, tagging with 'RECONCILE FK'")
                     # original hack:
                     output_dict[field_tag] = 'RECONCILE FK'
@@ -337,15 +390,15 @@ def do_foreign_key_fields(output_dict :dict[str, None | str | float | int | date
                 else:
                     path = path + "no attribute/"
 
-                if field_tag in pk_dict and len(pk_dict[field_tag]) == 0:
-                    logger.error(f"FK no value for {field_tag}  in pk_dict for {config_name}/{field_tag}")
-                else:
-                    logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
+##                if field_tag in pk_dict and len(pk_dict[field_tag]) == 0:
+###                    logger.error(f"FK no value for {field_tag}  in pk_dict for {config_name}/{field_tag}")
+##                else:
+##                    logger.error(f"FK could not find {field_tag}  in pk_dict for {config_name}/{field_tag}")
                 output_dict[field_tag] = None
                 error_fields_set.add(field_tag)
 
 @typechecked
-def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_derived_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                       root_element, root_path, config_name,  
                       config_dict :dict[str, dict[str, str | None]], 
                       error_fields_set :set[str]):
@@ -370,7 +423,7 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime
                     try:
                         args_dict[arg_name] = output_dict[field_name]
                     except Exception as e:
-                        print(traceback.format_exc(e))
+                        #print(traceback.format_exc(e))
                         error_fields_set.add(field_tag)
                         logger.error((f"DERIVED {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
@@ -379,35 +432,40 @@ def do_derived_fields(output_dict :dict[str, None | str | float | int | datetime
             try:
                 function_reference = field_details_dict['FUNCTION']
                 function_value = field_details_dict['FUNCTION'](args_dict)
-                if function_reference != VT.concat_fields and function_value is None:
-                    logger.error((f"do_derived_fields(): No mapping back for {config_name} {field_tag}"
-                                  f" from {field_details_dict['FUNCTION']}  {args_dict}   {config_dict[field_tag]}  "
-                                  "If this is from a value_as_concept/code field, it may not be an error, but "
-                                  "an artificat of data that doesn't have a value or one that is not "
-                                  "meant as a concept id"))
+#                if function_reference != VT.concat_fields and function_value is None:
+#                    logger.error((f"do_derived_fields(): No mapping back for {config_name} {field_tag}"
+ #                                 f" from {field_details_dict['FUNCTION']}  {args_dict}   {config_dict[field_tag]}  "
+#                                  "If this is from a value_as_concept/code field, it may not be an error, but "
+ #                                 "an artificat of data that doesn't have a value or one that is not "
+#                                  "meant as a concept id"))
                 output_dict[field_tag] = function_value
                 logger.info((f"     DERIVED {function_value} for "
                                 f"{field_tag}, {field_details_dict} {output_dict[field_tag]}"))
             except KeyError as e:
-                print(traceback.format_exc(e))
+                #print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
-                logger.error(f"DERIVED exception: {e}")
+                logger.error(f"DERIVED key error on: {e}")
                 logger.error(f"DERIVED KeyError {field_tag} function can't find key it expects in {args_dict}")
                 output_dict[field_tag] = None
             except TypeError as e:
-                print(traceback.format_exc(e))
+                #print(traceback.format_exc(e))
                 error_fields_set.add(field_tag)
-                logger.error(f"DERIVED exception: {e}")
+                logger.error(f"DERIVED type error exception: {e}")
                 logger.error((f"DERIVED TypeError {field_tag} possibly calling something that isn't a function"
                               " or that function was passed a null value." 
                               f" {field_details_dict['FUNCTION']}. You may have quotes "
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
                 output_dict[field_tag] = None
-
+            except Exception as e:
+                logger.error(f"DERIVED exception: {e}")
+                output_dict[field_tag] = None
+            except Error as er:
+                logger.error(f"DERIVED error: {e}")
+                output_dict[field_tag] = None
                 
 @typechecked
-def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_domain_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                      root_element, root_path, config_name, 
                      config_dict :dict[str, dict[str, str | None]], 
                      error_fields_set :set[str]) -> str | None :
@@ -436,6 +494,13 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
                         error_fields_set.add(field_tag)
                         logger.error((f"DOMAIN {field_tag} arg_name: {arg_name} field_name:{field_name}"
                                       f" args_dict:{args_dict} output_dict:{output_dict}"))
+                    except Exception as e:
+                        logger.error(f"DERIVED exception: {e}")
+                        output_dict[field_tag] = None
+                    except Error as er:
+                        logger.error(f"DERIVED error: {e}")
+                        output_dict[field_tag] = None
+                    
             # Derive the value
             try:
                 function_reference = field_details_dict['FUNCTION']
@@ -462,18 +527,27 @@ def do_domain_fields(output_dict :dict[str, None | str | float | int | datetime.
                               "around it in  a python mapping structure if this is a "
                               f"string: {type(field_details_dict['FUNCTION'])}"))
                 output_dict[field_tag] = None
+            except Exception as e:
+                logger.error(f"DERIVED exception: {e}")
+                output_dict[field_tag] = None
+            except Error as er:
+                logger.error(f"DERIVED error: {e}")
+                output_dict[field_tag] = None
 
     if domain_id == 0: # TODO, we should decide between 0/NMC and None for an unknown domain_id
-        print(f"DEBUG got 0 for a domain_id, returning None in do_domain_fields(). {config_name}")
-        logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}, check if the concept maps have this concept.")
-        print(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
+        ###print(f"DEBUG got 0 for a domain_id, returning None in do_domain_fields(). {config_name}")
+        if not have_domain_field:
+            logger.error(f"ERROR didn't find a field of type DOMAIN in config {config_name}.")
+            print(f"ERROR didn't find a field of type DOMAIN in config {config_name}")
+        else:
+            logger.error(f"ERROR didn't get a DOMAIN value in config {config_name}, check if the concept maps have this concept.")
         return None
     else:
         return domain_id
 
 
 @typechecked
-def do_hash_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_hash_fields(output_dict :dict[str, None | str | float | int | int32 | datetime.datetime | datetime.date], 
                    root_element, root_path, config_name,  
                    config_dict :dict[str, dict[str, str | None]], 
                    error_fields_set :set[str], 
@@ -502,7 +576,7 @@ def do_hash_fields(output_dict :dict[str, None | str | float | int | datetime.da
 
             
 @typechecked
-def do_priority_fields(output_dict :dict[str, None | str | float | int | datetime.datetime | datetime.date], 
+def do_priority_fields(output_dict :dict[str, None | str | float | int | int32 |  datetime.datetime | datetime.date], 
                        root_element, root_path, config,  
                        config_dict :dict[str, dict[str, str | None]], 
                        error_fields_set :set[str], 
@@ -606,7 +680,8 @@ def sort_output_dict(output_dict :dict[str, None | str | float | int],
 def parse_config_for_single_root(root_element, root_path, config_name, 
                                  config_dict :dict[str, dict[str, str | None]], 
                                  error_fields_set : set[str], 
-                                 pk_dict :dict[str, list[any]]) -> dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None:
+                                 pk_dict :dict[str, list[any]],
+                                 filename :str) -> dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None:
 
     """  Parses for each field in the metadata for a config out of the root_element passed in.
          You may have more than one such root element, each making for a row in the output.
@@ -625,6 +700,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
 
     do_none_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
     do_constant_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
+    do_filename_fields(output_dict, root_element, root_path, config_name, config_dict, error_fields_set, filename)
     do_basic_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set, pk_dict)
     do_derived_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
     domain_id = do_domain_fields(output_dict, root_element, root_path, config_name,  config_dict, error_fields_set)
@@ -647,7 +723,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
                             f"cpt:{output_dict['measurement_concept_id']}") )
         elif expected_domain_id == "Procedure":
             logger.warning((f"ACCEPTING {domain_id} "
-                            f"id:{output_dict['procedure_id']} "
+                            f"id:{output_dict['procedure_occurrence_id']} "
                             f"cpt:{output_dict['procedure_concept_id']}") )
         return output_dict
     else:
@@ -661,7 +737,7 @@ def parse_config_for_single_root(root_element, root_path, config_name,
                               f"cpt:{output_dict['measurement_concept_id']}") )
         elif expected_domain_id == "Procedure":
             logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
-                              f"id:{output_dict['procedure_id']} "
+                              f"id:{output_dict['procedure_occurrence_id']} "
                               f"cpt:{output_dict['procedure_concept_id']}") )
         elif expected_domain_id == "Drug":
             logger.warning( ( f"DENYING/REJECTING have:{domain_id} expect:{expected_domain_id} "
@@ -710,7 +786,8 @@ def parse_config_from_xml_file(tree, config_name,
     logging.basicConfig(
         format='%(levelname)s: %(message)s',
         filename=f"logs/log_config_{base_name}_{config_name}.log",
-        force=True, level=logging.WARNING)
+        #force=True, level=logging.WARNING)
+        force=True, level=logging.ERROR)
 
     # Find root
     if 'root' not in config_dict:
@@ -732,8 +809,8 @@ def parse_config_from_xml_file(tree, config_name,
         logger.error(f" {config_dict['root']['element']}   {e}")
         
     if root_element_list is None or len(root_element_list) == 0:
-        logger.error((f"CONFIG couldn't find root element for {config_name}"
-                      f" with {config_dict['root']['element']}"))
+#        logger.error((f"CONFIG couldn't find root element for {config_name}"
+#                      f" with {config_dict['root']['element']}"))
         return None
 
     output_list = []
@@ -741,7 +818,7 @@ def parse_config_from_xml_file(tree, config_name,
     logger.info(f"NUM ROOTS {config_name} {len(root_element_list)}")
     for root_element in root_element_list:
         output_dict = parse_config_for_single_root(root_element, root_path, 
-                config_name, config_dict, error_fields_set, pk_dict)
+                config_name, config_dict, error_fields_set, pk_dict, filename)
         if output_dict is not None:
             output_list.append(output_dict)
 
@@ -788,7 +865,12 @@ domain_dates = {
                     'id': 'observation_id'},
     'Condition'  : {'start': ['condition_start_date', 'condition_start_datetime'], 
                     'end':   ['condition_end_date', 'condition_end_datetime'],
-                    'id': 'condition_id'}
+                    'id': 'condition_id'},
+    'Procedure'  : {'date': ['procedure_date', 'procedure_datetime'],
+                    'id': 'procedure_occurrence_id'},
+    'Drug'       : {'start': ['drug_exposure_start_date', 'drug_exposure_start_datetime'],
+                    'end': ['drug_exposure_end_date', 'drug_exposure_end_datetime'],
+                    'id': 'drug_exposure_id'},
 }
         
 @typechecked 
@@ -796,15 +878,15 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                                             domain_dict: list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None , 
                                             visit_dict:  list[dict[str, None | str | float | int | datetime.datetime | datetime.date] ] | None):
     if visit_dict is None:
-        print(f"WARNING no visits for {domain} in reconcile_visit_FK_with_specific_domain")
+        logger.error(f"no visits for {domain} in reconcile_visit_FK_with_specific_domain, reconcilliation")
         return
 
     if domain_dict is None:
-        print(f"WARNING no data for {domain} in reconcile_visit_FK_with_specific_domain")
+        logger.error(f"no data for {domain} in reconcile_visit_FK_with_specific_domain, reconcilliation")
         return
     
     if domain not in domain_dates:
-        print(f"ERROR no metadata for domain {domain} in reconcile_visit_FK_with_specific_domain")
+        logger.error(f"no metadata for domain {domain} in reconcile_visit_FK_with_specific_domain, reconcilliation")
         
      # Q: does this domain NEED to have it's visit foreign key reconcileed??!!!! TODO
      # (in this project things are called a domain and passed in here that are not really domains in OMOP, locations, providers, care-sites, etc. )
@@ -839,33 +921,115 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
                     for visit in visit_dict:
                         try:
                             start_visit_date = visit['visit_start_date']
+                            if visit['visit_start_datetime'] is not None:
+                                start_visit_date = visit['visit_start_datetime']
+                                
                             end_visit_date = visit['visit_end_date']
+                            if visit['visit_end_datetime'] is not None:
+                                end_visit_date = visit['visit_end_datetime']
+                            
+                            # Normalize all to datetime.date
+                            #if isinstance(start_visit_date, datetime.datetime):
+                            #    start_visit_date = start_visit_date.date()
+                            
+                            #if isinstance(end_visit_date, datetime.datetime):
+                            #    end_visit_date = end_visit_date.date()
+                                
+                            #if isinstance(date_field_value, datetime.datetime):
+                            #    date_field_value = date_field_value.date()
 
+                            # Remove timezone info by converting all to naive datetime
+                            if start_visit_date.tzinfo is not None:
+                                start_visit_date = start_visit_date.replace(tzinfo=None)
+                            
+                            if end_visit_date.tzinfo is not None:
+                                end_visit_date = end_visit_date.replace(tzinfo=None)
+                                
+                            if date_field_value.tzinfo is not None:
+                                date_field_value = date_field_value.replace(tzinfo=None)
+                            
                             if start_visit_date <= date_field_value and date_field_value <= end_visit_date:
-                                print(f"MATCHED visit: v_start:{start_visit_date} d_date:{date_field_value} v_end:{end_visit_date}")
+                                ###print(f"MATCHED visit: v_start:{start_visit_date} d_date:{date_field_value} v_end:{end_visit_date}")
                                 # got one! ....is it the first?
                                 if not have_visit:
                                     # update the visit_occurrence_id in that domain record
                                     thing['visit_occurrence_id'] = visit['visit_occurrence_id']
-                                else:
-                                    print("WARNING got a second fitting visit for {domain} {thing[domain_dates['id']]}")
+                                ###else:
+                                    ###print("WARNING got a second fitting visit for {domain} {thing[domain_dates['id']]}")
                         except KeyError as ke:
-                            print(f"WARNING missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
+                           logger.error(f"missing field  \"{ke}\", in visit reconcilliation, see warnings for detail")
+                           logger.warning(f"missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")
                         except Exception as e:
-                            print(f"WARNING something wrong in visit reconciliation \"{e}\" {type(e)} ")
-                    if not have_visit:
-                        print(f"WARNING wasn't able to reconcile {domain} {thing}")
-                        print("")
+                            pass
+#                            logger.error(f"something wrong in visit reconciliation \"{e}\" see warnings for detail ")
+#                            logger.warning(f"something wrong in visit reconciliation \"{e}\" {type(e)} ")
+                    ###if not have_visit:
+                        ###print(f"WARNING wasn't able to reconcile {domain} {thing}")
+                        ###print("")
                         
                 else:
                     # S.O.L.
-                    print(f"ERROR no datea available for visit reconcilliation in domain {domain} for {thing}")
+                    ### print(f"ERROR no date available for visit reconcilliation in domain {domain} (detail in logs)")
+                    logger.error(f"no date available for visit reconcilliation in domain {domain} for {thing}")
                 
 
     elif 'start' in domain_dates[domain].keys() and 'end' in domain_dates[domain].keys():
-        print("tbd")
+        for thing in domain_dict:
+            start_date_field_name = domain_dates[domain]['start'][0]
+            start_datetime_field_name = domain_dates[domain]['start'][1]
+            end_date_field_name = domain_dates[domain]['end'][0]
+            end_datetime_field_name = domain_dates[domain]['end'][1]
+            
+            start_date_value = thing[start_date_field_name]
+            end_date_value = thing[end_date_field_name]
+            
+            if thing[start_datetime_field_name] is not None:
+                    start_date_value = thing[start_datetime_field_name]
+                    
+            if thing[end_datetime_field_name] is not None:
+                    end_date_value = thing[end_datetime_field_name]
+            
+            if start_date_value is not None and end_date_value is not None:
+                have_visit = False
+                for visit in visit_dict:
+                    try:
+                        start_visit_date = visit['visit_start_date']
+                        if visit['visit_start_datetime'] is not None:
+                            start_visit_date = visit['visit_start_datetime']
+                                
+                        end_visit_date = visit['visit_end_date']
+                        if visit['visit_end_datetime'] is not None:
+                            end_visit_date = visit['visit_end_datetime']
+                        
+                        if start_visit_date and end_visit_date:
+                            # Check if event overlaps with the visit period
+                            if (
+                                (start_visit_date <= start_date_value <= end_visit_date) or
+                                (start_visit_date <= end_date_value <= end_visit_date) or
+                                (start_date_value <= start_visit_date and end_visit_date <= end_date_value)
+                            ):
+###                                print(f"MATCHED visit: v_start:{start_visit_date} event_start:{start_date_value} event_end:{end_date_value} v_end:{end_visit_date}")
+                                if not have_visit:
+                                    thing['visit_occurrence_id'] = visit['visit_occurrence_id']
+                                else:
+                                    print(f"WARNING multiple fitting visits for {domain} {thing[domain_dates['id']]}")
+                    except KeyError as ke:
+                        print(f"WARNING missing field  \"{ke}\", in visit reconcilliation, got error {type(ke)} ")   
+                    except Exception as e:
+                        print(f"WARNING something wrong in visit reconciliation: {e}")
+
+                if not have_visit:
+                    logger.error(f" couldn't reconcile visit for {domain} event: {thing}")
+                    ##print(f"WARNING couldn't reconcile visit for {domain} event: {thing}")
+                    #print("")
+            
+            else:
+                    # S.O.L.
+                    ###print(f"ERROR no date available for visit reconcilliation in domain {domain} (detail in logs)")
+                    logger.error(f" no date available for visit reconcilliation in domain {domain} for {thing}")
+
     else:
-        print("ERROR........")
+        logger.error("??? bust in domain_dates for reconcilliation")
         
 
     
@@ -874,12 +1038,22 @@ def reconcile_visit_FK_with_specific_domain(domain: str,
 def reconcile_visit_foreign_keys(data_dict :dict[str, 
                                                  list[ dict[str,  None | str | float | int | datetime.datetime | datetime.date] | None  ] | None]) :
     # data_dict is a dictionary of config_names to a list of record-dicts
+    metadata = [
+    ('Measurement', 'Measurement_results', 'Visit' ),
+    ('Measurement', 'Measurement_vital_signs', 'Visit' ),
+    ('Observation', 'Observation', 'Visit' ),
+    ('Condition', 'Condition', 'Visit' ),
+    ('Procedure', 'Procedure_activity_procedure', 'Visit'),
+    ('Procedure', 'Procedure_activity_observation', 'Visit'),
+    ('Procedure', 'Procedure_activity_act', 'Visit'),
+    ('Drug', 'Medication_medication_activity', 'Visit'),
+    ('Drug', 'Medication_medication_dispense', 'Visit'),
+    ('Drug', 'Immunization_immunization_activity', 'Visit')
+    ]
 
-    reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_results'], data_dict['Visit'] )
-    reconcile_visit_FK_with_specific_domain('Measurement', data_dict['Measurement_vital_signs'], data_dict['Visit'] )
-    reconcile_visit_FK_with_specific_domain('Observation', data_dict['Observation'], data_dict['Visit'] )
-#    reconcile_visit_FK_with_specific_domain('Condition', data_dict['Condition'], data_dict['Visit'] )
-
+    for meta_tuple in metadata:
+        #print(f" reconciling {meta_tuple[1]}")
+        reconcile_visit_FK_with_specific_domain(meta_tuple[0], data_dict[meta_tuple[1]], data_dict[meta_tuple[2]] )
                           
                           
 @typechecked
@@ -895,11 +1069,17 @@ def parse_doc(file_path,
     tree = ET.parse(file_path)
     base_name = os.path.basename(file_path)
     for config_name, config_dict in metadata.items():
+#        print(f" {base_name} {config_name}")
         data_dict_list = parse_config_from_xml_file(tree, config_name, config_dict, base_name, pk_dict)
         if config_name in omop_dict: 
             omop_dict[config_name] = omop_dict[config_name].extend(data_dict_list)
         else:
             omop_dict[config_name] = data_dict_list
+            
+        #if data_dict_list is not None:
+        #    print(f"...PARSED, got {len(data_dict_list)}")
+        #else:
+        #    print(f"...PARSED, got **NOTHING** {data_dict_list} ")
     return omop_dict
 
 
@@ -922,10 +1102,12 @@ def print_omop_structure(omop :dict[str, list[ dict[str, None | str | float | in
                     print(f"\n\nDOMAIN: {domain} {domain_data_dict.keys()} ")
                     for field, parts in domain_data_dict.items():
                         print(f"    FIELD:{field}")
-                        print(f"        parts type {type(parts[0])}")
-                        print(f"        parts type {type(parts[1])}")
-                        print(f"        VALUE:{parts[0]}")
-                        print(f"        PATH:{parts[1]}")
+                        #print(f"        parts type {type(parts[0])}")
+                        #print(f"        parts type {type(parts[1])}")
+                        print(f"        parts type {type(parts)}")
+                        print(f"        VALUE:{parts}")
+                        #print(f"        VALUE:{parts[0]}")
+                        #print(f"        PATH:{parts[1]}")
                         print(f"        ORDER: {metadata[domain][field]['order']}")
                         n = n+1
                     print(f"\n\nDOMAIN: {domain} {n}\n\n")
@@ -952,12 +1134,16 @@ def process_file(filepath :str, print_output: bool):
     )
 
     metadata = get_meta_dict()
+    print(f"    {filepath} parse_doc() ")
     omop_data = parse_doc(filepath, metadata)
+    print(f"    {filepath} reconcile_visit()() ")
     reconcile_visit_foreign_keys(omop_data)
     if print_output and (omop_data is not None or len(omop_data) < 1):
         print_omop_structure(omop_data, metadata)
     else:
         logger.error(f"FILE no data from {filepath} (or printing turned off)")
+
+    print(f"done PROCESSING {filepath} ")
 
 
 # for argparse

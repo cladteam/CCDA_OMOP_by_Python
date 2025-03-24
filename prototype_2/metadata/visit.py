@@ -1,3 +1,4 @@
+from numpy import int32
 import prototype_2.value_transformations as VT
 # converted to encouter from encompassingEncounter. The encompassingEncounter attributes are commented out
 metadata = {
@@ -120,15 +121,29 @@ metadata = {
             'priority':  ['visit_start_date', 2]
     	},
 
-        'visit_start_datetime' : {  'config_type': None, 'order': 5 },
-
-
-
+        'visit_start_datetime' : {
+            'config_type': 'PRIORITY',
+            'order': 5
+        },
+    	'visit_start_datetime_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime/hl7:low[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority':  ['visit_start_datetime', 1]
+    	},
+    	'visit_start_datetime_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_start_datetime', 2]
+    	},        
+        
     	'visit_end_date':  {
     	    'config_type': 'PRIORITY',
             'order':6
-    	},
-        
+    	},        
     	'visit_end_date_high':  {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
@@ -152,11 +167,38 @@ metadata = {
     	    'attribute': "value",
             'priority':  ['visit_end_date', 3]
     	},
-        'visit_end_datetime' : {  'config_type': None, 'order': 7 },
+        
+        'visit_end_datetime' : {
+            'config_type': 'PRIORITY',
+            'order': 7
+        },
+    	'visit_end_datetime_high':  {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ['visit_end_date', 1]
+    	},
+    	'visit_end_datetime_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_end_datetime', 2]
+    	},
+        # too loose! too forgiving? If the high value is UNK, this
+        # will use the low date. See #211 for options.
+    	'visit_end_datetime_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime/hl7:low",
+    	    'attribute': "value",
+            'priority':  ['visit_end_datetime', 3]
+    	},        
 
         'visit_type_concept_id' : {
             'config_type': 'CONSTANT',
-            'constant_value' : 32035,
+            'constant_value' : int32(32827),
             'order': 8
         },
 
@@ -230,6 +272,7 @@ metadata = {
         
     	'care_site_id': {
     	    'config_type': 'FIELD',
+            'data_type': 'LONG',
             'element': 'participant/participantRole[@classCode="SDLOC"]/id', 
             #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", 
     	    #'element': "hl7:location/hl7:healthCareFacility/hl7:id",
@@ -243,34 +286,25 @@ metadata = {
         },
         
         
-        'visit_source_concept_id': { 'config_type': None, 'order': 12},
+        'visit_source_concept_id': { 'config_type': None, 'order': 12}, # TODO
         'admitting_source_concept_id': { 'config_type': None, 'order': 13},
-        'admitting_source_value': { 'config_type': None, 'order': 14},
-        'discharge_to_source_concept_id': { 'config_type': None, 'order': 15},
-        'discharge_to_source_value': { 'config_type': None, 'order': 16},
-        'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17}
+        'admitting_source_value': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':14
+        },
+        'discharge_to_concept_id': { 'config_type': None, 'order': 15},
+        'discharge_to_source_value':  {
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':16
+        },
+        'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17},
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
         
-        # 'custodian_id' : {
-        #     'config_type': 'PRIORITY',
-        #     'orider': 18
-        # }
-        #,'custodian_id_constant' : {
-        #    'config_type': 'CONSTANT_PK', # new type
-        #    'constant_value': "unknown", # place holder
-        #    'priority' : ['custodian_id', 100]
-        #}
-        #, 'custodian_id_field_ext' : {
-        #    'config_type': 'FIELD',
-        #    'element_no_root': "./custodian/id",  # new attribute, conditional on lack of just 'element'
-        #    'attribute' : 'extension',
-        #    'priority' : ['custodian_id', 1]  
-        #  }
-        #, 'custodian_id_field_root' : {
-        #    'config_type': 'FIELD',
-        #    'element_no_root': "./custodian/id", 
-        #    'attribute' : 'extension',
-        #    'priority' : ['custodian_id' 2]
-        #  }
-        # TODO: add custodian_id to person, and as a FK to the domains
     }
 }

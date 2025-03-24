@@ -53,5 +53,10 @@ metadata = {
             'order': 8
         },
 
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
+
     }
 }

@@ -170,15 +170,21 @@ zstandard=0.23.0=py313h80202fe_1 @ ad241afe
 zstd=1.5.6=ha6fb4c9_0 @ e1c11c02
 
 [pip]
+asttokens==3.0.0
 attrs==24.3.0
 brotli==1.1.0
 diff==2023.12.6
 executing==2.2.0
 jupyter-client==8.6.3
 jupyter-core==5.7.2
+platformdirs==4.3.6
 pure-eval==0.2.3
+python-dateutil==2.9.0.post0
 pyzmq==26.2.1
+six==1.17.0
 stack-data==0.6.3
+tornado==6.4.2
+traitlets==5.14.3
 tzdata==2024.2
 
 [conda-metadata]
@@ -196,6 +202,9 @@ e1c11c02 - linux-64 @ conda @ ri.artifacts.repository.bundle.jupyter-default-env
 [pip-indices]
 ri.artifacts.repository.artifactory.external-python-pypi
 ri.foundry-sdk-asset-bundle.main.artifacts.repository
+ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
+
+[cran-repos]
 ri.stemma.main.repository.3b0f7376-fe2f-475a-8eda-46fc3fc268ee
 
 [conda lock version]

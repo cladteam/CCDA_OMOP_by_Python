@@ -247,11 +247,30 @@ data-tmp/
 *.webm
 *.whl
 *.wmv
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-*
-=======
->>>>>>> a8087b23f44c158ba16e29648e59711328e2fc62
->>>>>>> 4b27cd8f3aae8dea46b000fa2c3a43eda84f5ea9
 *.csv
+.ipynb_checkpoints/
+*.avro
+*.dill
+*.epub
+*.fea
+*.feather
+*.fvecs
+*.graphml
+*.gzip
+*.hdf
+*.map
+*.msgpack
+*.obj
+*.odt
+*.pt
+*.rda
+*.rdata
+*.rout
+*.rtf
+*.shx
+*.sqlite3
+*.swf
+*.tab
+*.tgz
+*.token
+*.webp

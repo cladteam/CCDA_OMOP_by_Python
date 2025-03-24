@@ -1,0 +1,2 @@
+condition_occurrence_id,person_id,condition_concept_id,condition_start_date,condition_start_datetime,condition_end_date,condition_end_datetime,condition_type_concept_id,condition_status_concept_id,stop_reason,provider_id,visit_occurrence_id,visit_detail_id,condition_source_value,condition_source_concept_id,condition_status_source_value,condition_id_root,condition_id_extension
+1147944582366587,1993876059212097,4274025,2021-02-26,2021-02-26 08:46:22-04:00,,,32840,,,2792356031085824,,,64572001|2.16.840.1.113883.6.96,,,4ADC1021-7B14-11DB-9FE1-0800200C9A67,

@@ -1,4 +1,5 @@
-
+from numpy import int64
+from numpy import int32
 import prototype_2.value_transformations as VT
 
 metadata = {
@@ -28,6 +29,7 @@ metadata = {
     	    'attribute': "extension",
             'order':202
     	},
+
     	'person_id': { 
        	    'config_type': 'HASH',
             'fields' : [ 'person_id_root', 'person_id_extension' ], 
@@ -81,7 +83,7 @@ metadata = {
     	},
     	'birth_datetime': {
     	    'config_type': 'FIELD',
-            'data_type':'DATE',
+            'data_type':'DATETIME',
     	    'element': "hl7:patient/hl7:birthTime",
     	    'attribute': "value",
             'order': 6
@@ -159,8 +161,16 @@ metadata = {
 
         
         'provider_id': { 'config_type': None, 'order': 10 },
-        'care_site_id': { 'config_type': None, 'order': 11 },
-        'person_source_value': { 'config_type': None, 'order': 12 },
+        'care_site_id': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : int64(0),
+	    'order':11
+        },
+        'person_source_value': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':12
+        },
         'gender_source_value': {
        	    'config_type': 'FIELD',
     	    'element': "hl7:patient/hl7:administrativeGenderCode",
@@ -181,7 +191,12 @@ metadata = {
     	    'attribute': "code",
             'order': 17
         },
-        'ethnicity_source_concept_id': { 'config_type': None, 'order': 18 }
+        'ethnicity_source_concept_id': { 'config_type': None, 'order': 18 },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
 
     }
 }

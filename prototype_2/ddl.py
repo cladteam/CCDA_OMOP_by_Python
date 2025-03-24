@@ -45,17 +45,65 @@ config_to_domain_name_dict = {
     'Person': 'Person',
     'Provider': 'Provider',
     'Provider_header_documentationOf': 'Provider',
+    'Provider_encompassingEncounter': 'Provider',
+    'Provider_encompassingEncounter_responsibleParty': 'Provider',
     'Visit_encompassingEncounter': 'Visit',
+    'Visit_encompassingEncounter_responsibleParty': 'Visit',
     'Visit': 'Visit',
     'Measurement': 'Measurement',
     'Measurement_vital_signs': 'Measurement',
     'Measurement_results': 'Measurement',
+    'Drug': 'Drug',
     'Medication_medication_activity' : 'Drug',
-    'Medication_medication_dispense' : 'Drug'
+    'Medication_medication_dispense' : 'Drug',
+    'Immunization_immunization_activity' : 'Drug',
+    'Procedure': 'Procedure',
+    'Procedure_activity_procedure' : 'Procedure',
+    'Procedure_activity_observation' : 'Procedure',
+    'Procedure_activity_act' : 'Procedure'
 
 }
 
+domain_name_to_table_name = {
+    'Care_Site'  : 'care_site',
+    'Condition'  : 'condition_occurrence',
+    'Drug'       : 'drug_exposure',
+    'Location'   : 'location', 
+    'Measurement': 'measurement',
+    'Observation': 'observation',
+    'Person'     : 'person',
+    'Procedure'  : 'procedure_occurrence',
+    'Provider'   : 'provider',
+    'Visit'      : 'visit_occurrence'
+}
+
 sql_import_dict = {
+    'Procedure':{
+        'column_list': [
+            'procedure_occurrence_id',
+            'person_id',
+            'procedure_concept_id',
+            'procedure_date',
+            'procedure_datetime',
+            'procedure_type_concept_id',
+            'modifier_concept_id',
+            'quantity',
+            'provider_id',
+            'visit_occurrence_id',
+            'visit_detail_id',
+            'procedure_source_value',
+            'procedure_source_concept_id',
+            'modifier_source_value'
+        ],
+        'sql': None, 
+        'table_name': "procedure_occurrence",
+        'pk_query': """
+                SELECT count(*) as row_ct, 
+                       count(procedure_occurrence_id) as p_id, 
+                       count(distinct procedure_occurrence_id) as d_p_id
+                FROM procedure_occurrence
+                """
+    },
     'Drug':{
         'column_list': [
             'drug_exposure_id',
@@ -279,6 +327,8 @@ def _apply_local_ddl():
     x=conn.execute(person_ddl)
     x=conn.execute(visit_ddl)
     x=conn.execute(measurement_ddl)
+    x=conn.execute(procedure_ddl)
+    x=conn.execute(drug_ddl)
     df = conn.sql("SHOW ALL TABLES;").df()
     print(df[['database', 'schema', 'name']])
 
@@ -350,7 +400,7 @@ def main():
     _apply_ddl("OMOPCDM_duckdb_5.3_ddl_with_constraints_and_bigint_PK.sql")
 
     domain_list = ['Person', 'Visit', 'Provider', 'Care_Site', 'Location',
-               'Measurement'  #, 'Observation'
+               'Measurement', 'Drug', 'Procedure'  #, 'Observation'
     ]
 
     for domain in domain_list:

@@ -1,5 +1,6 @@
 
 import prototype_2.value_transformations as VT
+from numpy import int32
 
 metadata = {
     'Condition': {
@@ -55,12 +56,12 @@ metadata = {
         # <code code="8029-1" codeSystem="1232.23.3.34.3..34"> 
     	'condition_concept_code': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:code" ,
+    	    'element': "hl7:value" ,
     	    'attribute': "code"
     	},
     	'condition_concept_codeSystem': {
     	    'config_type': 'FIELD',
-    	    'element': "hl7:code",
+    	    'element': "hl7:value",
     	    'attribute': "codeSystem"
     	},
     	'condition_concept_id': {
@@ -104,14 +105,18 @@ metadata = {
     	},
         'condition_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32849, 
+            'constant_value' : int32(32840), 
             'order': 8
         },
         'condition_status_concept_id': {
             'config_type': None,
             'order': 9
         },
-        'stop_reason': { 'config_type': None, 'order': 10 },
+        'stop_reason': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '', 
+            'order': 10
+        },
         'provider_id': { 
             'config_type': 'FK', 
             'FK': 'provider_id',
@@ -134,7 +139,16 @@ metadata = {
             'order': 14
         },
         'condition_source_concept_id': { 'config_type': None, 'order': 15 },
-        'condition_status_source_value': { 'config_type': None, 'order': 16 }
+        'condition_status_source_value': {
+            'config_type': 'CONSTANT',
+            'constant_value' : '', 
+            'order': 16
+        },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	}
 
     }
 }

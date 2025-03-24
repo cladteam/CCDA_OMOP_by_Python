@@ -6,6 +6,7 @@ from . import ccda_value_set_mapping_table_dataset
 from . import visit_concept_xwalk_mapping_dataset
 from typeguard import typechecked
 import datetime
+from numpy import int32
 
 """
     Functions for use in DERVIED fields.
@@ -77,7 +78,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
                                 (concept_df['concept_code'] == concept_code)]
 
         if len(concept_id_df) < 1:
-           logger.error(f"_map_to_omop_concept_row(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\", defaulting to \"{default}\" ")
+##logger.error(f"_map_to_omop_concept_row(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\", defaulting to \"{default}\" ")
            return default
 
         if len(concept_id_df) > 1:
@@ -88,7 +89,7 @@ def _map_to_omop_concept_row(vocabulary_oid, concept_code, default, column_name)
 
         return concept_id_df[column_name].iloc[0]
     except IndexError as e:
-        logger.warning(f"_map_to_omop_concept_rows(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}, defautling to \"{default}\" ")
+##        logger.warning(f"_map_to_omop_concept_rows(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}, defautling to \"{default}\" ")
         return default
 
 
@@ -101,7 +102,7 @@ def map_hl7_to_omop_concept_id(args_dict):
                                         args_dict['default'],
                                         'concept_id')
     if id_value is not None:
-        return int(id_value)
+        return int32(id_value)
     else:
         return None
 
@@ -110,11 +111,15 @@ def map_hl7_to_omop_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: domain_id
     """
-    return _map_to_omop_concept_row(args_dict['vocabulary_oid'],
+    id_value =  _map_to_omop_concept_row(args_dict['vocabulary_oid'],
                                     args_dict['concept_code'],
                                     args_dict['default'],
                                     'domain_id')
-
+    if id_value is not None:
+        return str(id_value)
+    else:
+        return None
+    
 
 def map_hl7_to_omop_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
@@ -133,34 +138,50 @@ def codemap_xwalk_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: concept_id AS INTEGER (because that's what's in the table), not necessarily standard
     """
-    return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    id_value =  _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_concept_id', args_dict['default']) 
 
+    if id_value is not None:
+        return int32(id_value)
+    else:
+        return None
 
+    
 def codemap_xwalk_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: domain_id
     """
-    return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    id_value = _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_domain_id', args_dict['default']) 
+
+    if id_value is not None:
+        return str(id_value)
+    else:
+        return None
 
 
 def codemap_xwalk_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: unmapped concept_id AS INTEGER (because that's what's in the table), not necessarily standard
     """
-    return _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    id_value =  _codemap_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'source_concept_id', args_dict['default']) 
+    
+    if id_value is not None:
+        return int32(id_value)
+    else:
+        return None
 
 
 def _codemap_xwalk(vocabulary_oid, concept_code, column_name, default):
     """ expects: vocabulary_oid, concept_code
     """
     try:
-        df = codemap_xwalk[ (codemap_xwalk['vocab_oid'] == vocabulary_oid) &
-                            (codemap_xwalk['src_code']  == concept_code) ]
+        #df = codemap_xwalk[ (codemap_xwalk['vocab_oid'] == vocabulary_oid) & (codemap_xwalk['src_code']  == concept_code) ]
+        # 2025-03-04 new version of codemap schema:
+        df = codemap_xwalk[ (codemap_xwalk['src_vocab_code_system'] == vocabulary_oid) & (codemap_xwalk['src_code']  == concept_code) ]
         if len(df) < 1:
-           logger.error(f"_codemap_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" ")
+##           logger.error(f"_codemap_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" ")
            return default
 
         if len(df) > 1:
@@ -185,25 +206,39 @@ def visit_xwalk_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: concept_id AS INTEGER (because that's what's in the table), not necessarily standard
     """
-    return _visit_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    id_value = _visit_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_concept_id', args_dict['default']) 
 
+    if id_value is not None:
+        return int32(id_value)
+    else:
+        return None
 
+    
 def visit_xwalk_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: domain_id
     """
-    return _visit_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    id_value = _visit_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_domain_id', args_dict['default']) 
 
-
+    if id_value is not None:
+        return str(id_value)
+    else:
+        return None
+    
+    
 def visit_xwalk_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: unmapped concept_id AS INTEGER (because that's what's in the table), not necessarily standard
     """ 
-    return _visit_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    id_value = _visit_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'source_concept_id', args_dict['default']) 
-
+    if id_value is not None:
+        return int32(id_value)
+    else:
+        return None
+    
 
 def _visit_xwalk(vocabulary_oid, concept_code, column_name, default):
     """ expects: vocabulary_oid, concept_code
@@ -213,7 +248,7 @@ def _visit_xwalk(vocabulary_oid, concept_code, column_name, default):
                             (visit_concept_xwalk_mapping_dataset['codeSystem'] == vocabulary_oid) &
                             (visit_concept_xwalk_mapping_dataset['src_cd']  == concept_code) ]
         if len(df) < 1:
-           logger.error(f"_visit_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
+##           logger.error(f"_visit_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
            return default
 
         if len(df) > 1:
@@ -223,7 +258,7 @@ def _visit_xwalk(vocabulary_oid, concept_code, column_name, default):
             return default
         return df[column_name].iloc[0]
     except IndexError as e:
-        logger.warning(f"_visit_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
+##        logger.warning(f"_visit_xwalk(): no value from map for column \"{column_name}\" from \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
         return default
 
     
@@ -238,27 +273,42 @@ def valueset_xwalk_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: concept_id AS INTEGER
     """
-    return int( _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
-                'target_concept_id', args_dict['default']) )
+    id_value = _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+                'target_concept_id', args_dict['default']) 
 
-
+    if id_value is not None:
+        return int32(id_value)
+    else:
+        return None
+    
+    
 def valueset_xwalk_domain_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: domain_id
     """
-    return _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+    id_value =  _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
                 'target_domain_id', args_dict['default']) 
+    
+    if id_value is not None:
+        return str(id_value)
+    else:
+        return None
 
-
+    
 def valueset_xwalk_source_concept_id(args_dict):
     """ expects: vocabulary_oid, concept_code
         returns: unmapped concept_id AS INTEGER not necessarily standard
     """
     
-    return int( _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
-                'source_concept_id', args_dict['default']) )
+    id_value =  _valueset_xwalk(args_dict['vocabulary_oid'], args_dict['concept_code'], 
+                'source_concept_id', args_dict['default']) 
+    
+    if id_value is not None:
+        return int32(id_value)
+    else:
+        return None
 
-
+    
 def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
     """ expects: vocabulary_oid, concept_code
     """
@@ -266,7 +316,7 @@ def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
         df = ccda_value_set_mapping_table_dataset[ (ccda_value_set_mapping_table_dataset['codeSystem'] == vocabulary_oid) &
                                                    (ccda_value_set_mapping_table_dataset['src_cd']  == concept_code) ]
         if len(df) < 1:
-           logger.error(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
+##           logger.error(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" ")
            return default
 
         if len(df) > 1:
@@ -276,7 +326,7 @@ def _valueset_xwalk(vocabulary_oid, concept_code, column_name, default):
             return default
         return df[column_name].iloc[0]
     except IndexError as e:
-        logger.warning(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
+##        logger.warning(f"_valueset_xwalk(): no value from map for column \"{column_name}\" from  \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
         return default
     except KeyError as e:
         logger.warning(f"_valueset_xwalk(): requested field (codeSystem or src_cd?)  not available \"{vocabulary_oid}\" \"{concept_code}\" type:{type(e)}")
@@ -293,29 +343,29 @@ def map_valuesets_to_omop(args_dict):
 
     
 @typechecked
-def extract_day_of_birth(args_dict : dict[str, any]) -> int:
+def extract_day_of_birth(args_dict : dict[str, any]) -> int32:
     # assumes input is a datetime
     date_object = args_dict['date_object']
     if date_object is not None:
-        return date_object.day
+        return int32(date_object.day)
     return None
 
 
 @typechecked
-def extract_month_of_birth(args_dict : dict[str, any]) -> int:
+def extract_month_of_birth(args_dict : dict[str, any]) -> int32:
     # assumes input is a datetime
     date_object = args_dict['date_object']
     if date_object is not None:
-        return date_object.month
+        return int32(date_object.month)
     return None
 
 
 @typechecked
-def extract_year_of_birth(args_dict : dict[str, any]) -> int:
+def extract_year_of_birth(args_dict : dict[str, any]) -> int32:
     # assumes input is a datetime
     date_object = args_dict['date_object']
     if date_object is not None:
-        return date_object.year
+        return int32(date_object.year)
     return None
 
 
@@ -330,7 +380,7 @@ def concat_fields(args_dict):
 
         
     if (args_dict['first_field'] is None) & (args_dict['second_field'] is None):
-        return None
+        return ''
     
     elif (args_dict['first_field'] is None) & (args_dict['second_field'] is not None):
         return args_dict['second_field']

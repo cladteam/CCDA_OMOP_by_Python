@@ -1,4 +1,5 @@
 
+from numpy import int32
 import prototype_2.value_transformations as VT
 
 metadata = {
@@ -263,12 +264,14 @@ metadata = {
         },
         'verbatim_end_date_value': {
     	    'config_type': 'FIELD',
+            'data_type': 'DATE',
     	    'element': "hl7:effectiveTime[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
             'priority': ('verbatim_end_date', 1)
     	},
         'verbatim_end_date_high': {
     	    'config_type': 'FIELD',
+            'data_type': 'DATE',
             'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
     	    'attribute': "value",
             'priority': ('verbatim_end_date', 2)
@@ -276,11 +279,15 @@ metadata = {
 
         'drug_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32818, # OMOP concept ID for 'EHR administration record', substanceAdministration/@moodCode="EVN" represents medications that have been administered and are currently being taken.
+            'constant_value' : int32(32818), # OMOP concept ID for 'EHR administration record', substanceAdministration/@moodCode="EVN" represents medications that have been administered and are currently being taken.
             'order': 9
         },
         
-        'stop_reason': { 'config_type': None, 'order': 10 },
+        'stop_reason': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+            'order':10
+        },
         'refills': { 'config_type': None, 'order': 11},
        
         'quantity': {
@@ -399,6 +406,11 @@ metadata = {
             'attribute': "unit",
             'order': 23
         },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
 
     }
 }

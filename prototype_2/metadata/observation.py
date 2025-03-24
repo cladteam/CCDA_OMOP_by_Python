@@ -1,4 +1,5 @@
 
+from numpy import int32
 import prototype_2.value_transformations as VT
 
 metadata = {
@@ -95,7 +96,7 @@ metadata = {
     	'observation_datetime': { 'config_type': None, 'order': 5 },
     	'observation_type_concept_id': {
             'config_type': 'CONSTANT',
-            'constant_value' : 32035,
+            'constant_value' : int32(32827),
             'order': 6
         },
 
@@ -121,6 +122,7 @@ metadata = {
 
     	'value_as_number': {
     	    'config_type': 'FIELD',
+            'data_type':'FLOAT',
     	    'element': 'hl7:value[@xsi:type="PQ"]' ,
     	    'attribute': "value",
             'order':8
@@ -187,7 +189,7 @@ metadata = {
         'qualifier_concept_id' : { 'config_type': None, 'order': 10 },
         'unit_concept_id': { 'config_type': None, 'order': 11 },
         'provider_id': { 'config_type': None, 'order': 12 },
-        'visit_occurence_id': { 'config_type': None, 'order': 13 },
+        'visit_occurrence_id': { 'config_type': None, 'order': 13 },
         'visit_detail_id': { 'config_type': None, 'order': 14 },
 
         'observation_source_value': {
@@ -202,8 +204,22 @@ metadata = {
     	},
 
         'observation_source_concept_id': { 'config_type': None, 'order': 16 },
-        'unit_source_value': { 'config_type': None, 'order': 17 },
-        'qualifier_source_value': { 'config_type': None, 'order': 18 }
+
+        'unit_source_value': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+            'order': 17 
+        },
+        'qualifier_source_value': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+            'order': 18 
+        },
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
     }
 }
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 python3 -m  prototype_2.find_paths  > temp_find_paths_output.txt
 diff prototype_2/test_find_paths.txt temp_find_paths_output.txt > temp_diff.txt

@@ -1,3 +1,4 @@
+from numpy import int32
 import prototype_2.value_transformations as VT
 # converted to encouter from encompassingEncounter. The encompassingEncounter attributes are commented out
 metadata = {
@@ -6,7 +7,7 @@ metadata = {
     	'root': {
     	    'config_type': 'ROOT',
             'expected_domain_id': 'Visit',
-            # Encounters section
+            # encompassingEncounter in header
     	    'element': './hl7:componentOf/hl7:encompassingEncounter'
     	},
         
@@ -71,8 +72,25 @@ metadata = {
     	    'attribute': "value",
             'priority':  ['visit_start_date', 2]
     	},
+    	'visit_start_datetime': {
+    	    'config_type': 'PRIORITY',
+            'order':5
+    	},
+    	'visit_start_datetime_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime/hl7:low[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority':  ['visit_start_datetime', 1]
+    	},
+    	'visit_start_datetime_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_start_datetime', 2]
+    	},
 
-        'visit_start_datetime' : {  'config_type': None, 'order': 5 },
 
 
 
@@ -80,7 +98,6 @@ metadata = {
     	    'config_type': 'PRIORITY',
             'order':6
     	},
-        
     	'visit_end_date_high':  {
     	    'config_type': 'FIELD',
             'data_type':'DATE',
@@ -104,11 +121,39 @@ metadata = {
     	    'attribute': "value",
             'priority':  ['visit_end_date', 3]
     	},
-        'visit_end_datetime' : {  'config_type': None, 'order': 7 },
+
+    	'visit_end_datetime':  {
+    	    'config_type': 'PRIORITY',
+            'order':7
+    	},
+        
+    	'visit_end_datetime_high':  {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+            'element': "hl7:effectiveTime/hl7:high[not(@nullFlavor=\"UNK\")]",
+    	    'attribute': "value",
+            'priority': ['visit_end_datetime', 1]
+    	},
+    	'visit_end_datetime_value': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime",
+    	    'attribute': "value",
+            'priority':  ['visit_end_datetime', 2]
+    	},
+        # too loose! too forgiving? If the high value is UNK, this
+        # will use the low date. See #211 for options.
+    	'visit_end_datetime_low': {
+    	    'config_type': 'FIELD',
+            'data_type':'DATETIME',
+    	    'element': "hl7:effectiveTime/hl7:low",
+    	    'attribute': "value",
+            'priority':  ['visit_end_datetime', 3]
+    	},
 
         'visit_type_concept_id' : {
             'config_type': 'CONSTANT',
-            'constant_value' : 32035,
+            'constant_value' : int32(32827),
             'order': 8
         },
 
@@ -124,12 +169,12 @@ metadata = {
         
     	'provider_id_performer_root': {
     	    'config_type': 'FIELD',
-    	    'element':'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:id', 
+    	    'element':'hl7:encounterParticipant[@typeCode="ATND"]/hl7:assignedEntity/hl7:id', 
     	    'attribute': "root",
     	},
-    	'provider_id_perform_extension': {
+    	'provider_id_performer_extension': {
     	    'config_type': 'FIELD',
-    	    'element':'hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:id', 
+    	    'element':'hl7:encounterParticipant[@typeCode="ATND"]/hl7:assignedEntity/hl7:id', 
     	    'attribute': "extension",
     	},
     	'provider_id_performer': {
@@ -183,6 +228,7 @@ metadata = {
         
     	'care_site_id': {
     	    'config_type': 'FIELD',
+            'data_type': 'LONG',
             'element': 'hl7:location/hl7:healthCareFacility/hl7:location/hl7:addr', 
             #'element': "participant/participantRole[@classCode="SDLOC"]/playingEntity", 
     	    #'element': "hl7:location/hl7:healthCareFacility/hl7:id",
@@ -201,7 +247,7 @@ metadata = {
             'order': 11
         },
         
-        'visit_concept_id': {
+        'visit_source_concept_id': {
     	    'config_type': 'DERIVED',
     	    'FUNCTION': VT.visit_xwalk_source_concept_id,
     	    'argument_names': {
@@ -211,10 +257,23 @@ metadata = {
     	    },
             'order': 12 },
         'admitting_source_concept_id': { 'config_type': None, 'order': 13},
-        'admitting_source_value': { 'config_type': None, 'order': 14},
-        'discharge_to_source_concept_id': { 'config_type': None, 'order': 15},
-        'discharge_to_source_value': { 'config_type': None, 'order': 16},
-        'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17}
+        'admitting_source_value': { 
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':41
+        },
+        'discharge_to_concept_id': { 'config_type': None, 'order': 15},
+        'discharge_to_source_value':  {
+            'config_type': 'CONSTANT',
+            'constant_value' : '',
+	    'order':16
+        },
+        'preceding_visit_occurrence_id': { 'config_type': None, 'order': 17},
+
+	'filename' : {
+		'config_type': 'FILENAME',
+		'order':100
+	} 
         
         # 'custodian_id' : {
         #     'config_type': 'PRIORITY',

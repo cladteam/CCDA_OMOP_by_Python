@@ -1,0 +1,41 @@
+FAILED often inconsequential  hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:id Invalid expression
+FAILED often inconsequential  hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:id Invalid expression
+FAILED often inconsequential  hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:city Invalid expression
+FAILED often inconsequential  hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:state Invalid expression
+FAILED often inconsequential  hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:addr/hl7:postalCode Invalid expression
+FAILED often inconsequential  hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:given Invalid expression
+FAILED often inconsequential  hl7:encounterParticipant[@typeCode=”ATND”]/hl7:assignedEntity/hl7:assignedPerson/hl7:name/hl7:family Invalid expression
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value provider_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value provider_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value provider_id, tagging with 'RECONCILE FK' 
+WARNING FK has more than one value visit_occurrence_id, tagging with 'RECONCILE FK' 
+MATCHED visit: v_start:2012-08-15 d_date:2012-08-15 v_end:2012-08-15
+WARNING wasn't able to reconcile Measurement {'measurement_id': 947159804175865, 'person_id': 912750898820026, 'measurement_concept_id': np.int32(3015632), 'measurement_date': datetime.date(2012, 8, 15), 'measurement_datetime': None, 'measurement_time': None, 'measurement_type_concept_id': 32035, 'operator_concept_id': None, 'value_as_number': '27', 'value_as_concept_id': 0, 'unit_concept_id': None, 'range_low': None, 'range_high': None, 'provider_id': None, 'visit_occurrence_id': 3501573642865181, 'visit_detail_id': None, 'measurement_source_value': '2028-9', 'measurement_source_concept_id': None, 'unit_source_value': None, 'value_source_value': '27', 'measurement_id_root': '503B5578-E8FF-11E4-B48A-460231621F93', 'measurement_id_extension': None, 'source_section': 'RESULTS'}
+
+MATCHED visit: v_start:2012-08-15 d_date:2012-08-15 v_end:2012-08-15
+WARNING wasn't able to reconcile Measurement {'measurement_id': 2780771579885217, 'person_id': 912750898820026, 'measurement_concept_id': np.int32(3036277), 'measurement_date': datetime.date(2012, 8, 15), 'measurement_datetime': None, 'measurement_time': None, 'measurement_type_concept_id': 32035, 'operator_concept_id': None, 'value_as_number': '70', 'value_as_concept_id': 0, 'unit_concept_id': None, 'range_low': None, 'range_high': None, 'provider_id': None, 'visit_occurrence_id': 3501573642865181, 'visit_detail_id': None, 'measurement_source_value': '8302-2', 'measurement_source_concept_id': None, 'unit_source_value': None, 'value_source_value': '70', 'source_section': 'VITAL SIGNS'}
+
+MATCHED visit: v_start:2012-08-15 d_date:2012-08-15 v_end:2012-08-15
+WARNING wasn't able to reconcile Measurement {'measurement_id': 3603300143316401, 'person_id': 912750898820026, 'measurement_concept_id': np.int32(3013762), 'measurement_date': datetime.date(2012, 8, 15), 'measurement_datetime': None, 'measurement_time': None, 'measurement_type_concept_id': 32035, 'operator_concept_id': None, 'value_as_number': '195', 'value_as_concept_id': 0, 'unit_concept_id': None, 'range_low': None, 'range_high': None, 'provider_id': None, 'visit_occurrence_id': 3501573642865181, 'visit_detail_id': None, 'measurement_source_value': '3141-9', 'measurement_source_concept_id': None, 'unit_source_value': None, 'value_source_value': '195', 'source_section': 'VITAL SIGNS'}
+
+MATCHED visit: v_start:2012-08-15 d_date:2012-08-15 v_end:2012-08-15
+WARNING wasn't able to reconcile Measurement {'measurement_id': 785055610471288, 'person_id': 912750898820026, 'measurement_concept_id': np.int32(3038553), 'measurement_date': datetime.date(2012, 8, 15), 'measurement_datetime': None, 'measurement_time': None, 'measurement_type_concept_id': 32035, 'operator_concept_id': None, 'value_as_number': '28', 'value_as_concept_id': 0, 'unit_concept_id': None, 'range_low': None, 'range_high': None, 'provider_id': None, 'visit_occurrence_id': 3501573642865181, 'visit_detail_id': None, 'measurement_source_value': '39156-5', 'measurement_source_concept_id': None, 'unit_source_value': None, 'value_source_value': '28', 'source_section': 'VITAL SIGNS'}
+
+MATCHED visit: v_start:2012-08-15 d_date:2012-08-15 v_end:2012-08-15
+WARNING wasn't able to reconcile Measurement {'measurement_id': 353056265506035, 'person_id': 912750898820026, 'measurement_concept_id': np.int32(3004249), 'measurement_date': datetime.date(2012, 8, 15), 'measurement_datetime': None, 'measurement_time': None, 'measurement_type_concept_id': 32035, 'operator_concept_id': None, 'value_as_number': '155', 'value_as_concept_id': 0, 'unit_concept_id': None, 'range_low': None, 'range_high': None, 'provider_id': None, 'visit_occurrence_id': 3501573642865181, 'visit_detail_id': None, 'measurement_source_value': '8480-6', 'measurement_source_concept_id': None, 'unit_source_value': None, 'value_source_value': '155', 'source_section': 'VITAL SIGNS'}
+
+MATCHED visit: v_start:2012-08-15 d_date:2012-08-15 v_end:2012-08-15
+WARNING wasn't able to reconcile Measurement {'measurement_id': 2182562797189277, 'person_id': 912750898820026, 'measurement_concept_id': np.int32(3012888), 'measurement_date': datetime.date(2012, 8, 15), 'measurement_datetime': None, 'measurement_time': None, 'measurement_type_concept_id': 32035, 'operator_concept_id': None, 'value_as_number': '92', 'value_as_concept_id': 0, 'unit_concept_id': None, 'range_low': None, 'range_high': None, 'provider_id': None, 'visit_occurrence_id': 3501573642865181, 'visit_detail_id': None, 'measurement_source_value': '8462-4', 'measurement_source_concept_id': None, 'unit_source_value': None, 'value_source_value': '92', 'source_section': 'VITAL SIGNS'}
+
+ERROR No data to create dataframe for Observation from resources/170.314b2_AmbulatoryToC.xml
+ERROR No data to create dataframe for Medication_medication_dispense from resources/170.314b2_AmbulatoryToC.xml
+ERROR No data to create dataframe for Provider from resources/170.314b2_AmbulatoryToC.xml

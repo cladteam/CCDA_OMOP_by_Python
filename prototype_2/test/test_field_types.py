@@ -3,7 +3,7 @@ import io
 from lxml import etree as ET
 from collections import defaultdict
 import prototype_2.value_transformations as VT
-from prototype_2.data_driven_parse import parse_config_from_file
+from prototype_2.data_driven_parse import parse_config_from_xml_file
 
 class FieldTypeTest_DERIVED(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -77,13 +77,13 @@ class FieldTypeTest_DERIVED(unittest.TestCase):
             pk_dict = {}
             for domain, domain_meta_dict in self.config_dict.items():
                 # print(f"INPUT {domain} {domain_meta_dict}")
-                data_dict_list= parse_config_from_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
+                data_dict_list= parse_config_from_xml_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
                 data_dict = data_dict_list[0]
-                # print(f"OUTPUT {data_dict}")
-                self.assertEqual(data_dict['concept_codeSystem'][0], "2.16.840.1.113883.6.1")
-                self.assertEqual(data_dict['concept_code'][0], "742-7")
-                self.assertEqual(data_dict['concept_id'][0], 3033575)
-                self.assertEqual(data_dict['domain_id'][0], "Measurement")
+                #print(f"OUTPUT {data_dict}")
+                self.assertEqual(data_dict['concept_codeSystem'], "2.16.840.1.113883.6.1")
+                self.assertEqual(data_dict['concept_code'], "742-7")
+                self.assertEqual(data_dict['concept_id'], 3033575)
+                self.assertEqual(data_dict['domain_id'], "Measurement")
             
             
             
@@ -135,11 +135,11 @@ class FieldTypeTest_FIELD(unittest.TestCase):
             pk_dict = {}
             for domain, domain_meta_dict in self.config_dict.items():
                 #print(f"INPUT {domain} {domain_meta_dict}")
-                data_dict_list= parse_config_from_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
+                data_dict_list= parse_config_from_xml_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
                 data_dict = data_dict_list[0]
                 #print(f"OUTPUT {data_dict}")
-                self.assertEqual(data_dict['attribute_value'][0], "2.16.840.1.113883.4.1")
-                self.assertEqual(data_dict['text_value'][0], "2222 Home Street")
+                self.assertEqual(data_dict['attribute_value'], "2.16.840.1.113883.4.1")
+                self.assertEqual(data_dict['text_value'], "2222 Home Street")
 
                 
 class FieldTypeTest_HASH(unittest.TestCase):
@@ -212,14 +212,19 @@ class FieldTypeTest_HASH(unittest.TestCase):
             tree = ET.parse(file_obj)
             pk_dict = defaultdict(list)
             for domain, domain_meta_dict in self.config_dict.items():
-                data_dict_list= parse_config_from_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
+                data_dict_list= parse_config_from_xml_file(tree, domain, domain_meta_dict, "test_file", pk_dict)
                 data_dict = data_dict_list[0]
-                #print(f"OUTPUT {data_dict}")
-                self.assertEqual(data_dict['test_hash_0'][0], 2730455650958355)
-                self.assertEqual(data_dict['test_hash_1'][0], 1347390606787380)
-                self.assertEqual(data_dict['test_hash_2'][0], 1136581816084342)
-                self.assertEqual(data_dict['test_hash_3'][0], 2914246837974734)
-                self.assertEqual(data_dict['test_hash_4'][0], None)
+                print(f"OUTPUT {data_dict}")
+                #self.assertEqual(data_dict['test_hash_0'][0], 2730455650958355)
+                #self.assertEqual(data_dict['test_hash_1'][0], 1347390606787380)
+                #self.assertEqual(data_dict['test_hash_2'][0], 1136581816084342)
+                #self.assertEqual(data_dict['test_hash_3'][0], 2914246837974734)
+                #self.assertEqual(data_dict['test_hash_4'][0], None)
+                self.assertEqual(data_dict['test_hash_0'], 2730455650958355)
+                self.assertEqual(data_dict['test_hash_1'], 1347390606787380)
+                self.assertEqual(data_dict['test_hash_2'], 1136581816084342)
+                self.assertEqual(data_dict['test_hash_3'], 2914246837974734)
+                self.assertEqual(data_dict['test_hash_4'], None)
 
             
             
